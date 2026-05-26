@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png">
+<meta name="description" content="Professional online PDF tools website to merge, compress and manage PDFs easily.">
+
+<meta name="keywords" content="PDF Tools, Merge PDF, Online PDF Tools">
+
+<meta name="author" content="Vikshant Kralta">
+
+<meta name="robots" content="index, follow">
+
+<title>Merge PDF - mY LOve pDf</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image">
+            </div>
+
+            <div>
+                <h2 class="logo-title">mY LOve pDf</h2>
+                <p class="logo-subtitle">Professional PDF Toolkit</p>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link">About</a>
+             <a href="compress.html" class="nav-link">Compress Pdf</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <button class="mobile-menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
+</nav>
+
+<!-- MAIN WRAPPER (FIXED) -->
+<div class="main-wrapper">
+
+    <div class="main-card glass">
+
+        <!-- HEADER -->
+        <div class="header">
+
+            <div class="header-icon">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+
+            <h2 class="main-title">Merge PDF Files</h2>
+
+            <p class="main-description">
+                Combine multiple PDF documents into one file directly in your browser.
+            </p>
+
+        </div>
+
+        <!-- UPLOAD -->
+        <div id="drop-zone" class="upload-box">
+
+            <input type="file" id="file-input" accept=".pdf" multiple hidden>
+
+            <div class="upload-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+
+            <h3 class="upload-title">Drop PDF Files Here</h3>
+            <p class="upload-text">or click to browse</p>
+
+        </div>
+
+        <!-- FILE LIST -->
+        <div id="file-list-container" class="hidden">
+
+            <div class="file-header">
+                <h3>Selected PDFs <span id="file-count">0</span></h3>
+
+                <button id="clear-all">
+                    <i class="fa-solid fa-trash"></i> Clear
+                </button>
+            </div>
+
+            <ul id="file-list"></ul>
+
+            <!-- OUTPUT -->
+            <div class="output-section">
+                <input type="text" id="output-name" value="merged_document">
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="button-section">
+
+                <button id="merge-btn">Merge PDFs</button>
+
+                <button id="download-btn" class="hidden">Download PDF</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LOADER -->
+<div id="loading-overlay" style="display:none;" class="loader-overlay">
+
+    <div class="loader-box">
+        <div class="loader"></div>
+        <h2>Merging PDFs...</h2>
+        <p>Please wait...</p>
+    </div>
+
+</div>
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-grid">
+
+            <!-- LEFT -->
+            <div class="footer-left">
+
+                <div class="footer-brand">
+                    <img src="images/logo.png">
+                    <div>
+                        <h2 class="footer-title">mY LOve pDf</h2>
+                        <p class="footer-subtitle">Fast PDF Toolkit</p>
+                    </div>
+                </div>
+
+                <p class="footer-text">
+                    Fast, secure and modern PDF tools for merging, compressing and managing documents directly in your browser.
+                </p>
+
+            </div>
+
+            <!-- LINKS -->
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="footer-right">
+
+                <h3>Developer</h3>
+                <p class="developer">Designed & Developed by Vikshant</p>
+
+                <div class="footer-social">
+                    <a href="not.html"><i class="fab fa-github"></i></a>
+                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
+                    <a href="not.html"><i class="fab fa-instagram"></i></a>
+                </div>
+
+                <p class="copyright">© 2026 All Rights Reserved <br> Last Updated on: May 24, 2026</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

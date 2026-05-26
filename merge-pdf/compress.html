@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart PDF Compressor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Poppins,sans-serif;
+background:#0f172a;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+}
+
+.title{
+text-align:center;
+font-size:42px;
+font-weight:700;
+margin-bottom:10px;
+}
+
+.subtitle{
+text-align:center;
+color:#94a3b8;
+margin-bottom:35px;
+}
+
+.upload-box{
+background:#111827;
+border:2px dashed #3b82f6;
+border-radius:24px;
+min-height:240px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+cursor:pointer;
+transition:.3s;
+padding:20px;
+}
+
+.upload-box:hover,
+.upload-box.active{
+background:#172554;
+}
+
+.upload-icon{
+font-size:70px;
+margin-bottom:15px;
+}
+
+.upload-box h2{
+font-size:30px;
+margin-bottom:10px;
+}
+
+.upload-box p{
+color:#94a3b8;
+}
+
+input[type=file]{
+display:none;
+}
+
+.settings{
+margin-top:30px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.card{
+background:#111827;
+padding:20px;
+border-radius:18px;
+}
+
+.card label{
+display:block;
+margin-bottom:10px;
+font-weight:600;
+}
+
+.card input,
+.card select{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:#1e293b;
+color:white;
+}
+
+.files{
+margin-top:35px;
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.file-card{
+background:#111827;
+padding:25px;
+border-radius:24px;
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+align-items:center;
+justify-content:space-between;
+}
+
+.preview{
+width:100px;
+height:130px;
+background:#1e293b;
+border-radius:14px;
+overflow:hidden;
+}
+
+.preview canvas{
+width:100%;
+height:100%;
+}
+
+.file-info{
+flex:1;
+min-width:220px;
+}
+
+.file-name{
+font-size:18px;
+font-weight:600;
+margin-bottom:10px;
+word-break:break-word;
+}
+
+.file-size,
+.target,
+.final-size{
+font-size:14px;
+color:#94a3b8;
+margin-bottom:5px;
+}
+
+.rename{
+padding:14px;
+width:220px;
+border:none;
+border-radius:12px;
+background:#1e293b;
+color:white;
+}
+
+.btn{
+padding:14px 22px;
+border:none;
+border-radius:14px;
+font-weight:600;
+cursor:pointer;
+}
+
+.compress-btn{
+background:#2563eb;
+color:white;
+}
+
+.download-btn{
+background:#10b981;
+color:white;
+text-decoration:none;
+display:none;
+}
+
+.progress{
+width:100%;
+height:10px;
+background:#1e293b;
+border-radius:20px;
+overflow:hidden;
+margin-top:15px;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:linear-gradient(to right,#3b82f6,#60a5fa);
+transition:.3s;
+}
+
+.loader{
+width:28px;
+height:28px;
+border:4px solid rgba(255,255,255,.2);
+border-top:4px solid white;
+border-radius:50%;
+animation:spin 1s linear infinite;
+display:none;
+}
+
+@keyframes spin{
+100%{
+transform:rotate(360deg);
+}
+}
+
+@media(max-width:768px){
+
+.file-card{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.rename{
+width:100%;
+}
+
+.title{
+font-size:32px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1 class="title">
+Smart PDF Compressor
+</h1>
+
+<p class="subtitle">
+Target Based Browser PDF Compression
+</p>
+
+<label class="upload-box" id="uploadBox" for="pdfInput">
+
+<div class="upload-icon">📄</div>
+
+<h2>Drag & Drop PDF Files</h2>
+
+<p>or click here to upload</p>
+
+<input 
+type="file" 
+id="pdfInput" 
+multiple 
+accept="application/pdf">
+
+</label>
+
+<div class="settings">
+
+<div class="card">
+
+<label>Target Size</label>
+
+<input 
+type="number" 
+id="targetSize" 
+value="500">
+
+</div>
+
+<div class="card">
+
+<label>Unit</label>
+
+<select id="sizeUnit">
+<option value="kb">KB</option>
+<option value="mb">MB</option>
+</select>
+
+</div>
+
+<div class="card">
+
+<label>Quality(Use High Quality)</label>
+
+<select id="qualityMode">
+<option value="balanced">Balanced</option>
+<option value="high">High Quality(Recomanded)</option>
+<option value="low">Low Quality</option>
+</select>
+
+</div>
+
+</div>
+
+<div class="files" id="files"></div>
+
+</div>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const pdfInput =
+document.getElementById('pdfInput');
+
+const filesBox =
+document.getElementById('files');
+
+const uploadBox =
+document.getElementById('uploadBox');
+
+let uploadedFiles = [];
+
+pdfInput.addEventListener('change',(e)=>{
+
+uploadedFiles = [...e.target.files];
+
+renderFiles();
+
+});
+
+function getTargetBytes(){
+
+const size =
+parseFloat(
+document.getElementById('targetSize').value
+);
+
+const unit =
+document.getElementById('sizeUnit').value;
+
+return unit === 'mb'
+? size * 1024 * 1024
+: size * 1024;
+
+}
+
+function formatSize(bytes){
+
+if(bytes > 1024 * 1024){
+
+return (
+bytes/(1024*1024)
+).toFixed(2)+' MB';
+
+}
+
+return (
+bytes/1024
+).toFixed(2)+' KB';
+
+}
+
+async function renderFiles(){
+
+filesBox.innerHTML = '';
+
+for(let index=0; index<uploadedFiles.length; index++){
+
+const file = uploadedFiles[index];
+
+const card =
+document.createElement('div');
+
+card.className = 'file-card';
+
+card.innerHTML = `
+
+<div class="preview">
+<canvas id="preview-${index}"></canvas>
+</div>
+
+<div class="file-info">
+
+<div class="file-name">
+${file.name}
+</div>
+
+<div class="file-size">
+Original: ${formatSize(file.size)}
+</div>
+
+<div class="target">
+Target: ${formatSize(getTargetBytes())}
+</div>
+
+<div class="final-size" id="final-${index}">
+Compressed Size: --
+</div>
+
+<div class="progress">
+<div class="progress-bar" id="progress-${index}"></div>
+</div>
+
+</div>
+
+<input 
+type="text"
+class="rename"
+id="rename-${index}"
+value="${file.name.replace('.pdf','-compressed')}">
+
+<button 
+class="btn compress-btn"
+onclick="compressPDF(${index})">
+
+Compress
+
+</button>
+
+<div class="loader" id="loader-${index}"></div>
+
+<a 
+class="btn download-btn"
+id="download-${index}">
+
+Download
+
+</a>
+
+`;
+
+filesBox.appendChild(card);
+
+generatePreview(file,index);
+
+}
+
+}
+
+async function generatePreview(file,index){
+
+const data =
+await file.arrayBuffer();
+
+const pdf =
+await pdfjsLib.getDocument({
+data
+}).promise;
+
+const page =
+await pdf.getPage(1);
+
+const viewport =
+page.getViewport({
+scale:0.5
+});
+
+const canvas =
+document.getElementById(`preview-${index}`);
+
+const ctx =
+canvas.getContext('2d');
+
+canvas.width = viewport.width;
+canvas.height = viewport.height;
+
+await page.render({
+canvasContext:ctx,
+viewport
+}).promise;
+
+}
+
+function getSettings(){
+
+const mode =
+document.getElementById('qualityMode').value;
+
+if(mode === 'high'){
+
+return {
+quality:0.92,
+scale:1.8
+};
+
+}
+
+if(mode === 'low'){
+
+return {
+quality:0.45,
+scale:0.9
+};
+
+}
+
+return {
+quality:0.7,
+scale:1.2
+};
+
+}
+
+async function compressPDF(index){
+
+const file =
+uploadedFiles[index];
+
+const progress =
+document.getElementById(`progress-${index}`);
+
+const loader =
+document.getElementById(`loader-${index}`);
+
+const button =
+document.querySelectorAll('.compress-btn')[index];
+
+const downloadBtn =
+document.getElementById(`download-${index}`);
+
+const finalText =
+document.getElementById(`final-${index}`);
+
+const rename =
+document.getElementById(`rename-${index}`).value;
+
+button.style.display = 'none';
+
+loader.style.display = 'block';
+
+const targetBytes =
+getTargetBytes();
+
+const settings =
+getSettings();
+
+if(file.size <= targetBytes){
+
+loader.style.display = 'none';
+
+button.style.display = 'inline-block';
+
+alert(
+'The target size exceeds the original file size'
+);
+
+return;
+
+}
+
+const data =
+await file.arrayBuffer();
+
+const pdf =
+await pdfjsLib.getDocument({
+data
+}).promise;
+
+let quality =
+settings.quality;
+
+let scale =
+settings.scale;
+
+let bestBlob = null;
+
+for(let attempt=0; attempt<8; attempt++){
+
+const newPdf =
+await PDFLib.PDFDocument.create();
+
+for(let i=1;i<=pdf.numPages;i++){
+
+const page =
+await pdf.getPage(i);
+
+const viewport =
+page.getViewport({
+scale
+});
+
+const canvas =
+document.createElement('canvas');
+
+const ctx =
+canvas.getContext('2d');
+
+ctx.imageSmoothingEnabled = true;
+
+ctx.imageSmoothingQuality = 'high';
+
+canvas.width = viewport.width;
+canvas.height = viewport.height;
+
+await page.render({
+canvasContext:ctx,
+viewport
+}).promise;
+
+const image =
+canvas.toDataURL(
+'image/jpeg',
+quality
+);
+
+const jpg =
+await newPdf.embedJpg(image);
+
+const pdfPage =
+newPdf.addPage([
+viewport.width,
+viewport.height
+]);
+
+pdfPage.drawImage(jpg,{
+x:0,
+y:0,
+width:viewport.width,
+height:viewport.height
+});
+
+progress.style.width =
+((i/pdf.numPages)*100)+'%';
+
+}
+
+const bytes =
+await newPdf.save({
+useObjectStreams:true
+});
+
+const blob =
+new Blob([bytes],{
+type:'application/pdf'
+});
+
+bestBlob = blob;
+
+if(blob.size <= targetBytes){
+
+break;
+
+}
+
+quality -= 0.08;
+
+scale -= 0.08;
+
+if(quality < 0.2){
+
+quality = 0.2;
+
+}
+
+if(scale < 0.6){
+
+scale = 0.6;
+
+}
+
+}
+
+const url =
+URL.createObjectURL(bestBlob);
+
+finalText.innerHTML =
+'Compressed Size: '+
+formatSize(bestBlob.size);
+
+await new Promise(resolve=>
+setTimeout(resolve,3000)
+);
+
+loader.style.display = 'none';
+
+downloadBtn.style.display =
+'inline-block';
+
+downloadBtn.href = url;
+
+downloadBtn.download =
+rename + '.pdf';
+
+}
+
+uploadBox.addEventListener('dragover',(e)=>{
+
+e.preventDefault();
+
+uploadBox.classList.add('active');
+
+});
+
+uploadBox.addEventListener('dragleave',()=>{
+
+uploadBox.classList.remove('active');
+
+});
+
+uploadBox.addEventListener('drop',(e)=>{
+
+e.preventDefault();
+
+uploadBox.classList.remove('active');
+
+uploadedFiles =
+[...e.dataTransfer.files]
+.filter(file=>
+file.type==='application/pdf'
+);
+
+renderFiles();
+
+});
+
+document
+.getElementById('targetSize')
+.addEventListener('input',renderFiles);
+
+document
+.getElementById('sizeUnit')
+.addEventListener('change',renderFiles);
+
+</script>
+
+</body>
+</html>

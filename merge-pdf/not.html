@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png">
+<meta name="description" content="Professional online PDF tools website to merge, compress and manage PDFs easily.">
+
+<meta name="keywords" content="PDF Tools, Merge PDF, Online PDF Tools">
+
+<meta name="author" content="Vikshant kralta">
+
+<meta name="robots" content="index, follow">
+
+<title>Service Unavailable - mY LOve pDf</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    overflow:hidden;
+}
+
+/* =========================
+   MAIN BOX
+========================= */
+
+.not-found-box{
+    width:100%;
+    max-width:650px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:60px 40px;
+    text-align:center;
+    backdrop-filter:blur(16px);
+    position:relative;
+    overflow:hidden;
+}
+
+/* GLOW */
+
+.not-found-box::before{
+    content:"";
+    position:absolute;
+    width:250px;
+    height:250px;
+    background:#2563eb;
+    filter:blur(120px);
+    opacity:0.25;
+    top:-80px;
+    right:-80px;
+}
+
+/* ICON */
+
+.icon-box{
+    width:120px;
+    height:120px;
+    margin:auto;
+    border-radius:30px;
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:50px;
+    box-shadow:0 20px 50px rgba(37,99,235,0.35);
+    margin-bottom:30px;
+    animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+    100%{
+        transform:translateY(0px);
+    }
+}
+
+/* TEXT */
+
+.main-title{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+.main-subtitle{
+    font-size:18px;
+    color:#38bdf8;
+    margin-bottom:20px;
+    font-weight:600;
+}
+
+.main-text{
+    font-size:15px;
+    color:#94a3b8;
+    line-height:1.8;
+    max-width:520px;
+    margin:auto;
+}
+
+/* BUTTONS */
+
+.button-group{
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    margin-top:40px;
+    flex-wrap:wrap;
+}
+
+.main-btn{
+    min-width:180px;
+    height:55px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+}
+
+/* PRIMARY */
+
+.primary-btn{
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    color:white;
+}
+
+.primary-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 35px rgba(37,99,235,0.35);
+}
+
+/* SECONDARY */
+
+.secondary-btn{
+    background:rgba(255,255,255,0.08);
+    color:white;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.secondary-btn:hover{
+    background:rgba(255,255,255,0.14);
+    transform:translateY(-3px);
+}
+
+/* FOOTER */
+
+/* FOOTER RGB TOP BORDER */
+
+.footer{
+    position: relative;
+    margin-top: 60px;
+    padding: 50px 20px;
+    background: #0e0e0f;
+    overflow: hidden;
+}
+
+/* ANIMATED RGB LINE */
+.footer::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff9900,
+        #ffee00,
+        #00ff00,
+        #00ffff,
+        #0066ff,
+        #aa00ff,
+        #ff0000
+    );
+
+    animation: rgbMove 4s linear infinite;
+}
+
+/* RGB ANIMATION */
+@keyframes rgbMove{
+    0%{
+        transform: translateX(0);
+    }
+
+    100%{
+        transform: translateX(50%);
+    }
+}
+
+.footer-text{
+    margin-top:45px;
+    font-size:13px;
+    color:#64748b;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .not-found-box{
+        padding:45px 25px;
+    }
+
+    .icon-box{
+        width:95px;
+        height:95px;
+        font-size:40px;
+    }
+
+    .main-title{
+        font-size:32px;
+    }
+
+    .main-subtitle{
+        font-size:16px;
+    }
+
+    .main-text{
+        font-size:14px;
+    }
+
+    .main-btn{
+        width:100%;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="not-found-box">
+
+    <!-- ICON -->
+    <div class="icon-box">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+
+    <!-- TEXT -->
+    <h1 class="main-title">
+        Not Available
+    </h1>
+
+    <h2 class="main-subtitle">
+        Currently Unavailable
+    </h2>
+
+    <p class="main-text">
+        We are currently upgrading this feature to provide a faster,
+        smoother and more powerful contact and connecting experience for all users.
+        Please check back again later.
+    </p>
+
+    <!-- BUTTONS -->
+    <div class="button-group">
+
+        <a href="index.html" class="main-btn primary-btn">
+            <i class="fa-solid fa-house"></i>
+            Back To Home
+        </a>
+
+        <a href="contact.html" class="main-btn secondary-btn">
+            <i class="fa-solid fa-headset"></i>
+            Contact Support
+        </a>
+
+    </div>
+
+    <!-- FOOTER -->
+    <p class="footer-text">
+        © 2026 mY LOve pDf — All Rights Reserved
+    </p>
+
+</div>
+
+</body>
+</html>

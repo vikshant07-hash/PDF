@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png">
+
+<meta name="description" content="Professional online PDF tools website to merge, compress and manage PDFs easily.">
+
+<meta name="keywords" content="PDF Tools, Merge PDF, Online PDF Tools">
+
+<meta name="author" content="Vikshant kralta">
+
+<meta name="robots" content="index, follow">
+
+<title>About Us - mY LOve pDf</title>
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<style>
+
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    width:100%;
+    z-index:1000;
+    background:rgba(15,23,42,0.95);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.nav-container{
+    max-width:1200px;
+    margin:auto;
+    padding:15px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+/* LEFT SECTION */
+
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    background:#303052fb;
+    color:#ffffff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    font-size:18px;
+    transition:0.3s;
+    flex-shrink:0;
+}
+
+.back-btn:hover{
+    transform:translateY(-2px);
+}
+
+/* LOGO */
+
+.logo-wrapper{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo-box{
+    width:50px;
+    height:50px;
+    border-radius:14px;
+    overflow:hidden;
+    background:#1e293b;
+}
+
+.logo-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.logo-title{
+    font-size:20px;
+    font-weight:700;
+}
+
+.logo-subtitle{
+    font-size:12px;
+    color:#94a3b8;
+}
+
+/* NAV LINKS */
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.nav-link{
+    text-decoration:none;
+    color:#cbd5e1;
+    font-size:15px;
+    transition:0.3s;
+    position:relative;
+}
+
+.nav-link:hover{
+    color:#38bdf8;
+}
+
+/* MOBILE MENU */
+
+.mobile-menu{
+    display:none;
+    background:none;
+    border:none;
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    padding:80px 20px 50px;
+}
+
+.hero-container{
+    max-width:1100px;
+    margin:auto;
+}
+
+.about-card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:50px;
+    backdrop-filter:blur(16px);
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+}
+
+.hero-top{
+    display:flex;
+    align-items:center;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+/* BIG LOGO */
+
+.big-logo{
+    width:120px;
+    height:120px;
+    border-radius:28px;
+    overflow:hidden;
+    background:#1e293b;
+    border:2px solid rgba(255,255,255,0.08);
+}
+
+.big-logo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* HERO TEXT */
+
+.hero-text h1{
+    font-size:44px;
+    margin-bottom:12px;
+}
+
+.hero-text p{
+    color:#94a3b8;
+    font-size:16px;
+    line-height:1.8;
+    max-width:650px;
+}
+
+/* STATS */
+
+.stats{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.stat-box{
+    background:rgba(255,255,255,0.04);
+    border-radius:20px;
+    padding:25px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.05);
+    transition:0.3s;
+}
+
+.stat-box:hover{
+    transform:translateY(-5px);
+}
+
+.stat-box i{
+    font-size:32px;
+    color:#38bdf8;
+    margin-bottom:12px;
+}
+
+.stat-box h2{
+    font-size:24px;
+    margin-bottom:8px;
+}
+
+.stat-box p{
+    color:#94a3b8;
+    font-size:14px;
+}
+
+/* CONTENT */
+
+.content-section{
+    margin-top:50px;
+}
+
+.content-section h2{
+    font-size:30px;
+    margin-bottom:20px;
+}
+
+.content-section p{
+    color:#cbd5e1;
+    line-height:1.9;
+    margin-bottom:18px;
+}
+
+/* FEATURES */
+
+.features{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.feature-card{
+    background:rgba(255,255,255,0.04);
+    padding:25px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.05);
+    transition:0.3s;
+}
+
+.feature-card:hover{
+    transform:translateY(-5px);
+}
+
+.feature-card i{
+    font-size:28px;
+    color:#38bdf8;
+    margin-bottom:15px;
+}
+
+.feature-card h3{
+    margin-bottom:10px;
+    font-size:20px;
+}
+
+.feature-card p{
+    color:#94a3b8;
+    line-height:1.7;
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:60px;
+    padding:40px 20px;
+    border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.footer-container{
+    max-width:1100px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.footer-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.footer-left img{
+    width:50px;
+    height:50px;
+    border-radius:12px;
+}
+
+.footer-text h3{
+    margin-bottom:4px;
+}
+
+.footer-text p{
+    color:#94a3b8;
+    font-size:14px;
+}
+
+.footer-social{
+    display:flex;
+    gap:12px;
+}
+
+.footer-social a{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    background:rgba(255,255,255,0.06);
+    color:white;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.footer-social a:hover{
+    background:#38bdf8;
+    color:#0f172a;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .features{
+        grid-template-columns:1fr;
+    }
+
+    .hero-text h1{
+        font-size:34px;
+    }
+}
+
+@media(max-width:768px){
+
+    .mobile-menu{
+        display:block;
+    }
+
+    .nav-links{
+        position:absolute;
+        top:85px;
+        right:20px;
+        width:220px;
+        background:#111827;
+        border-radius:18px;
+        padding:22px;
+        display:none;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:18px;
+        box-shadow:0 20px 40px rgba(0,0,0,0.45);
+    }
+
+    .nav-links.active{
+        display:flex;
+    }
+
+    .about-card{
+        padding:30px 22px;
+    }
+
+    .hero-top{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .hero-text h1{
+        font-size:30px;
+    }
+
+    .content-section h2{
+        font-size:24px;
+    }
+
+    .footer-container{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .footer-left{
+        flex-direction:column;
+    }
+
+    .nav-container{
+        padding:14px 16px;
+    }
+
+    .logo-title{
+        font-size:17px;
+    }
+
+    .logo-subtitle{
+        font-size:11px;
+    }
+
+    .back-btn{
+        width:42px;
+        height:42px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+
+    <div class="nav-container">
+
+        <!-- LEFT -->
+        <div class="nav-left">
+
+            <!-- BACK BUTTON -->
+            <a href="index.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+
+            <!-- LOGO -->
+            <div class="logo-wrapper">
+
+                <div class="logo-box">
+
+                    <img 
+                    src="images/logo.png"
+                    alt="Logo"
+                    class="logo-image"
+                    >
+
+                </div>
+
+                <div>
+
+                    <h2 class="logo-title">
+                        mY LOve pDf
+                    </h2>
+
+                    <p class="logo-subtitle">
+                        Professional PDF Toolkit
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- NAV LINKS -->
+        <div class="nav-links">
+
+            <a href="index.html" class="nav-link">
+                Home
+            </a>
+
+            <a href="about.html" class="nav-link">
+                About
+            </a>
+
+            <a href="contact.html" class="nav-link">
+                Contact
+            </a>
+
+        </div>
+
+        <!-- MOBILE MENU -->
+        <button class="mobile-menu">
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+    </div>
+
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-container">
+
+        <div class="about-card">
+
+            <div class="hero-top">
+
+                <div class="big-logo">
+
+                    <img 
+                    src="images/logo.png"
+                    alt="Logo"
+                    >
+
+                </div>
+
+                <div class="hero-text">
+
+                    <h1>
+                        About mY LOve pDf
+                    </h1>
+
+                    <p>
+
+                        mY LOve pDf is a modern and professional online PDF toolkit designed to help users merge, organize, compress and manage PDF documents quickly and securely directly from the browser.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- STATS -->
+            <div class="stats">
+
+                <div class="stat-box">
+
+                    <i class="fa-solid fa-file-pdf"></i>
+
+                    <h2>
+                        Fast Tools
+                    </h2>
+
+                    <p>
+                        Lightning fast PDF processing
+                    </p>
+
+                </div>
+
+                <div class="stat-box">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <h2>
+                        Secure
+                    </h2>
+
+                    <p>
+                        Files never uploaded to server
+                    </p>
+
+                </div>
+
+                <div class="stat-box">
+
+                    <i class="fa-solid fa-mobile-screen"></i>
+
+                    <h2>
+                        Responsive
+                    </h2>
+
+                    <p>
+                        Works perfectly on all devices
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content-section">
+
+                <h2>
+                    Who We Are
+                </h2>
+
+                <p>
+
+                    We created mY LOve pDf to provide users with an easy, modern and powerful solution for managing PDF documents online without complicated software installations.
+
+                </p>
+
+                <p>
+
+                    Our mission is to deliver high-quality tools with premium design, blazing-fast performance and complete privacy for every user.
+
+                </p>
+
+            </div>
+
+            <!-- FEATURES -->
+            <div class="features">
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-layer-group"></i>
+
+                    <h3>
+                        Merge PDFs
+                    </h3>
+
+                    <p>
+                        Combine multiple PDF files into one professional document instantly.
+                    </p>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-github"></i>
+
+                    <h3>
+                        Easy to use
+                    </h3>
+
+                    <p>
+                        Easy to use and while maintaining excellent quality and performance.
+                    </p>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <h3>
+                        Privacy First
+                    </h3>
+
+                    <p>
+                        Your documents stay secure because processing happens inside your browser.
+                    </p>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-bolt"></i>
+
+                    <h3>
+                        High Performance
+                    </h3>
+
+                    <p>
+                        Optimized tools built for speed, responsiveness and smooth user experience.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-left">
+
+            <img 
+            src="images/logo.png"
+            alt="Logo"
+            >
+
+            <div class="footer-text">
+
+                <h3>
+                    mY LOve pDf
+                </h3>
+
+                <p>
+                    Designed & Developed By Vikshant
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="footer-social">
+
+            <a href="not.html">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
+
+            <a href="not.html">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+
+            <a href="not.html">
+                <i class="fa-brands fa-twitter"></i>
+            </a>
+
+            <a href="not.html">
+                <i class="fa-brands fa-github"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<!-- JS -->
+<script>
+
+const mobileMenu = document.querySelector(".mobile-menu");
+const navLinks = document.querySelector(".nav-links");
+
+mobileMenu.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+});
+
+</script>
+
+</body>
+</html>

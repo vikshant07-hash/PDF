@@ -1,0 +1,587 @@
+/* =======================
+   RESET
+======================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #0f172a;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+/* =======================
+   NAVBAR
+======================= */
+.navbar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-box img {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+}
+
+.logo-title {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.logo-subtitle {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    color: #38bdf8;
+}
+
+.mobile-menu {
+    display: none;
+    font-size: 20px;
+    background: none;
+    border: none;
+    color: #fff;
+}
+
+/* =======================
+   MAIN LAYOUT FIX
+======================= */
+.main-wrapper {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 15px;
+}
+
+/* =======================
+   CARD
+======================= */
+.main-card {
+    width: 100%;
+    max-width: 850px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 25px;
+    backdrop-filter: blur(15px);
+}
+
+/* =======================
+   HEADER
+======================= */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header-icon {
+    font-size: 40px;
+    color: #38bdf8;
+    margin-bottom: 10px;
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.main-description {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-top: 8px;
+}
+
+/* =======================
+   UPLOAD BOX
+======================= */
+.upload-box {
+    margin-top: 20px;
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 15px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.upload-box:hover {
+    border-color: #38bdf8;
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 35px;
+    color: #38bdf8;
+    margin-bottom: 10px;
+}
+
+.upload-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.upload-text {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* =======================
+   FILE LIST
+======================= */
+.file-section {
+    margin-top: 20px;
+}
+
+.file-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.file-header h3 {
+    font-size: 16px;
+}
+
+.file-header span {
+    background: #38bdf8;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.file-header button {
+    background: #ef4444;
+    border: none;
+    padding: 6px 12px;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#file-list li {
+    background: rgba(255,255,255,0.07);
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* =======================
+   OUTPUT
+======================= */
+.output-section {
+    margin-top: 15px;
+}
+
+.output-section input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+/* =======================
+   BUTTONS
+======================= */
+.button-section {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#merge-btn {
+    background: #38bdf8;
+    color: #000;
+}
+
+#download-btn {
+    background: #22c55e;
+    color: #000;
+}
+
+/* =======================
+   LOADER
+======================= */
+/* LOADER FIX - CLEAN VERSION */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;   /* default hidden */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader-overlay.active {
+    display: flex;
+}
+
+.loader-box {
+    text-align: center;
+}
+
+.loader {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #fff;
+    border-top: 4px solid #38bdf8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+/* =======================
+   FOOTER
+======================= */
+.footer {
+    text-align: center;
+    padding: 30px;
+    color: #94a3b8;
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
+@media (max-width: 768px) {
+
+    .nav-links {
+        display: none;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .main-card {
+        padding: 15px;
+    }
+
+    .upload-box {
+        padding: 25px 15px;
+    }
+
+    .main-title {
+        font-size: 20px;
+    }
+}
+
+/* MOBILE MENU ACTIVE */
+.nav-links.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background: #0f172a;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* =======================
+   MOBILE MENU FIX
+======================= */
+
+@media (max-width: 768px) {
+
+    .nav-links {
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        background: #0f172a;
+        flex-direction: column;
+        width: 200px;
+        padding: 15px;
+        border-radius: 12px;
+
+        display: none; /* IMPORTANT */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .nav-links.active {
+        display: flex; /* THIS is what JS triggers */
+    }
+
+    .nav-link {
+        padding: 10px 0;
+    }
+}
+
+
+
+/* =========================
+   SAFE PROFESSIONAL FOOTER
+========================= */
+
+/* FOOTER RGB TOP BORDER */
+
+.footer{
+    position: relative;
+    margin-top: 60px;
+    padding: 50px 20px;
+    background: #0e0e0f;
+    overflow: hidden;
+}
+
+/* ANIMATED RGB LINE */
+.footer::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff9900,
+        #ffee00,
+        #00ff00,
+        #00ffff,
+        #0066ff,
+        #aa00ff,
+        #ff0000
+    );
+
+    animation: rgbMove 4s linear infinite;
+}
+
+/* RGB ANIMATION */
+@keyframes rgbMove{
+    0%{
+        transform: translateX(0);
+    }
+
+    100%{
+        transform: translateX(50%);
+    }
+}
+
+.footer-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* GRID */
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* LEFT */
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-brand img {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+}
+
+.footer-title {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.footer-subtitle {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.footer-text {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+/* CENTER */
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-links h3 {
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: #94a3b8;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.footer-links a:hover {
+    color: #38bdf8;
+}
+
+/* RIGHT */
+/* =========================
+   SOCIAL ICON FIX (PC ONLY)
+========================= */
+
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* important fix */
+    gap: 12px;
+}
+
+/* push social icons properly */
+.footer-social {
+    display: flex;
+    gap: 10px;
+    margin-left: 60px;
+    margin-top: auto;   /* 👈 THIS FIXES PC POSITION */
+    padding-top: 15px;
+}
+
+/* optional: keeps balance clean */
+.footer-right h3 {
+    margin-bottom: 5px;
+}
+
+/* SOCIAL */
+.footer-social {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.footer-social a {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    color: #fff;
+    transition: 0.2s;
+}
+
+.footer-social a:hover {
+    background: #38bdf8;
+    color: #0f172a;
+}
+
+/* COPYRIGHT */
+.copyright {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 10px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-left {
+        grid-column: span 2;
+        text-align: center;
+        align-items: center;
+    }
+
+    .footer-brand {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+        margin-right: 60px;
+    }
+
+    .footer-left {
+        grid-column: auto;
+    }
+}
