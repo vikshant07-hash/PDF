@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mY LOve pDf — Your Seal of Trust on Every PDF</title>
-<meta name="description" content="MyLovePDF — Merge PDFs, compress PDFs, and soon much more. Free, secure, no login required.">
+<title>mY LOve pDF — Easy, Professional & Secure</title>
+<meta name="description" content="mY LOve pDF — Merge PDFs, compress PDFs, and soon much more. Free, secure, no login required.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -642,5 +642,410 @@
 
 <header>
   <nav class="container nav">
-    <a href="#top" class="brand"><span class="seal">M</span>MyLovePDF</a>
-    <ul class="nav-l
+    <a href="#top" class="brand"><span class="seal" img src= "images/logo.png"></span>mY LOve pDF</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#tools" class="btn btn-ghost">View Tools</a>
+      <a href="#tools" class="btn btn-primary">Get Started</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero container">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>100% Free · No Login Required</span>
+      <h1>Put a <em>Seal of Trust</em> on Every PDF</h1>
+      <p class="lead">Merge files, shrink file size — in seconds, right in your browser. No account, no hassle, just upload and download.</p>
+      <div class="hero-ctas">
+        <a href="merge.html" class="btn btn-primary">Merge PDF</a>
+        <a href="compress.html" class="btn btn-ghost">Compress PDF</a>
+      </div>
+      <div class="hero-note">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>Fully secure</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>Lightning fast</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>Always free</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="doc-stage">
+        <div class="page a"><div class="lines"><i></i><i></i><i></i></div></div>
+        <div class="page b"><div class="lines"><i></i><i></i><i></i></div></div>
+        <div class="stamp-seal">Merged<br>✓ Done</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="perforation"></div>
+
+  <!-- TRUST BAR -->
+  <div class="trust">
+    <div class="container">
+      <div class="trust-stat"><b data-count="2">0</b><span>Tools live</span></div>
+      <div class="trust-stat"><b data-count="6">0</b><span>Tools coming soon</span></div>
+      <div class="trust-stat"><b>100%</b><span>Free to use</span></div>
+      <div class="trust-stat"><b>0</b><span>Login required</span></div>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <section id="tools" class="container">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>Toolbox</span>
+      <h2>One tool for every PDF need</h2>
+      <p>2 tools are fully live right now, and the rest are in the works — coming to this same page soon.</p>
+    </div>
+
+    <div class="tools-grid">
+      <div class="tool-card available" data-tool="merge">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3M9 9h6v6H9z"/></svg></div>
+        <h3>Merge PDF</h3>
+        <p>Combine multiple PDF files into one, in the order you choose.</p>
+        <span class="badge live"><span class="dot"></span>Available</span>
+      </div>
+
+      <div class="tool-card available" data-tool="compress">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M4 21l7-7"/></svg></div>
+        <h3>Compress PDF</h3>
+        <p>Shrink your PDF's file size without losing quality — easier to email.</p>
+        <span class="badge live"><span class="dot"></span>Available</span>
+      </div>
+
+      <div class="tool-card soon" data-tool="split">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3v18M4 3h5v18H4zM15 3h5v8h-5z"/></svg></div>
+        <h3>Split PDF</h3>
+        <p>Break one PDF into several separate files by page range.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+
+      <div class="tool-card soon" data-tool="pdf-to-word">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l1.5 4L12 15l1.5 4L15 15"/></svg></div>
+        <h3>PDF to Word</h3>
+        <p>Turn a PDF into an editable Word document.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+
+      <div class="tool-card soon" data-tool="word-to-pdf">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></div>
+        <h3>Word to PDF</h3>
+        <p>Convert Word files into clean, ready-to-share PDFs in one click.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+
+      <div class="tool-card soon" data-tool="pdf-to-jpg">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <h3>PDF to JPG</h3>
+        <p>Export every page as a separate high-quality image.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+
+      <div class="tool-card soon" data-tool="esign">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6 1 10-10a2 2 0 00-3-3L6 15l-3 6z"/><path d="M2 21h20"/></svg></div>
+        <h3>Sign PDF</h3>
+        <p>Add your digital signature and get documents done in a snap.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+
+      <div class="tool-card soon" data-tool="organize">
+        <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <h3>Organize Pages</h3>
+        <p>Rotate, delete, or reorder pages exactly how you want them.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="container">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>Process</span>
+      <h2>Three simple steps</h2>
+      <p>No technical know-how required — just upload, and we handle the rest.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">01</div>
+        <h3>Choose Tool</h3>
+        <p>Select Merge or Compress, and the system prepares your file in seconds.</p>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h3>Upload File/ Files</h3>
+        <p>
+        Drag and drop your PDF files or browse to select them — multiple files work too</p>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h3>Yours Requirment</h3>
+        <p>Use options as your requirements</p>
+      </div>
+    </div>
+      <div class="step">
+        <div class="num">04</div>
+        <h3>Download it</h3>
+        <p>Grab your finished file right away — nothing is ever stored on our servers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="container">
+    <div class="features">
+      <div class="section-head">
+        <span class="eyebrow" style="background:rgba(240,198,117,0.15); color:#f0c675;"><span class="dot" style="background:#f0c675;"></span>Why MyLovePDF</span>
+        <h2>Built on simplicity and trust</h2>
+        <p>Every feature exists for one reason — to get your work done quickly and safely.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg></div>
+          <div><h4>Secure & private</h4><p>Files are automatically deleted after processing — nothing is stored anywhere.</p></div>
+        </div>
+        <div class="feature">
+          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></div>
+          <div><h4>Lightning fast</h4><p>Even large files are processed in just a few seconds.</p></div>
+        </div>
+        <div class="feature">
+          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/><line x1="3" y1="3" x2="21" y2="21"/></svg></div>
+          <div><h4>No registration</h4><p>No sign-up, no email required — jump straight into any tool.</p></div>
+        </div>
+        <div class="feature">
+          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div><h4>Works on any device</h4><p>Mobile, tablet, or desktop — from any browser, anywhere.</p></div>
+        </div>
+        <div class="feature">
+          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></div>
+          <div><h4>Great quality</h4><p>Your documents keep their quality even after compressing or merging.</p></div>
+        </div>
+        <div class="feature">
+          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          <div><h4>Free forever</h4><p>No payment will ever be required to use our core tools.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="container">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>FAQ</span>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button class="faq-q"><span>Are my files kept safe?</span><span class="plus"></span></button>
+        <div class="faq-a"><p>Yes, absolutely. Your files are permanently removed from our system right after processing. Nothing is ever stored.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Does MyLovePDF cost anything to use?</span><span class="plus"></span></button>
+        <div class="faq-a"><p>No, tools like Merge and Compress are completely free, and we intend to keep upcoming tools free as well.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>When will the other tools be available?</span><span class="plus"></span></button>
+        <div class="faq-a"><p>Tools like Split, PDF to Word, and Word to PDF are actively being built. They'll be added to this same page, step by step.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Do I need to create an account?</span><span class="plus"></span></button>
+        <div class="faq-a"><p>No. You can use every tool directly, without any sign-up or login.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="container">
+    <div class="cta-banner">
+      <h2>Get your PDF files organized today</h2>
+      <p>Merge or compress — both tools are ready right now, with no login required.</p>
+      <div class="hero-ctas">
+        <a href="#tools" class="btn btn-primary">Merge PDF</a>
+        <a href="#tools" class="btn btn-ghost">Compress PDF</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="brand"><span class="seal">M</span>MyLovePDF</a>
+        <p>Simple, fast, and reliable tools for every PDF need — with zero hassle.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0022.4.36a9 9 0 01-2.83 1.08 4.52 4.52 0 00-7.7 4.13A12.8 12.8 0 013 1.64a4.52 4.52 0 001.4 6.03A4.5 4.5 0 012.8 7v.06a4.52 4.52 0 003.63 4.43 4.5 4.5 0 01-2 .08 4.53 4.53 0 004.22 3.14A9.06 9.06 0 012 16.58a12.8 12.8 0 006.92 2.03c8.3 0 12.85-6.88 12.85-12.85 0-.2 0-.39-.02-.58A9.2 9.2 0 0023 3z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Tools</h5>
+        <ul>
+          <li><a href="merge.html">Merge PDF</a></li>
+          <li><a href="compress.html">Compress PDF</a></li>
+          <li><a href="no.html">Split PDF <span class="badge soon">Soon</span></a></li>
+          <li><a href="no.html">PDF to Word <span class="badge soon">Soon</span></a></li>
+          <li><a href="no.html">Sign PDF <span class="badge soon">Soon</span></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+          <li><a href="magicalmathsquiz@gmail.com">Send feedback</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacy policy</a></li>
+          <li><a href="#">Terms of service</a></li>
+        
+        </ul>
+      </div>
+
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026<span id="year"></span> mY LOve pDF. All rights reserved.</span>
+      <div class="legal-links">
+        <a href="#">Privacy</a>
+        <a href="no.html">Terms</a>
+        <a href="no.html">Sitemap</a>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<button id="toTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+  <span id="toastMsg">This tool is coming soon</span>
+</div>
+
+<script>
+(function(){
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    menuToggle.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  // Toast for tool cards
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMsg');
+  let toastTimer;
+  function showToast(msg){
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+
+  document.querySelectorAll('.tool-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const name = card.querySelector('h3').textContent;
+      if(card.classList.contains('available')){
+        showToast(name + ' — the upload box will open here');
+      } else {
+        showToast(name + ' is in the works — coming soon!');
+      }
+    });
+    card.addEventListener('keypress', (e) => {
+      if(e.key === 'Enter') card.click();
+    });
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    if(item.classList.contains('open')){
+      a.style.maxHeight = a.scrollHeight + 'px';
+    }
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(other => {
+        other.classList.remove('open');
+        other.querySelector('.faq-a').style.maxHeight = null;
+      });
+      if(!isOpen){
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Count-up stats on scroll into view
+  const stats = document.querySelectorAll('.trust-stat b[data-count]');
+  const countUp = (el) => {
+    const target = parseInt(el.getAttribute('data-count'), 10);
+    let cur = 0;
+    const step = Math.max(1, Math.ceil(target / 30));
+    const iv = setInterval(() => {
+      cur += step;
+      if(cur >= target){ cur = target; clearInterval(iv); }
+      el.textContent = cur;
+    }, 35);
+  };
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        countUp(entry.target);
+        statObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.6});
+  stats.forEach(s => statObserver.observe(s));
+
+  // Back to top
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', () => {
+    toTop.classList.toggle('show', window.scrollY > 500);
+  });
+  toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Newsletter form
+  const nlForm = document.getElementById('nlForm');
+  const nlNote = document.getElementById('nlNote');
+  nlForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    nlNote.textContent = 'Thanks! You will hear from us soon.';
+    nlForm.reset();
+  });
+
+  // Footer year
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>
