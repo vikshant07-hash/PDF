@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mY LOve pDF — Easy, Professional & Secure</title>
+<title>mY LOve pDf — Easy, Professional & Secure</title>
 <meta name="description" content="mY LOve pDF — Merge PDFs, compress PDFs, and soon much more. Free, secure, no login required.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -317,7 +317,67 @@
     color:var(--ink-soft);
   }
   @media (max-width:700px){ .trust .container{grid-template-columns:repeat(2,1fr); row-gap:26px;} }
+  .brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:nowrap;
+}
+.brand img{
+  width:36px;
+  height:36px;
+  min-width:36px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+}
+.nav{
+  flex-wrap:nowrap;
+}
+@media (max-width:480px){
+  .brand{
+    font-size:1rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+.tool-card{
+  display:flex;
+  flex-direction:column;
+}
 
+.tool-open-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  margin-top:14px;
+  padding:10px 18px;
+  border-radius:999px;
+  font-size:0.85rem;
+  font-weight:600;
+  text-decoration:none;
+  transition:transform .18s ease, background .18s ease, color .18s ease;
+}
+
+/* Available tools -> solid blue button */
+.tool-card.available .tool-open-btn{
+  background:var(--stamp);
+  color:#fff;
+}
+.tool-card.available .tool-open-btn:hover{
+  background:var(--stamp-dark);
+  transform:translateY(-2px);
+}
+
+/* Coming soon tools -> disabled-looking button */
+.tool-card.soon .tool-open-btn{
+  background:rgba(192,138,46,0.12);
+  color:var(--gold);
+  cursor:not-allowed;
+  pointer-events:none;
+}
   /* ---------- section shell ---------- */
   section{padding:88px 0;}
   .section-head{
@@ -657,13 +717,14 @@
 </a>
     <ul class="nav-links" id="navLinks"> 
       <li><a href="#tools">Tools</a></li> 
+      <li><a href="about.html">About Us</a></li> 
       <li><a href="#how">How it works</a></li> 
       <li><a href="#features">Features</a></li> 
       <li><a href="#faq">FAQ</a></li> 
     </ul> 
     <div class="nav-actions"> 
       <a href="#tools" class="btn btn-ghost">View Tools</a> 
-     *// <a href="#tools" class="btn btn-primary-stop">Get Started</a> //*
+     
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
         <span></span>
       </button> 
@@ -923,9 +984,9 @@
         <ul>
           <li><a href="about.html">About us</a></li>
           <li><a href="#faq">FAQ</a></li>
-          <li><a href="#">Blog</a></li>
+          
           <li><a href="contact.html">Contact us</a></li>
-          <li><a href="magicalmathsquiz@gmail.com">Send feedback</a></li>
+          <li><a mailto="magicalmathsquiz@gmail.com">Send feedback</a></li>
         </ul>
       </div>
 
@@ -942,7 +1003,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026<span id="year"></span> mY LOve pDF. All rights reserved.</span>
+      <span>© 2026<span id="year"></span> mY LOve pDf. All rights reserved.</span>
       <div class="legal-links">
         <a href="#" alt=" Not Available yet!">Privacy</a>
        
