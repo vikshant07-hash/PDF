@@ -128,19 +128,12 @@
     font-size:1.4rem;
     letter-spacing:-0.01em;
   }
-  .brand .seal{
-    width:36px;height:36px;
+.logo{
+    width:36px;
+    height:36px;
     border-radius:50%;
-    background:var(--stamp);
-    color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-family:var(--serif);
-    font-weight:700;
-    font-size:0.95rem;
-    transform:rotate(-8deg);
-    box-shadow:0 3px 0 rgba(0,0,0,0.12);
-    flex-shrink:0;
-  }
+    object-fit:cover;
+}
   .nav-links{
     display:flex;align-items:center;gap:32px;
     font-size:0.98rem;
@@ -688,10 +681,10 @@
 
 <header> 
   <nav class="container nav"> 
-    <a href="#top" class="brand">
-      <img src="images/logo.png" alt="mY LOve pDF Logo" class="logo-img">
-      mY LOve pDF
-    </a> 
+<a href="#top" class="brand">
+    <img src="images/logo.png" alt="mY LOve PDF Logo" class="logo">
+    <span>mY LOve PDF</span>
+</a>
     <ul class="nav-links" id="navLinks"> 
       <li><a href="#tools">Tools</a></li> 
       <li><a href="#how">How it works</a></li> 
