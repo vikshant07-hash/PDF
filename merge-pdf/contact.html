@@ -8,7 +8,7 @@
 
 <meta name="description" content="Professional online PDF tools website to merge, compress and manage PDFs easily.">
 
-<meta name="keywords" content="PDF Tools, Merge PDF, Online PDF Tools">
+<meta name="keywords" content="PDF Tools, contact mY LOve pDf, Online PDF Tools">
 
 <meta name="author" content="Vikshant Kralta">
 
@@ -17,143 +17,162 @@
 <title>Contact Us - mY LOve pDf</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* =========================
-   RESET
-========================= */
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+}
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Segoe UI,sans-serif;
 }
 
 body{
-    background:#0f172a;
-    color:white;
+    font-family:var(--sans);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+      radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+      var(--paper);
+    color:var(--ink);
     overflow-x:hidden;
 }
 
-/* =========================
-   NAVBAR
-========================= */
+a{ text-decoration:none; color:inherit; }
 
+/* ============ NAVBAR (same as Merge / Compress / About pages) ============ */
 .navbar{
-    position:sticky;
-    top:0;
-    width:100%;
-    z-index:1000;
-    background:rgba(15,23,42,0.95);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(255,255,255,0.08);
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
 }
-
 .nav-container{
-    max-width:1200px;
-    margin:auto;
-    padding:14px 20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    position:relative;
+  max-width:1180px;
+  margin-inline:auto;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:nowrap;
 }
-
-/* LEFT */
-
-.nav-left{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-/* BACK BUTTON */
-
-.back-btn{
-    width:42px;
-    height:42px;
-    border-radius:12px;
-    background:rgba(255,255,255,0.08);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    color:white;
-    transition:0.3s;
-    flex-shrink:0;
-}
-
-.back-btn:hover{
-    background:#2563eb;
-    transform:translateY(-2px);
-}
-
-/* LOGO */
-
 .logo-wrapper{
-    display:flex;
-    align-items:center;
-    gap:12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
 }
-
+.logo-box{
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  flex-shrink:0;
+}
 .logo-box img{
-    width:48px;
-    height:48px;
-    border-radius:12px;
-    object-fit:cover;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
-
 .logo-title{
-    font-size:18px;
-    font-weight:700;
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.15rem;
+  color:var(--ink);
+  line-height:1.2;
+  white-space:nowrap;
 }
-
 .logo-subtitle{
-    font-size:12px;
-    color:#94a3b8;
+  font-size:0.75rem;
+  color:var(--ink-soft);
+  white-space:nowrap;
 }
-
-/* NAV LINKS */
-
 .nav-links{
-    display:flex;
-    align-items:center;
-    gap:25px;
+  display:flex;
+  align-items:center;
+  gap:28px;
 }
-
 .nav-link{
-    color:#cbd5e1;
-    text-decoration:none;
-    font-size:15px;
-    transition:0.3s;
+  position:relative;
+  font-size:0.94rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  padding:6px 2px;
+  transition:color .2s ease;
+  white-space:nowrap;
 }
-
-.nav-link:hover{
-    color:#38bdf8;
+.nav-link::after{
+  content:"";
+  position:absolute; left:0; bottom:0;
+  width:0; height:2px;
+  background:var(--stamp);
+  transition:width .25s ease;
 }
-
-/* MOBILE MENU */
-
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
+.nav-link.current{color:var(--stamp);}
+.nav-link.current::after{width:100%;}
 .mobile-menu{
-    display:none;
-    width:42px;
-    height:42px;
-    border:none;
-    border-radius:12px;
-    background:rgba(255,255,255,0.08);
-    color:white;
-    font-size:18px;
-    cursor:pointer;
+  display:none;
+  width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border-radius:8px;
+  color:var(--ink);
+  font-size:1.1rem;
+  flex-shrink:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+}
+.mobile-menu:hover{background:rgba(37,99,235,0.08);}
+
+@media (max-width:860px){
+  .nav-links{
+    position:fixed;
+    inset:70px 0 auto 0;
+    flex-direction:column;
+    align-items:flex-start;
+    background:var(--paper-raised);
+    padding:20px 24px;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateY(-130%);
+    opacity:0;
+    transition:transform .3s ease, opacity .3s ease;
+  }
+  .nav-links.active{
+    transform:translateY(0);
+    opacity:1;
+  }
+  .mobile-menu{display:flex;}
+  .logo-subtitle{display:none;}
 }
 
 /* =========================
-   HERO
+   CONTACT HERO
 ========================= */
 
 .contact-section{
-    padding:70px 20px;
+    padding:60px 20px;
 }
 
 .contact-container{
@@ -162,14 +181,13 @@ body{
 }
 
 .contact-card{
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.7);
+    border:1px solid rgba(255,255,255,0.8);
     border-radius:28px;
     padding:50px;
     backdrop-filter:blur(14px);
+    box-shadow:var(--shadow);
 }
-
-/* TOP */
 
 .contact-top{
     text-align:center;
@@ -181,27 +199,50 @@ body{
     height:90px;
     margin:auto;
     border-radius:24px;
-    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    background:linear-gradient(135deg,var(--stamp),var(--teal));
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:36px;
+    color:#fff;
     margin-bottom:25px;
-    box-shadow:0 15px 40px rgba(37,99,235,0.35);
+    box-shadow:0 15px 40px rgba(37,99,235,0.30);
 }
 
 .contact-top h1{
+    font-family:var(--serif);
+    font-weight:700;
     font-size:42px;
+    color:var(--ink);
     margin-bottom:15px;
 }
 
 .contact-top p{
     max-width:700px;
     margin:auto;
-    color:#94a3b8;
+    color:var(--ink-soft);
     line-height:1.8;
     font-size:15px;
 }
+
+.response-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:20px;
+    padding:8px 18px;
+    border-radius:999px;
+    background:rgba(8,145,178,0.12);
+    color:var(--teal);
+    font-size:0.85rem;
+    font-weight:600;
+}
+.response-badge .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--teal);
+    animation:pulse 1.6s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
 /* GRID */
 
@@ -211,11 +252,9 @@ body{
     gap:25px;
 }
 
-/* CARD */
-
 .info-card{
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.08);
+    background:var(--paper-raised);
+    border:1px solid var(--line);
     border-radius:24px;
     padding:30px;
     transition:0.3s;
@@ -223,30 +262,40 @@ body{
 
 .info-card:hover{
     transform:translateY(-5px);
-    border-color:#2563eb;
+    border-color:var(--stamp);
+    box-shadow:var(--shadow);
 }
 
 .info-icon{
     width:65px;
     height:65px;
     border-radius:18px;
-    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    background:linear-gradient(135deg,var(--stamp),var(--teal));
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:24px;
+    color:#fff;
     margin-bottom:22px;
 }
 
 .info-card h3{
+    font-family:var(--serif);
+    font-weight:600;
     font-size:22px;
+    color:var(--ink);
     margin-bottom:14px;
 }
 
 .info-card p{
-    color:#94a3b8;
+    color:var(--ink-soft);
     line-height:1.7;
     font-size:15px;
+}
+
+.info-card a{
+    color:var(--stamp);
+    font-weight:600;
 }
 
 /* SOCIAL */
@@ -265,29 +314,284 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    background:rgba(255,255,255,0.08);
-    color:white;
-    text-decoration:none;
+    background:#fff;
+    border:1px solid var(--line);
+    color:var(--ink);
     transition:0.3s;
     font-size:18px;
 }
 
 .social-links a:hover{
-    background:#2563eb;
+    background:var(--stamp);
+    color:#fff;
+    border-color:var(--stamp);
     transform:translateY(-4px);
 }
 
-/* FOOTER */
+/* =========================
+   CONTACT FORM
+========================= */
 
+.form-section{
+    margin-top:40px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:35px;
+}
+
+.form-section h3{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:24px;
+    color:var(--ink);
+    margin-bottom:6px;
+}
+
+.form-section > p{
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    margin-bottom:26px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.form-group.full{
+    grid-column:1 / -1;
+}
+
+.form-group label{
+    font-size:0.85rem;
+    font-weight:600;
+    color:var(--ink);
+}
+
+.form-group input,
+.form-group textarea{
+    padding:13px 16px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:0.94rem;
+    resize:vertical;
+}
+
+.form-group textarea{
+    min-height:130px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus{
+    outline:none;
+    border-color:var(--stamp);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.submit-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 28px;
+    border:none;
+    border-radius:999px;
+    background:var(--stamp);
+    color:#fff;
+    font-weight:600;
+    font-size:0.95rem;
+    cursor:pointer;
+    box-shadow:0 4px 0 var(--stamp-dark);
+    transition:transform .18s ease;
+}
+
+.submit-btn:hover{ transform:translateY(-2px); }
+.submit-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark); }
+
+.form-note{
+    margin-top:14px;
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    display:none;
+}
+
+.form-note.show{
+    display:block;
+    color:var(--teal);
+    font-weight:600;
+}
+
+/* =========================
+   FAQ
+========================= */
+
+.faq-section{
+    margin-top:40px;
+}
+
+.faq-section h3{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:26px;
+    color:var(--ink);
+    margin-bottom:22px;
+}
+
+.faq-item{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:16px;
+    margin-bottom:14px;
+    overflow:hidden;
+}
+
+.faq-question{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:18px 22px;
+    background:none;
+    border:none;
+    text-align:left;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:0.98rem;
+    color:var(--ink);
+    cursor:pointer;
+}
+
+.faq-question i{
+    color:var(--stamp);
+    transition:transform .25s ease;
+    flex-shrink:0;
+}
+
+.faq-item.open .faq-question i{
+    transform:rotate(180deg);
+}
+
+.faq-answer{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+}
+
+.faq-answer p{
+    padding:0 22px 20px;
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    line-height:1.7;
+}
+
+/* ============ FOOTER (same as Merge / Compress / About pages) ============ */
 .footer{
-
-
-    
-    padding:30px 20px;
-    text-align:center;
-    color:#94a3b8;
-    border-top:1px solid rgba(255,255,255,0.06);
-    margin-top:60px;
+  background:var(--ink);
+  color:#dfe6f2;
+  margin-top:60px;
+  padding:56px 20px 26px;
+}
+.footer-container{
+  max-width:1180px;
+  margin-inline:auto;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr;
+  gap:36px;
+  padding-bottom:32px;
+  border-bottom:1px solid rgba(255,255,255,0.12);
+}
+@media (max-width:760px){
+  .footer-grid{grid-template-columns:1fr;}
+}
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+.footer-brand img{
+  width:44px; height:44px;
+  border-radius:12px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+.footer-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.1rem;
+  color:#fff;
+}
+.footer-subtitle{
+  font-size:0.78rem;
+  color:#9fb0cc;
+}
+.footer-text{
+  font-size:0.88rem;
+  color:#9fb0cc;
+  max-width:34ch;
+}
+.footer-links h3,
+.footer-right h3{
+  font-size:0.8rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:#8494b5;
+  margin-bottom:16px;
+  font-weight:600;
+}
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+.footer-links a{
+  font-size:0.92rem;
+  color:#c8d2e6;
+  width:fit-content;
+  transition:color .2s ease;
+}
+.footer-links a:hover{color:#fff;}
+.footer-right .developer{
+  font-size:0.9rem;
+  color:#c8d2e6;
+  margin-bottom:16px;
+}
+.footer-social{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.footer-social a{
+  width:38px; height:38px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.footer-social a:hover{
+  background:var(--stamp);
+  border-color:var(--stamp);
+  transform:translateY(-3px);
+}
+.copyright{
+  font-size:0.8rem;
+  color:#8494b5;
+  line-height:1.6;
 }
 
 /* =========================
@@ -297,6 +601,10 @@ body{
 @media(max-width:900px){
 
     .contact-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
         grid-template-columns:1fr;
     }
 
@@ -310,35 +618,6 @@ body{
 }
 
 @media(max-width:768px){
-
-    .mobile-menu{
-        display:flex;
-        align-items:center;
-        justify-content:center;
-    }
-
-    .nav-links{
-        position:absolute;
-        top:78px;
-        right:20px;
-        width:220px;
-        background:#111827;
-        border:1px solid rgba(255,255,255,0.08);
-        border-radius:18px;
-        padding:20px;
-        flex-direction:column;
-        align-items:flex-start;
-        gap:18px;
-        display:none;
-    }
-
-    .nav-links.active{
-        display:flex;
-    }
-
-    .logo-subtitle{
-        display:none;
-    }
 
     .contact-top h1{
         font-size:28px;
@@ -355,24 +634,6 @@ body{
 
 @media(max-width:500px){
 
-    .nav-container{
-        padding:12px 14px;
-    }
-
-    .logo-title{
-        font-size:15px;
-    }
-
-    .logo-box img{
-        width:42px;
-        height:42px;
-    }
-
-    .back-btn{
-        width:40px;
-        height:40px;
-    }
-
     .contact-section{
         padding:40px 15px;
     }
@@ -387,6 +648,10 @@ body{
         height:75px;
         font-size:28px;
     }
+
+    .form-section{
+        padding:24px 18px;
+    }
 }
 
 </style>
@@ -396,56 +661,36 @@ body{
 <body>
 
 <!-- NAVBAR -->
-
 <nav class="navbar">
-
     <div class="nav-container">
 
-        <div class="nav-left">
-
-            <!-- BACK BUTTON -->
-            <a href="index.html" class="back-btn">
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
-
-            <!-- LOGO -->
-            <div class="logo-wrapper">
-
-                <div class="logo-box">
-                    <img src="images/logo.png">
-                </div>
-
-                <div>
-                    <h2 class="logo-title">mY LOve pDf</h2>
-                    <p class="logo-subtitle">
-                        Professional PDF Toolkit
-                    </p>
-                </div>
-
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" alt="Logo">
             </div>
 
+            <div>
+                <h2 class="logo-title">mY LOve pDf</h2>
+                <p class="logo-subtitle">Professional PDF Toolkit</p>
+            </div>
         </div>
 
-        <!-- NAV LINKS -->
-        <div class="nav-links">
-
+        <div class="nav-links" id="navLinks">
             <a href="index.html" class="nav-link">Home</a>
+            <a href="merge.html" class="nav-link">Merge Pdf</a>
+            <a href="compress.html" class="nav-link">Compress Pdf</a>
+            <a href="contact.html" class="nav-link current">Contact</a>
             <a href="about.html" class="nav-link">About</a>
-            <a href="contact.html" class="nav-link">Contact</a>
-
         </div>
 
-        <!-- MOBILE BUTTON -->
-        <button class="mobile-menu">
+        <button class="mobile-menu" id="mobileMenuBtn">
             <i class="fa-solid fa-bars"></i>
         </button>
 
     </div>
-
 </nav>
 
 <!-- CONTACT -->
-
 <section class="contact-section">
 
     <div class="contact-container">
@@ -462,16 +707,20 @@ body{
 
                 <p>
                     Need help with PDF tools or have any questions regarding 
-                    mY LOve pDf? Feel free to connect with us through our 
-                    social platforms and stay connected for future updates.
+                    mY LOve pDf? Feel free to connect with us through the form 
+                    below or our social platforms, and stay updated for future releases.
                 </p>
+
+                <span class="response-badge">
+                    <span class="dot"></span>
+                    We usually reply within 24 hours
+                </span>
 
             </div>
 
             <div class="contact-grid">
 
                 <!-- LEFT -->
-
                 <div class="info-card">
 
                     <div class="info-icon">
@@ -481,13 +730,13 @@ body{
                     <h3>Contact Details</h3>
 
                     <p>
-                        Email Address: mylovepdf@gmail.com <br>Contact Number: 9805444375
+                        Email: <a href="mailto:mylovepdf@gmail.com">mylovepdf@gmail.com</a><br>
+                        Phone: <a href="tel:+919805444375">+91 98054 44375</a>
                     </p>
 
                 </div>
 
                 <!-- RIGHT -->
-
                 <div class="info-card">
 
                     <div class="info-icon">
@@ -503,23 +752,23 @@ body{
 
                     <div class="social-links">
 
-                        <a href="not.html">
+                        <a href="not.html" aria-label="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
 
-                        <a href="not.html">
+                        <a href="not.html" aria-label="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
 
-                        <a href="not.html">
+                        <a href="not.html" aria-label="Twitter">
                             <i class="fab fa-twitter"></i>
                         </a>
 
-                        <a href="not.html">
+                        <a href="not.html" aria-label="LinkedIn">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
 
-                        <a href="not.html">
+                        <a href="not.html" aria-label="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
 
@@ -529,29 +778,221 @@ body{
 
             </div>
 
+            <!-- CONTACT FORM -->
+            <div class="form-section">
+
+                <h3>Send Us a Message</h3>
+                <p>Fill out the form and it'll open your email app with everything filled in — just hit send.</p>
+
+                <form id="contactForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" required placeholder="Your name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" required placeholder="you@example.com">
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" required placeholder="What's this about?">
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="message">Message</label>
+                            <textarea id="message" required placeholder="Tell us how we can help..."></textarea>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Send Message
+                    </button>
+
+                    <p class="form-note" id="formNote">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Opening your email app now...
+                    </p>
+
+                </form>
+
+            </div>
+
+            <!-- FAQ -->
+            <div class="faq-section">
+
+                <h3>Frequently Asked Questions</h3>
+
+                <div class="faq-item open">
+                    <button class="faq-question">
+                        <span>Is mY LOve pDf really free to use?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. Merge and Compress are completely free, and we intend to keep upcoming tools free as well.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Are my files uploaded to a server?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No, all processing happens directly in your browser. Your files never leave your device.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How quickly will I get a reply?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We usually respond to messages and emails within 24 hours.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I request a new tool or feature?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely — use the contact form above or reach out on social media with your suggestion.</p>
+                    </div>
+                </div>
+
+               <div class="faq-item">
+                    <button class="faq-question">
+                        <span> Developer</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Vikshant Kralta developed this website and also maintaining by him.</p>
+                    </div>
+               </div>
+
+            </div>
+
         </div>
 
     </div>
 
 </section>
 
-<!-- FOOTER -->
-
+<!-- FOOTER (same as Merge / Compress / About pages) -->
 <footer class="footer">
 
-    © 2026 mY LOve pDf — All Rights Reserved
+    <div class="footer-container">
+
+        <div class="footer-grid">
+
+            <!-- LEFT -->
+            <div class="footer-left">
+
+                <div class="footer-brand">
+                    <img src="images/logo.png" alt="Logo">
+                    <div>
+                        <h2 class="footer-title">mY LOve pDf</h2>
+                        <p class="footer-subtitle">Fast PDF Toolkit</p>
+                    </div>
+                </div>
+
+                <p class="footer-text">
+                    Fast, secure and modern PDF tools that work directly in your browser.
+                </p>
+
+            </div>
+
+            <!-- LINKS -->
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                <a href="merge.html">Merge Pdf</a>
+                <a href="compress.html">Compress Pdf</a>
+                <a href="about.html">About</a>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="footer-right">
+
+                <h3>Developer</h3>
+                <p class="developer">Designed & Developed by Vikshant Kralta</p>
+
+                <div class="footer-social">
+                    <a href="not.html"><i class="fab fa-facebook"></i></a>
+                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
+                    <a href="not.html"><i class="fab fa-instagram"></i></a>
+                </div>
+
+                <p class="copyright">© 2026 All Rights Reserved <br> Last Updated on: July 17,  2026</p>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </footer>
 
 <script>
 
 /* MOBILE MENU */
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('active');
+});
 
-const mobileMenu = document.querySelector(".mobile-menu");
-const navLinks = document.querySelector(".nav-links");
+/* FAQ ACCORDION */
+document.querySelectorAll('.faq-item').forEach(item => {
+    const question = item.querySelector('.faq-question');
+    const answer = item.querySelector('.faq-answer');
 
-mobileMenu.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
+    if(item.classList.contains('open')){
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+
+    question.addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+
+        document.querySelectorAll('.faq-item').forEach(other => {
+            other.classList.remove('open');
+            other.querySelector('.faq-answer').style.maxHeight = null;
+        });
+
+        if(!isOpen){
+            item.classList.add('open');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+    });
+});
+
+/* CONTACT FORM -> mailto */
+document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
+
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+
+    window.location.href =
+        `mailto:mylovepdf@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    const note = document.getElementById('formNote');
+    note.classList.add('show');
+
+    setTimeout(() => {
+        note.classList.remove('show');
+    }, 5000);
 });
 
 </script>
