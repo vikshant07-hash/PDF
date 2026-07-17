@@ -8,7 +8,7 @@
 
 <meta name="description" content="Professional online PDF tools website to merge, compress and manage PDFs easily.">
 
-<meta name="keywords" content="PDF Tools, Merge PDF, Online PDF Tools">
+<meta name="keywords" content="PDF Tools, about my love pdf, Online PDF Tools">
 
 <meta name="author" content="Vikshant kralta">
 
@@ -18,140 +18,154 @@
 
 <!-- FONT AWESOME -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* =========================
-   RESET
-========================= */
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+}
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Segoe UI",sans-serif;
 }
 
 body{
-    background:#0f172a;
-    color:white;
+    font-family:var(--sans);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+      radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+      var(--paper);
+    color:var(--ink);
     overflow-x:hidden;
 }
 
-/* =========================
-   NAVBAR
-========================= */
+a{ text-decoration:none; color:inherit; }
 
+/* ============ NAVBAR (same as Merge / Compress pages) ============ */
 .navbar{
-    position:sticky;
-    top:0;
-    width:100%;
-    z-index:1000;
-    background:rgba(15,23,42,0.95);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(255,255,255,0.08);
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
 }
-
 .nav-container{
-    max-width:1200px;
-    margin:auto;
-    padding:15px 20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
+  max-width:1180px;
+  margin-inline:auto;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:nowrap;
 }
-
-/* LEFT SECTION */
-
-.nav-left{
-    display:flex;
-    align-items:center;
-    gap:18px;
-}
-
-/* BACK BUTTON */
-
-.back-btn{
-    width:44px;
-    height:44px;
-    border-radius:12px;
-    background:#303052fb;
-    color:#ffffff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    font-size:18px;
-    transition:0.3s;
-    flex-shrink:0;
-}
-
-.back-btn:hover{
-    transform:translateY(-2px);
-}
-
-/* LOGO */
-
 .logo-wrapper{
-    display:flex;
-    align-items:center;
-    gap:12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
 }
-
 .logo-box{
-    width:50px;
-    height:50px;
-    border-radius:14px;
-    overflow:hidden;
-    background:#1e293b;
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  flex-shrink:0;
 }
-
 .logo-image{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
-
 .logo-title{
-    font-size:20px;
-    font-weight:700;
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.15rem;
+  color:var(--ink);
+  line-height:1.2;
+  white-space:nowrap;
 }
-
 .logo-subtitle{
-    font-size:12px;
-    color:#94a3b8;
+  font-size:0.75rem;
+  color:var(--ink-soft);
+  white-space:nowrap;
 }
-
-/* NAV LINKS */
-
 .nav-links{
-    display:flex;
-    align-items:center;
-    gap:25px;
+  display:flex;
+  align-items:center;
+  gap:28px;
 }
-
 .nav-link{
-    text-decoration:none;
-    color:#cbd5e1;
-    font-size:15px;
-    transition:0.3s;
-    position:relative;
+  position:relative;
+  font-size:0.94rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  padding:6px 2px;
+  transition:color .2s ease;
+  white-space:nowrap;
 }
-
-.nav-link:hover{
-    color:#38bdf8;
+.nav-link::after{
+  content:"";
+  position:absolute; left:0; bottom:0;
+  width:0; height:2px;
+  background:var(--stamp);
+  transition:width .25s ease;
 }
-
-/* MOBILE MENU */
-
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
+.nav-link.current{color:var(--stamp);}
+.nav-link.current::after{width:100%;}
 .mobile-menu{
-    display:none;
-    background:none;
-    border:none;
-    color:white;
-    font-size:24px;
-    cursor:pointer;
+  display:none;
+  width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border-radius:8px;
+  color:var(--ink);
+  font-size:1.1rem;
+  flex-shrink:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+}
+.mobile-menu:hover{background:rgba(37,99,235,0.08);}
+
+@media (max-width:860px){
+  .nav-links{
+    position:fixed;
+    inset:70px 0 auto 0;
+    flex-direction:column;
+    align-items:flex-start;
+    background:var(--paper-raised);
+    padding:20px 24px;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateY(-130%);
+    opacity:0;
+    transition:transform .3s ease, opacity .3s ease;
+  }
+  .nav-links.active{
+    transform:translateY(0);
+    opacity:1;
+  }
+  .mobile-menu{display:flex;}
+  .logo-subtitle{display:none;}
 }
 
 /* =========================
@@ -159,7 +173,7 @@ body{
 ========================= */
 
 .hero{
-    padding:80px 20px 50px;
+    padding:60px 20px 50px;
 }
 
 .hero-container{
@@ -168,12 +182,12 @@ body{
 }
 
 .about-card{
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.7);
+    border:1px solid rgba(255,255,255,0.8);
     border-radius:30px;
     padding:50px;
     backdrop-filter:blur(16px);
-    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    box-shadow:var(--shadow);
 }
 
 .hero-top{
@@ -190,8 +204,10 @@ body{
     height:120px;
     border-radius:28px;
     overflow:hidden;
-    background:#1e293b;
-    border:2px solid rgba(255,255,255,0.08);
+    background:#fff;
+    border:2px solid var(--line);
+    box-shadow:var(--shadow);
+    flex-shrink:0;
 }
 
 .big-logo img{
@@ -203,12 +219,15 @@ body{
 /* HERO TEXT */
 
 .hero-text h1{
+    font-family:var(--serif);
     font-size:44px;
+    font-weight:700;
+    color:var(--ink);
     margin-bottom:12px;
 }
 
 .hero-text p{
-    color:#94a3b8;
+    color:var(--ink-soft);
     font-size:16px;
     line-height:1.8;
     max-width:650px;
@@ -224,31 +243,35 @@ body{
 }
 
 .stat-box{
-    background:rgba(255,255,255,0.04);
+    background:var(--paper-raised);
     border-radius:20px;
     padding:25px;
     text-align:center;
-    border:1px solid rgba(255,255,255,0.05);
+    border:1px solid var(--line);
     transition:0.3s;
 }
 
 .stat-box:hover{
     transform:translateY(-5px);
+    box-shadow:var(--shadow);
 }
 
 .stat-box i{
     font-size:32px;
-    color:#38bdf8;
+    color:var(--stamp);
     margin-bottom:12px;
 }
 
 .stat-box h2{
+    font-family:var(--serif);
     font-size:24px;
+    font-weight:600;
+    color:var(--ink);
     margin-bottom:8px;
 }
 
 .stat-box p{
-    color:#94a3b8;
+    color:var(--ink-soft);
     font-size:14px;
 }
 
@@ -259,12 +282,15 @@ body{
 }
 
 .content-section h2{
+    font-family:var(--serif);
     font-size:30px;
+    font-weight:700;
+    color:var(--ink);
     margin-bottom:20px;
 }
 
 .content-section p{
-    color:#cbd5e1;
+    color:var(--ink-soft);
     line-height:1.9;
     margin-bottom:18px;
 }
@@ -279,93 +305,133 @@ body{
 }
 
 .feature-card{
-    background:rgba(255,255,255,0.04);
+    background:var(--paper-raised);
     padding:25px;
     border-radius:20px;
-    border:1px solid rgba(255,255,255,0.05);
+    border:1px solid var(--line);
     transition:0.3s;
 }
 
 .feature-card:hover{
     transform:translateY(-5px);
+    box-shadow:var(--shadow);
 }
 
 .feature-card i{
     font-size:28px;
-    color:#38bdf8;
+    color:var(--stamp);
     margin-bottom:15px;
 }
 
 .feature-card h3{
+    font-family:var(--serif);
+    font-weight:600;
+    color:var(--ink);
     margin-bottom:10px;
     font-size:20px;
 }
 
 .feature-card p{
-    color:#94a3b8;
+    color:var(--ink-soft);
     line-height:1.7;
 }
 
-/* FOOTER */
-
+/* ============ FOOTER (same as Merge / Compress pages) ============ */
 .footer{
-    margin-top:60px;
-    padding:40px 20px;
-    border-top:1px solid rgba(255,255,255,0.08);
+  background:var(--ink);
+  color:#dfe6f2;
+  margin-top:60px;
+  padding:56px 20px 26px;
 }
-
 .footer-container{
-    max-width:1100px;
-    margin:auto;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
-    flex-wrap:wrap;
+  max-width:1180px;
+  margin-inline:auto;
 }
-
-.footer-left{
-    display:flex;
-    align-items:center;
-    gap:15px;
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr;
+  gap:36px;
+  padding-bottom:32px;
+  border-bottom:1px solid rgba(255,255,255,0.12);
 }
-
-.footer-left img{
-    width:50px;
-    height:50px;
-    border-radius:12px;
+@media (max-width:760px){
+  .footer-grid{grid-template-columns:1fr;}
 }
-
-.footer-text h3{
-    margin-bottom:4px;
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
 }
-
-.footer-text p{
-    color:#94a3b8;
-    font-size:14px;
+.footer-brand img{
+  width:44px; height:44px;
+  border-radius:12px;
+  object-fit:cover;
+  flex-shrink:0;
 }
-
+.footer-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.1rem;
+  color:#fff;
+}
+.footer-subtitle{
+  font-size:0.78rem;
+  color:#9fb0cc;
+}
+.footer-text{
+  font-size:0.88rem;
+  color:#9fb0cc;
+  max-width:34ch;
+}
+.footer-links h3,
+.footer-right h3{
+  font-size:0.8rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:#8494b5;
+  margin-bottom:16px;
+  font-weight:600;
+}
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+.footer-links a{
+  font-size:0.92rem;
+  color:#c8d2e6;
+  width:fit-content;
+  transition:color .2s ease;
+}
+.footer-links a:hover{color:#fff;}
+.footer-right .developer{
+  font-size:0.9rem;
+  color:#c8d2e6;
+  margin-bottom:16px;
+}
 .footer-social{
-    display:flex;
-    gap:12px;
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
 }
-
 .footer-social a{
-    width:42px;
-    height:42px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:12px;
-    background:rgba(255,255,255,0.06);
-    color:white;
-    text-decoration:none;
-    transition:0.3s;
+  width:38px; height:38px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
 }
-
 .footer-social a:hover{
-    background:#38bdf8;
-    color:#0f172a;
+  background:var(--stamp);
+  border-color:var(--stamp);
+  transform:translateY(-3px);
+}
+.copyright{
+  font-size:0.8rem;
+  color:#8494b5;
+  line-height:1.6;
 }
 
 /* =========================
@@ -389,29 +455,6 @@ body{
 
 @media(max-width:768px){
 
-    .mobile-menu{
-        display:block;
-    }
-
-    .nav-links{
-        position:absolute;
-        top:85px;
-        right:20px;
-        width:220px;
-        background:#111827;
-        border-radius:18px;
-        padding:22px;
-        display:none;
-        flex-direction:column;
-        align-items:flex-start;
-        gap:18px;
-        box-shadow:0 20px 40px rgba(0,0,0,0.45);
-    }
-
-    .nav-links.active{
-        display:flex;
-    }
-
     .about-card{
         padding:30px 22px;
     }
@@ -428,32 +471,6 @@ body{
     .content-section h2{
         font-size:24px;
     }
-
-    .footer-container{
-        flex-direction:column;
-        text-align:center;
-    }
-
-    .footer-left{
-        flex-direction:column;
-    }
-
-    .nav-container{
-        padding:14px 16px;
-    }
-
-    .logo-title{
-        font-size:17px;
-    }
-
-    .logo-subtitle{
-        font-size:11px;
-    }
-
-    .back-btn{
-        width:42px;
-        height:42px;
-    }
 }
 
 </style>
@@ -464,72 +481,32 @@ body{
 
 <!-- NAVBAR -->
 <nav class="navbar">
-
     <div class="nav-container">
 
-        <!-- LEFT -->
-        <div class="nav-left">
-
-            <!-- BACK BUTTON -->
-            <a href="index.html" class="back-btn">
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
-
-            <!-- LOGO -->
-            <div class="logo-wrapper">
-
-                <div class="logo-box">
-
-                    <img 
-                    src="images/logo.png"
-                    alt="Logo"
-                    class="logo-image"
-                    >
-
-                </div>
-
-                <div>
-
-                    <h2 class="logo-title">
-                        mY LOve pDf
-                    </h2>
-
-                    <p class="logo-subtitle">
-                        Professional PDF Toolkit
-                    </p>
-
-                </div>
-
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image" alt="Logo">
             </div>
 
+            <div>
+                <h2 class="logo-title">mY LOve pDf</h2>
+                <p class="logo-subtitle">Professional PDF Toolkit</p>
+            </div>
         </div>
 
-        <!-- NAV LINKS -->
-        <div class="nav-links">
-
-            <a href="index.html" class="nav-link">
-                Home
-            </a>
-
-            <a href="about.html" class="nav-link">
-                About
-            </a>
-
-            <a href="contact.html" class="nav-link">
-                Contact
-            </a>
-
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="compress.html" class="nav-link">Merge Pdf</a>
+            <a href="compress.html" class="nav-link">Compress Pdf</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+            <a href="about.html" class="nav-link current">About</a>
         </div>
 
-        <!-- MOBILE MENU -->
-        <button class="mobile-menu">
-
+        <button class="mobile-menu" id="mobileMenuBtn">
             <i class="fa-solid fa-bars"></i>
-
         </button>
 
     </div>
-
 </nav>
 
 <!-- HERO -->
@@ -653,14 +630,14 @@ body{
 
                 <div class="feature-card">
 
-                    <i class="fa-solid fa-github"></i>
+                    <i class="fa-solid fa-compress"></i>
 
                     <h3>
-                        Easy to use
+                        Compress PDFs
                     </h3>
 
                     <p>
-                        Easy to use and while maintaining excellent quality and performance.
+                        Shrink file sizes to a target size while keeping quality intact.
                     </p>
 
                 </div>
@@ -701,49 +678,54 @@ body{
 
 </section>
 
-<!-- FOOTER -->
+<!-- FOOTER (same as Merge / Compress pages) -->
 <footer class="footer">
 
     <div class="footer-container">
 
-        <div class="footer-left">
+        <div class="footer-grid">
 
-            <img 
-            src="images/logo.png"
-            alt="Logo"
-            >
+            <!-- LEFT -->
+            <div class="footer-left">
 
-            <div class="footer-text">
+                <div class="footer-brand">
+                    <img src="images/logo.png" alt="Logo">
+                    <div>
+                        <h2 class="footer-title">mY LOve pDf</h2>
+                        <p class="footer-subtitle">Fast PDF Toolkit</p>
+                    </div>
+                </div>
 
-                <h3>
-                    mY LOve pDf
-                </h3>
-
-                <p>
-                    Designed & Developed By Vikshant
+                <p class="footer-text">
+                    Fast, secure and modern PDF tools that work directly in your browser.
                 </p>
 
             </div>
 
-        </div>
+            <!-- LINKS -->
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                <a href="merge.html">Merge Pdf</a>
+                <a href="compress.html">Compress Pdf</a>
+                <a href="contact.html">Contact</a>
+            </div>
 
-        <div class="footer-social">
+            <!-- RIGHT -->
+            <div class="footer-right">
 
-            <a href="not.html">
-                <i class="fa-brands fa-facebook-f"></i>
-            </a>
+                <h3>Developer</h3>
+                <p class="developer">Designed & Developed by Vikshant Kralta</p>
 
-            <a href="not.html">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
+                <div class="footer-social">
+                    <a href="not.html"><i class="fab fa-facebook"></i></a>
+                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
+                    <a href="not.html"><i class="fab fa-instagram"></i></a>
+                </div>
 
-            <a href="not.html">
-                <i class="fa-brands fa-twitter"></i>
-            </a>
+                <p class="copyright">© 2026 All Rights Reserved <br> Last Updated on: July 17,  2026</p>
 
-            <a href="not.html">
-                <i class="fa-brands fa-github"></i>
-            </a>
+            </div>
 
         </div>
 
@@ -754,14 +736,11 @@ body{
 <!-- JS -->
 <script>
 
-const mobileMenu = document.querySelector(".mobile-menu");
-const navLinks = document.querySelector(".nav-links");
-
-mobileMenu.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('active');
 });
 
 </script>
 
 </body>
-</html>
+                       </html>
