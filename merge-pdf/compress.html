@@ -5,14 +5,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Smart PDF Compressor</title>
+<title>Smart PDF Compressor - mY LOve pDf</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
 <style>
+
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --success:#10b981;
+  --success-dark:#0e9c6f;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+}
 
 *{
 margin:0;
@@ -21,9 +37,12 @@ box-sizing:border-box;
 }
 
 body{
-font-family:Poppins,sans-serif;
-background:#0f172a;
-color:white;
+font-family:var(--sans);
+background:
+  radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+  radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+  var(--paper);
+color:var(--ink);
 padding:20px;
 }
 
@@ -34,20 +53,23 @@ margin:auto;
 
 .title{
 text-align:center;
+font-family:var(--serif);
 font-size:42px;
 font-weight:700;
+color:var(--ink);
 margin-bottom:10px;
+margin-top:20px;
 }
 
 .subtitle{
 text-align:center;
-color:#94a3b8;
+color:var(--ink-soft);
 margin-bottom:35px;
 }
 
 .upload-box{
-background:#111827;
-border:2px dashed #3b82f6;
+background:var(--paper-raised);
+border:2px dashed var(--stamp);
 border-radius:24px;
 min-height:240px;
 display:flex;
@@ -58,11 +80,13 @@ text-align:center;
 cursor:pointer;
 transition:.3s;
 padding:20px;
+box-shadow:var(--shadow);
 }
 
 .upload-box:hover,
 .upload-box.active{
-background:#172554;
+background:rgba(37,99,235,0.06);
+border-color:var(--stamp-dark);
 }
 
 .upload-icon{
@@ -71,12 +95,15 @@ margin-bottom:15px;
 }
 
 .upload-box h2{
-font-size:30px;
+font-family:var(--serif);
+font-size:28px;
+font-weight:600;
+color:var(--ink);
 margin-bottom:10px;
 }
 
 .upload-box p{
-color:#94a3b8;
+color:var(--ink-soft);
 }
 
 input[type=file]{
@@ -91,25 +118,38 @@ gap:20px;
 }
 
 .card{
-background:#111827;
+background:var(--paper-raised);
+border:1px solid var(--line);
 padding:20px;
 border-radius:18px;
+box-shadow:var(--shadow);
 }
 
 .card label{
 display:block;
 margin-bottom:10px;
 font-weight:600;
+color:var(--ink);
+font-size:0.92rem;
 }
 
 .card input,
 .card select{
 width:100%;
 padding:14px;
-border:none;
+border:1px solid var(--line);
 border-radius:12px;
-background:#1e293b;
-color:white;
+background:#fff;
+color:var(--ink);
+font-size:0.95rem;
+transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.card input:focus,
+.card select:focus{
+outline:none;
+border-color:var(--stamp);
+box-shadow:0 0 0 3px rgba(37,99,235,0.15);
 }
 
 .files{
@@ -120,7 +160,8 @@ gap:20px;
 }
 
 .file-card{
-background:#111827;
+background:var(--paper-raised);
+border:1px solid var(--line);
 padding:25px;
 border-radius:24px;
 display:flex;
@@ -128,14 +169,17 @@ flex-wrap:wrap;
 gap:20px;
 align-items:center;
 justify-content:space-between;
+box-shadow:var(--shadow);
 }
 
 .preview{
 width:100px;
 height:130px;
-background:#1e293b;
+background:#fff;
+border:1px solid var(--line);
 border-radius:14px;
 overflow:hidden;
+flex-shrink:0;
 }
 
 .preview canvas{
@@ -151,6 +195,7 @@ min-width:220px;
 .file-name{
 font-size:18px;
 font-weight:600;
+color:var(--ink);
 margin-bottom:10px;
 word-break:break-word;
 }
@@ -159,17 +204,24 @@ word-break:break-word;
 .target,
 .final-size{
 font-size:14px;
-color:#94a3b8;
+color:var(--ink-soft);
 margin-bottom:5px;
 }
 
 .rename{
 padding:14px;
 width:220px;
-border:none;
+border:1px solid var(--line);
 border-radius:12px;
-background:#1e293b;
-color:white;
+background:#fff;
+color:var(--ink);
+font-size:0.9rem;
+}
+
+.rename:focus{
+outline:none;
+border-color:var(--stamp);
+box-shadow:0 0 0 3px rgba(37,99,235,0.15);
 }
 
 .btn{
@@ -178,24 +230,30 @@ border:none;
 border-radius:14px;
 font-weight:600;
 cursor:pointer;
+transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
 }
 
 .compress-btn{
-background:#2563eb;
+background:var(--stamp);
 color:white;
+box-shadow:0 4px 0 var(--stamp-dark);
 }
+.compress-btn:hover{transform:translateY(-2px);}
+.compress-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark);}
 
 .download-btn{
-background:#10b981;
+background:var(--success);
 color:white;
 text-decoration:none;
 display:none;
+box-shadow:0 4px 0 var(--success-dark);
 }
+.download-btn:hover{transform:translateY(-2px);}
 
 .progress{
 width:100%;
 height:10px;
-background:#1e293b;
+background:var(--line);
 border-radius:20px;
 overflow:hidden;
 margin-top:15px;
@@ -204,15 +262,15 @@ margin-top:15px;
 .progress-bar{
 height:100%;
 width:0%;
-background:linear-gradient(to right,#3b82f6,#60a5fa);
+background:linear-gradient(to right,var(--stamp),var(--teal));
 transition:.3s;
 }
 
 .loader{
 width:28px;
 height:28px;
-border:4px solid rgba(255,255,255,.2);
-border-top:4px solid white;
+border:4px solid rgba(37,99,235,.15);
+border-top:4px solid var(--stamp);
 border-radius:50%;
 animation:spin 1s linear infinite;
 display:none;
@@ -682,8 +740,7 @@ setTimeout(resolve,3000)
 
 loader.style.display = 'none';
 
-downloadBtn.style.display =
-'inline-block';
+downloadBtn.style.display = 'inline-block';
 
 downloadBtn.href = url;
 
