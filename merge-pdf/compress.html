@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/logo.png">
-<meta name="description" content="Professional online PDF tools website to conpress and  manage PDFs easily.">
+<meta name="description" content="Professional online PDF tools website to compress and manage PDFs easily.">
 
 <meta name="keywords" content="My love pdf, PDF Tools, Compress PDF, Online PDF Tools">
 
@@ -17,8 +17,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 <style>
 
 :root{
@@ -50,11 +53,12 @@ background:
   radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
   var(--paper);
 color:var(--ink);
-padding:20px;
 }
 
+a{ text-decoration:none; color:inherit; }
 
-  .navbar{
+/* ============ NAVBAR ============ */
+.navbar{
   position:sticky; top:0; z-index:100;
   background:rgba(237,242,249,0.85);
   backdrop-filter:blur(10px);
@@ -136,6 +140,9 @@ padding:20px;
   color:var(--ink);
   font-size:1.1rem;
   flex-shrink:0;
+  border:none;
+  background:none;
+  cursor:pointer;
 }
 .mobile-menu:hover{background:rgba(37,99,235,0.08);}
 
@@ -161,10 +168,12 @@ padding:20px;
   .mobile-menu{display:flex;}
   .logo-subtitle{display:none;}
 }
-  
+
+/* ============ PAGE CONTENT ============ */
 .container{
 max-width:1100px;
 margin:auto;
+padding:20px;
 }
 
 .title{
@@ -415,9 +424,136 @@ font-size:32px;
 
 }
 
+/* ============ FOOTER ============ */
+.footer{
+  background:var(--ink);
+  color:#dfe6f2;
+  margin-top:60px;
+  padding:56px 20px 26px;
+}
+.footer-container{
+  max-width:1180px;
+  margin-inline:auto;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr;
+  gap:36px;
+  padding-bottom:32px;
+  border-bottom:1px solid rgba(255,255,255,0.12);
+}
+@media (max-width:760px){
+  .footer-grid{grid-template-columns:1fr;}
+}
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+.footer-brand img{
+  width:44px; height:44px;
+  border-radius:12px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+.footer-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.1rem;
+  color:#fff;
+}
+.footer-subtitle{
+  font-size:0.78rem;
+  color:#9fb0cc;
+}
+.footer-text{
+  font-size:0.88rem;
+  color:#9fb0cc;
+  max-width:34ch;
+}
+.footer-links h3,
+.footer-right h3{
+  font-size:0.8rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:#8494b5;
+  margin-bottom:16px;
+  font-weight:600;
+}
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+.footer-links a{
+  font-size:0.92rem;
+  color:#c8d2e6;
+  width:fit-content;
+  transition:color .2s ease;
+}
+.footer-links a:hover{color:#fff;}
+.footer-right .developer{
+  font-size:0.9rem;
+  color:#c8d2e6;
+  margin-bottom:16px;
+}
+.footer-social{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.footer-social a{
+  width:38px; height:38px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.footer-social a:hover{
+  background:var(--stamp);
+  border-color:var(--stamp);
+  transform:translateY(-3px);
+}
+.copyright{
+  font-size:0.8rem;
+  color:#8494b5;
+  line-height:1.6;
+}
+
 </style>
 </head>
 <body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image">
+            </div>
+
+            <div>
+                <h2 class="logo-title">mY LOve pDf</h2>
+                <p class="logo-subtitle">Compress Your PDF's Easily</p>
+            </div>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link">Merge Pdf</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+            <a href="about.html" class="nav-link">About</a>
+        </div>
+
+        <button class="mobile-menu" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
+</nav>
 
 <div class="container">
 
@@ -487,7 +623,66 @@ value="500">
 
 </div>
 
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-grid">
+
+            <!-- LEFT -->
+            <div class="footer-left">
+
+                <div class="footer-brand">
+                    <img src="images/logo.png">
+                    <div>
+                        <h2 class="footer-title">mY LOve pDf</h2>
+                        <p class="footer-subtitle">Fast PDF Toolkit</p>
+                    </div>
+                </div>
+
+                <p class="footer-text">
+                    Fast, secure and modern PDF tools for compressing directly in your browser.
+                </p>
+
+            </div>
+
+            <!-- LINKS -->
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                <a href="merge.html">Merge Pdf</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html">About</a>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="footer-right">
+
+                <h3>Developer</h3>
+                <p class="developer">Designed & Developed by Vikshant Kralta</p>
+
+                <div class="footer-social">
+                    <a href="not.html"><i class="fab fa-facebook"></i></a>
+                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
+                    <a href="not.html"><i class="fab fa-instagram"></i></a>
+                </div>
+
+                <p class="copyright">© 2026 All Rights Reserved <br> Last Updated on: July 17, 2026</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
 <script>
+
+/* Mobile navbar toggle */
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
