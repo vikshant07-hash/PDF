@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png">
+<meta name="description" content="Browse all PDFBoon PDF tools organized by category — compress, merge, split, convert and lock PDFs, free and secure in your browser.">
+
+<meta name="keywords" content="Pdfboon, All PDF Tools, PDF Tools List, Online PDF Tools">
+
+<meta name="author" content="Vikshant Kralta">
+
+<meta name="robots" content="index, follow">
+
+<title>All Tools - PDFBoon</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --success:#10b981;
+  --success-dark:#0e9c6f;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+  --violet:#7c3aed;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:var(--sans);
+background:
+  radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+  radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+  var(--paper);
+color:var(--ink);
+}
+
+a{ text-decoration:none; color:inherit; }
+
+/* ============ NAVBAR ============ */
+.navbar{
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-container{
+  max-width:1180px;
+  margin-inline:auto;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:nowrap;
+}
+.logo-wrapper{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.logo-box{
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  flex-shrink:0;
+}
+.logo-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.logo-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.15rem;
+  color:var(--ink);
+  line-height:1.2;
+  white-space:nowrap;
+}
+.logo-subtitle{
+  font-size:0.75rem;
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:26px;
+}
+.nav-link{
+  position:relative;
+  font-size:0.94rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  padding:6px 2px;
+  transition:color .2s ease;
+  white-space:nowrap;
+}
+.nav-link::after{
+  content:"";
+  position:absolute; left:0; bottom:0;
+  width:0; height:2px;
+  background:var(--stamp);
+  transition:width .25s ease;
+}
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
+.nav-link.active-link{color:var(--ink);}
+.nav-link.active-link::after{width:100%;}
+.mobile-menu{
+  display:none;
+  width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border-radius:8px;
+  color:var(--ink);
+  font-size:1.1rem;
+  flex-shrink:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+}
+.mobile-menu:hover{background:rgba(37,99,235,0.08);}
+
+@media (max-width:920px){
+  .nav-links{
+    position:fixed;
+    inset:70px 0 auto 0;
+    flex-direction:column;
+    align-items:flex-start;
+    background:var(--paper-raised);
+    padding:20px 24px;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateY(-130%);
+    opacity:0;
+    transition:transform .3s ease, opacity .3s ease;
+  }
+  .nav-links.active{
+    transform:translateY(0);
+    opacity:1;
+  }
+  .mobile-menu{display:flex;}
+  .logo-subtitle{display:none;}
+}
+
+
+  /* ============ NAV DROPDOWN ============ */
+.nav-item{
+  position:relative;
+}
+
+.dropdown-toggle{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:none;
+  border:none;
+  font-family:var(--sans);
+  cursor:pointer;
+}
+
+.dropdown-arrow{
+  font-size:0.7rem;
+  transition:transform .2s ease;
+}
+
+.nav-item.open .dropdown-arrow{
+  transform:rotate(180deg);
+}
+
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 14px);
+  left:50%;
+  transform:translateX(-50%) translateY(8px);
+  min-width:230px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease, visibility .18s ease;
+  z-index:200;
+}
+
+.nav-item.open .dropdown-menu{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateX(-50%) translateY(0);
+}
+
+.dropdown-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:10px;
+  font-size:0.88rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  transition:background .15s ease, color .15s ease;
+  white-space:nowrap;
+}
+
+.dropdown-link i{
+  width:16px;
+  text-align:center;
+  color:var(--stamp);
+  font-size:0.85rem;
+}
+
+.dropdown-link:hover{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+}
+
+.dropdown-link.active{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+  font-weight:700;
+}
+
+.dropdown-link.view-all{
+  margin-top:4px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  border-radius:10px;
+  font-weight:600;
+  color:var(--stamp);
+}
+
+.dropdown-link.view-all i{color:var(--stamp);}
+
+@media (max-width:920px){
+
+  .nav-item{width:100%;}
+
+  .dropdown-toggle{
+    width:100%;
+    justify-content:space-between;
+    font-size:0.94rem;
+    font-weight:500;
+    color:var(--ink-soft);
+    padding:6px 2px;
+  }
+
+  .dropdown-menu{
+    position:static;
+    transform:none;
+    min-width:0;
+    width:100%;
+    box-shadow:none;
+    border:none;
+    background:rgba(37,99,235,0.04);
+    margin-top:6px;
+    padding:6px;
+    max-height:0;
+    overflow:hidden;
+    display:flex;
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transition:max-height .25s ease;
+  }
+
+  .nav-item.open .dropdown-menu{
+    max-height:400px;
+  }
+
+}
+
+/* ============ PAGE HEADER ============ */
+.container{
+max-width:1180px;
+margin:auto;
+padding:20px;
+}
+
+.title{
+text-align:center;
+font-family:var(--serif);
+font-size:42px;
+font-weight:700;
+color:var(--ink);
+margin-bottom:10px;
+margin-top:20px;
+}
+
+.subtitle{
+text-align:center;
+color:var(--ink-soft);
+margin-bottom:30px;
+}
+
+/* ============ SEARCH BAR ============ */
+.search-wrap{
+max-width:560px;
+margin:0 auto 20px;
+position:relative;
+}
+
+.search-wrap i.search-icon{
+position:absolute;
+left:20px;
+top:50%;
+transform:translateY(-50%);
+color:var(--ink-soft);
+font-size:1rem;
+}
+
+.search-wrap input{
+width:100%;
+padding:17px 20px 17px 50px;
+border-radius:16px;
+border:1px solid var(--line);
+background:var(--paper-raised);
+color:var(--ink);
+font-size:1rem;
+box-shadow:var(--shadow);
+transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.search-wrap input:focus{
+outline:none;
+border-color:var(--stamp);
+box-shadow:0 0 0 4px rgba(37,99,235,0.15);
+}
+
+.search-wrap .clear-search{
+position:absolute;
+right:16px;
+top:50%;
+transform:translateY(-50%);
+background:none;
+border:none;
+color:var(--ink-soft);
+font-size:0.95rem;
+cursor:pointer;
+display:none;
+}
+
+.search-wrap .clear-search:hover{color:var(--danger);}
+
+.tool-count{
+text-align:center;
+font-size:0.85rem;
+color:var(--ink-soft);
+margin-bottom:40px;
+}
+
+.tool-count strong{color:var(--stamp);}
+
+/* ============ CATEGORY FILTER PILLS ============ */
+.filter-row{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:44px;
+}
+
+.filter-pill{
+padding:10px 20px;
+border-radius:100px;
+border:1px solid var(--line);
+background:var(--paper-raised);
+color:var(--ink-soft);
+font-weight:600;
+font-size:0.85rem;
+cursor:pointer;
+transition:.2s;
+box-shadow:var(--shadow);
+}
+
+.filter-pill:hover{
+border-color:var(--stamp);
+color:var(--stamp);
+}
+
+.filter-pill.active{
+background:var(--stamp);
+color:#fff;
+border-color:var(--stamp);
+}
+
+/* ============ CATEGORY SECTIONS ============ */
+.category{
+margin-bottom:48px;
+}
+
+.category-head{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:20px;
+}
+
+.category-icon{
+width:44px;
+height:44px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:1.15rem;
+color:#fff;
+flex-shrink:0;
+box-shadow:var(--shadow);
+}
+
+.category-info h2{
+font-family:var(--serif);
+font-size:1.4rem;
+font-weight:700;
+color:var(--ink);
+}
+
+.category-info p{
+font-size:0.85rem;
+color:var(--ink-soft);
+margin-top:2px;
+}
+
+.tools-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+/* ============ TOOL CARD ============ */
+.tool-card{
+background:var(--paper-raised);
+border:1px solid var(--line);
+border-radius:20px;
+padding:26px;
+box-shadow:var(--shadow);
+transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+display:flex;
+flex-direction:column;
+gap:14px;
+position:relative;
+overflow:hidden;
+}
+
+.tool-card:hover{
+transform:translateY(-4px);
+border-color:var(--stamp);
+box-shadow:0 16px 34px rgba(13,37,69,0.14);
+}
+
+.tool-card .badge-new{
+position:absolute;
+top:16px;
+right:16px;
+background:var(--success);
+color:#fff;
+font-size:0.65rem;
+font-weight:700;
+padding:4px 10px;
+border-radius:100px;
+letter-spacing:0.03em;
+text-transform:uppercase;
+}
+
+.tool-icon{
+width:52px;
+height:52px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:1.35rem;
+color:#fff;
+box-shadow:0 6px 14px rgba(13,37,69,0.15);
+}
+
+.tool-card h3{
+font-family:var(--serif);
+font-size:1.15rem;
+font-weight:700;
+color:var(--ink);
+}
+
+.tool-card p{
+font-size:0.86rem;
+color:var(--ink-soft);
+line-height:1.5;
+flex:1;
+}
+
+.tool-open{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+padding:12px 18px;
+border-radius:12px;
+background:var(--stamp);
+color:#fff;
+font-weight:600;
+font-size:0.88rem;
+box-shadow:0 4px 0 var(--stamp-dark);
+transition:transform .15s ease;
+}
+
+.tool-open:hover{transform:translateY(-2px);}
+.tool-open:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+
+.tool-open.soon{
+background:var(--line);
+color:var(--ink-soft);
+box-shadow:none;
+cursor:default;
+pointer-events:none;
+}
+
+/* ============ NO RESULTS ============ */
+.no-results{
+display:none;
+text-align:center;
+padding:60px 20px;
+}
+
+.no-results i{
+font-size:48px;
+color:var(--line);
+margin-bottom:16px;
+}
+
+.no-results h3{
+font-family:var(--serif);
+font-size:1.3rem;
+margin-bottom:8px;
+}
+
+.no-results p{
+color:var(--ink-soft);
+}
+
+.hidden-card{display:none !important;}
+.hidden-category{display:none !important;}
+
+@media(max-width:768px){
+
+.title{
+font-size:32px;
+}
+
+}
+
+/* ============ FOOTER ============ */
+.footer{
+  background:var(--ink);
+  color:#dfe6f2;
+  margin-top:60px;
+  padding:56px 20px 26px;
+}
+.footer-container{
+  max-width:1180px;
+  margin-inline:auto;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr;
+  gap:36px;
+  padding-bottom:32px;
+  border-bottom:1px solid rgba(255,255,255,0.12);
+}
+@media (max-width:760px){
+  .footer-grid{grid-template-columns:1fr;}
+}
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+.footer-brand img{
+  width:44px; height:44px;
+  border-radius:12px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+.footer-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.1rem;
+  color:#fff;
+}
+.footer-subtitle{
+  font-size:0.78rem;
+  color:#9fb0cc;
+}
+.footer-text{
+  font-size:0.88rem;
+  color:#9fb0cc;
+  max-width:34ch;
+}
+.footer-links h3,
+.footer-right h3{
+  font-size:0.8rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:#8494b5;
+  margin-bottom:16px;
+  font-weight:600;
+}
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+.footer-links a{
+  font-size:0.92rem;
+  color:#c8d2e6;
+  width:fit-content;
+  transition:color .2s ease;
+}
+.footer-links a:hover{color:#fff;}
+.footer-right .developer{
+  font-size:0.9rem;
+  color:#c8d2e6;
+  margin-bottom:16px;
+}
+.footer-social{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.footer-social a{
+  width:38px; height:38px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.footer-social a:hover{
+  background:var(--stamp);
+  border-color:var(--stamp);
+  transform:translateY(-3px);
+}
+.copyright{
+  font-size:0.8rem;
+  color:#8494b5;
+  line-height:1.6;
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image">
+            </div>
+
+            <div>
+                <h2 class="logo-title">PDFBoon</h2>
+
+            </div>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+    <a href="index.html" class="nav-link">Home</a>
+
+    <div class="nav-item" id="toolsDropdown">
+        <button class="nav-link dropdown-toggle active-link" id="toolsToggle" type="button">
+            All Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+        </button>
+        <div class="dropdown-menu">
+            <a href="index.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+            <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+            <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+            <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+            <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+            <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+        </div>
+    </div>
+
+    <a href="contact.html" class="nav-link">Contact</a>
+    <a href="about.html" class="nav-link">About</a>
+        </div>
+
+        <button class="mobile-menu" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
+</nav>
+
+<div class="container">
+
+<h1 class="title">All PDF Tools</h1>
+<p class="subtitle">Easy, Secure & Professional</p>
+
+<div class="search-wrap">
+<i class="fa-solid fa-magnifying-glass search-icon"></i>
+<input type="text" id="searchInput" placeholder="Search tools, e.g. compress, merge, split...">
+<button class="clear-search" id="clearSearch"><i class="fa-solid fa-circle-xmark"></i></button>
+</div>
+
+<p class="tool-count" id="toolCount"></p>
+
+<div class="filter-row" id="filterRow">
+<div class="filter-pill active" data-filter="all">All Tools</div>
+<div class="filter-pill" data-filter="organize">Organize PDF</div>
+<div class="filter-pill" data-filter="optimize">Optimize PDF</div>
+<div class="filter-pill" data-filter="convert">Convert PDF</div>
+<div class="filter-pill" data-filter="security">Security</div>
+</div>
+
+<!-- ============ ORGANIZE PDF ============ -->
+<div class="category" data-category="organize">
+
+<div class="category-head">
+<div class="category-icon" style="background:var(--stamp);"><i class="fa-solid fa-layer-group"></i></div>
+<div class="category-info">
+<h2>Organize PDF</h2>
+<p>Insert, split arrange pages here</p>
+</div>
+</div>
+
+<div class="tools-grid">
+
+<div class="tool-card" data-name="merge pdf combine join files">
+<div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-object-group"></i></div>
+<h3>Merge PDF</h3>
+<p>Combine multiple Pdf files in single PDF</p>
+<a href="merge.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+
+<div class="tool-card" data-name="split pdf extract pages range">
+<div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-scissors"></i></div>
+<h3>Split PDF</h3>
+<p>Split Pdf through range, fixed intervals and manually in multiple files.</p>
+<a href="split.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+
+</div>
+</div>
+
+<!-- ============ OPTIMIZE PDF ============ -->
+<div class="category" data-category="optimize">
+
+<div class="category-head">
+<div class="category-icon" style="background:var(--teal);"><i class="fa-solid fa-gauge-high"></i></div>
+<div class="category-info">
+<h2>Optimize PDF</h2>
+<p>Compress file size without losing quality.</p>
+</div>
+</div>
+
+<div class="tools-grid">
+
+<div class="tool-card" data-name="compress pdf reduce size smaller">
+<div class="tool-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);"><i class="fa-solid fa-file-zipper"></i></div>
+<h3>Compress PDF</h3>
+<p>Set targets and compress pdf file.</p>
+<a href="index.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+
+</div>
+</div>
+
+<!-- ============ CONVERT PDF ============ -->
+<div class="category" data-category="convert">
+
+<div class="category-head">
+<div class="category-icon" style="background:var(--violet);"><i class="fa-solid fa-arrows-rotate"></i></div>
+<div class="category-info">
+<h2>Convert PDF</h2>
+<p>Convert different format files in PDF, and PDF to other formats.</p>
+</div>
+</div>
+
+<div class="tools-grid">
+
+<div class="tool-card" data-name="image to pdf jpg png convert create">
+<div class="tool-icon" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);"><i class="fa-solid fa-images"></i></div>
+<h3>Image to PDF</h3>
+<p>Convert images into PDF file</p>
+<a href="create.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+
+<div class="tool-card" data-name="pdf to word doc editable convert coming soon">
+<span class="badge-new">Coming Soon</span>
+<div class="tool-icon" style="background:linear-gradient(135deg,#94a3b8,#64748b);"><i class="fa-solid fa-file-word"></i></div>
+<h3>PDF to Word</h3>
+<p>Convert PDF file into Word format and edit.</p>
+<a href="#" class="tool-open soon">Coming Soon</a>
+</div>
+
+</div>
+</div>
+
+<!-- ============ SECURITY ============ -->
+<div class="category" data-category="security">
+
+<div class="category-head">
+<div class="category-icon" style="background:var(--success-dark);"><i class="fa-solid fa-shield-halved"></i></div>
+<div class="category-info">
+<h2>Security</h2>
+<p>Protect PDF files</p>
+</div>
+</div>
+
+<div class="tools-grid">
+
+<div class="tool-card" data-name="lock pdf password protect encrypt aes">
+<div class="tool-icon" style="background:linear-gradient(135deg,#10b981,#0e9c6f);"><i class="fa-solid fa-lock"></i></div>
+<h3>Lock PDF</h3>
+<p>Protect Pdf file with AES password Protection.</p>
+<a href="lock.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+
+<div class="tool-card" data-name="unlock pdf remove password coming soon">
+<span class="badge-new">Coming Soon</span>
+<div class="tool-icon" style="background:linear-gradient(135deg,#94a3b8,#64748b);"><i class="fa-solid fa-lock-open"></i></div>
+<h3>Unlock PDF</h3>
+<p>Remove Password from encrypted pdf file</p>
+<a href="#" class="tool-open soon">Coming Soon</a>
+</div>
+
+</div>
+</div>
+
+<div class="no-results" id="noResults">
+<i class="fa-solid fa-magnifying-glass"></i>
+<h3>No tool found</h3>
+<p>Please try different keywords </p>
+</div>
+
+</div>
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-grid">
+
+            <!-- LEFT -->
+            <div class="footer-left">
+
+                <div class="footer-brand">
+                    <img src="images/logo.png">
+                    <div>
+                        <h2 class="footer-title">PDFBoon</h2>
+                        <p class="footer-subtitle">Fast PDF Toolkit</p>
+                    </div>
+                </div>
+
+                <p class="footer-text">
+                    Fast, secure and modern PDF tools that work directly in your browser.
+                </p>
+
+            </div>
+
+            <!-- LINKS -->
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="index.html">Home</a>
+                
+                <a href="create.html">IMG to PDF</a>
+                <a href="merge.html">Merge Pdf</a>
+                <a href="split.html">Split Pdf</a>
+                <a href="lock.html">Lock Pdf</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html">About</a>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="footer-right">
+
+                <h3>Developer</h3>
+                <p class="developer">Designed & Developed by Vikshant Kralta</p>
+
+                <div class="footer-social">
+                    <a href="not.html"><i class="fab fa-facebook"></i></a>
+                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
+                    <a href="not.html"><i class="fab fa-instagram"></i></a>
+                </div>
+
+                <p class="copyright">© 2026 All Rights Reserved by PDFBoon <br> Last Updated on: July 19, 2026</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+
+/* Mobile navbar toggle */
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
+
+const searchInput = document.getElementById('searchInput');
+const clearSearch = document.getElementById('clearSearch');
+const toolCount = document.getElementById('toolCount');
+const noResults = document.getElementById('noResults');
+const filterRow = document.getElementById('filterRow');
+
+const allCards = Array.from(document.querySelectorAll('.tool-card'));
+const allCategories = Array.from(document.querySelectorAll('.category'));
+
+let activeFilter = 'all';
+
+function updateCount(visible, total) {
+  toolCount.innerHTML = `<strong>${visible}</strong> of <strong>${total}</strong> tools shown`;
+}
+
+function applyFilters() {
+  const query = searchInput.value.trim().toLowerCase();
+  clearSearch.style.display = query ? 'block' : 'none';
+
+  let visibleCount = 0;
+
+  allCategories.forEach(cat => {
+    const catKey = cat.dataset.category;
+    let categoryHasVisible = false;
+
+    
+
+  const cards = cat.querySelectorAll('.tool-card');
+
+    cards.forEach(card => {
+      const name = card.dataset.name || '';
+      const title = card.querySelector('h3').textContent.toLowerCase();
+
+      const matchesSearch = !query || name.includes(query) || title.includes(query);
+      const matchesFilter = activeFilter === 'all' || activeFilter === catKey;
+
+      if (matchesSearch && matchesFilter) {
+        card.classList.remove('hidden-card');
+        categoryHasVisible = true;
+        visibleCount++;
+      } else {
+        card.classList.add('hidden-card');
+      }
+    });
+
+    if (categoryHasVisible) {
+      cat.classList.remove('hidden-category');
+    } else {
+      cat.classList.add('hidden-category');
+    }
+  });
+
+
+  /* All Tools dropdown */
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+  
+
+  updateCount(visibleCount, allCards.length);
+  noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', applyFilters);
+
+clearSearch.addEventListener('click', () => {
+  searchInput.value = '';
+  applyFilters();
+  searchInput.focus();
+});
+
+filterRow.addEventListener('click', (e) => {
+  const pill = e.target.closest('.filter-pill');
+  if (!pill) return;
+
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  activeFilter = pill.dataset.filter;
+
+  applyFilters();
+});
+
+applyFilters();
+
+</script>
+
+</body>
