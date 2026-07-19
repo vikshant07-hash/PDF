@@ -1009,7 +1009,8 @@ accept="application/pdf">
 
 
 
-
+<div class="permission-item">
+<div>
   <div class="label">Form Filling</div>
 <div class="desc">Allow to fill form fileds</div>
 </div>
@@ -1037,7 +1038,7 @@ accept="application/pdf">
 <div class="card rename-card">
 <label>Output File Name</label>
 <input type="text" id="renameInput" placeholder="File name">
-<small>.locked PDFBoon</small>
+<small>.Protected PDFBoon</small>
 </div>
 
 </div>
@@ -1293,11 +1294,11 @@ userPasswordInput.addEventListener('input', () => {
 
   if (!pwd) {
     pct = 0; label = 'Password strength';
-  } else if (score <= 1) {
+  } else if (score <= 4) {
     pct = 25; color = 'var(--danger)'; label = 'Weak password';
-  } else if (score <= 2) {
+  } else if (score <= 6) {
     pct = 50; color = 'var(--warn)'; label = 'Fair password';
-  } else if (score <= 3) {
+  } else if (score <= 8) {
     pct = 75; color = 'var(--teal)'; label = 'Good password';
   } else {
     pct = 100; color = 'var(--success)'; label = 'Strong password';
@@ -1379,8 +1380,8 @@ lockBtn.addEventListener('click', async () => {
     return;
   }
 
-  if (!userPwd || userPwd.length < 4) {
-    showError('Password must be minimum 4 characters');
+  if (!userPwd || userPwd.length < 6) {
+    showError('Password must be minimum 6 characters');
     return;
   }
 
@@ -1435,7 +1436,7 @@ lockBtn.addEventListener('click', async () => {
     console.error(err);
     loader.style.display = 'none';
     lockBtn.disabled = false;
-    showError('Oops! Somthing went wrong.');
+    showError('Oops! Something went wrong.');
   }
 });
 
