@@ -7,7 +7,7 @@
 <link rel="icon" href="images/logo.png">
 <meta name="description" content="Browse all PDFBoon PDF tools organized by category — compress, merge, split, convert and lock PDFs, free and secure in your browser.">
 
-<meta name="keywords" content="Pdfboon, All PDF Tools, PDF Tools List, Online PDF Tools">
+<meta name="keywords" content="Pdfboon, All PDF Tools, PDF Tools List, vikshant, vikshant kralta,Online PDF Tools">
 
 <meta name="author" content="Vikshant Kralta">
 
@@ -56,6 +56,12 @@ color:var(--ink);
 }
 
 a{ text-decoration:none; color:inherit; }
+
+.container{
+max-width:1180px;
+margin:auto;
+padding:0 20px;
+}
 
 /* ============ NAVBAR ============ */
 .navbar{
@@ -112,7 +118,7 @@ a{ text-decoration:none; color:inherit; }
 .nav-links{
   display:flex;
   align-items:center;
-  gap:26px;
+  gap:30px;
 }
 .nav-link{
   position:relative;
@@ -134,6 +140,35 @@ a{ text-decoration:none; color:inherit; }
 .nav-link:hover::after{width:100%;}
 .nav-link.active-link{color:var(--ink);}
 .nav-link.active-link::after{width:100%;}
+
+/* Tools button — professional standout look */
+.nav-tools-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--stamp);
+  color:#fff !important;
+  padding:10px 18px;
+  border-radius:12px;
+  font-size:0.9rem;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 0 var(--stamp-dark);
+  transition:transform .15s ease;
+  white-space:nowrap;
+  font-family:var(--sans);
+}
+.nav-tools-btn:hover{transform:translateY(-2px);}
+.nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+.nav-tools-btn .dropdown-arrow{
+  font-size:0.68rem;
+  transition:transform .2s ease;
+}
+.nav-item.open .nav-tools-btn .dropdown-arrow{
+  transform:rotate(180deg);
+}
+
 .mobile-menu{
   display:none;
   width:40px; height:40px;
@@ -169,59 +204,42 @@ a{ text-decoration:none; color:inherit; }
   }
   .mobile-menu{display:flex;}
   .logo-subtitle{display:none;}
+  .nav-tools-btn{width:100%; justify-content:space-between;}
 }
 
-
-  /* ============ NAV DROPDOWN ============ */
+/* ============ NAV TOOLS DROPDOWN ============ */
 .nav-item{
   position:relative;
-}
-
-.dropdown-toggle{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  background:none;
-  border:none;
-  font-family:var(--sans);
-  cursor:pointer;
-}
-
-.dropdown-arrow{
-  font-size:0.7rem;
-  transition:transform .2s ease;
-}
-
-.nav-item.open .dropdown-arrow{
-  transform:rotate(180deg);
 }
 
 .dropdown-menu{
   position:absolute;
   top:calc(100% + 14px);
   left:50%;
-  transform:translateX(-50%) translateY(8px);
-  min-width:230px;
+  transform:translateX(-50%);
+  min-width:250px;
   background:var(--paper-raised);
   border:1px solid var(--line);
   border-radius:16px;
   box-shadow:var(--shadow);
   padding:10px;
-  display:flex;
+  display:none;
   flex-direction:column;
   gap:4px;
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transition:opacity .18s ease, transform .18s ease, visibility .18s ease;
-  z-index:200;
+  z-index:999;
 }
 
 .nav-item.open .dropdown-menu{
-  opacity:1;
-  visibility:visible;
-  pointer-events:auto;
-  transform:translateX(-50%) translateY(0);
+  display:flex;
+}
+
+.dropdown-category{
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:10px 12px 4px;
 }
 
 .dropdown-link{
@@ -270,15 +288,6 @@ a{ text-decoration:none; color:inherit; }
 
   .nav-item{width:100%;}
 
-  .dropdown-toggle{
-    width:100%;
-    justify-content:space-between;
-    font-size:0.94rem;
-    font-weight:500;
-    color:var(--ink-soft);
-    padding:6px 2px;
-  }
-
   .dropdown-menu{
     position:static;
     transform:none;
@@ -287,25 +296,20 @@ a{ text-decoration:none; color:inherit; }
     box-shadow:none;
     border:none;
     background:rgba(37,99,235,0.04);
-    margin-top:6px;
+    margin-top:10px;
     padding:6px;
-    max-height:0;
-    overflow:hidden;
-    display:flex;
-    opacity:1;
-    visibility:visible;
-    pointer-events:auto;
-    transition:max-height .25s ease;
+    display:none;
+    flex-direction:column;
   }
 
   .nav-item.open .dropdown-menu{
-    max-height:400px;
+    display:flex;
   }
 
 }
 
 /* ============ PAGE HEADER ============ */
-.container{
+.page-wrap{
 max-width:1180px;
 margin:auto;
 padding:20px;
@@ -318,7 +322,7 @@ font-size:42px;
 font-weight:700;
 color:var(--ink);
 margin-bottom:10px;
-margin-top:20px;
+margin-top:26px;
 }
 
 .subtitle{
@@ -353,6 +357,7 @@ color:var(--ink);
 font-size:1rem;
 box-shadow:var(--shadow);
 transition:border-color .2s ease, box-shadow .2s ease;
+font-family:var(--sans);
 }
 
 .search-wrap input:focus{
@@ -391,7 +396,7 @@ display:flex;
 justify-content:center;
 flex-wrap:wrap;
 gap:10px;
-margin-bottom:44px;
+margin-bottom:48px;
 }
 
 .filter-pill{
@@ -403,13 +408,14 @@ color:var(--ink-soft);
 font-weight:600;
 font-size:0.85rem;
 cursor:pointer;
-transition:.2s;
+transition:transform .15s ease, border-color .2s ease, color .2s ease, background .2s ease;
 box-shadow:var(--shadow);
 }
 
 .filter-pill:hover{
 border-color:var(--stamp);
 color:var(--stamp);
+transform:translateY(-2px);
 }
 
 .filter-pill.active{
@@ -420,27 +426,33 @@ border-color:var(--stamp);
 
 /* ============ CATEGORY SECTIONS ============ */
 .category{
-margin-bottom:48px;
+margin-bottom:52px;
+animation:fadeIn .4s ease both;
+}
+
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
 }
 
 .category-head{
 display:flex;
 align-items:center;
 gap:14px;
-margin-bottom:20px;
+margin-bottom:22px;
 }
 
 .category-icon{
-width:44px;
-height:44px;
-border-radius:12px;
+width:46px;
+height:46px;
+border-radius:13px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:1.15rem;
+font-size:1.2rem;
 color:#fff;
 flex-shrink:0;
-box-shadow:var(--shadow);
+box-shadow:0 6px 16px rgba(13,37,69,0.18);
 }
 
 .category-info h2{
@@ -459,17 +471,17 @@ margin-top:2px;
 .tools-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
+gap:22px;
 }
 
 /* ============ TOOL CARD ============ */
 .tool-card{
 background:var(--paper-raised);
 border:1px solid var(--line);
-border-radius:20px;
-padding:26px;
+border-radius:22px;
+padding:28px;
 box-shadow:var(--shadow);
-transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;
 display:flex;
 flex-direction:column;
 gap:14px;
@@ -477,10 +489,25 @@ position:relative;
 overflow:hidden;
 }
 
+.tool-card::before{
+content:"";
+position:absolute;
+top:0; left:0; right:0;
+height:3px;
+background:linear-gradient(90deg, var(--stamp), var(--teal));
+transform:scaleX(0);
+transform-origin:left;
+transition:transform .35s ease;
+}
+
+.tool-card:hover::before{
+transform:scaleX(1);
+}
+
 .tool-card:hover{
-transform:translateY(-4px);
+transform:translateY(-6px);
 border-color:var(--stamp);
-box-shadow:0 16px 34px rgba(13,37,69,0.14);
+box-shadow:0 20px 40px rgba(13,37,69,0.16);
 }
 
 .tool-card .badge-new{
@@ -495,18 +522,32 @@ padding:4px 10px;
 border-radius:100px;
 letter-spacing:0.03em;
 text-transform:uppercase;
+z-index:2;
+}
+
+.tool-card.locked .badge-new{
+background:var(--warn);
 }
 
 .tool-icon{
-width:52px;
-height:52px;
-border-radius:14px;
+width:54px;
+height:54px;
+border-radius:15px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:1.35rem;
+font-size:1.4rem;
 color:#fff;
 box-shadow:0 6px 14px rgba(13,37,69,0.15);
+transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+.tool-card:hover .tool-icon{
+transform:scale(1.08) rotate(-4deg);
+}
+
+.tool-card.locked:hover .tool-icon{
+transform:none;
 }
 
 .tool-card h3{
@@ -535,18 +576,39 @@ color:#fff;
 font-weight:600;
 font-size:0.88rem;
 box-shadow:0 4px 0 var(--stamp-dark);
-transition:transform .15s ease;
+transition:transform .15s ease, box-shadow .15s ease;
+position:relative;
+overflow:hidden;
 }
+
+.tool-open i{transition:transform .25s ease;}
+
+.tool-open:hover i.fa-arrow-right{transform:translateX(4px);}
 
 .tool-open:hover{transform:translateY(-2px);}
 .tool-open:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
 
-.tool-open.soon{
-background:var(--line);
+/* Locked / Coming Soon state */
+.tool-card.locked{
+background:linear-gradient(180deg, var(--paper-raised), #eef2f9);
+}
+
+.tool-card.locked .tool-icon{
+background:linear-gradient(135deg,#94a3b8,#64748b) !important;
+filter:grayscale(0.15);
+}
+
+.tool-open.locked-btn{
+background:#e4eaf4;
 color:var(--ink-soft);
 box-shadow:none;
-cursor:default;
+cursor:not-allowed;
 pointer-events:none;
+border:1px dashed var(--line);
+}
+
+.tool-open.locked-btn i{
+color:var(--ink-soft);
 }
 
 /* ============ NO RESULTS ============ */
@@ -696,29 +758,38 @@ font-size:32px;
 
             <div>
                 <h2 class="logo-title">PDFBoon</h2>
-
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
             </div>
         </div>
 
         <div class="nav-links" id="navLinks">
-    <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link">Home</a>
 
-    <div class="nav-item" id="toolsDropdown">
-        <button class="nav-link dropdown-toggle active-link" id="toolsToggle" type="button">
-            All Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
-        </button>
-        <div class="dropdown-menu">
-            <a href="index.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
-            <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
-            <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
-            <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
-            <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
-            <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
-        </div>
-    </div>
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn active-link" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
 
-    <a href="contact.html" class="nav-link">Contact</a>
-    <a href="about.html" class="nav-link">About</a>
+                    <div class="dropdown-category">Organize PDF</div>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+
+                    <div class="dropdown-category">Optimize PDF</div>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+
+                    <div class="dropdown-category">Convert PDF</div>
+                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+
+                    <div class="dropdown-category">Security</div>
+                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+
+                    <a href="tools.html" class="dropdown-link view-all active"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
         </div>
 
         <button class="mobile-menu" id="mobileMenuBtn">
@@ -728,10 +799,10 @@ font-size:32px;
     </div>
 </nav>
 
-<div class="container">
+<div class="page-wrap">
 
 <h1 class="title">All PDF Tools</h1>
-<p class="subtitle">Easy, Secure & Professional</p>
+<p class="subtitle">Easy, Secure &amp; Professional</p>
 
 <div class="search-wrap">
 <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -756,7 +827,7 @@ font-size:32px;
 <div class="category-icon" style="background:var(--stamp);"><i class="fa-solid fa-layer-group"></i></div>
 <div class="category-info">
 <h2>Organize PDF</h2>
-<p>Insert, split arrange pages here</p>
+<p>Insert, split and arrange pages here</p>
 </div>
 </div>
 
@@ -765,14 +836,14 @@ font-size:32px;
 <div class="tool-card" data-name="merge pdf combine join files">
 <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-object-group"></i></div>
 <h3>Merge PDF</h3>
-<p>Combine multiple Pdf files in single PDF</p>
+<p>Combine multiple PDF files into a single organized document.</p>
 <a href="merge.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
 </div>
 
 <div class="tool-card" data-name="split pdf extract pages range">
 <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-scissors"></i></div>
 <h3>Split PDF</h3>
-<p>Split Pdf through range, fixed intervals and manually in multiple files.</p>
+<p>Split a PDF by range, fixed intervals, or manually into multiple files.</p>
 <a href="split.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
 </div>
 
@@ -786,7 +857,7 @@ font-size:32px;
 <div class="category-icon" style="background:var(--teal);"><i class="fa-solid fa-gauge-high"></i></div>
 <div class="category-info">
 <h2>Optimize PDF</h2>
-<p>Compress file size without losing quality.</p>
+<p>Compress file size without losing quality</p>
 </div>
 </div>
 
@@ -795,8 +866,8 @@ font-size:32px;
 <div class="tool-card" data-name="compress pdf reduce size smaller">
 <div class="tool-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);"><i class="fa-solid fa-file-zipper"></i></div>
 <h3>Compress PDF</h3>
-<p>Set targets and compress pdf file.</p>
-<a href="index.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+<p>Set a target size and compress your PDF file smartly.</p>
+<a href="compress.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
 </div>
 
 </div>
@@ -809,7 +880,7 @@ font-size:32px;
 <div class="category-icon" style="background:var(--violet);"><i class="fa-solid fa-arrows-rotate"></i></div>
 <div class="category-info">
 <h2>Convert PDF</h2>
-<p>Convert different format files in PDF, and PDF to other formats.</p>
+<p>Convert files to PDF, and PDF to other formats</p>
 </div>
 </div>
 
@@ -818,16 +889,16 @@ font-size:32px;
 <div class="tool-card" data-name="image to pdf jpg png convert create">
 <div class="tool-icon" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);"><i class="fa-solid fa-images"></i></div>
 <h3>Image to PDF</h3>
-<p>Convert images into PDF file</p>
+<p>Convert images into a clean, professional PDF file.</p>
 <a href="create.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
 </div>
 
-<div class="tool-card" data-name="pdf to word doc editable convert coming soon">
-<span class="badge-new">Coming Soon</span>
-<div class="tool-icon" style="background:linear-gradient(135deg,#94a3b8,#64748b);"><i class="fa-solid fa-file-word"></i></div>
+<div class="tool-card locked" data-name="pdf to word doc editable convert coming soon">
+<span class="badge-new"><i class="fa-solid fa-clock"></i> Coming Soon</span>
+<div class="tool-icon"><i class="fa-solid fa-file-word"></i></div>
 <h3>PDF to Word</h3>
-<p>Convert PDF file into Word format and edit.</p>
-<a href="#" class="tool-open soon">Coming Soon</a>
+<p>Convert a PDF file into an editable Word format.</p>
+<a href="#" class="tool-open locked-btn" onclick="return false;"><i class="fa-solid fa-lock"></i> Coming Soon</a>
 </div>
 
 </div>
@@ -840,7 +911,7 @@ font-size:32px;
 <div class="category-icon" style="background:var(--success-dark);"><i class="fa-solid fa-shield-halved"></i></div>
 <div class="category-info">
 <h2>Security</h2>
-<p>Protect PDF files</p>
+<p>Protect your PDF files</p>
 </div>
 </div>
 
@@ -849,16 +920,16 @@ font-size:32px;
 <div class="tool-card" data-name="lock pdf password protect encrypt aes">
 <div class="tool-icon" style="background:linear-gradient(135deg,#10b981,#0e9c6f);"><i class="fa-solid fa-lock"></i></div>
 <h3>Lock PDF</h3>
-<p>Protect Pdf file with AES password Protection.</p>
+<p>Protect a PDF file with real AES password encryption.</p>
 <a href="lock.html" class="tool-open">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
 </div>
 
-<div class="tool-card" data-name="unlock pdf remove password coming soon">
-<span class="badge-new">Coming Soon</span>
-<div class="tool-icon" style="background:linear-gradient(135deg,#94a3b8,#64748b);"><i class="fa-solid fa-lock-open"></i></div>
+<div class="tool-card locked" data-name="unlock pdf remove password coming soon">
+<span class="badge-new"><i class="fa-solid fa-clock"></i> Coming Soon</span>
+<div class="tool-icon"><i class="fa-solid fa-lock-open"></i></div>
 <h3>Unlock PDF</h3>
-<p>Remove Password from encrypted pdf file</p>
-<a href="#" class="tool-open soon">Coming Soon</a>
+<p>Remove the password from an encrypted PDF file.</p>
+<a href="#" class="tool-open locked-btn" onclick="return false;"><i class="fa-solid fa-lock"></i> Coming Soon</a>
 </div>
 
 </div>
@@ -867,7 +938,7 @@ font-size:32px;
 <div class="no-results" id="noResults">
 <i class="fa-solid fa-magnifying-glass"></i>
 <h3>No tool found</h3>
-<p>Please try different keywords </p>
+<p>Please try different keywords</p>
 </div>
 
 </div>
@@ -899,13 +970,14 @@ font-size:32px;
             <div class="footer-links">
                 <h3>Quick Links</h3>
                 <a href="index.html">Home</a>
-                
-                <a href="create.html">IMG to PDF</a>
-                <a href="merge.html">Merge Pdf</a>
-                <a href="split.html">Split Pdf</a>
-                <a href="lock.html">Lock Pdf</a>
-                <a href="contact.html">Contact</a>
+                <a href="tools.html">All Tools</a>
+                <a href="compress.html">Compress PDF</a>
+                <a href="merge.html">Merge PDF</a>
+                <a href="split.html">Split PDF</a>
+                <a href="create.html">Image to PDF</a>
+                <a href="lock.html">Lock PDF</a>
                 <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
             </div>
 
             <!-- RIGHT -->
@@ -920,7 +992,7 @@ font-size:32px;
                     <a href="not.html"><i class="fab fa-instagram"></i></a>
                 </div>
 
-                <p class="copyright">© 2026 All Rights Reserved by PDFBoon <br> Last Updated on: July 19, 2026</p>
+                <p class="copyright">© 2026 All Rights Reserved by PDFBoon <br> Last Updated on: July 20, 2026</p>
 
             </div>
 
@@ -936,6 +1008,30 @@ font-size:32px;
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('active');
 });
+
+/* Tools dropdown */
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+/* ============ SEARCH + FILTER ============ */
 
 const searchInput = document.getElementById('searchInput');
 const clearSearch = document.getElementById('clearSearch');
@@ -962,9 +1058,7 @@ function applyFilters() {
     const catKey = cat.dataset.category;
     let categoryHasVisible = false;
 
-    
-
-  const cards = cat.querySelectorAll('.tool-card');
+    const cards = cat.querySelectorAll('.tool-card');
 
     cards.forEach(card => {
       const name = card.dataset.name || '';
@@ -988,31 +1082,6 @@ function applyFilters() {
       cat.classList.add('hidden-category');
     }
   });
-
-
-  /* All Tools dropdown */
-const toolsDropdown = document.getElementById('toolsDropdown');
-const toolsToggle = document.getElementById('toolsToggle');
-
-toolsToggle.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  toolsDropdown.classList.toggle('open');
-});
-
-document.addEventListener('click', (e) => {
-  if (!toolsDropdown.contains(e.target)) {
-    toolsDropdown.classList.remove('open');
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    toolsDropdown.classList.remove('open');
-  }
-});
-
-  
 
   updateCount(visibleCount, allCards.length);
   noResults.style.display = visibleCount === 0 ? 'block' : 'none';
@@ -1042,3 +1111,4 @@ applyFilters();
 </script>
 
 </body>
+</html>
