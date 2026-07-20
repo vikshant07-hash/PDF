@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/logo.png">
 
-<meta name="description" content="Professional online PDF tools website to manage PDFs easily.">
+<meta name="description" content="Get in touch with PDFBoon — ask a question, report a bug, or suggest a new PDF tool. We usually reply within 24 hours.">
 
 <meta name="keywords" content="PDF Tools, pdfboon, contact PDFBoon, Online PDF Tools">
 
@@ -29,6 +29,10 @@
   --stamp:#2563eb;
   --stamp-dark:#1d4ed8;
   --teal:#0891b2;
+  --success:#10b981;
+  --success-dark:#0e9c6f;
+  --violet:#7c3aed;
+  --warn:#f59e0b;
   --line:#d6e0ee;
   --shadow: 0 10px 30px rgba(13,37,69,0.10);
   --serif:'Fraunces', serif;
@@ -53,7 +57,13 @@ body{
 
 a{ text-decoration:none; color:inherit; }
 
-/* ============ NAVBAR (same as Merge / Compress / About pages) ============ */
+.container{
+max-width:1180px;
+margin:auto;
+padding:0 20px;
+}
+
+/* ============ NAVBAR ============ */
 .navbar{
   position:sticky; top:0; z-index:100;
   background:rgba(237,242,249,0.85);
@@ -108,7 +118,7 @@ a{ text-decoration:none; color:inherit; }
 .nav-links{
   display:flex;
   align-items:center;
-  gap:28px;
+  gap:30px;
 }
 .nav-link{
   position:relative;
@@ -128,8 +138,37 @@ a{ text-decoration:none; color:inherit; }
 }
 .nav-link:hover{color:var(--ink);}
 .nav-link:hover::after{width:100%;}
-.nav-link.current{color:var(--stamp);}
-.nav-link.current::after{width:100%;}
+.nav-link.active-link{color:var(--ink);}
+.nav-link.active-link::after{width:100%;}
+
+/* Tools button — professional standout look */
+.nav-tools-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--stamp);
+  color:#fff !important;
+  padding:10px 18px;
+  border-radius:12px;
+  font-size:0.9rem;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 0 var(--stamp-dark);
+  transition:transform .15s ease;
+  white-space:nowrap;
+  font-family:var(--sans);
+}
+.nav-tools-btn:hover{transform:translateY(-2px);}
+.nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+.nav-tools-btn .dropdown-arrow{
+  font-size:0.68rem;
+  transition:transform .2s ease;
+}
+.nav-item.open .nav-tools-btn .dropdown-arrow{
+  transform:rotate(180deg);
+}
+
 .mobile-menu{
   display:none;
   width:40px; height:40px;
@@ -144,7 +183,7 @@ a{ text-decoration:none; color:inherit; }
 }
 .mobile-menu:hover{background:rgba(37,99,235,0.08);}
 
-@media (max-width:860px){
+@media (max-width:920px){
   .nav-links{
     position:fixed;
     inset:70px 0 auto 0;
@@ -165,6 +204,102 @@ a{ text-decoration:none; color:inherit; }
   }
   .mobile-menu{display:flex;}
   .logo-subtitle{display:none;}
+  .nav-tools-btn{width:100%; justify-content:space-between;}
+}
+
+/* ============ NAV TOOLS DROPDOWN ============ */
+.nav-item{
+  position:relative;
+}
+
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 14px);
+  left:50%;
+  transform:translateX(-50%);
+  min-width:250px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:10px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:999;
+}
+
+.nav-item.open .dropdown-menu{
+  display:flex;
+}
+
+.dropdown-category{
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:10px 12px 4px;
+}
+
+.dropdown-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:10px;
+  font-size:0.88rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  transition:background .15s ease, color .15s ease;
+  white-space:nowrap;
+}
+
+.dropdown-link i{
+  width:16px;
+  text-align:center;
+  color:var(--stamp);
+  font-size:0.85rem;
+}
+
+.dropdown-link:hover{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+}
+
+.dropdown-link.view-all{
+  margin-top:4px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  border-radius:10px;
+  font-weight:600;
+  color:var(--stamp);
+}
+
+.dropdown-link.view-all i{color:var(--stamp);}
+
+@media (max-width:920px){
+
+  .nav-item{width:100%;}
+
+  .dropdown-menu{
+    position:static;
+    transform:none;
+    min-width:0;
+    width:100%;
+    box-shadow:none;
+    border:none;
+    background:rgba(37,99,235,0.04);
+    margin-top:10px;
+    padding:6px;
+    display:none;
+    flex-direction:column;
+  }
+
+  .nav-item.open .dropdown-menu{
+    display:flex;
+  }
+
 }
 
 /* =========================
@@ -243,6 +378,64 @@ a{ text-decoration:none; color:inherit; }
     animation:pulse 1.6s infinite;
 }
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* QUICK HELP CATEGORIES */
+
+.quick-help{
+    margin-bottom:40px;
+}
+
+.quick-help-label{
+    text-align:center;
+    font-size:0.78rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--stamp);
+    margin-bottom:18px;
+}
+
+.quick-help-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+}
+
+.quick-help-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:22px;
+    cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    text-align:left;
+}
+
+.quick-help-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--stamp);
+    box-shadow:var(--shadow);
+}
+
+.quick-help-card i{
+    font-size:1.4rem;
+    color:var(--stamp);
+    margin-bottom:12px;
+    display:block;
+}
+
+.quick-help-card h4{
+    font-family:var(--serif);
+    font-size:1rem;
+    color:var(--ink);
+    margin-bottom:4px;
+}
+
+.quick-help-card p{
+    font-size:0.8rem;
+    color:var(--ink-soft);
+    line-height:1.5;
+}
 
 /* GRID */
 
@@ -328,6 +521,31 @@ a{ text-decoration:none; color:inherit; }
     transform:translateY(-4px);
 }
 
+/* TRUST STRIP */
+
+.trust-strip{
+    margin-top:25px;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.trust-pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    padding:8px 16px;
+    border-radius:100px;
+    font-size:0.8rem;
+    font-weight:600;
+    color:var(--ink-soft);
+}
+
+.trust-pill i{color:var(--stamp);}
+
 /* =========================
    CONTACT FORM
 ========================= */
@@ -378,6 +596,7 @@ a{ text-decoration:none; color:inherit; }
 }
 
 .form-group input,
+.form-group select,
 .form-group textarea{
     padding:13px 16px;
     border:1px solid var(--line);
@@ -394,6 +613,7 @@ a{ text-decoration:none; color:inherit; }
 }
 
 .form-group input:focus,
+.form-group select:focus,
 .form-group textarea:focus{
     outline:none;
     border-color:var(--stamp);
@@ -496,7 +716,7 @@ a{ text-decoration:none; color:inherit; }
     line-height:1.7;
 }
 
-/* ============ FOOTER (same as Merge / Compress / About pages) ============ */
+/* ============ FOOTER ============ */
 .footer{
   background:var(--ink);
   color:#dfe6f2;
@@ -608,6 +828,10 @@ a{ text-decoration:none; color:inherit; }
         grid-template-columns:1fr;
     }
 
+    .quick-help-grid{
+        grid-template-columns:1fr;
+    }
+
     .contact-card{
         padding:35px 25px;
     }
@@ -671,16 +895,38 @@ a{ text-decoration:none; color:inherit; }
 
             <div>
                 <h2 class="logo-title">PDFBoon</h2>
-                
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
             </div>
         </div>
 
         <div class="nav-links" id="navLinks">
             <a href="index.html" class="nav-link">Home</a>
-          <a href="create.html" class="nav-link">IMG to PDF</a>
-            <a href="merge.html" class="nav-link">Merge Pdf</a>
-            <a href="compress.html" class="nav-link">Compress Pdf</a>
+
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
+
+                    <div class="dropdown-category">Organize PDF</div>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+
+                    <div class="dropdown-category">Optimize PDF</div>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+
+                    <div class="dropdown-category">Convert PDF</div>
+                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+
+                    <div class="dropdown-category">Security</div>
+                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+
+                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+
             <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link active-link">Contact</a>
         </div>
 
         <button class="mobile-menu" id="mobileMenuBtn">
@@ -718,6 +964,35 @@ a{ text-decoration:none; color:inherit; }
 
             </div>
 
+            <!-- QUICK HELP CATEGORIES -->
+            <div class="quick-help">
+
+                <div class="quick-help-label">How can we help?</div>
+
+                <div class="quick-help-grid">
+
+                    <div class="quick-help-card" data-subject="General Question" data-message="Hi PDFBoon team, I have a question about...">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <h4>General Question</h4>
+                        <p>Ask anything about using PDFBoon's tools.</p>
+                    </div>
+
+                    <div class="quick-help-card" data-subject="Bug Report" data-message="Hi, I found an issue while using the following tool: ">
+                        <i class="fa-solid fa-bug"></i>
+                        <h4>Report a Bug</h4>
+                        <p>Something not working as expected? Let us know.</p>
+                    </div>
+
+                    <div class="quick-help-card" data-subject="Feature Request" data-message="Hi, it would be great if PDFBoon added...">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <h4>Suggest a Tool</h4>
+                        <p>Tell us which PDF tool we should build next.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
             <div class="contact-grid">
 
                 <!-- LEFT -->
@@ -730,7 +1005,7 @@ a{ text-decoration:none; color:inherit; }
                     <h3>Contact Details</h3>
 
                     <p>
-                        Email: <a href="mailto:pdfboon@gmail.com">mylovepdf@gmail.com</a><br>
+                        Email: <a href="mailto:mylovepdf@gmail.com">mylovepdf@gmail.com</a><br>
                         Phone: <a href="tel:+919805444375">+91 98054 44375</a>
                     </p>
 
@@ -776,6 +1051,12 @@ a{ text-decoration:none; color:inherit; }
 
                 </div>
 
+            </div>
+
+            <div class="trust-strip">
+                <div class="trust-pill"><i class="fa-solid fa-shield-halved"></i> Your files are never uploaded</div>
+                <div class="trust-pill"><i class="fa-solid fa-clock"></i> Reply within 24 hours</div>
+                <div class="trust-pill"><i class="fa-solid fa-hand-holding-dollar"></i> Free support, no tickets</div>
             </div>
 
             <!-- CONTACT FORM -->
@@ -865,7 +1146,17 @@ a{ text-decoration:none; color:inherit; }
                         <i class="fa-solid fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        <p>Absolutely — use the contact form above or reach out on social media with your suggestion.</p>
+                        <p>Absolutely — use the "Suggest a Tool" card above, or the contact form, or reach out on social media with your suggestion.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>I found a bug. What should I include in my report?</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Please mention which tool you were using, what you expected to happen, and what actually happened. Screenshots help a lot too!</p>
                     </div>
                 </div>
 
@@ -887,7 +1178,7 @@ a{ text-decoration:none; color:inherit; }
 
 </section>
 
-<!-- FOOTER (same as Merge / Compress / About pages) -->
+<!-- FOOTER -->
 <footer class="footer">
 
     <div class="footer-container">
@@ -915,10 +1206,14 @@ a{ text-decoration:none; color:inherit; }
             <div class="footer-links">
                 <h3>Quick Links</h3>
                 <a href="index.html">Home</a>
-              <a href="create.html">IMG to PDF</a>
-                <a href="merge.html">Merge Pdf</a>
-                <a href="compress.html">Compress Pdf</a>
+                <a href="tools.html">All Tools</a>
+                <a href="compress.html">Compress PDF</a>
+                <a href="merge.html">Merge PDF</a>
+                <a href="split.html">Split PDF</a>
+                <a href="create.html">Image to PDF</a>
+                <a href="lock.html">Lock PDF</a>
                 <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
             </div>
 
             <!-- RIGHT -->
@@ -933,7 +1228,7 @@ a{ text-decoration:none; color:inherit; }
                     <a href="not.html"><i class="fab fa-instagram"></i></a>
                 </div>
 
-                <p class="copyright">© 2026 All Rights Reserved by PDFBoon<br> Last Updated on: July 18,  2026</p>
+                <p class="copyright">© 2026 All Rights Reserved by PDFBoon<br> Last Updated on: July 20, 2026</p>
 
             </div>
 
@@ -948,6 +1243,28 @@ a{ text-decoration:none; color:inherit; }
 /* MOBILE MENU */
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
     document.getElementById('navLinks').classList.toggle('active');
+});
+
+/* TOOLS DROPDOWN */
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    toolsDropdown.classList.remove('open');
+  }
 });
 
 /* FAQ ACCORDION */
@@ -971,6 +1288,16 @@ document.querySelectorAll('.faq-item').forEach(item => {
             item.classList.add('open');
             answer.style.maxHeight = answer.scrollHeight + 'px';
         }
+    });
+});
+
+/* QUICK HELP CARDS -> prefill form */
+document.querySelectorAll('.quick-help-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.getElementById('subject').value = card.dataset.subject || '';
+        document.getElementById('message').value = card.dataset.message || '';
+        document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('name').focus();
     });
 });
 
