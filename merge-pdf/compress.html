@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -7,7 +9,7 @@
 <link rel="icon" href="images/logo.png">
 <meta name="description" content="Professional online PDF tools website to compress and manage PDFs easily.">
 
-<meta name="keywords" content="Pdfboon, PDF Tools, Compress PDF, Online PDF Tools">
+<meta name="keywords" content="Pdfboon, PDF Tools, Compress PDF, compress pdf free, vikshant, vikshant kralta, Online PDF Tools">
 
 <meta name="author" content="Vikshant Kralta">
 
@@ -112,7 +114,7 @@ a{ text-decoration:none; color:inherit; }
 .nav-links{
   display:flex;
   align-items:center;
-  gap:28px;
+  gap:20px;
 }
 .nav-link{
   position:relative;
@@ -122,6 +124,10 @@ a{ text-decoration:none; color:inherit; }
   padding:6px 2px;
   transition:color .2s ease;
   white-space:nowrap;
+  background:none;
+  border:none;
+  font-family:var(--sans);
+  cursor:pointer;
 }
 .nav-link::after{
   content:"";
@@ -132,6 +138,72 @@ a{ text-decoration:none; color:inherit; }
 }
 .nav-link:hover{color:var(--ink);}
 .nav-link:hover::after{width:100%;}
+
+/* Active tool pill */
+.nav-current{
+  background:rgba(37,99,235,0.12);
+  color:var(--stamp-dark);
+  font-weight:600;
+  font-size:0.85rem;
+  padding:7px 16px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+
+/* Tools dropdown */
+.nav-dropdown{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+.dropdown-toggle{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.dropdown-toggle i{
+  font-size:0.7rem;
+  transition:transform .2s ease;
+}
+.nav-dropdown.active .dropdown-toggle i{
+  transform:rotate(180deg);
+}
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 12px);
+  right:0;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  min-width:190px;
+  padding:8px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:200;
+}
+.nav-dropdown:hover .dropdown-menu,
+.nav-dropdown.active .dropdown-menu{
+  display:flex;
+}
+.dropdown-item{
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:0.9rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  transition:background .2s ease, color .2s ease;
+}
+.dropdown-item:hover{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+}
+.dropdown-item.active{
+  background:var(--stamp);
+  color:#fff;
+}
+
 .mobile-menu{
   display:none;
   width:40px; height:40px;
@@ -165,6 +237,21 @@ a{ text-decoration:none; color:inherit; }
     transform:translateY(0);
     opacity:1;
   }
+  .nav-dropdown{
+    flex-direction:column;
+    align-items:flex-start;
+    width:100%;
+  }
+  .dropdown-menu{
+    position:static;
+    box-shadow:none;
+    border:none;
+    padding:6px 0 0 0;
+    display:none;
+    width:100%;
+  }
+  .nav-dropdown:hover .dropdown-menu{ display:none; }
+  .nav-dropdown.active .dropdown-menu{ display:flex; }
   .mobile-menu{display:flex;}
   .logo-subtitle{display:none;}
 }
@@ -424,98 +511,51 @@ font-size:32px;
 
 }
 
-/* ============ FOOTER ============ */
+/* ============ FOOTER (simple) ============ */
 .footer{
   background:var(--ink);
   color:#dfe6f2;
   margin-top:60px;
-  padding:56px 20px 26px;
+  padding:36px 20px;
 }
 .footer-container{
   max-width:1180px;
   margin-inline:auto;
-}
-.footer-grid{
-  display:grid;
-  grid-template-columns:1.3fr 1fr 1fr;
-  gap:36px;
-  padding-bottom:32px;
-  border-bottom:1px solid rgba(255,255,255,0.12);
-}
-@media (max-width:760px){
-  .footer-grid{grid-template-columns:1fr;}
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  text-align:center;
 }
 .footer-brand{
   display:flex;
   align-items:center;
   gap:12px;
-  margin-bottom:14px;
 }
 .footer-brand img{
-  width:44px; height:44px;
-  border-radius:12px;
+  width:38px; height:38px;
+  border-radius:10px;
   object-fit:cover;
   flex-shrink:0;
 }
 .footer-title{
   font-family:var(--serif);
   font-weight:700;
-  font-size:1.1rem;
+  font-size:1.05rem;
   color:#fff;
 }
-.footer-subtitle{
-  font-size:0.78rem;
-  color:#9fb0cc;
-}
-.footer-text{
-  font-size:0.88rem;
-  color:#9fb0cc;
-  max-width:34ch;
-}
-.footer-links h3,
-.footer-right h3{
-  font-size:0.8rem;
-  letter-spacing:0.06em;
-  text-transform:uppercase;
-  color:#8494b5;
-  margin-bottom:16px;
-  font-weight:600;
-}
-.footer-links{
+.footer-links-simple{
   display:flex;
-  flex-direction:column;
-  gap:11px;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:22px;
 }
-.footer-links a{
-  font-size:0.92rem;
-  color:#c8d2e6;
-  width:fit-content;
-  transition:color .2s ease;
-}
-.footer-links a:hover{color:#fff;}
-.footer-right .developer{
+.footer-links-simple a{
   font-size:0.9rem;
   color:#c8d2e6;
-  margin-bottom:16px;
+  transition:color .2s ease;
 }
-.footer-social{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-}
-.footer-social a{
-  width:38px; height:38px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,0.18);
-  display:flex; align-items:center; justify-content:center;
-  color:#fff;
-  transition:background .2s ease, border-color .2s ease, transform .2s ease;
-}
-.footer-social a:hover{
-  background:var(--stamp);
-  border-color:var(--stamp);
-  transform:translateY(-3px);
-}
+.footer-links-simple a:hover{color:#fff;}
 .copyright{
   font-size:0.8rem;
   color:#8494b5;
@@ -543,10 +583,19 @@ font-size:32px;
 
         <div class="nav-links" id="navLinks">
             <a href="index.html" class="nav-link">Home</a>
-          <a href="create.html" class="nav-link">IMG to PDF</a>
-            <a href="merge.html" class="nav-link">Merge Pdf</a>
-            <a href="contact.html" class="nav-link">Contact</a>
-            <a href="about.html" class="nav-link">About</a>
+
+            <span class="nav-current">Compress PDF</span>
+
+            <div class="nav-dropdown" id="toolsDropdown">
+                <button class="nav-link dropdown-toggle" id="toolsBtn">
+                    Tools <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="toolsMenu">
+                    <a href="create.html" class="dropdown-item">IMG to PDF</a>
+                    <a href="merge.html" class="dropdown-item">Merge PDF</a>
+                    <a href="compress.html" class="dropdown-item active">Compress PDF</a>
+                </div>
+            </div>
         </div>
 
         <button class="mobile-menu" id="mobileMenuBtn">
@@ -608,11 +657,11 @@ value="500">
 
 <div class="card">
 
-<label>Quality(Use High Quality)</label>
+<label>Quality (Use High Quality)</label>
 
 <select id="qualityMode">
 <option value="balanced">Balanced</option>
-<option value="high">High Quality(Recomanded)</option>
+<option value="high">High Quality (Recommended)</option>
 <option value="low">Low Quality</option>
 </select>
 
@@ -628,53 +677,19 @@ value="500">
 
     <div class="footer-container">
 
-        <div class="footer-grid">
-
-            <!-- LEFT -->
-            <div class="footer-left">
-
-                <div class="footer-brand">
-                    <img src="images/logo.png">
-                    <div>
-                        <h2 class="footer-title">PDFBoon</h2>
-                        <p class="footer-subtitle">Fast PDF Toolkit</p>
-                    </div>
-                </div>
-
-                <p class="footer-text">
-                    Fast, secure and modern PDF tools for compressing directly in your browser.
-                </p>
-
-            </div>
-
-            <!-- LINKS -->
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <a href="index.html">Home</a>
-              
-                <a href="create.html">IMG to PDF</a>
-                <a href="merge.html">Merge Pdf</a>
-                <a href="contact.html">Contact</a>
-                <a href="about.html">About</a>
-            </div>
-
-            <!-- RIGHT -->
-            <div class="footer-right">
-
-                <h3>Developer</h3>
-                <p class="developer">Designed & Developed by Vikshant Kralta</p>
-
-                <div class="footer-social">
-                    <a href="not.html"><i class="fab fa-facebook"></i></a>
-                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
-                    <a href="not.html"><i class="fab fa-instagram"></i></a>
-                </div>
-
-                <p class="copyright">© 2026 All Rights Reserved <br> Last Updated on: July 19, 2026</p>
-
-            </div>
-
+        <div class="footer-brand">
+            <img src="images/logo.png">
+            <h2 class="footer-title">PDFBoon</h2>
         </div>
+
+        <div class="footer-links-simple">
+            <a href="index.html">Home</a>
+            <a href="create.html">IMG to PDF</a>
+            <a href="merge.html">Merge PDF</a>
+            <a href="compress.html">Compress PDF</a>
+        </div>
+
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved. Last Updated: July 20, 2026</p>
 
     </div>
 
@@ -685,6 +700,22 @@ value="500">
 /* Mobile navbar toggle */
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('active');
+});
+
+/* Tools dropdown toggle (mobile/tap support) */
+const toolsBtn = document.getElementById('toolsBtn');
+const toolsDropdown = document.getElementById('toolsDropdown');
+
+toolsBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('active');
+});
+
+document.addEventListener('click', (e) => {
+  if(!toolsDropdown.contains(e.target)){
+    toolsDropdown.classList.remove('active');
+  }
 });
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -860,8 +891,8 @@ document.getElementById('qualityMode').value;
 if(mode === 'high'){
 
 return {
-quality:0.92,
-scale:1.8
+quality:0.95,
+scale:2
 };
 
 }
@@ -869,16 +900,82 @@ scale:1.8
 if(mode === 'low'){
 
 return {
-quality:0.45,
-scale:0.9
+quality:0.6,
+scale:1
 };
 
 }
 
 return {
-quality:0.7,
-scale:1.2
+quality:0.85,
+scale:1.5
 };
+
+}
+
+/* Renders every page of a pdf.js document to an offscreen canvas
+   at the given scale. Rendering is done ONCE per scale - after this,
+   we only re-encode the same canvases at different JPEG qualities,
+   which is what keeps text/images sharp instead of getting blurrier
+   with every compression attempt. */
+async function renderPagesToCanvases(pdf, scale){
+
+const canvases = [];
+
+for(let i=1; i<=pdf.numPages; i++){
+
+const page = await pdf.getPage(i);
+
+const viewport = page.getViewport({ scale });
+
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = 'high';
+
+canvas.width = viewport.width;
+canvas.height = viewport.height;
+
+await page.render({
+canvasContext: ctx,
+viewport
+}).promise;
+
+canvases.push(canvas);
+
+}
+
+return canvases;
+
+}
+
+/* Builds a full PDF from already-rendered canvases at a chosen
+   JPEG quality, without touching resolution/scale. */
+async function buildPdfAtQuality(canvases, quality){
+
+const newPdf = await PDFLib.PDFDocument.create();
+
+for(let i=0; i<canvases.length; i++){
+
+const canvas = canvases[i];
+
+const imageData = canvas.toDataURL('image/jpeg', quality);
+
+const jpg = await newPdf.embedJpg(imageData);
+
+const pdfPage = newPdf.addPage([canvas.width, canvas.height]);
+
+pdfPage.drawImage(jpg,{
+x:0,
+y:0,
+width:canvas.width,
+height:canvas.height
+});
+
+}
+
+return await newPdf.save({ useObjectStreams:true });
 
 }
 
@@ -909,6 +1006,8 @@ button.style.display = 'none';
 
 loader.style.display = 'block';
 
+progress.style.width = '0%';
+
 const targetBytes =
 getTargetBytes();
 
@@ -937,120 +1036,100 @@ await pdfjsLib.getDocument({
 data
 }).promise;
 
-let quality =
-settings.quality;
+/* --- Quality-preserving compression ---
+   Instead of shrinking scale AND quality together on every attempt
+   (which is what made pages look blurry/pixelated), we:
+   1) Render pages once at the chosen scale.
+   2) Binary-search ONLY the JPEG quality to hit the target size,
+      keeping resolution untouched - this finds the highest quality
+      that still meets the target, instead of guessing with big steps.
+   3) Only if quality alone can't reach the target (very small target
+      size vs page count) do we reduce scale a little and repeat,
+      as a last resort. */
 
-let scale =
-settings.scale;
+const MIN_QUALITY = 0.35;
+const MAX_SCALE_ROUNDS = 3;
 
-let bestBlob = null;
+let scale = settings.scale;
+let canvases = await renderPagesToCanvases(pdf, scale);
 
-for(let attempt=0; attempt<8; attempt++){
+let stepsDone = 1;
+let totalSteps = MAX_SCALE_ROUNDS * 8;
 
-const newPdf =
-await PDFLib.PDFDocument.create();
+function bumpProgress(){
+stepsDone++;
+const pct = Math.min(96, (stepsDone/totalSteps)*100);
+progress.style.width = pct+'%';
+}
 
-for(let i=1;i<=pdf.numPages;i++){
+let bestBytes = null;
+let scaleRound = 0;
 
-const page =
-await pdf.getPage(i);
+while(scaleRound < MAX_SCALE_ROUNDS){
 
-const viewport =
-page.getViewport({
-scale
-});
+let low = MIN_QUALITY;
+let high = Math.min(settings.quality, 0.95);
 
-const canvas =
-document.createElement('canvas');
+let bytesAtHigh = await buildPdfAtQuality(canvases, high);
+bumpProgress();
 
-const ctx =
-canvas.getContext('2d');
+if(bytesAtHigh.byteLength <= targetBytes){
+bestBytes = bytesAtHigh;
+break;
+}
 
-ctx.imageSmoothingEnabled = true;
+let foundBytes = null;
 
-ctx.imageSmoothingQuality = 'high';
+for(let iter=0; iter<7; iter++){
 
-canvas.width = viewport.width;
-canvas.height = viewport.height;
+const mid = (low+high)/2;
 
-await page.render({
-canvasContext:ctx,
-viewport
-}).promise;
+const midBytes = await buildPdfAtQuality(canvases, mid);
+bumpProgress();
 
-const image =
-canvas.toDataURL(
-'image/jpeg',
-quality
-);
-
-const jpg =
-await newPdf.embedJpg(image);
-
-const pdfPage =
-newPdf.addPage([
-viewport.width,
-viewport.height
-]);
-
-pdfPage.drawImage(jpg,{
-x:0,
-y:0,
-width:viewport.width,
-height:viewport.height
-});
-
-progress.style.width =
-((i/pdf.numPages)*100)+'%';
+if(midBytes.byteLength <= targetBytes){
+foundBytes = midBytes;
+low = mid;
+} else {
+high = mid;
+}
 
 }
 
-const bytes =
-await newPdf.save({
-useObjectStreams:true
-});
+if(foundBytes){
+bestBytes = foundBytes;
+break;
+}
 
-const blob =
-new Blob([bytes],{
+/* Quality floor alone can't hit the target - reduce resolution
+   slightly and try again. */
+scaleRound++;
+scale = scale * 0.82;
+
+if(scaleRound < MAX_SCALE_ROUNDS){
+canvases = await renderPagesToCanvases(pdf, scale);
+}
+
+}
+
+if(!bestBytes){
+/* Fallback - use the smallest result we managed to produce. */
+bestBytes = await buildPdfAtQuality(canvases, MIN_QUALITY);
+}
+
+const bestBlob =
+new Blob([bestBytes],{
 type:'application/pdf'
 });
-
-bestBlob = blob;
-
-if(blob.size <= targetBytes){
-
-break;
-
-}
-
-quality -= 0.08;
-
-scale -= 0.08;
-
-if(quality < 0.2){
-
-quality = 0.2;
-
-}
-
-if(scale < 0.6){
-
-scale = 0.6;
-
-}
-
-}
 
 const url =
 URL.createObjectURL(bestBlob);
 
+progress.style.width = '100%';
+
 finalText.innerHTML =
 'Compressed Size: '+
 formatSize(bestBlob.size);
-
-await new Promise(resolve=>
-setTimeout(resolve,3000)
-);
 
 loader.style.display = 'none';
 
