@@ -8,7 +8,7 @@
 <link rel="icon" href="images/logo.png">
 <meta name="description" content="Professional online PDF tools website to compress and manage PDFs easily.">
 
-<meta name="keywords" content="Pdfboon, PDF Tools, Compress PDF, vikshant, vikshant kralta, Online PDF Tools">
+<meta name="keywords" content="Pdfboon, PDF Tools, Compress PDF, Vikshant, Vikshant Kralta, Online PDF Tools">
 
 <meta name="author" content="Vikshant Kralta">
 
@@ -1014,19 +1014,22 @@ async function generatePreview(file, index){
 
 /* Quality mode now defines a SEARCH RANGE, not a single fixed value.
    The compressor binary-searches within this range to find the
-   highest possible quality that still meets the target size. */
+   highest possible quality that still meets the target size.
+   Scale (resolution) is kept HIGH — softness in scanned/rasterized
+   PDFs usually comes from too few pixels, not just JPEG quality, so
+   we render sharper and let quality search do the fine-tuning. */
 function getSettings(){
   const mode = document.getElementById('qualityMode').value;
 
   if(mode === 'high'){
-    return { scale: 2.0, minQ: 0.5, maxQ: 0.95 };
+    return { scale: 2.6, minQ: 0.6, maxQ: 0.97 };
   }
 
   if(mode === 'low'){
-    return { scale: 1.0, minQ: 0.12, maxQ: 0.55 };
+    return { scale: 1.6, minQ: 0.25, maxQ: 0.65 };
   }
 
-  return { scale: 1.5, minQ: 0.3, maxQ: 0.88 };
+  return { scale: 2.1, minQ: 0.45, maxQ: 0.92 };
 }
 
 /* Render every page ONCE at a given scale and cache the canvases.
@@ -1100,9 +1103,9 @@ async function compressPDF(index){
   const pdf = await pdfjsLib.getDocument({ data }).promise;
 
   let scale = settings.scale;
-  const minScale = 0.55;
-  const scaleStep = 0.82;
-  const maxScaleRounds = 4;
+  const minScale = 0.9;
+  const scaleStep = 0.87;
+  const maxScaleRounds = 5;
 
   let bestBlob = null;
   let metTarget = false;
@@ -1192,3 +1195,4 @@ document.getElementById('sizeUnit').addEventListener('change', renderFiles);
 
 </body>
 </html>
+  
