@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>No Internet • PDFBoon</title>
+
+<link rel="icon" href="images/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--bg:#edf2f9;
+--card:#ffffff;
+--primary:#2563eb;
+--primary-dark:#1d4ed8;
+--text:#0d2545;
+--soft:#64748b;
+--border:#d6e0ee;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Inter,sans-serif;
+background:
+radial-gradient(circle at top left,#dbeafe 0%,transparent 40%),
+radial-gradient(circle at bottom right,#bfdbfe 0%,transparent 40%),
+var(--bg);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.card{
+
+max-width:470px;
+width:100%;
+
+background:var(--card);
+border:1px solid var(--border);
+border-radius:24px;
+
+padding:45px 30px;
+
+text-align:center;
+
+box-shadow:0 15px 45px rgba(0,0,0,.08);
+
+}
+
+.logo{
+
+width:82px;
+height:82px;
+
+border-radius:22px;
+
+margin:auto;
+margin-bottom:22px;
+
+background:white;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+border:1px solid var(--border);
+
+}
+
+.logo img{
+
+width:62px;
+
+}
+
+h1{
+
+font-family:Fraunces,serif;
+font-size:34px;
+color:var(--text);
+margin-bottom:10px;
+
+}
+
+p{
+
+color:var(--soft);
+font-size:15px;
+line-height:1.8;
+
+margin-bottom:35px;
+
+}
+
+button{
+
+background:var(--primary);
+
+color:white;
+
+border:none;
+
+padding:15px 34px;
+
+font-size:15px;
+font-weight:600;
+
+border-radius:14px;
+
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+button:hover{
+
+background:var(--primary-dark);
+
+}
+
+.status{
+
+margin-top:25px;
+
+font-size:14px;
+
+color:var(--soft);
+
+}
+
+.dot{
+
+display:inline-block;
+
+width:10px;
+height:10px;
+
+border-radius:50%;
+
+background:#ef4444;
+
+margin-right:8px;
+
+animation:pulse 1s infinite;
+
+}
+
+@keyframes pulse{
+
+50%{
+
+opacity:.3;
+transform:scale(.7);
+
+}
+
+}
+
+.footer{
+
+margin-top:28px;
+
+font-size:13px;
+
+color:#94a3b8;
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<div class="logo">
+
+<img src="images/logo.png">
+
+</div>
+
+<h1>You're Offline</h1>
+
+<p>
+No internet connection was detected.
+Please reconnect and try again.
+Your PDF tools will be available once you're back online.
+</p>
+
+<button onclick="location.reload()">
+
+Try Again
+
+</button>
+
+<div class="status">
+
+<span class="dot"></span>
+
+No Internet Connection
+
+</div>
+
+<div class="footer">
+
+© 2026 PDFBoon • Fast PDF Toolkit
+
+</div>
+
+</div>
+
+</body>
+</html>
