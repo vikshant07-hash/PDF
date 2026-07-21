@@ -7,7 +7,7 @@
 <link rel="icon" href="images/logo.png">
 <meta name="description" content="Password protect your PDF files with real AES encryption, free and secure, right in your browser - PDFBoon.">
 
-<meta name="keywords" content="Pdfboon, Lock PDF, vikshant kralta,Protect PDF, PDF Password, Encrypt PDF">
+<meta name="keywords" content="Pdfboon, Lock PDF, Vikshant Kralta, Protect PDF, PDF Password, Encrypt PDF">
 
 <meta name="author" content="Vikshant Kralta">
 
@@ -15,7 +15,6 @@
 
 <title>Lock PDF - PDFBoon</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -58,6 +57,12 @@ color:var(--ink);
 }
 
 a{ text-decoration:none; color:inherit; }
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
 
 /* ============ NAVBAR ============ */
 .navbar{
@@ -136,6 +141,50 @@ a{ text-decoration:none; color:inherit; }
 .nav-link:hover::after{width:100%;}
 .nav-link.active-link{color:var(--ink);}
 .nav-link.active-link::after{width:100%;}
+
+/* Current tool pill — shows which tool is active */
+.current-tool-pill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(37,99,235,0.08);
+  color:var(--stamp-dark);
+  padding:7px 14px;
+  border-radius:100px;
+  font-size:0.85rem;
+  font-weight:700;
+  white-space:nowrap;
+}
+.current-tool-pill i{font-size:0.75rem;}
+
+/* Tools button — professional standout look */
+.nav-tools-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--stamp);
+  color:#fff !important;
+  padding:10px 18px;
+  border-radius:12px;
+  font-size:0.9rem;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 0 var(--stamp-dark);
+  transition:transform .15s ease;
+  white-space:nowrap;
+  font-family:var(--sans);
+}
+.nav-tools-btn:hover{transform:translateY(-2px);}
+.nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+.nav-tools-btn .dropdown-arrow{
+  font-size:0.68rem;
+  transition:transform .2s ease;
+}
+.nav-item.open .nav-tools-btn .dropdown-arrow{
+  transform:rotate(180deg);
+}
+
 .mobile-menu{
   display:none;
   width:40px; height:40px;
@@ -171,14 +220,152 @@ a{ text-decoration:none; color:inherit; }
   }
   .mobile-menu{display:flex;}
   .logo-subtitle{display:none;}
+  .nav-tools-btn{width:100%; justify-content:space-between;}
+  .current-tool-pill{width:100%; justify-content:center;}
+}
+
+/* ============ NAV TOOLS DROPDOWN ============ */
+.nav-item{
+  position:relative;
+}
+
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 14px);
+  left:50%;
+  transform:translateX(-50%);
+  min-width:250px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:10px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:999;
+}
+
+.nav-item.open .dropdown-menu{
+  display:flex;
+}
+
+.dropdown-category{
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:10px 12px 4px;
+}
+
+.dropdown-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:10px;
+  font-size:0.88rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  transition:background .15s ease, color .15s ease;
+  white-space:nowrap;
+}
+
+.dropdown-link i{
+  width:16px;
+  text-align:center;
+  color:var(--stamp);
+  font-size:0.85rem;
+}
+
+.dropdown-link:hover{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+}
+
+.dropdown-link.active{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+  font-weight:700;
+}
+
+.dropdown-link.view-all{
+  margin-top:4px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  border-radius:10px;
+  font-weight:600;
+  color:var(--stamp);
+}
+
+.dropdown-link.view-all i{color:var(--stamp);}
+
+@media (max-width:920px){
+
+  .nav-item{width:100%;}
+
+  .dropdown-menu{
+    position:static;
+    transform:none;
+    min-width:0;
+    width:100%;
+    box-shadow:none;
+    border:none;
+    background:rgba(37,99,235,0.04);
+    margin-top:10px;
+    padding:6px;
+    display:none;
+    flex-direction:column;
+  }
+
+  .nav-item.open .dropdown-menu{
+    display:flex;
+  }
+
+}
+
+/* ============ BREADCRUMB STATUS BAR ============ */
+.breadcrumb-bar{
+background:var(--paper-raised);
+border-bottom:1px solid var(--line);
+}
+
+.breadcrumb-inner{
+max-width:1180px;
+margin:auto;
+padding:12px 24px;
+display:flex;
+align-items:center;
+gap:10px;
+font-size:0.85rem;
+color:var(--ink-soft);
+}
+
+.breadcrumb-inner a{
+display:flex;
+align-items:center;
+gap:6px;
+color:var(--ink-soft);
+transition:color .2s ease;
+}
+
+.breadcrumb-inner a:hover{color:var(--stamp);}
+
+.breadcrumb-inner i.fa-chevron-right{
+font-size:0.65rem;
+color:var(--line);
+}
+
+.breadcrumb-current{
+display:flex;
+align-items:center;
+gap:6px;
+color:var(--stamp-dark);
+font-weight:700;
 }
 
 /* ============ PAGE CONTENT ============ */
-.container{
-max-width:1100px;
-margin:auto;
-padding:20px;
-}
 
 .title{
 text-align:center;
@@ -362,6 +549,7 @@ display:block;
 margin-top:8px;
 color:var(--ink-soft);
 font-size:0.8rem;
+line-height:1.5;
 }
 
 .password-field{
@@ -464,6 +652,43 @@ margin-top:20px;
 display:block;
 }
 
+.owner-note{
+display:flex;
+align-items:flex-start;
+gap:12px;
+background:rgba(245,158,11,0.08);
+border:1px solid rgba(245,158,11,0.35);
+padding:14px 16px;
+border-radius:14px;
+margin-bottom:20px;
+font-size:0.82rem;
+color:var(--ink-soft);
+line-height:1.55;
+}
+
+.owner-note i{
+color:var(--warn);
+font-size:1rem;
+margin-top:2px;
+flex-shrink:0;
+}
+
+.owner-note strong{color:var(--ink);}
+
+.owner-note.same-warning{
+background:rgba(239,68,68,0.08);
+border-color:rgba(239,68,68,0.35);
+}
+
+.owner-note.same-warning i{color:var(--danger);}
+
+.permissions-heading{
+margin-bottom:14px;
+font-size:0.95rem;
+color:var(--ink);
+font-weight:600;
+}
+
 .permissions-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -478,6 +703,7 @@ background:#fff;
 border:1px solid var(--line);
 padding:14px 16px;
 border-radius:14px;
+gap:12px;
 }
 
 .permission-item .label{
@@ -725,87 +951,69 @@ align-items:flex-start;
 
 }
 
-/* ============ FOOTER ============ */
+/* ============ SIMPLE FOOTER ============ */
 .footer{
   background:var(--ink);
   color:#dfe6f2;
   margin-top:60px;
-  padding:56px 20px 26px;
+  padding:40px 20px;
 }
-.footer-container{
-  max-width:1180px;
-  margin-inline:auto;
+
+.footer-simple{
+max-width:1180px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:20px;
+padding-bottom:24px;
+border-bottom:1px solid rgba(255,255,255,0.12);
 }
-.footer-grid{
-  display:grid;
-  grid-template-columns:1.3fr 1fr 1fr;
-  gap:36px;
-  padding-bottom:32px;
-  border-bottom:1px solid rgba(255,255,255,0.12);
-}
-@media (max-width:760px){
-  .footer-grid{grid-template-columns:1fr;}
-}
+
 .footer-brand{
   display:flex;
   align-items:center;
   gap:12px;
-  margin-bottom:14px;
 }
 .footer-brand img{
-  width:44px; height:44px;
-  border-radius:12px;
+  width:40px; height:40px;
+  border-radius:10px;
   object-fit:cover;
   flex-shrink:0;
 }
 .footer-title{
   font-family:var(--serif);
   font-weight:700;
-  font-size:1.1rem;
+  font-size:1.05rem;
   color:#fff;
 }
 .footer-subtitle{
-  font-size:0.78rem;
+  font-size:0.76rem;
   color:#9fb0cc;
 }
-.footer-text{
-  font-size:0.88rem;
-  color:#9fb0cc;
-  max-width:34ch;
+
+.footer-simple-links{
+display:flex;
+align-items:center;
+gap:22px;
+flex-wrap:wrap;
 }
-.footer-links h3,
-.footer-right h3{
-  font-size:0.8rem;
-  letter-spacing:0.06em;
-  text-transform:uppercase;
-  color:#8494b5;
-  margin-bottom:16px;
-  font-weight:600;
+
+.footer-simple-links a{
+font-size:0.88rem;
+color:#c8d2e6;
+transition:color .2s ease;
 }
-.footer-links{
-  display:flex;
-  flex-direction:column;
-  gap:11px;
-}
-.footer-links a{
-  font-size:0.92rem;
-  color:#c8d2e6;
-  width:fit-content;
-  transition:color .2s ease;
-}
-.footer-links a:hover{color:#fff;}
-.footer-right .developer{
-  font-size:0.9rem;
-  color:#c8d2e6;
-  margin-bottom:16px;
-}
+
+.footer-simple-links a:hover{color:#fff;}
+
 .footer-social{
   display:flex;
   gap:10px;
-  margin-bottom:20px;
 }
 .footer-social a{
-  width:38px; height:38px;
+  width:36px; height:36px;
   border-radius:50%;
   border:1px solid rgba(255,255,255,0.18);
   display:flex; align-items:center; justify-content:center;
@@ -817,10 +1025,26 @@ align-items:flex-start;
   border-color:var(--stamp);
   transform:translateY(-3px);
 }
+
+.footer-bottom{
+max-width:1180px;
+margin:20px auto 0;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:10px;
+}
+
 .copyright{
-  font-size:0.8rem;
+  font-size:0.78rem;
   color:#8494b5;
   line-height:1.6;
+}
+
+@media(max-width:600px){
+  .footer-simple{flex-direction:column; text-align:center; justify-content:center;}
+  .footer-bottom{flex-direction:column; text-align:center; justify-content:center;}
 }
 
 </style>
@@ -838,18 +1062,40 @@ align-items:flex-start;
 
             <div>
                 <h2 class="logo-title">PDFBoon</h2>
-
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
             </div>
         </div>
 
         <div class="nav-links" id="navLinks">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="create.html" class="nav-link">IMG to PDF</a>
-            <a href="merge.html" class="nav-link">Merge Pdf</a>
-            <a href="Compress.html" class="nav-link">Compress Pdf</a>
-            <a href="split.html" class="nav-link">Split Pdf</a>
-            <a href="contact.html" class="nav-link">Contact</a>
+
+            <div class="current-tool-pill"><i class="fa-solid fa-lock"></i> Lock PDF</div>
+
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
+
+                    <div class="dropdown-category">Organize PDF</div>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+
+                    <div class="dropdown-category">Optimize PDF</div>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+
+                    <div class="dropdown-category">Convert PDF</div>
+                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+
+                    <div class="dropdown-category">Security</div>
+                    <a href="lock.html" class="dropdown-link active"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+
+                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+
             <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
         </div>
 
         <button class="mobile-menu" id="mobileMenuBtn">
@@ -859,10 +1105,21 @@ align-items:flex-start;
     </div>
 </nav>
 
+<!-- BREADCRUMB STATUS BAR -->
+<div class="breadcrumb-bar">
+    <div class="breadcrumb-inner">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span class="breadcrumb-current"><i class="fa-solid fa-lock"></i> Lock PDF</span>
+    </div>
+</div>
+
 <div class="container">
 
 <h1 class="title">
-Protect Your PDF with Password 
+Protect Your PDF with Password
 </h1>
 
 <p class="subtitle">
@@ -934,13 +1191,13 @@ accept="application/pdf">
 <button class="toggle-eye" data-target="confirmPassword" type="button"><i class="fa-solid fa-eye"></i></button>
 </div>
 <div class="match-msg" id="matchMsg"></div>
-<small>Use this password to open this PDF file</small>
+<small>Anyone opening this PDF will need this password.</small>
 </div>
 
 </div>
 
 <div class="advanced-toggle" id="advancedToggle">
-<span>Advanced: Owner Password & Permissions</span>
+<span>Advanced: Owner Password &amp; Permissions</span>
 <i class="fa-solid fa-chevron-down"></i>
 </div>
 
@@ -951,22 +1208,29 @@ accept="application/pdf">
 <div class="card">
 <label>Owner Password (Optional)</label>
 <div class="password-field">
-<input type="password" id="ownerPassword" placeholder="Leave blank to use same password" autocomplete="new-password">
+<input type="password" id="ownerPassword" placeholder="Leave blank to reuse the document password" autocomplete="new-password">
 <button class="toggle-eye" data-target="ownerPassword" type="button"><i class="fa-solid fa-eye"></i></button>
 </div>
-<small>Owner password — printing/editing restrictions bypassed</small>
+<small>The owner password unlocks full access — printing, editing and every permission below, no restrictions.</small>
 </div>
 
 </div>
 
-<h4 style="margin-bottom:14px; font-size:0.95rem; color:var(--ink);">Permissions (jab document password se khula ho)</h4>
+<div class="owner-note" id="ownerNote">
+<i class="fa-solid fa-circle-info"></i>
+<div>
+<strong>Why set an owner password?</strong> If you leave it blank, the document password doubles as the owner password — so anyone who opens the file automatically gets full permissions, and the toggles below won't really restrict anything. Set a separate owner password to make the permission limits below actually stick for people opening the file with the document password only.
+</div>
+</div>
+
+<h4 class="permissions-heading">Permissions <span style="font-weight:400; color:var(--ink-soft);">(applied when the PDF is opened with the document password)</span></h4>
 
 <div class="permissions-grid">
 
 <div class="permission-item">
 <div>
 <div class="label">Printing</div>
-<div class="desc">Allow to Print</div>
+<div class="desc">Allow the document to be printed</div>
 </div>
 <label class="switch">
 <input type="checkbox" id="permPrinting" checked>
@@ -977,7 +1241,7 @@ accept="application/pdf">
 <div class="permission-item">
 <div>
 <div class="label">Copying Text</div>
-<div class="desc">Allow to Copy text & graphics</div>
+<div class="desc">Allow copying text &amp; graphics</div>
 </div>
 <label class="switch">
 <input type="checkbox" id="permCopying" checked>
@@ -988,7 +1252,7 @@ accept="application/pdf">
 <div class="permission-item">
 <div>
 <div class="label">Editing</div>
-<div class="desc">Allow to edit</div>
+<div class="desc">Allow content to be modified</div>
 </div>
 <label class="switch">
 <input type="checkbox" id="permModifying" checked>
@@ -999,7 +1263,7 @@ accept="application/pdf">
 <div class="permission-item">
 <div>
 <div class="label">Annotations</div>
-<div class="desc">Allow to add Comments/annotations.</div>
+<div class="desc">Allow adding comments &amp; annotations</div>
 </div>
 <label class="switch">
 <input type="checkbox" id="permAnnotating" checked>
@@ -1007,12 +1271,10 @@ accept="application/pdf">
 </label>
 </div>
 
-
-
 <div class="permission-item">
 <div>
-  <div class="label">Form Filling</div>
-<div class="desc">Allow to fill form fileds</div>
+<div class="label">Form Filling</div>
+<div class="desc">Allow filling in form fields</div>
 </div>
 <label class="switch">
 <input type="checkbox" id="permForms" checked>
@@ -1023,7 +1285,7 @@ accept="application/pdf">
 <div class="permission-item">
 <div>
 <div class="label">Document Assembly</div>
-<div class="desc">Allow to Pages insert/delete/rotate.</div>
+<div class="desc">Allow inserting, deleting &amp; rotating pages</div>
 </div>
 <label class="switch">
 <input type="checkbox" id="permAssembly" checked>
@@ -1038,7 +1300,7 @@ accept="application/pdf">
 <div class="card rename-card">
 <label>Output File Name</label>
 <input type="text" id="renameInput" placeholder="File name">
-<small>.Protected PDFBoon</small>
+<small>Saved as "&lt;name&gt; locked PDFBoon.pdf"</small>
 </div>
 
 </div>
@@ -1075,7 +1337,7 @@ accept="application/pdf">
 <a class="result-download" id="downloadBtn"><i class="fa-solid fa-download" style="margin-right:8px;"></i>Download</a>
 </div>
 
-<p class="success-note">Password has been applied Successfully. Remember this,  it could be not forgot and reset.</p>
+<p class="success-note">Password has been applied successfully. Remember it — it cannot be recovered or reset if lost.</p>
 
 </div>
 
@@ -1083,69 +1345,68 @@ accept="application/pdf">
 
 <footer class="footer">
 
-    <div class="footer-container">
+    <div class="footer-simple">
 
-        <div class="footer-grid">
-
-            <!-- LEFT -->
-            <div class="footer-left">
-
-                <div class="footer-brand">
-                    <img src="images/logo.png">
-                    <div>
-                        <h2 class="footer-title">PDFBoon</h2>
-                        <p class="footer-subtitle">Fast PDF Toolkit</p>
-                    </div>
-                </div>
-
-                <p class="footer-text">
-                    Fast, secure and modern PDF tools that work directly in your browser.
-                </p>
-
+        <div class="footer-brand">
+            <img src="images/logo.png">
+            <div>
+                <h2 class="footer-title">PDFBoon</h2>
+                <p class="footer-subtitle">Fast PDF Toolkit</p>
             </div>
+        </div>
 
-            <!-- LINKS -->
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <a href="index.html">Home</a>
-                <a href="create.html">IMG to PDF</a>
-                <a href="merge.html">Merge Pdf</a>
-              <a href="compress.html">Compress Pdf</a>
-                <a href="split.html">Split Pdf</a>
-                
-                <a href="contact.html">Contact</a>
-                <a href="about.html">About</a>
-            </div>
+        <div class="footer-simple-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">All Tools</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
 
-            <!-- RIGHT -->
-            <div class="footer-right">
-
-                <h3>Developer</h3>
-                <p class="developer">Designed & Developed by Vikshant Kralta</p>
-
-                <div class="footer-social">
-                    <a href="not.html"><i class="fab fa-facebook"></i></a>
-                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
-                    <a href="not.html"><i class="fab fa-instagram"></i></a>
-                </div>
-
-                <p class="copyright">© 2026 All Rights Reserved <br> Last Updated on: July 19, 2026</p>
-
-            </div>
-
+        <div class="footer-social">
+            <a href="not.html"><i class="fab fa-facebook"></i></a>
+            <a href="not.html"><i class="fab fa-linkedin"></i></a>
+            <a href="not.html"><i class="fab fa-instagram"></i></a>
         </div>
 
     </div>
 
+    <div class="footer-bottom">
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+        <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
+    </div>
+
 </footer>
 
-
-  <script>
+<script>
 
 /* Mobile navbar toggle */
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('active');
 });
+
+/* Tools dropdown */
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+/* ============ LOCK LOGIC ============ */
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -1166,6 +1427,7 @@ const matchMsg = document.getElementById('matchMsg');
 
 const advancedToggle = document.getElementById('advancedToggle');
 const advancedPanel = document.getElementById('advancedPanel');
+const ownerNote = document.getElementById('ownerNote');
 
 const renameInput = document.getElementById('renameInput');
 
@@ -1232,7 +1494,7 @@ async function loadFile(file) {
   try {
     pdfDoc = await pdfjsLib.getDocument({ data: currentPdfBytes.slice(0) }).promise;
   } catch (err) {
-    showError('It seems invalid file, maybe already encrypted. Try different file!');
+    showError('This file looks invalid, or is already password protected. Try a different file!');
     currentFile = null;
     currentPdfBytes = null;
     updateLockBtnState();
@@ -1294,11 +1556,11 @@ userPasswordInput.addEventListener('input', () => {
 
   if (!pwd) {
     pct = 0; label = 'Password strength';
-  } else if (score <= 4) {
+  } else if (score <= 1) {
     pct = 25; color = 'var(--danger)'; label = 'Weak password';
-  } else if (score <= 6) {
+  } else if (score <= 2) {
     pct = 50; color = 'var(--warn)'; label = 'Fair password';
-  } else if (score <= 8) {
+  } else if (score <= 3) {
     pct = 75; color = 'var(--teal)'; label = 'Good password';
   } else {
     pct = 100; color = 'var(--success)'; label = 'Strong password';
@@ -1310,6 +1572,7 @@ userPasswordInput.addEventListener('input', () => {
   strengthLabel.style.color = color;
 
   checkMatch();
+  updateOwnerNote();
   updateLockBtnState();
 });
 
@@ -1337,6 +1600,35 @@ function checkMatch() {
   }
 }
 
+/* ---------- Owner Password Note ---------- */
+
+function updateOwnerNote() {
+  const userPwd = userPasswordInput.value;
+  const ownerPwd = ownerPasswordInput.value;
+
+  if (ownerPwd && ownerPwd === userPwd) {
+    ownerNote.classList.add('same-warning');
+    ownerNote.innerHTML = `
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <div><strong>Owner password matches the document password.</strong> That means anyone who opens the file gets full permissions automatically — the toggles below won't restrict anything. Use a different owner password to actually enforce these limits.</div>
+    `;
+  } else if (!ownerPwd) {
+    ownerNote.classList.remove('same-warning');
+    ownerNote.innerHTML = `
+      <i class="fa-solid fa-circle-info"></i>
+      <div><strong>Why set an owner password?</strong> If you leave it blank, the document password doubles as the owner password — so anyone who opens the file automatically gets full permissions, and the toggles below won't really restrict anything. Set a separate owner password to make the permission limits below actually stick for people opening the file with the document password only.</div>
+    `;
+  } else {
+    ownerNote.classList.remove('same-warning');
+    ownerNote.innerHTML = `
+      <i class="fa-solid fa-circle-check" style="color:var(--success);"></i>
+      <div><strong>Good — a separate owner password is set.</strong> Anyone opening with the document password will be limited by the permissions below; the owner password grants full, unrestricted access.</div>
+    `;
+  }
+}
+
+ownerPasswordInput.addEventListener('input', updateOwnerNote);
+
 /* ---------- Advanced Panel ---------- */
 
 advancedToggle.addEventListener('click', () => {
@@ -1349,11 +1641,8 @@ advancedToggle.addEventListener('click', () => {
 function updateLockBtnState() {
   const pwd = userPasswordInput.value;
   const confirm = confirmPasswordInput.value;
-  lockBtn.disabled = !(currentPdfBytes && pwd && pwd === confirm && pwd.length >= 4);
+  lockBtn.disabled = !(currentPdfBytes && pwd && pwd === confirm && pwd.length >= 6);
 }
-
-userPasswordInput.addEventListener('input', updateLockBtnState);
-confirmPasswordInput.addEventListener('input', updateLockBtnState);
 
 /* ---------- Error Handling ---------- */
 
@@ -1376,17 +1665,17 @@ lockBtn.addEventListener('click', async () => {
   const ownerPwd = ownerPasswordInput.value.trim();
 
   if (!currentPdfBytes) {
-    showError('Please, upload a file first.');
+    showError('Please upload a file first.');
     return;
   }
 
   if (!userPwd || userPwd.length < 6) {
-    showError('Password must be minimum 6 characters');
+    showError('Password must be at least 6 characters.');
     return;
   }
 
   if (userPwd !== confirmPwd) {
-    showError('Passwords are not matching. Check later!');
+    showError('Passwords do not match. Please check and try again.');
     return;
   }
 
@@ -1436,11 +1725,11 @@ lockBtn.addEventListener('click', async () => {
     console.error(err);
     loader.style.display = 'none';
     lockBtn.disabled = false;
-    showError('Oops! Something went wrong.');
+    showError('Oops! Something went wrong while encrypting this file.');
   }
 });
 
 </script>
 
 </body>
-</html> 
+</html>
