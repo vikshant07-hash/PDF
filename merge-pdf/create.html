@@ -1,534 +1,909 @@
+
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/logo.png">
-  <title>IMG to PDF - PDFBoon</title>
+  <title>Image to PDF - PDFBoon</title>
 
-<meta name="description" content="Professional online PDF tools website to manage PDFs easily.">
+<meta name="description" content="Convert JPG, PNG or WEBP images into a professional PDF, free and 100% in your browser.">
 
-<meta name="keywords" content="PDF Tools, pdfboon, Img to Pdf, create pdf, PDFBoon, Online PDF Tools">
+<meta name="keywords" content="PDF Tools, pdfboon, Img to Pdf, create pdf, PDFBoon, vikshant, vikshant kralta,  Online PDF Tools">
 
 <meta name="author" content="Vikshant Kralta">
 
 <meta name="robots" content="index, follow">
-  
-<link rel="preconnect" href="https://fonts.googleapis.com">
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-
-
-
-  
 <style>
-  :root{
-    --navy: #0B2545;
-    --navy-2: #14335E;
-    --navy-soft: #3A5578;
-    --text-body: #5A6B85;
-    --text-muted: #8493AA;
-    --blue: #3E7FC1;
-    --blue-dark: #1B4F8C;
-    --blue-pale: #E4EEF7;
-    --green: #2E8B6F;
-    --green-pale: #E4F4EE;
-    --card-bg: #FFFFFF;
-    --card-border: #E1E8F0;
-    --page-bg-top: #DCE9F5;
-    --page-bg-bottom: #F6F9FC;
-    --radius: 14px;
-    --font-display: 'Fraunces', serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-  }
-  *{box-sizing:border-box;}
-  html{color-scheme:light;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--page-bg-bottom);
-    color:var(--navy);
-    font-family:var(--font-body);
-    min-height:100vh;
-    line-height:1.5;
-  }
-  a{color:inherit;text-decoration:none;}
 
-  /* ---------- NAVBAR ---------- */
-  .navbar{
-    position:sticky;top:0;z-index:50;
-    background:rgba(255,255,255,0.88);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--card-border);
-  }
-  .nav-inner{
-    max-width:1180px;margin:0 auto;padding:14px 24px;
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-  }
-  .nav-brand{display:flex;align-items:center;gap:12px;}
-  .nav-logo{
-    width:38px;height:38px;border-radius:50%;
-    background:linear-gradient(135deg,#4C8FD1,#1B4F8C);
-    display:flex;align-items:center;justify-content:center;
-    flex:none;box-shadow:0 2px 6px rgba(27,79,140,0.35);
-  }
-  .nav-logo svg{width:18px;height:18px;}
-  .nav-brand-text h1{
-    font-family:var(--font-display);font-weight:700;font-size:18px;
-    margin:0;letter-spacing:-0.01em;color:var(--navy);
-  }
-  .nav-brand-text p{
-    margin:0;font-size:10.5px;color:var(--text-muted);
-    font-family:var(--font-mono);letter-spacing:0.03em;
-  }
-  .nav-links{display:flex;align-items:center;gap:4px;}
-  .nav-links a{
-    font-size:13.5px;color:var(--navy-soft);padding:8px 12px;
-    border-radius:8px;transition:all .15s ease;font-weight:500;
-  }
-  .nav-links a:hover{color:var(--blue-dark);background:var(--blue-pale);}
-  .nav-links a.active{color:var(--blue-dark);background:var(--blue-pale);}
-  .nav-toggle{display:none;background:none;border:1px solid var(--card-border);border-radius:7px;color:var(--navy);width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;}
-  @media (max-width:760px){
-    .nav-links{
-      position:absolute;top:100%;left:0;right:0;
-      flex-direction:column;align-items:stretch;
-      background:#fff;border-bottom:1px solid var(--card-border);
-      padding:8px;display:none;gap:2px;box-shadow:0 8px 16px rgba(11,37,69,0.08);
-    }
-    .nav-links.open{display:flex;}
-    .nav-links a{padding:11px 14px;}
-    .nav-toggle{display:flex;}
-  }
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --ink-muted:#8493aa;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --success:#10b981;
+  --success-dark:#0e9c6f;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+  --mono:'JetBrains Mono', monospace;
+  --radius:16px;
+}
 
-  /* ---------- HERO / TOP GRADIENT ---------- */
-  .top-gradient{
-    background:linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 620px);
-  }
-  .hero{max-width:1180px;margin:0 auto;padding:48px 24px 8px;text-align:center;}
-  .hero .eyebrow{
-    display:inline-flex;align-items:center;gap:6px;
-    font-family:var(--font-mono);font-size:11.5px;color:var(--blue-dark);
-    border:1px solid rgba(59,127,193,0.3);background:rgba(255,255,255,0.7);
-    border-radius:100px;padding:5px 12px;margin-bottom:18px;
-  }
-  .hero .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
-  .hero h2{
-    font-family:var(--font-display);font-weight:700;
-    font-size:clamp(28px,4.4vw,42px);margin:0 0 12px;letter-spacing:-0.01em;color:var(--navy);
-  }
-  .hero p{color:var(--text-body);font-size:15px;max-width:520px;margin:0 auto;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 60px;}
+body{
+font-family:var(--sans);
+background:
+  radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+  radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+  var(--paper);
+color:var(--ink);
+}
 
-  /* ---------- DROPZONE (first, full width) ---------- */
-  .dropzone{
-    border:2px dashed var(--blue);
-    border-radius:20px;
-    padding:52px 24px;
-    text-align:center;cursor:pointer;position:relative;
-    transition:border-color .2s ease, background .2s ease;
-    background:var(--card-bg);
-    margin-bottom:28px;
-    box-shadow:0 10px 30px rgba(11,37,69,0.06);
+a{ text-decoration:none; color:inherit; }
+
+.container{
+max-width:1180px;
+margin:auto;
+padding:0 20px;
+}
+
+/* ============ NAVBAR ============ */
+.navbar{
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-container{
+  max-width:1180px;
+  margin-inline:auto;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:nowrap;
+}
+.logo-wrapper{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.logo-box{
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  flex-shrink:0;
+}
+.logo-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.logo-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.15rem;
+  color:var(--ink);
+  line-height:1.2;
+  white-space:nowrap;
+}
+.logo-subtitle{
+  font-size:0.75rem;
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:26px;
+}
+.nav-link{
+  position:relative;
+  font-size:0.94rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  padding:6px 2px;
+  transition:color .2s ease;
+  white-space:nowrap;
+}
+.nav-link::after{
+  content:"";
+  position:absolute; left:0; bottom:0;
+  width:0; height:2px;
+  background:var(--stamp);
+  transition:width .25s ease;
+}
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
+.nav-link.active-link{color:var(--ink);}
+.nav-link.active-link::after{width:100%;}
+
+.current-tool-pill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(37,99,235,0.08);
+  color:var(--stamp-dark);
+  padding:7px 14px;
+  border-radius:100px;
+  font-size:0.85rem;
+  font-weight:700;
+  white-space:nowrap;
+}
+.current-tool-pill i{font-size:0.75rem;}
+
+.nav-tools-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--stamp);
+  color:#fff !important;
+  padding:10px 18px;
+  border-radius:12px;
+  font-size:0.9rem;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 0 var(--stamp-dark);
+  transition:transform .15s ease;
+  white-space:nowrap;
+  font-family:var(--sans);
+}
+.nav-tools-btn:hover{transform:translateY(-2px);}
+.nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+.nav-tools-btn .dropdown-arrow{
+  font-size:0.68rem;
+  transition:transform .2s ease;
+}
+.nav-item.open .nav-tools-btn .dropdown-arrow{
+  transform:rotate(180deg);
+}
+
+.mobile-menu{
+  display:none;
+  width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border-radius:8px;
+  color:var(--ink);
+  font-size:1.1rem;
+  flex-shrink:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+}
+.mobile-menu:hover{background:rgba(37,99,235,0.08);}
+
+@media (max-width:920px){
+  .nav-links{
+    position:fixed;
+    inset:70px 0 auto 0;
+    flex-direction:column;
+    align-items:flex-start;
+    background:var(--paper-raised);
+    padding:20px 24px;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateY(-130%);
+    opacity:0;
+    transition:transform .3s ease, opacity .3s ease;
   }
-  .dropzone.drag{border-color:var(--blue-dark);background-color:var(--blue-pale);}
-  .dropzone svg{width:46px;height:46px;margin-bottom:16px;color:var(--blue);}
-  .dropzone h3{font-family:var(--font-display);font-weight:700;font-size:22px;margin:0 0 8px;color:var(--navy);}
-  .dropzone p{margin:0;color:var(--text-muted);font-size:13.5px;}
-  .dropzone .browse-hint{color:var(--blue-dark);font-weight:600;}
-  .dropzone input{display:none;}
+  .nav-links.active{
+    transform:translateY(0);
+    opacity:1;
+  }
+  .mobile-menu{display:flex;}
+  .logo-subtitle{display:none;}
+  .nav-tools-btn{width:100%; justify-content:space-between;}
+  .current-tool-pill{width:100%; justify-content:center;}
+}
 
-  .dropzone-mini{
+/* ============ NAV TOOLS DROPDOWN ============ */
+.nav-item{ position:relative; }
+
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 14px);
+  left:50%;
+  transform:translateX(-50%);
+  min-width:250px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:10px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:999;
+}
+
+.nav-item.open .dropdown-menu{ display:flex; }
+
+.dropdown-category{
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:10px 12px 4px;
+}
+
+.dropdown-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:10px;
+  font-size:0.88rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  transition:background .15s ease, color .15s ease;
+  white-space:nowrap;
+}
+
+.dropdown-link i{
+  width:16px;
+  text-align:center;
+  color:var(--stamp);
+  font-size:0.85rem;
+}
+
+.dropdown-link:hover{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+}
+
+.dropdown-link.active{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+  font-weight:700;
+}
+
+.dropdown-link.view-all{
+  margin-top:4px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  border-radius:10px;
+  font-weight:600;
+  color:var(--stamp);
+}
+
+.dropdown-link.view-all i{color:var(--stamp);}
+
+@media (max-width:920px){
+  .nav-item{width:100%;}
+  .dropdown-menu{
+    position:static;
+    transform:none;
+    min-width:0;
+    width:100%;
+    box-shadow:none;
+    border:none;
+    background:rgba(37,99,235,0.04);
+    margin-top:10px;
+    padding:6px;
     display:none;
-    align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-    border:1px dashed var(--blue);border-radius:14px;
-    padding:14px 18px;margin-bottom:28px;background:var(--card-bg);
+    flex-direction:column;
   }
-  .dropzone-mini.active{display:flex;}
-  .dropzone-mini-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-body);}
-  .dropzone-mini-left svg{width:18px;height:18px;color:var(--blue);}
+  .nav-item.open .dropdown-menu{ display:flex; }
+}
 
-  /* ---------- SECTION LABEL ---------- */
-  .section-label{
-    font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.05em;
-    text-transform:uppercase;color:var(--text-muted);margin:0 0 14px;
-    display:flex;align-items:center;gap:8px;
-  }
-  .section-label::before{content:"";width:3px;height:13px;background:var(--blue);border-radius:2px;display:inline-block;}
+/* ============ BREADCRUMB STATUS BAR ============ */
+.breadcrumb-bar{
+background:var(--paper-raised);
+border-bottom:1px solid var(--line);
+}
 
-  /* ---------- SETTINGS CARDS ---------- */
-  .settings-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-    gap:16px;margin-bottom:28px;
-  }
-  .setting-card{
-    background:var(--card-bg);border:1px solid var(--card-border);
-    border-radius:var(--radius);padding:16px 18px;
-    box-shadow:0 4px 14px rgba(11,37,69,0.04);
-  }
-  .setting-card label{
-    display:block;font-size:12.5px;font-weight:600;color:var(--navy);
-    margin-bottom:10px;
-  }
-  select, input[type="text"]{
-    width:100%;background:#F7FAFD;border:1px solid var(--card-border);
-    color:var(--navy);border-radius:9px;padding:9px 11px;font-family:var(--font-body);
-    font-size:13.5px;outline:none;transition:border-color .15s ease;
-    appearance:none;-webkit-appearance:none;
-  }
-  select{
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1L5 5L9 1' stroke='%238493AA' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-    background-repeat:no-repeat;background-position:right 11px center;padding-right:30px;
-  }
-  select:focus, input[type="text"]:focus{border-color:var(--blue);}
+.breadcrumb-inner{
+max-width:1180px;
+margin:auto;
+padding:12px 24px;
+display:flex;
+align-items:center;
+gap:10px;
+font-size:0.85rem;
+color:var(--ink-soft);
+}
 
-  .radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .radio-opt{
-    border:1px solid var(--card-border);background:#F7FAFD;border-radius:9px;
-    padding:8px 10px;font-size:12.5px;cursor:pointer;text-align:center;
-    transition:all .15s ease;user-select:none;color:var(--navy-soft);
-  }
-  .radio-opt.active{border-color:var(--blue);background:var(--blue-pale);color:var(--blue-dark);font-weight:600;}
+.breadcrumb-inner a{
+display:flex;
+align-items:center;
+gap:6px;
+color:var(--ink-soft);
+transition:color .2s ease;
+}
 
-  input[type="range"]{width:100%;accent-color:var(--blue);height:4px;background:transparent;}
-  .range-row{display:flex;align-items:center;gap:10px;}
-  .range-row span{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);min-width:34px;text-align:right;}
-  .hint{font-size:11.5px;color:var(--text-muted);margin-top:8px;line-height:1.5;}
+.breadcrumb-inner a:hover{color:var(--stamp);}
 
-  .summary-card{
-    background:var(--card-bg);border:1px solid var(--card-border);
-    border-radius:var(--radius);padding:18px 20px;margin-bottom:28px;
-    display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;
-    box-shadow:0 4px 14px rgba(11,37,69,0.04);
-  }
-  .summary-stats{display:flex;gap:26px;flex-wrap:wrap;}
-  .summary-stat{text-align:left;}
-  .summary-stat .num{font-family:var(--font-mono);font-size:17px;font-weight:600;color:var(--navy);}
-  .summary-stat .lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.03em;}
+.breadcrumb-inner i.fa-chevron-right{
+font-size:0.65rem;
+color:var(--line);
+}
 
-  .btn{
-    border:none;border-radius:10px;padding:13px 26px;font-family:var(--font-body);
-    font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;
-    justify-content:center;gap:8px;transition:transform .1s ease, opacity .15s ease, background .15s ease;
-    white-space:nowrap;
-  }
-  .btn:active{transform:scale(0.98);}
-  .btn:disabled{opacity:0.4;cursor:not-allowed;}
-  .btn-primary{background:var(--blue-dark);color:#fff;box-shadow:0 6px 16px rgba(27,79,140,0.28);}
-  .btn-primary:hover:not(:disabled){background:var(--navy);}
+.breadcrumb-current{
+display:flex;
+align-items:center;
+gap:6px;
+color:var(--stamp-dark);
+font-weight:700;
+}
 
-  .progress-wrap{flex:1;min-width:200px;display:none;align-items:center;gap:12px;}
-  .progress-wrap.active{display:flex;}
-  .progress-track{flex:1;height:6px;background:var(--blue-pale);border-radius:100px;overflow:hidden;}
-  .progress-fill{height:100%;width:0%;background:var(--blue);transition:width .2s ease;}
-  .progress-label{font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted);min-width:80px;}
+/* ---------- HERO ---------- */
+.hero{max-width:1180px;margin:0 auto;padding:48px 24px 8px;text-align:center;}
+.hero .eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:11.5px;color:var(--stamp-dark);
+  border:1px solid rgba(37,99,235,0.25);background:var(--paper-raised);
+  border-radius:100px;padding:6px 14px;margin-bottom:18px;
+  box-shadow:var(--shadow);
+}
+.hero .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--success);}
+.hero h2{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(28px,4.4vw,42px);margin:0 0 12px;letter-spacing:-0.01em;color:var(--ink);
+}
+.hero p{color:var(--ink-soft);font-size:15px;max-width:520px;margin:0 auto;}
 
-  .download-box{
-    display:none;align-items:center;justify-content:space-between;
-    background:var(--green-pale);border:1px solid rgba(46,139,111,0.3);
-    border-radius:var(--radius);padding:16px 20px;margin-bottom:28px;gap:12px;flex-wrap:wrap;
-  }
-  .download-box.active{display:flex;}
-  .download-box .info{display:flex;align-items:center;gap:10px;}
-  .download-box svg{width:22px;height:22px;color:var(--green);flex:none;}
-  .download-box h4{margin:0;font-size:14px;font-weight:600;color:var(--navy);}
-  .download-box p{margin:2px 0 0;font-size:12px;color:var(--text-body);font-family:var(--font-mono);}
-  .download-btn{
-    background:var(--green);color:#fff;font-weight:600;border:none;border-radius:8px;
-    padding:10px 18px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;
-  }
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px 60px;}
 
-  /* ---------- PREVIEW (last section) ---------- */
-  .preview-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
-  .btn-sm{
-    padding:7px 12px;font-size:12px;border-radius:7px;border:1px solid var(--card-border);
-    background:#fff;color:var(--text-body);cursor:pointer;font-family:var(--font-body);
-  }
-  .btn-sm:hover{color:var(--blue-dark);border-color:var(--blue);}
+/* ---------- DROPZONE ---------- */
+.dropzone{
+  border:2px dashed var(--stamp);
+  border-radius:24px;
+  padding:52px 24px;
+  text-align:center;cursor:pointer;position:relative;
+  transition:border-color .2s ease, background .2s ease;
+  background:var(--paper-raised);
+  margin-bottom:28px;
+  box-shadow:var(--shadow);
+}
+.dropzone.drag{border-color:var(--stamp-dark);background-color:rgba(37,99,235,0.06);}
+.dropzone svg{width:46px;height:46px;margin-bottom:16px;color:var(--stamp);}
+.dropzone h3{font-family:var(--serif);font-weight:700;font-size:24px;margin:0 0 8px;color:var(--ink);}
+.dropzone p{margin:0;color:var(--ink-muted);font-size:13.5px;}
+.dropzone .browse-hint{color:var(--stamp-dark);font-weight:600;}
+.dropzone input{display:none;}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px;}
+.dropzone-mini{
+  display:none;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  border:1px dashed var(--stamp);border-radius:14px;
+  padding:14px 18px;margin-bottom:28px;background:var(--paper-raised);
+}
+.dropzone-mini.active{display:flex;}
+.dropzone-mini-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft);}
+.dropzone-mini-left svg{width:18px;height:18px;color:var(--stamp);}
 
-  .page-card{
-    background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;
-    padding:10px 10px 12px;position:relative;cursor:grab;
-    box-shadow:0 6px 16px rgba(11,37,69,0.08);
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .page-card:hover{transform:translateY(-3px);}
-  .page-card.dragging{opacity:0.35;}
-  .page-card.drop-target{outline:2px dashed var(--blue);outline-offset:3px;}
+/* ---------- SECTION LABEL ---------- */
+.section-label{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:0.05em;
+  text-transform:uppercase;color:var(--ink-muted);margin:0 0 14px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::before{content:"";width:3px;height:13px;background:var(--stamp);border-radius:2px;display:inline-block;}
 
-  .page-thumb-frame{
-    width:100%;background:#fff;border:1px solid #EDF2F8;
-    position:relative;overflow:hidden;border-radius:4px;
-  }
-  .page-thumb-frame img{position:absolute;display:block;object-fit:fill;}
+/* ---------- SETTINGS CARDS ---------- */
+.settings-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:16px;margin-bottom:28px;
+}
+.setting-card{
+  background:var(--paper-raised);border:1px solid var(--line);
+  border-radius:var(--radius);padding:18px 20px;
+  box-shadow:var(--shadow);
+}
+.setting-card label{
+  display:block;font-size:0.85rem;font-weight:600;color:var(--ink);
+  margin-bottom:10px;
+}
+select, input[type="text"]{
+  width:100%;background:#fff;border:1px solid var(--line);
+  color:var(--ink);border-radius:10px;padding:12px 14px;font-family:var(--sans);
+  font-size:0.9rem;outline:none;transition:border-color .15s ease, box-shadow .15s ease;
+  appearance:none;-webkit-appearance:none;
+}
+select{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1L5 5L9 1' stroke='%238493AA' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:32px;
+}
+select:focus, input[type="text"]:focus{border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15);}
 
-  .page-tag{
-    position:absolute;top:-8px;left:-8px;background:var(--blue-dark);color:#fff;
-    font-family:var(--font-mono);font-size:11px;font-weight:600;width:24px;height:24px;
-    border-radius:50%;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 3px 8px rgba(27,79,140,0.4);z-index:2;
-  }
-  .page-meta{
-    display:flex;justify-content:space-between;align-items:center;margin-top:9px;
-    font-family:var(--font-mono);font-size:10px;color:var(--text-muted);
-  }
-  .page-actions{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s ease;z-index:3;}
-  .page-card:hover .page-actions{opacity:1;}
-  .icon-btn{
-    width:24px;height:24px;border-radius:6px;background:rgba(11,37,69,0.75);
-    border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;
-  }
-  .icon-btn:hover{background:var(--blue-dark);}
-  .icon-btn svg{width:13px;height:13px;}
+.radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.radio-opt{
+  border:1px solid var(--line);background:#fff;border-radius:10px;
+  padding:9px 10px;font-size:0.8rem;cursor:pointer;text-align:center;
+  transition:all .15s ease;user-select:none;color:var(--ink-soft);
+}
+.radio-opt.active{border-color:var(--stamp);background:rgba(37,99,235,0.08);color:var(--stamp-dark);font-weight:600;}
 
-  .empty-hint{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px;display:none;
-    border:1px dashed var(--card-border);border-radius:var(--radius);background:var(--card-bg);}
+input[type="range"]{width:100%;accent-color:var(--stamp);height:4px;background:transparent;}
+.range-row{display:flex;align-items:center;gap:10px;}
+.range-row span{font-family:var(--mono);font-size:12px;color:var(--ink-muted);min-width:34px;text-align:right;}
+.hint{font-size:11.5px;color:var(--ink-muted);margin-top:8px;line-height:1.5;}
 
-  /* ---------- FOOTER ---------- */
-  footer.site-footer{background:var(--navy);margin-top:20px;}
-  .footer-inner{
-    max-width:1180px;margin:0 auto;padding:44px 24px 24px;
-    display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;
-  }
-  @media (max-width:760px){.footer-inner{grid-template-columns:1fr;gap:26px;}}
-  .footer-brand{display:flex;align-items:flex-start;gap:12px;}
-  .footer-brand-text h3{font-family:var(--font-display);font-size:17px;font-weight:700;margin:0 0 4px;color:#fff;}
-  .footer-brand-text p{margin:0;color:#AFC0D6;font-size:13px;max-width:280px;}
-  .footer-col h4{
-    font-family:var(--font-mono);font-size:11px;text-transform:uppercase;
-    letter-spacing:0.05em;color:#7891B0;margin:0 0 14px;
-  }
-  .footer-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
-  .footer-col a{font-size:13.5px;color:#DCE6F2;transition:color .15s ease;}
-  .footer-col a:hover{color:#fff;}
-  .footer-social{display:flex;gap:10px;margin-top:14px;}
-  .footer-social a{
-    width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .footer-social a:hover{background:rgba(255,255,255,0.16);}
-  .footer-social svg{width:15px;height:15px;color:#fff;}
-  .footer-bottom{
-    border-top:1px solid rgba(255,255,255,0.1);max-width:1180px;margin:0 auto;
-    padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
-    flex-wrap:wrap;gap:8px;font-size:12px;color:#7891B0;
-  }
+.summary-card{
+  background:var(--paper-raised);border:1px solid var(--line);
+  border-radius:var(--radius);padding:20px 22px;margin-bottom:28px;
+  display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;
+  box-shadow:var(--shadow);
+}
+.summary-stats{display:flex;gap:26px;flex-wrap:wrap;}
+.summary-stat{text-align:left;}
+.summary-stat .num{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--ink);}
+.summary-stat .lbl{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;}
 
-  ::selection{background:var(--blue);color:#fff;}
+.btn{
+  border:none;border-radius:12px;padding:14px 26px;font-family:var(--sans);
+  font-weight:600;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:8px;transition:transform .15s ease, opacity .15s ease, background .15s ease;
+  white-space:nowrap;
+}
+.btn:active{transform:translateY(1px);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-primary{background:var(--stamp);color:#fff;box-shadow:0 4px 0 var(--stamp-dark);}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);}
 
-  @media (max-width:520px){
-    .dropzone{padding:38px 16px;}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
-    .summary-card{flex-direction:column;align-items:stretch;}
-    .summary-stats{justify-content:space-between;gap:12px;}
-    .btn-primary{width:100%;}
-  }
+.progress-wrap{flex:1;min-width:200px;display:none;align-items:center;gap:12px;}
+.progress-wrap.active{display:flex;}
+.progress-track{flex:1;height:8px;background:var(--line);border-radius:100px;overflow:hidden;}
+.progress-fill{height:100%;width:0%;background:linear-gradient(to right, var(--stamp), var(--teal));transition:width .2s ease;}
+.progress-label{font-family:var(--mono);font-size:11.5px;color:var(--ink-muted);min-width:80px;}
+
+.download-box{
+  display:none;align-items:center;justify-content:space-between;
+  background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);
+  border-radius:var(--radius);padding:18px 22px;margin-bottom:28px;gap:12px;flex-wrap:wrap;
+}
+.download-box.active{display:flex;}
+.download-box .info{display:flex;align-items:center;gap:10px;}
+.download-box svg{width:22px;height:22px;color:var(--success-dark);flex:none;}
+.download-box h4{margin:0;font-size:0.95rem;font-weight:700;color:var(--ink); font-family:var(--serif);}
+.download-box p{margin:2px 0 0;font-size:12px;color:var(--ink-soft);font-family:var(--mono);}
+.download-btn{
+  background:var(--success);color:#fff;font-weight:600;border:none;border-radius:10px;
+  padding:11px 20px;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;text-decoration:none;
+  box-shadow:0 4px 0 var(--success-dark);
+  transition:transform .15s ease;
+}
+.download-btn:hover{transform:translateY(-2px);}
+
+/* ---------- PREVIEW ---------- */
+.preview-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.btn-sm{
+  padding:8px 14px;font-size:0.78rem;border-radius:9px;border:1px solid var(--line);
+  background:#fff;color:var(--ink-soft);cursor:pointer;font-family:var(--sans);font-weight:600;
+  transition:.2s;
+}
+.btn-sm:hover{color:var(--stamp-dark);border-color:var(--stamp);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px;}
+
+.page-card{
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;
+  padding:10px 10px 12px;position:relative;cursor:grab;
+  box-shadow:var(--shadow);
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.page-card:hover{transform:translateY(-4px); border-color:var(--stamp);}
+.page-card.dragging{opacity:0.35;}
+.page-card.drop-target{outline:2px dashed var(--stamp);outline-offset:3px;}
+
+.page-thumb-frame{
+  width:100%;background:#fff;border:1px solid var(--line);
+  position:relative;overflow:hidden;border-radius:8px;
+}
+.page-thumb-frame img{position:absolute;display:block;object-fit:fill;}
+
+.page-tag{
+  position:absolute;top:-8px;left:-8px;background:var(--stamp-dark);color:#fff;
+  font-family:var(--mono);font-size:11px;font-weight:600;width:24px;height:24px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 8px rgba(27,79,140,0.4);z-index:2;
+}
+.page-meta{
+  display:flex;justify-content:space-between;align-items:center;margin-top:9px;
+  font-family:var(--mono);font-size:10px;color:var(--ink-muted);
+}
+.page-actions{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s ease;z-index:3;}
+.page-card:hover .page-actions{opacity:1;}
+.icon-btn{
+  width:26px;height:26px;border-radius:7px;background:rgba(13,37,69,0.75);
+  border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.icon-btn:hover{background:var(--stamp-dark);}
+.icon-btn svg{width:13px;height:13px;}
+
+.empty-hint{text-align:center;padding:40px 20px;color:var(--ink-muted);font-size:13px;display:none;
+  border:1px dashed var(--line);border-radius:var(--radius);background:var(--paper-raised);}
+
+/* ============ SIMPLE FOOTER ============ */
+.footer{
+  background:var(--ink);
+  color:#dfe6f2;
+  margin-top:60px;
+  padding:40px 20px;
+}
+
+.footer-simple{
+max-width:1180px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:20px;
+padding-bottom:24px;
+border-bottom:1px solid rgba(255,255,255,0.12);
+}
+
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.footer-brand img{
+  width:40px; height:40px;
+  border-radius:10px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+.footer-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.05rem;
+  color:#fff;
+}
+.footer-subtitle{
+  font-size:0.76rem;
+  color:#9fb0cc;
+}
+
+.footer-simple-links{
+display:flex;
+align-items:center;
+gap:22px;
+flex-wrap:wrap;
+}
+
+.footer-simple-links a{
+font-size:0.88rem;
+color:#c8d2e6;
+transition:color .2s ease;
+}
+
+.footer-simple-links a:hover{color:#fff;}
+
+.footer-social{
+  display:flex;
+  gap:10px;
+}
+.footer-social a{
+  width:36px; height:36px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.footer-social a:hover{
+  background:var(--stamp);
+  border-color:var(--stamp);
+  transform:translateY(-3px);
+}
+
+.footer-bottom{
+max-width:1180px;
+margin:20px auto 0;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.copyright{
+  font-size:0.78rem;
+  color:#8494b5;
+  line-height:1.6;
+}
+
+@media(max-width:600px){
+  .footer-simple{flex-direction:column; text-align:center; justify-content:center;}
+  .footer-bottom{flex-direction:column; text-align:center; justify-content:center;}
+}
+
+::selection{background:var(--stamp);color:#fff;}
+
+@media (max-width:520px){
+  .dropzone{padding:38px 16px;}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+  .summary-card{flex-direction:column;align-items:stretch;}
+  .summary-stats{justify-content:space-between;gap:12px;}
+  .btn-primary{width:100%;}
+}
+
 </style>
 </head>
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- NAVBAR -->
 <nav class="navbar">
-  <div class="nav-inner">
-    <div class="nav-brand">
-      <div class="nav-logo">
-        <img src="https://vikshant.pages.dev/images/logo.png" alt="logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;">
-      </div>
-      <div class="nav-brand-text">
-        <h1>PDFBoon</h1>
-        
-      </div>
+    <div class="nav-container">
+
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image" alt="Logo">
+            </div>
+
+            <div>
+                <h2 class="logo-title">PDFBoon</h2>
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">Home</a>
+
+            <div class="current-tool-pill"><i class="fa-solid fa-images"></i> Image to PDF</div>
+
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
+
+                    <div class="dropdown-category">Organize PDF</div>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+
+                    <div class="dropdown-category">Optimize PDF</div>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+
+                    <div class="dropdown-category">Convert PDF</div>
+                    <a href="create.html" class="dropdown-link active"><i class="fa-solid fa-images"></i> Image to PDF</a>
+
+                    <div class="dropdown-category">Security</div>
+                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+
+                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <button class="mobile-menu" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
     </div>
-    <button class="nav-toggle" id="navToggle" aria-label="Menu">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
-    <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
-      <a href="merge.html">Merge PDF</a>
-      <a href="compress.html">Compress PDF</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </div>
-  </div>
 </nav>
 
-<div class="top-gradient">
-  <!-- ================= HERO ================= -->
-  <section class="hero">
-    <div class="eyebrow"><span class="dot"></span>100% browser-side · no upload · no server</div>
-    <h2>Image to PDF converter</h2>
-    <p>Create professional PDF of your images  — In your browser, without upload in servers</p>
-  </section>
-
-  <div class="wrap">
-
-    <!-- ================= DROPZONE (first) ================= -->
-    <div class="dropzone" id="dropzone">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-      <h3>Drag &amp; Drop images</h3>
-      <p>or <span class="browse-hint">Click & Browse</span> — JPG, PNG, JPEG, WEBP</p>
-      <input type="file" id="fileInput" accept="image/*" multiple>
+<!-- BREADCRUMB STATUS BAR -->
+<div class="breadcrumb-bar">
+    <div class="breadcrumb-inner">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+<a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
+      <i class="fa-solid fa-chevron-right"></i>
+        <span class="breadcrumb-current"><i class="fa-solid fa-images"></i> Image to PDF</span>
     </div>
-
-    <div class="dropzone-mini" id="dropzoneMini">
-      <div class="dropzone-mini-left">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0L7 9m5-5l5 5"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-        <span>Click here to add images</span>
-      </div>
-      <button class="btn-sm" id="addMoreBtn">+ Add more</button>
-    </div>
-
-    <!-- ================= SETTINGS ================= -->
-    <p class="section-label">Page setup</p>
-    <div class="settings-grid">
-      <div class="setting-card">
-        <label for="pageSize">Page size</label>
-        <select id="pageSize">
-          <option value="a4">A4 (210 × 297 mm)</option>
-          <option value="letter">Letter</option>
-          <option value="legal">Legal</option>
-          <option value="fit">Fit to image</option>
-        </select>
-      </div>
-
-      <div class="setting-card" id="orientationField">
-        <label>Orientation</label>
-        <div class="radio-grid">
-          <div class="radio-opt active" data-group="orientation" data-value="auto">Auto</div>
-          <div class="radio-opt" data-group="orientation" data-value="portrait">Portrait</div>
-          <div class="radio-opt" data-group="orientation" data-value="landscape" style="grid-column:span 2;">Landscape</div>
-        </div>
-      </div>
-
-      <div class="setting-card">
-        <label>Image fit</label>
-        <div class="radio-grid">
-          <div class="radio-opt active" data-group="fit" data-value="contain">Fit page</div>
-          <div class="radio-opt" data-group="fit" data-value="stretch">Stretch</div>
-          <div class="radio-opt" data-group="fit" data-value="actual" style="grid-column:span 2;">Actual size</div>
-        </div>
-      </div>
-
-      <div class="setting-card">
-        <label>Margin</label>
-        <div class="radio-grid">
-          <div class="radio-opt active" data-group="margin" data-value="0">None</div>
-          <div class="radio-opt" data-group="margin" data-value="10">Small</div>
-          <div class="radio-opt" data-group="margin" data-value="20">Medium</div>
-          <div class="radio-opt" data-group="margin" data-value="30">Large</div>
-        </div>
-      </div>
-
-      <div class="setting-card">
-        <label for="quality">Image quality — <span id="qualityOut">90%</span></label>
-        <div class="range-row">
-          <input type="range" id="quality" min="30" max="100" value="90" step="5">
-        </div>
-        <p class="hint">Low quality = Low size</p>
-      </div>
-
-      <div class="setting-card">
-        <label for="filename">File name</label>
-        <input type="text" id="filename" value="converted-document PDFBoon" placeholder="file-name">
-      </div>
-    </div>
-
-    <!-- ================= SUMMARY + ACTION ================= -->
-    <div class="summary-card">
-      <div class="summary-stats">
-        <div class="summary-stat"><div class="num" id="statCount">0</div><div class="lbl">Pages</div></div>
-        <div class="summary-stat"><div class="num" id="statSize">0 KB</div><div class="lbl">Source size</div></div>
-        <div class="summary-stat"><div class="num" id="statEst">—</div><div class="lbl">Est. output</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:16px;flex:1;justify-content:flex-end;">
-        <div class="progress-wrap" id="progressWrap">
-          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-          <div class="progress-label" id="progressLabel">Processing…</div>
-                                    </div>
-
 </div>
-        <button class="btn btn-primary" id="generateBtn" disabled>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-          Create PDF
-        </button>
-      </div>
-    </div>
 
-    <div class="download-box" id="downloadBox">
-      <div class="info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-        <div>
-          <h4>Congratulations! Your PDF is Ready.</h4>
-          <p id="downloadMeta">—</p>
-        </div>
-      </div>
-      <a class="download-btn" id="downloadLink" download>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-        Download
-      </a>
-    </div>
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="eyebrow"><span class="dot"></span>100% browser-side · no upload · no server</div>
+  <h2>Image to PDF converter</h2>
+  <p>Create a professional PDF from your images — right in your browser, without uploading anything.</p>
+</section>
 
-    <!-- ================= PREVIEW (last, live) ================= -->
-    <p class="section-label">Preview — Show as your settings</p>
-    <div class="preview-toolbar">
-      <span style="font-size:12.5px;color:var(--text-muted);">Drag up/down to fix order.</span>
-      <button class="btn-sm" id="clearAllBtn">Clear all</button>
-    </div>
+<div class="wrap">
 
-    <div class="grid" id="grid"></div>
-    <div class="empty-hint" id="emptyState">No Image Uploaded Yet. Upload and try again!</div>
-
+  <!-- ================= DROPZONE (first) ================= -->
+  <div class="dropzone" id="dropzone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+    <h3>Drag &amp; Drop images</h3>
+    <p>or <span class="browse-hint">Click &amp; Browse</span> — JPG, PNG, JPEG, WEBP</p>
+    <input type="file" id="fileInput" accept="image/*" multiple>
   </div>
+
+  <div class="dropzone-mini" id="dropzoneMini">
+    <div class="dropzone-mini-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0L7 9m5-5l5 5"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <span>Click here to add images</span>
+    </div>
+    <button class="btn-sm" id="addMoreBtn">+ Add more</button>
+  </div>
+
+  <!-- ================= SETTINGS ================= -->
+  <p class="section-label">Page setup</p>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <label for="pageSize">Page size</label>
+      <select id="pageSize">
+        <option value="a4">A4 (210 × 297 mm)</option>
+        <option value="letter">Letter</option>
+        <option value="legal">Legal</option>
+        <option value="fit">Fit to image</option>
+      </select>
+    </div>
+
+    <div class="setting-card" id="orientationField">
+      <label>Orientation</label>
+      <div class="radio-grid">
+        <div class="radio-opt active" data-group="orientation" data-value="auto">Auto</div>
+        <div class="radio-opt" data-group="orientation" data-value="portrait">Portrait</div>
+        <div class="radio-opt" data-group="orientation" data-value="landscape" style="grid-column:span 2;">Landscape</div>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <label>Image fit</label>
+      <div class="radio-grid">
+        <div class="radio-opt active" data-group="fit" data-value="contain">Fit page</div>
+        <div class="radio-opt" data-group="fit" data-value="stretch">Stretch</div>
+        <div class="radio-opt" data-group="fit" data-value="actual" style="grid-column:span 2;">Actual size</div>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <label>Margin</label>
+      <div class="radio-grid">
+        <div class="radio-opt active" data-group="margin" data-value="0">None</div>
+        <div class="radio-opt" data-group="margin" data-value="10">Small</div>
+        <div class="radio-opt" data-group="margin" data-value="20">Medium</div>
+        <div class="radio-opt" data-group="margin" data-value="30">Large</div>
+      </div>
+    </div>
+
+    <div class="setting-card">
+      <label for="quality">Image quality — <span id="qualityOut">90%</span></label>
+      <div class="range-row">
+        <input type="range" id="quality" min="30" max="100" value="90" step="5">
+      </div>
+      <p class="hint">Low quality = Low size</p>
+    </div>
+
+    <div class="setting-card">
+      <label for="filename">File name</label>
+      <input type="text" id="filename" value="converted-document PDFBoon" placeholder="file-name">
+    </div>
+  </div>
+
+  <!-- ================= SUMMARY + ACTION ================= -->
+  <div class="summary-card">
+    <div class="summary-stats">
+      <div class="summary-stat"><div class="num" id="statCount">0</div><div class="lbl">Pages</div></div>
+      <div class="summary-stat"><div class="num" id="statSize">0 KB</div><div class="lbl">Source size</div></div>
+      <div class="summary-stat"><div class="num" id="statEst">—</div><div class="lbl">Est. output</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;flex:1;justify-content:flex-end;">
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-label" id="progressLabel">Processing…</div>
+      </div>
+      <button class="btn btn-primary" id="generateBtn" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        Create PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="download-box" id="downloadBox">
+    <div class="info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+      <div>
+        <h4>Congratulations! Your PDF is Ready.</h4>
+        <p id="downloadMeta">—</p>
+      </div>
+    </div>
+    <a class="download-btn" id="downloadLink" download>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      Download
+    </a>
+  </div>
+
+  <!-- ================= PREVIEW (last, live) ================= -->
+  <p class="section-label">Preview — Show as your settings</p>
+  <div class="preview-toolbar">
+    <span style="font-size:12.5px;color:var(--ink-muted);">Drag up/down to fix order.</span>
+    <button class="btn-sm" id="clearAllBtn">Clear all</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty-hint" id="emptyState">No Image Uploaded Yet. Upload and try again!</div>
+
 </div>
 
-<!-- ================= FOOTER ================= -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="nav-logo">
-        <img src="https://vikshant.pages.dev/images/logo.png" alt="logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;">
-      </div>
-      <div class="footer-brand-text">
-        <h3>PDFBoon</h3>
-        <p>Easy, Secure and Professional.</p>
+<footer class="footer">
+
+    <div class="footer-simple">
+
+        <div class="footer-brand">
+            <img src="images/logo.png" alt="Logo">
+            <div>
+                <h2 class="footer-title">PDFBoon</h2>
+                <p class="footer-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+
+        <div class="footer-simple-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">All Tools</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+
         <div class="footer-social">
-          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7h2.4l.4-2.8h-2.8v-1.8c0-.8.2-1.3 1.4-1.3h1.5V5.5C15.9 5.4 15 5.3 14 5.3c-2.1 0-3.6 1.3-3.6 3.6v2h-2.4V13.7H10.4v7h3.1z"/></svg></a>
-          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.4H3.9V20h3V8.4zM5.4 4a1.7 1.7 0 100 3.5 1.7 1.7 0 000-3.5zM20.1 20h-3v-6.1c0-1.4-.5-2.4-1.8-2.4-1 0-1.6.7-1.9 1.3-.1.2-.1.6-.1.9V20h-3s.1-10.6 0-11.6h3V10c.4-.6 1.1-1.5 2.8-1.5 2 0 3.5 1.3 3.5 4.1V20z"/></svg></a>
-          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17" cy="7" r="0.8" fill="currentColor" stroke="none"/></svg></a>
+            <a href="not.html"><i class="fab fa-facebook"></i></a>
+            <a href="not.html"><i class="fab fa-linkedin"></i></a>
+            <a href="not.html"><i class="fab fa-instagram"></i></a>
         </div>
-      </div>
+
     </div>
-    <div class="footer-col">
-      <h4>Quick links</h4>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="merge.html">Merge PDF</a></li>
-        <li><a href="compress.html">Compress PDF</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
+
+    <div class="footer-bottom">
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+        <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
     </div>
-    <div class="footer-col">
-      <h4>Support</h4>
-      <ul>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="no.html">Privacy policy</a></li>
-        <li><a href="no.html">Terms of use</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 All rights reserved by PDFBoon.</span>
-    <span>Last updated on: July 19, 2026</span>
-    <span>Designed & Developed by Vikshant Kralta</span>
-  </div>
+
 </footer>
+
 <script>
+
+/* Mobile navbar toggle */
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
+
+/* Tools dropdown */
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+/* ============ IMAGE TO PDF LOGIC (unchanged behaviour) ============ */
 (function(){
   "use strict";
 
@@ -559,10 +934,6 @@
   const downloadMeta = document.getElementById('downloadMeta');
   const addMoreBtn = document.getElementById('addMoreBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-
-  navToggle.addEventListener('click', ()=> navLinks.classList.toggle('open'));
 
   let dragSrcId = null;
   let idCounter = 0;
@@ -810,11 +1181,11 @@
 
   ['dragenter','dragover'].forEach(evt=>{
     dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); dropzone.classList.add('drag'); });
-    dropzoneMini.addEventListener(evt, (e)=>{ e.preventDefault(); dropzoneMini.style.borderColor = 'var(--blue-dark)'; });
+    dropzoneMini.addEventListener(evt, (e)=>{ e.preventDefault(); dropzoneMini.style.borderColor = 'var(--stamp-dark)'; });
   });
   ['dragleave','drop'].forEach(evt=>{
     dropzone.addEventListener(evt, (e)=>{ e.preventDefault(); dropzone.classList.remove('drag'); });
-    dropzoneMini.addEventListener(evt, (e)=>{ e.preventDefault(); dropzoneMini.style.borderColor = 'var(--blue)'; });
+    dropzoneMini.addEventListener(evt, (e)=>{ e.preventDefault(); dropzoneMini.style.borderColor = 'var(--stamp)'; });
   });
   dropzone.addEventListener('drop', (e)=>{
     if(e.dataTransfer.files && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
