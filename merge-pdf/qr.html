@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png">
+<meta name="description" content="Turn any link into a QR code, or scan a PDF and export every link inside it as a QR code — free, fast and 100% in your browser.">
+
+<meta name="keywords" content="Pdfboon, PDF to QR, Link to QR, QR Code Generator, Online PDF Tools">
+
+<meta name="author" content="Vikshant Kralta">
+
+<meta name="robots" content="index, follow">
+
+<title>PDF &amp; Link to QR Code - PDFBoon</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --ink-muted:#8493aa;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --success:#10b981;
+  --success-dark:#0e9c6f;
+  --danger:#ef4444;
+  --violet:#7c3aed;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:var(--sans);
+background:
+  radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+  radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+  var(--paper);
+color:var(--ink);
+}
+
+a{ text-decoration:none; color:inherit; }
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+/* ============ NAVBAR ============ */
+.navbar{
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-container{
+  max-width:1180px;
+  margin-inline:auto;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:nowrap;
+}
+.logo-wrapper{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.logo-box{
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  flex-shrink:0;
+}
+.logo-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.logo-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.15rem;
+  color:var(--ink);
+  line-height:1.2;
+  white-space:nowrap;
+}
+.logo-subtitle{
+  font-size:0.75rem;
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:26px;
+}
+.nav-link{
+  position:relative;
+  font-size:0.94rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  padding:6px 2px;
+  transition:color .2s ease;
+  white-space:nowrap;
+}
+.nav-link::after{
+  content:"";
+  position:absolute; left:0; bottom:0;
+  width:0; height:2px;
+  background:var(--stamp);
+  transition:width .25s ease;
+}
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
+.nav-link.active-link{color:var(--ink);}
+.nav-link.active-link::after{width:100%;}
+
+.current-tool-pill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(37,99,235,0.08);
+  color:var(--stamp-dark);
+  padding:7px 14px;
+  border-radius:100px;
+  font-size:0.85rem;
+  font-weight:700;
+  white-space:nowrap;
+}
+.current-tool-pill i{font-size:0.75rem;}
+
+.nav-tools-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--stamp);
+  color:#fff !important;
+  padding:10px 18px;
+  border-radius:12px;
+  font-size:0.9rem;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 0 var(--stamp-dark);
+  transition:transform .15s ease;
+  white-space:nowrap;
+  font-family:var(--sans);
+}
+.nav-tools-btn:hover{transform:translateY(-2px);}
+.nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+.nav-tools-btn .dropdown-arrow{
+  font-size:0.68rem;
+  transition:transform .2s ease;
+}
+.nav-item.open .nav-tools-btn .dropdown-arrow{
+  transform:rotate(180deg);
+}
+
+.mobile-menu{
+  display:none;
+  width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border-radius:8px;
+  color:var(--ink);
+  font-size:1.1rem;
+  flex-shrink:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+}
+.mobile-menu:hover{background:rgba(37,99,235,0.08);}
+
+@media (max-width:920px){
+  .nav-links{
+    position:fixed;
+    inset:70px 0 auto 0;
+    flex-direction:column;
+    align-items:flex-start;
+    background:var(--paper-raised);
+    padding:20px 24px;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateY(-130%);
+    opacity:0;
+    transition:transform .3s ease, opacity .3s ease;
+  }
+  .nav-links.active{
+    transform:translateY(0);
+    opacity:1;
+  }
+  .mobile-menu{display:flex;}
+  .logo-subtitle{display:none;}
+  .nav-tools-btn{width:100%; justify-content:space-between;}
+  .current-tool-pill{width:100%; justify-content:center;}
+}
+
+/* ============ NAV TOOLS DROPDOWN ============ */
+.nav-item{ position:relative; }
+
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 14px);
+  left:50%;
+  transform:translateX(-50%);
+  min-width:250px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:10px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:999;
+}
+
+.nav-item.open .dropdown-menu{ display:flex; }
+
+.dropdown-category{
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:10px 12px 4px;
+}
+
+.dropdown-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:10px;
+  font-size:0.88rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  transition:background .15s ease, color .15s ease;
+  white-space:nowrap;
+}
+
+.dropdown-link i{
+  width:16px;
+  text-align:center;
+  color:var(--stamp);
+  font-size:0.85rem;
+}
+
+.dropdown-link:hover{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+}
+
+.dropdown-link.active{
+  background:rgba(37,99,235,0.08);
+  color:var(--ink);
+  font-weight:700;
+}
+
+.dropdown-link.view-all{
+  margin-top:4px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  border-radius:10px;
+  font-weight:600;
+  color:var(--stamp);
+}
+
+.dropdown-link.view-all i{color:var(--stamp);}
+
+@media (max-width:920px){
+  .nav-item{width:100%;}
+  .dropdown-menu{
+    position:static;
+    transform:none;
+    min-width:0;
+    width:100%;
+    box-shadow:none;
+    border:none;
+    background:rgba(37,99,235,0.04);
+    margin-top:10px;
+    padding:6px;
+    display:none;
+    flex-direction:column;
+  }
+  .nav-item.open .dropdown-menu{ display:flex; }
+}
+
+/* ============ BREADCRUMB STATUS BAR ============ */
+.breadcrumb-bar{
+background:var(--paper-raised);
+border-bottom:1px solid var(--line);
+}
+
+.breadcrumb-inner{
+max-width:1180px;
+margin:auto;
+padding:12px 24px;
+display:flex;
+align-items:center;
+gap:10px;
+font-size:0.85rem;
+color:var(--ink-soft);
+}
+
+.breadcrumb-inner a{
+display:flex;
+align-items:center;
+gap:6px;
+color:var(--ink-soft);
+transition:color .2s ease;
+}
+
+.breadcrumb-inner a:hover{color:var(--stamp);}
+
+.breadcrumb-inner i.fa-chevron-right{
+font-size:0.65rem;
+color:var(--line);
+}
+
+.breadcrumb-current{
+display:flex;
+align-items:center;
+gap:6px;
+color:var(--stamp-dark);
+font-weight:700;
+}
+
+/* ============ PAGE CONTENT ============ */
+
+.title{
+text-align:center;
+font-family:var(--serif);
+font-size:42px;
+font-weight:700;
+color:var(--ink);
+margin-bottom:10px;
+margin-top:20px;
+}
+
+.subtitle{
+text-align:center;
+color:var(--ink-soft);
+margin-bottom:30px;
+}
+
+.trust-row{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:30px;
+}
+
+.trust-pill{
+display:flex;
+align-items:center;
+gap:8px;
+background:var(--paper-raised);
+border:1px solid var(--line);
+padding:8px 16px;
+border-radius:100px;
+font-size:0.8rem;
+font-weight:600;
+color:var(--ink-soft);
+box-shadow:var(--shadow);
+}
+
+.trust-pill i{color:var(--stamp);}
+
+/* ============ MODE TABS ============ */
+.mode-tabs{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+justify-content:center;
+margin-bottom:30px;
+}
+
+.mode-tab{
+padding:12px 22px;
+border-radius:14px;
+border:1px solid var(--line);
+background:var(--paper-raised);
+color:var(--ink-soft);
+font-weight:600;
+font-size:0.9rem;
+cursor:pointer;
+transition:.2s;
+box-shadow:var(--shadow);
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.mode-tab.active{
+background:var(--stamp);
+color:#fff;
+border-color:var(--stamp);
+}
+
+.mode-panel{ display:none; }
+.mode-panel.active{ display:block; }
+
+/* ============ CARD ============ */
+.card{
+background:var(--paper-raised);
+border:1px solid var(--line);
+padding:24px;
+border-radius:20px;
+box-shadow:var(--shadow);
+}
+
+.card label{
+display:block;
+margin-bottom:10px;
+font-weight:600;
+color:var(--ink);
+font-size:0.92rem;
+}
+
+.card small{
+display:block;
+margin-top:8px;
+color:var(--ink-soft);
+font-size:0.8rem;
+}
+
+.card input[type=text],
+.card input[type=url],
+.card select{
+width:100%;
+padding:14px;
+border:1px solid var(--line);
+border-radius:12px;
+background:#fff;
+color:var(--ink);
+font-size:0.95rem;
+transition:border-color .2s ease, box-shadow .2s ease;
+font-family:var(--sans);
+}
+
+.card input:focus,
+.card select:focus{
+outline:none;
+border-color:var(--stamp);
+box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.settings-grid{
+margin-top:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:16px;
+}
+
+.color-field{
+display:flex;
+align-items:center;
+gap:10px;
+border:1px solid var(--line);
+border-radius:12px;
+background:#fff;
+padding:8px 12px;
+}
+
+.color-field input[type=color]{
+width:36px;
+height:36px;
+border:none;
+border-radius:8px;
+padding:0;
+cursor:pointer;
+background:none;
+}
+
+.color-field span{
+font-size:0.85rem;
+color:var(--ink-soft);
+font-weight:600;
+}
+
+/* ============ QR RESULT ============ */
+.qr-result{
+margin-top:28px;
+display:none;
+background:#fff;
+border:1px solid var(--line);
+border-radius:20px;
+padding:30px;
+text-align:center;
+box-shadow:var(--shadow);
+}
+
+.qr-result.active{ display:block; }
+
+.qr-canvas-wrap{
+display:inline-flex;
+padding:18px;
+background:#fff;
+border-radius:16px;
+border:1px solid var(--line);
+box-shadow:0 6px 16px rgba(13,37,69,0.08);
+margin-bottom:20px;
+}
+
+.qr-actions{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+justify-content:center;
+align-items:center;
+}
+
+.qr-actions input[type=text]{
+width:220px;
+padding:12px 14px;
+border:1px solid var(--line);
+border-radius:12px;
+font-size:0.88rem;
+font-family:var(--sans);
+}
+
+.qr-actions input:focus{outline:none; border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15);}
+
+/* ============ BUTTONS ============ */
+.btn{
+padding:13px 22px;
+border:none;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+transition:transform .18s ease, box-shadow .18s ease;
+font-size:0.9rem;
+display:inline-flex;
+align-items:center;
+gap:8px;
+}
+
+.btn-primary{
+background:var(--stamp);
+color:#fff;
+box-shadow:0 4px 0 var(--stamp-dark);
+}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+
+.btn-success{
+background:var(--success);
+color:#fff;
+box-shadow:0 4px 0 var(--success-dark);
+text-decoration:none;
+}
+.btn-success:hover{transform:translateY(-2px);}
+
+.btn-outline{
+background:#fff;
+color:var(--ink-soft);
+border:1px solid var(--line);
+box-shadow:none;
+}
+.btn-outline:hover{border-color:var(--stamp); color:var(--stamp-dark);}
+
+.btn:disabled{opacity:0.5; cursor:not-allowed; transform:none;}
+
+/* ============ UPLOAD BOX ============ */
+.upload-box{
+background:var(--paper-raised);
+border:2px dashed var(--stamp);
+border-radius:24px;
+min-height:200px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+cursor:pointer;
+transition:.3s;
+padding:20px;
+box-shadow:var(--shadow);
+}
+
+.upload-box:hover,
+.upload-box.active{
+background:rgba(37,99,235,0.06);
+border-color:var(--stamp-dark);
+}
+
+.upload-icon{ width:60px; margin-bottom:12px; }
+.upload-icon svg{ width:100%; height:auto; filter:drop-shadow(0 6px 14px rgba(37,99,235,0.25)); }
+
+.upload-box h2{
+font-family:var(--serif);
+font-size:22px;
+font-weight:600;
+color:var(--ink);
+margin-bottom:8px;
+}
+
+.upload-box p{ color:var(--ink-soft); font-size:0.88rem; }
+
+input[type=file]{ display:none; }
+
+/* ============ FILE SUMMARY ============ */
+.file-summary{
+margin-top:20px;
+background:#fff;
+border:1px solid var(--line);
+border-radius:16px;
+padding:16px 20px;
+display:none;
+align-items:center;
+justify-content:space-between;
+gap:16px;
+flex-wrap:wrap;
+box-shadow:var(--shadow);
+}
+
+.file-summary.active{ display:flex; }
+
+.file-summary .info{ display:flex; align-items:center; gap:12px; }
+
+.file-summary .file-icon{
+width:40px; height:48px;
+border-radius:8px;
+background:var(--paper-raised);
+border:1px solid var(--line);
+display:flex;
+align-items:center;
+justify-content:center;
+color:var(--stamp);
+flex-shrink:0;
+}
+
+.file-summary .name{ font-weight:600; font-size:0.92rem; word-break:break-word; }
+.file-summary .meta{ font-size:0.8rem; color:var(--ink-soft); }
+
+.remove-file{
+background:none;
+border:none;
+color:var(--danger);
+font-size:0.85rem;
+font-weight:600;
+cursor:pointer;
+}
+
+.loader{
+width:30px;
+height:30px;
+border:4px solid rgba(37,99,235,.15);
+border-top:4px solid var(--stamp);
+border-radius:50%;
+animation:spin 1s linear infinite;
+display:none;
+margin:24px auto;
+}
+
+.loader.active{ display:block; }
+
+@keyframes spin{ 100%{ transform:rotate(360deg); } }
+
+/* ============ LINKS RESULTS ============ */
+.links-header{
+margin-top:30px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:12px;
+}
+
+.links-header h3{
+font-family:var(--serif);
+font-size:1.2rem;
+color:var(--ink);
+}
+
+.links-count{
+font-size:0.82rem;
+color:var(--ink-soft);
+}
+
+.links-list{
+margin-top:18px;
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.link-card{
+background:#fff;
+border:1px solid var(--line);
+border-radius:16px;
+padding:16px 18px;
+display:flex;
+align-items:center;
+gap:16px;
+flex-wrap:wrap;
+box-shadow:var(--shadow);
+transition:transform .2s ease, border-color .2s ease;
+}
+
+.link-card:hover{
+transform:translateY(-2px);
+border-color:var(--stamp);
+}
+
+.link-qr-mini{
+width:64px;
+height:64px;
+flex-shrink:0;
+background:#fff;
+border:1px solid var(--line);
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+.link-qr-mini canvas,
+.link-qr-mini img{ width:100%; height:100%; }
+
+.link-info{ flex:1; min-width:200px; }
+
+.link-page-tag{
+display:inline-block;
+font-size:0.7rem;
+font-weight:700;
+color:var(--stamp-dark);
+background:rgba(37,99,235,0.08);
+padding:3px 9px;
+border-radius:100px;
+margin-bottom:6px;
+}
+
+.link-url{
+font-size:0.85rem;
+color:var(--ink);
+word-break:break-all;
+}
+
+.link-actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+}
+
+.icon-btn{
+width:38px;
+height:38px;
+border-radius:10px;
+border:1px solid var(--line);
+background:#fff;
+color:var(--ink-soft);
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+transition:.2s;
+font-size:0.85rem;
+}
+
+.icon-btn:hover{ border-color:var(--stamp); color:var(--stamp-dark); }
+
+.empty-links{
+text-align:center;
+padding:50px 20px;
+color:var(--ink-soft);
+display:none;
+}
+
+.empty-links.active{ display:block; }
+
+.empty-links i{
+font-size:40px;
+color:var(--line);
+margin-bottom:14px;
+}
+
+.error-msg{
+text-align:center;
+color:var(--danger);
+font-weight:600;
+margin-top:18px;
+display:none;
+}
+
+.error-msg.active{ display:block; }
+
+@media(max-width:768px){
+.title{ font-size:32px; }
+.link-card{ flex-direction:column; align-items:flex-start; }
+}
+
+/* ============ SIMPLE FOOTER ============ */
+.footer{
+  background:var(--ink);
+  color:#dfe6f2;
+  margin-top:60px;
+  padding:40px 20px;
+}
+
+.footer-simple{
+max-width:1180px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:20px;
+padding-bottom:24px;
+border-bottom:1px solid rgba(255,255,255,0.12);
+}
+
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.footer-brand img{
+  width:40px; height:40px;
+  border-radius:10px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+.footer-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.05rem;
+  color:#fff;
+}
+.footer-subtitle{
+  font-size:0.76rem;
+  color:#9fb0cc;
+}
+
+.footer-simple-links{
+display:flex;
+align-items:center;
+gap:22px;
+flex-wrap:wrap;
+}
+
+.footer-simple-links a{
+font-size:0.88rem;
+color:#c8d2e6;
+transition:color .2s ease;
+}
+
+.footer-simple-links a:hover{color:#fff;}
+
+.footer-social{ display:flex; gap:10px; }
+.footer-social a{
+  width:36px; height:36px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.footer-social a:hover{
+  background:var(--stamp);
+  border-color:var(--stamp);
+  transform:translateY(-3px);
+}
+
+.footer-bottom{
+max-width:1180px;
+margin:20px auto 0;
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.copyright{ font-size:0.78rem; color:#8494b5; line-height:1.6; }
+
+@media(max-width:600px){
+  .footer-simple{flex-direction:column; text-align:center; justify-content:center;}
+  .footer-bottom{flex-direction:column; text-align:center; justify-content:center;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image" alt="Logo">
+            </div>
+
+            <div>
+                <h2 class="logo-title">PDFBoon</h2>
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">Home</a>
+
+            <div class="current-tool-pill"><i class="fa-solid fa-qrcode"></i> PDF to QR</div>
+
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
+
+                    <div class="dropdown-category">Organize PDF</div>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+
+                    <div class="dropdown-category">Optimize PDF</div>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+
+                    <div class="dropdown-category">Convert PDF</div>
+                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+                    <a href="qr.html" class="dropdown-link active"><i class="fa-solid fa-qrcode"></i> PDF to QR / Link</a>
+
+                    <div class="dropdown-category">Security</div>
+                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+
+                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <button class="mobile-menu" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
+</nav>
+
+<!-- BREADCRUMB STATUS BAR -->
+<div class="breadcrumb-bar">
+    <div class="breadcrumb-inner">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span class="breadcrumb-current"><i class="fa-solid fa-qrcode"></i> PDF to QR</span>
+    </div>
+</div>
+
+<div class="container">
+
+<h1 class="title">PDF &amp; Link to QR Code</h1>
+<p class="subtitle">Turn any link into a scannable QR code, or pull every link out of a PDF and export them all</p>
+
+<div class="trust-row">
+<div class="trust-pill"><i class="fa-solid fa-shield-halved"></i> 100% Browser-side</div>
+<div class="trust-pill"><i class="fa-solid fa-cloud-arrow-up"></i> No File Upload to Server</div>
+<div class="trust-pill"><i class="fa-solid fa-bolt"></i> Instant QR Generation</div>
+</div>
+
+<!-- MODE TABS -->
+<div class="mode-tabs" id="modeTabs">
+<div class="mode-tab active" data-mode="link"><i class="fa-solid fa-link"></i> Link to QR Code</div>
+<div class="mode-tab" data-mode="extract"><i class="fa-solid fa-file-pdf"></i> Extract Links from PDF</div>
+</div>
+
+<!-- ================= LINK TO QR PANEL ================= -->
+<div class="mode-panel active" id="panel-link">
+
+<div class="card">
+
+<label for="linkInput">Enter a URL or any text</label>
+<input type="text" id="linkInput" placeholder="https://example.com or any text">
+<small>This will be encoded directly into the QR code — no server, no shortener.</small>
+
+<div class="settings-grid">
+
+<div>
+<label style="margin-bottom:8px;">Size</label>
+<select id="qrSize">
+<option value="200">200 × 200 px</option>
+<option value="300" selected>300 × 300 px</option>
+<option value="400">400 × 400 px</option>
+<option value="500">500 × 500 px</option>
+</select>
+</div>
+
+<div>
+<label style="margin-bottom:8px;">Error Correction</label>
+<select id="qrLevel">
+<option value="L">Low (L)</option>
+<option value="M" selected>Medium (M)</option>
+<option value="Q">Quartile (Q)</option>
+<option value="H">High (H)</option>
+</select>
+</div>
+
+<div>
+<label style="margin-bottom:8px;">Foreground Color</label>
+<div class="color-field">
+<input type="color" id="qrDark" value="#0d2545">
+<span>Dots</span>
+</div>
+</div>
+
+<div>
+<label style="margin-bottom:8px;">Background Color</label>
+<div class="color-field">
+<input type="color" id="qrLight" value="#ffffff">
+<span>Background</span>
+</div>
+</div>
+
+</div>
+
+<div style="margin-top:22px; text-align:center;">
+<button class="btn btn-primary" id="generateLinkQrBtn"><i class="fa-solid fa-qrcode"></i> Generate QR Code</button>
+</div>
+
+</div>
+
+<div class="qr-result" id="linkQrResult">
+<div class="qr-canvas-wrap"><div id="linkQrCanvas"></div></div>
+<div class="qr-actions">
+<input type="text" id="qrFileName" placeholder="File name" value="qr-code PDFBoon">
+<a class="btn btn-success" id="downloadPngBtn" download><i class="fa-solid fa-download"></i> Download PNG</a>
+<button class="btn btn-outline" id="downloadPdfBtn"><i class="fa-solid fa-file-pdf"></i> Download as PDF</button>
+</div>
+</div>
+
+</div>
+
+<!-- ================= EXTRACT LINKS PANEL ================= -->
+<div class="mode-panel" id="panel-extract">
+
+<label class="upload-box" id="uploadBox" for="pdfInput">
+
+<div class="upload-icon">
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M14 6C14 3.79086 15.7909 2 18 2H38L50 14V58C50 60.2091 48.2091 62 46 62H18C15.7909 62 14 60.2091 14 58V6Z" fill="#2563eb"/>
+  <path d="M38 2L50 14H40C38.8954 14 38 13.1046 38 12V2Z" fill="#1d4ed8"/>
+  <rect x="20" y="26" width="24" height="3" rx="1.5" fill="#ffffff"/>
+  <rect x="20" y="34" width="16" height="3" rx="1.5" fill="#ffffff"/>
+  <rect x="24" y="44" width="16" height="16" rx="2" fill="#0891b2"/>
+  <rect x="27" y="47" width="4" height="4" fill="#ffffff"/>
+  <rect x="33" y="47" width="4" height="4" fill="#ffffff"/>
+  <rect x="27" y="53" width="4" height="4" fill="#ffffff"/>
+</svg>
+</div>
+
+<h2>Drag &amp; Drop a PDF File</h2>
+<p>or click here to Browse — we'll scan every page for links</p>
+
+<input type="file" id="pdfInput" accept="application/pdf">
+
+</label>
+
+<div class="file-summary" id="fileSummary">
+<div class="info">
+<div class="file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+<div>
+<div class="name" id="summaryName">--</div>
+<div class="meta" id="summaryMeta">--</div>
+</div>
+</div>
+<button class="remove-file" id="removeFile">Remove file</button>
+</div>
+
+<div class="loader" id="scanLoader"></div>
+<div class="error-msg" id="errorMsg"></div>
+
+<div class="links-header" id="linksHeader" style="display:none;">
+<h3>Links Found</h3>
+<div style="display:flex; align-items:center; gap:14px;">
+<span class="links-count" id="linksCount"></span>
+<button class="btn btn-primary" id="downloadAllZipBtn"><i class="fa-solid fa-file-zipper"></i> Download All as ZIP</button>
+</div>
+</div>
+
+<div class="links-list" id="linksList"></div>
+
+<div class="empty-links" id="emptyLinks">
+<i class="fa-solid fa-link-slash"></i>
+<h3 style="font-family:var(--serif); margin-bottom:8px;">No links found</h3>
+<p>This PDF doesn't seem to contain any clickable or written links.</p>
+</div>
+
+</div>
+
+</div>
+
+<footer class="footer">
+
+    <div class="footer-simple">
+
+        <div class="footer-brand">
+            <img src="images/logo.png" alt="Logo">
+            <div>
+                <h2 class="footer-title">PDFBoon</h2>
+                <p class="footer-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+
+        <div class="footer-simple-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">All Tools</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+
+        <div class="footer-social">
+            <a href="not.html"><i class="fab fa-facebook"></i></a>
+            <a href="not.html"><i class="fab fa-linkedin"></i></a>
+            <a href="not.html"><i class="fab fa-instagram"></i></a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+        <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
+    </div>
+
+</footer>
+
+<script>
+
+/* Mobile navbar toggle */
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
+
+/* Tools dropdown */
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+/* Mode tabs */
+const modeTabs = document.getElementById('modeTabs');
+modeTabs.addEventListener('click', (e) => {
+  const tab = e.target.closest('.mode-tab');
+  if (!tab) return;
+
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+
+  const mode = tab.dataset.mode;
+  document.getElementById('panel-link').classList.toggle('active', mode === 'link');
+  document.getElementById('panel-extract').classList.toggle('active', mode === 'extract');
+});
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+/* ============================================================
+   LINK TO QR CODE
+============================================================ */
+
+const linkInput = document.getElementById('linkInput');
+const qrSize = document.getElementById('qrSize');
+const qrLevel = document.getElementById('qrLevel');
+const qrDark = document.getElementById('qrDark');
+const qrLight = document.getElementById('qrLight');
+const generateLinkQrBtn = document.getElementById('generateLinkQrBtn');
+const linkQrResult = document.getElementById('linkQrResult');
+const linkQrCanvas = document.getElementById('linkQrCanvas');
+const qrFileName = document.getElementById('qrFileName');
+const downloadPngBtn = document.getElementById('downloadPngBtn');
+const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+function makeQRCode(container, text, opts) {
+  container.innerHTML = '';
+  return new QRCode(container, {
+    text: text,
+    width: opts.size,
+    height: opts.size,
+    colorDark: opts.dark,
+    colorLight: opts.light,
+    correctLevel: QRCode.CorrectLevel[opts.level]
+  });
+}
+
+function getQRDataURL(container) {
+  const canvas = container.querySelector('canvas');
+  if (canvas) return canvas.toDataURL('image/png');
+  const img = container.querySelector('img');
+  return img ? img.src : null;
+}
+
+generateLinkQrBtn.addEventListener('click', () => {
+  const text = linkInput.value.trim();
+  if (!text) {
+    linkInput.focus();
+    return;
+  }
+
+  makeQRCode(linkQrCanvas, text, {
+    size: parseInt(qrSize.value, 10),
+    dark: qrDark.value,
+    light: qrLight.value,
+    level: qrLevel.value
+  });
+
+  linkQrResult.classList.add('active');
+  linkQrResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const dataURL = getQRDataURL(linkQrCanvas);
+  downloadPngBtn.href = dataURL;
+});
+
+qrFileName.addEventListener('input', () => {
+  const name = qrFileName.value.trim() || 'qr-code PDFBoon';
+  downloadPngBtn.download = `${name}.png`;
+});
+qrFileName.dispatchEvent(new Event('input'));
+
+downloadPdfBtn.addEventListener('click', async () => {
+  const dataURL = getQRDataURL(linkQrCanvas);
+  if (!dataURL) return;
+
+  const pngBytes = await (await fetch(dataURL)).arrayBuffer();
+  const doc = await PDFLib.PDFDocument.create();
+  const png = await doc.embedPng(pngBytes);
+
+  const margin = 40;
+  const pageSize = png.width + margin * 2;
+  const page = doc.addPage([pageSize, pageSize]);
+  page.drawImage(png, { x: margin, y: margin, width: png.width, height: png.height });
+
+  const bytes = await doc.save();
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+
+  const name = qrFileName.value.trim() || 'qr-code PDFBoon';
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${name}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+});
+
+/* ============================================================
+   EXTRACT LINKS FROM PDF
+============================================================ */
+
+const pdfInput = document.getElementById('pdfInput');
+const uploadBox = document.getElementById('uploadBox');
+const fileSummary = document.getElementById('fileSummary');
+const summaryName = document.getElementById('summaryName');
+const summaryMeta = document.getElementById('summaryMeta');
+const removeFile = document.getElementById('removeFile');
+const scanLoader = document.getElementById('scanLoader');
+const errorMsg = document.getElementById('errorMsg');
+const linksHeader = document.getElementById('linksHeader');
+const linksCount = document.getElementById('linksCount');
+const linksList = document.getElementById('linksList');
+const emptyLinks = document.getElementById('emptyLinks');
+const downloadAllZipBtn = document.getElementById('downloadAllZipBtn');
+
+let currentFile = null;
+let foundLinks = [];
+
+function formatSize(bytes) {
+  if (bytes > 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  return (bytes / 1024).toFixed(2) + ' KB';
+}
+
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.classList.add('active');
+}
+function hideError() {
+  errorMsg.classList.remove('active');
+}
+
+function resetExtractTool() {
+  currentFile = null;
+  foundLinks = [];
+  pdfInput.value = '';
+  fileSummary.classList.remove('active');
+  linksHeader.style.display = 'none';
+  linksList.innerHTML = '';
+  emptyLinks.classList.remove('active');
+  hideError();
+}
+
+removeFile.addEventListener('click', resetExtractTool);
+
+pdfInput.addEventListener('change', (e) => {
+  if (e.target.files.length) loadPdfForLinks(e.target.files[0]);
+});
+
+uploadBox.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadBox.classList.add('active');
+});
+uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('active'));
+uploadBox.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove('active');
+  const file = [...e.dataTransfer.files].find(f => f.type === 'application/pdf');
+  if (file) loadPdfForLinks(file);
+});
+
+const URL_REGEX = /(https?:\/\/[^\s<>()\[\]"']+)/gi;
+
+async function loadPdfForLinks(file) {
+  hideError();
+  linksHeader.style.display = 'none';
+  linksList.innerHTML = '';
+  emptyLinks.classList.remove('active');
+
+  currentFile = file;
+  const bytes = await file.arrayBuffer();
+
+  let pdf;
+  try {
+    pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+  } catch (err) {
+    showError('This file doesn\'t look like a valid PDF. Try a different file.');
+    return;
+  }
+
+  fileSummary.classList.add('active');
+  summaryName.textContent = file.name;
+  summaryMeta.textContent = `${pdf.numPages} Pages • ${formatSize(file.size)}`;
+
+  scanLoader.classList.add('active');
+
+  const seen = new Set();
+  const links = [];
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+
+    try {
+      const annots = await page.getAnnotations();
+      annots.forEach(a => {
+        if (a.url) {
+          const key = a.url + '|' + i;
+          if (!seen.has(key)) {
+            seen.add(key);
+            links.push({ url: a.url, page: i });
+          }
+        }
+      });
+    } catch (e) { /* ignore */ }
+
+    try {
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(it => it.str).join(' ');
+      const matches = pageText.match(URL_REGEX);
+      if (matches) {
+        matches.forEach(m => {
+          const clean = m.replace(/[.,;:)\]]+$/, '');
+          const key = clean + '|' + i;
+          if (!seen.has(key)) {
+            seen.add(key);
+            links.push({ url: clean, page: i });
+          }
+        });
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  scanLoader.classList.remove('active');
+  foundLinks = links;
+  renderLinks();
+}
+
+function renderLinks() {
+  linksList.innerHTML = '';
+
+  if (!foundLinks.length) {
+    linksHeader.style.display = 'none';
+    emptyLinks.classList.add('active');
+    return;
+  }
+
+  emptyLinks.classList.remove('active');
+  linksHeader.style.display = 'flex';
+  linksCount.textContent = `${foundLinks.length} link${foundLinks.length > 1 ? 's' : ''} found`;
+
+  foundLinks.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'link-card';
+    card.innerHTML = `
+      <div class="link-qr-mini" id="mini-qr-${idx}"></div>
+      <div class="link-info">
+        <span class="link-page-tag">Page ${item.page}</span>
+        <div class="link-url">${item.url}</div>
+      </div>
+      <div class="link-actions">
+        <button class="icon-btn" data-action="copy" title="Copy link"><i class="fa-solid fa-copy"></i></button>
+        <a class="icon-btn" href="${item.url}" target="_blank" rel="noopener" title="Open link"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        <a class="icon-btn" data-action="download" title="Download QR"><i class="fa-solid fa-download"></i></a>
+      </div>
+    `;
+    linksList.appendChild(card);
+
+    const miniContainer = document.getElementById(`mini-qr-${idx}`);
+    makeQRCode(miniContainer, item.url, { size: 64, dark: '#0d2545', light: '#ffffff', level: 'M' });
+
+    const downloadLink = card.querySelector('[data-action="download"]');
+    downloadLink.addEventListener('click', () => {
+      const dataURL = getQRDataURL(miniContainer);
+      downloadLink.href = dataURL;
+      downloadLink.download = `link-${idx + 1}-page${item.page} PDFBoon.png`;
+    });
+
+    card.querySelector('[data-action="copy"]').addEventListener('click', (e) => {
+      navigator.clipboard.writeText(item.url).then(() => {
+        const icon = e.currentTarget.querySelector('i');
+        icon.className = 'fa-solid fa-check';
+        setTimeout(() => { icon.className = 'fa-solid fa-copy'; }, 1500);
+      });
+    });
+  });
+}
+
+downloadAllZipBtn.addEventListener('click', async () => {
+  if (!foundLinks.length) return;
+
+  const zip = new JSZip();
+  const baseName = currentFile ? currentFile.name.replace(/\.pdf$/i, '') : 'links';
+
+  for (let idx = 0; idx < foundLinks.length; idx++) {
+    const item = foundLinks[idx];
+    const tempContainer = document.createElement('div');
+    tempContainer.style.display = 'none';
+    document.body.appendChild(tempContainer);
+
+    makeQRCode(tempContainer, item.url, { size: 300, dark: '#0d2545', light: '#ffffff', level: 'M' });
+
+    const dataURL = getQRDataURL(tempContainer);
+    const base64 = dataURL.split(',')[1];
+    zip.file(`link-${idx + 1}-page${item.page} PDFBoon.png`, base64, { base64: true });
+
+    document.body.removeChild(tempContainer);
+  }
+
+  const content = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(content);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${baseName} qr-links PDFBoon.zip`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+});
+
+</script>
+
+</body>
+</html>
