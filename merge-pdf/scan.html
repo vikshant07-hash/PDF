@@ -315,15 +315,16 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
 /* MAGNIFIER LENS */
 .magnifier-lens {
   position: absolute;
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: 3px solid #ffffff;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
   pointer-events: none;
   display: none;
   z-index: 99;
   background-color: #000;
+  background-repeat: no-repeat;
 }
 
 .modal-sidebar{ flex:1; min-width:250px; display:flex; flex-direction:column; gap:16px; }
@@ -635,7 +636,7 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
         </div>
 
         <p style="font-size:12px; color:var(--ink-muted); line-height:1.5;">
-          💡 <b>Tip:</b> Drag corners to adjust boundaries. A magnifying glass will zoom in for accuracy.
+          💡 <b>Tip:</b> Drag corners to adjust boundaries. The magnifying glass shows the document corner behind your finger.
         </p>
       </div>
     </div>
@@ -1183,8 +1184,7 @@ function getCanvasCoords(e) {
     x: (clientX - rect.left) * scaleX, 
     y: (clientY - rect.top) * scaleY,
     cssX: clientX - rect.left,
-    cssY: clientY - rect.top,
-    rect: rect
+    cssY: clientY - rect.top
   };
 }
 
@@ -1195,40 +1195,46 @@ function updateMagnifier(pos) {
   }
 
   magnifierLens.style.display = "block";
+  const lensRadius = 60; // 120px / 2
   const zoomFactor = 2.5;
-  const lensRadius = 55;
 
-  // Center magnifier slightly above fingers
+  // Center magnifier slightly above touch/cursor position
   let lensX = pos.cssX - lensRadius;
-  let lensY = pos.cssY - lensRadius - 60; 
+  let lensY = pos.cssY - lensRadius - 70; 
 
   magnifierLens.style.left = `${lensX}px`;
   magnifierLens.style.top = `${lensY}px`;
 
   const cornerPos = corners[activeCorner];
   
-  // Render zoomed canvas area onto lens background
+  // Render ONLY original clean image on lens (No red dot, no blue overlay)
   const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = 110;
-  tempCanvas.height = 110;
+  tempCanvas.width = 120;
+  tempCanvas.height = 120;
   const tCtx = tempCanvas.getContext("2d");
 
-  tCtx.drawImage(
-    cropCanvas,
-    cornerPos.x - (55 / zoomFactor),
-    cornerPos.y - (55 / zoomFactor),
-    110 / zoomFactor,
-    110 / zoomFactor,
-    0, 0, 110, 110
-  );
+  const cropBoxSize = 120 / zoomFactor; // 48px
+  const srcX = cornerPos.x - (cropBoxSize / 2);
+  const srcY = cornerPos.y - (cropBoxSize / 2);
 
-  // Draw Crosshair in magnifier
-  tCtx.strokeStyle = "rgba(255, 255, 255, 0.8)";
-  tCtx.lineWidth = 1.5;
+  // Draw clean document area
+  tCtx.drawImage(workingImg, srcX, srcY, cropBoxSize, cropBoxSize, 0, 0, 120, 120);
+
+  // Fine precision Crosshair (+)
+  tCtx.strokeStyle = "rgba(37, 99, 235, 0.9)";
+  tCtx.lineWidth = 2;
+  
+  // Inner center crosshair
   tCtx.beginPath();
-  tCtx.moveTo(55, 0); tCtx.lineTo(55, 110);
-  tCtx.moveTo(0, 55); tCtx.lineTo(110, 55);
+  tCtx.moveTo(60, 45); tCtx.lineTo(60, 75);
+  tCtx.moveTo(45, 60); tCtx.lineTo(75, 60);
   tCtx.stroke();
+
+  // Center Target Point
+  tCtx.fillStyle = "#ef4444";
+  tCtx.beginPath();
+  tCtx.arc(60, 60, 3, 0, Math.PI * 2);
+  tCtx.fill();
 
   magnifierLens.style.backgroundImage = `url(${tempCanvas.toDataURL()})`;
 }
