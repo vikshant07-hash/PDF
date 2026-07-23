@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png">
+<meta name="description" content="Edit your PDF — add text, draw, insert shapes, images and signatures, manage pages — free, right in your browser. PDFBoon.">
+
+<meta name="keywords" content="Pdfboon, Edit PDF, PDF Editor, Annotate PDF, Vikshant Kralta">
+
+<meta name="author" content="Vikshant Kralta">
+
+<meta name="robots" content="index, follow">
+
+<title>Edit PDF - PDFBoon</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<style>
+
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --success:#10b981;
+  --success-dark:#0e9c6f;
+  --danger:#ef4444;
+  --danger-dark:#dc2626;
+  --warn:#f59e0b;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:var(--sans);
+background:
+  radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+  radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+  var(--paper);
+color:var(--ink);
+}
+
+a{ text-decoration:none; color:inherit; }
+button{ font-family:inherit; }
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+.wide-container{
+max-width:1400px;
+margin:auto;
+padding:20px;
+}
+
+.hidden{ display:none !important; }
+
+/* ============ NAVBAR ============ */
+.navbar{
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-container{
+  max-width:1180px;
+  margin-inline:auto;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:nowrap;
+}
+.logo-wrapper{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.logo-box{
+  width:44px;
+  height:44px;
+  min-width:44px;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  flex-shrink:0;
+}
+.logo-image{ width:100%; height:100%; object-fit:cover; }
+.logo-title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:1.15rem;
+  color:var(--ink);
+  line-height:1.2;
+  white-space:nowrap;
+}
+.logo-subtitle{
+  font-size:0.75rem;
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:26px;
+}
+.nav-link{
+  position:relative;
+  font-size:0.94rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  padding:6px 2px;
+  transition:color .2s ease;
+  white-space:nowrap;
+}
+.nav-link::after{
+  content:"";
+  position:absolute; left:0; bottom:0;
+  width:0; height:2px;
+  background:var(--stamp);
+  transition:width .25s ease;
+}
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
+
+.current-tool-pill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(37,99,235,0.08);
+  color:var(--stamp-dark);
+  padding:7px 14px;
+  border-radius:100px;
+  font-size:0.85rem;
+  font-weight:700;
+  white-space:nowrap;
+}
+.current-tool-pill i{font-size:0.75rem;}
+
+.nav-tools-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--stamp);
+  color:#fff !important;
+  padding:10px 18px;
+  border-radius:12px;
+  font-size:0.9rem;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 0 var(--stamp-dark);
+  transition:transform .15s ease;
+  white-space:nowrap;
+  font-family:var(--sans);
+}
+.nav-tools-btn:hover{transform:translateY(-2px);}
+.nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+.nav-tools-btn .dropdown-arrow{ font-size:0.68rem; transition:transform .2s ease; }
+.nav-item.open .nav-tools-btn .dropdown-arrow{ transform:rotate(180deg); }
+
+.mobile-menu{
+  display:none;
+  width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border-radius:8px;
+  color:var(--ink);
+  font-size:1.1rem;
+  flex-shrink:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+}
+.mobile-menu:hover{background:rgba(37,99,235,0.08);}
+
+@media (max-width:920px){
+  .nav-links{
+    position:fixed;
+    inset:70px 0 auto 0;
+    flex-direction:column;
+    align-items:flex-start;
+    background:var(--paper-raised);
+    padding:20px 24px;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateY(-130%);
+    opacity:0;
+    transition:transform .3s ease, opacity .3s ease;
+    z-index:200;
+  }
+  .nav-links.active{ transform:translateY(0); opacity:1; }
+  .mobile-menu{display:flex;}
+  .logo-subtitle{display:none;}
+  .nav-tools-btn{width:100%; justify-content:space-between;}
+  .current-tool-pill{width:100%; justify-content:center;}
+}
+
+/* ============ NAV TOOLS DROPDOWN ============ */
+.nav-item{ position:relative; }
+
+.dropdown-menu{
+  position:absolute;
+  top:calc(100% + 14px);
+  left:50%;
+  transform:translateX(-50%);
+  min-width:250px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:10px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  z-index:999;
+}
+.nav-item.open .dropdown-menu{ display:flex; }
+
+.dropdown-category{
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:10px 12px 4px;
+}
+
+.dropdown-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:10px;
+  font-size:0.88rem;
+  font-weight:500;
+  color:var(--ink-soft);
+  transition:background .15s ease, color .15s ease;
+  white-space:nowrap;
+}
+.dropdown-link i{ width:16px; text-align:center; color:var(--stamp); font-size:0.85rem; }
+.dropdown-link:hover{ background:rgba(37,99,235,0.08); color:var(--ink); }
+.dropdown-link.active{ background:rgba(37,99,235,0.08); color:var(--ink); font-weight:700; }
+.dropdown-link.view-all{
+  margin-top:4px; padding-top:12px; border-top:1px solid var(--line);
+  border-radius:10px; font-weight:600; color:var(--stamp);
+}
+.dropdown-link.view-all i{color:var(--stamp);}
+
+@media (max-width:920px){
+  .nav-item{width:100%;}
+  .dropdown-menu{
+    position:static; transform:none; min-width:0; width:100%;
+    box-shadow:none; border:none; background:rgba(37,99,235,0.04);
+    margin-top:10px; padding:6px; display:none; flex-direction:column;
+  }
+  .nav-item.open .dropdown-menu{ display:flex; }
+}
+
+/* ============ BREADCRUMB ============ */
+.breadcrumb-bar{ background:var(--paper-raised); border-bottom:1px solid var(--line); }
+.breadcrumb-inner{
+  max-width:1180px; margin:auto; padding:12px 24px;
+  display:flex; align-items:center; gap:10px;
+  font-size:0.85rem; color:var(--ink-soft);
+}
+.breadcrumb-inner a{ display:flex; align-items:center; gap:6px; color:var(--ink-soft); transition:color .2s ease; }
+.breadcrumb-inner a:hover{color:var(--stamp);}
+.breadcrumb-inner i.fa-chevron-right{ font-size:0.65rem; color:var(--line); }
+.breadcrumb-current{ display:flex; align-items:center; gap:6px; color:var(--stamp-dark); font-weight:700; }
+
+/* ============ INTRO / UPLOAD ============ */
+.title{
+text-align:center;
+font-family:var(--serif);
+font-size:42px;
+font-weight:700;
+color:var(--ink);
+margin-bottom:10px;
+margin-top:20px;
+}
+
+.subtitle{
+text-align:center;
+color:var(--ink-soft);
+margin-bottom:35px;
+}
+
+.upload-box{
+background:var(--paper-raised);
+border:2px dashed var(--stamp);
+border-radius:24px;
+min-height:240px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+cursor:pointer;
+transition:.3s;
+padding:20px;
+box-shadow:var(--shadow);
+}
+.upload-box:hover, .upload-box.active{
+background:rgba(37,99,235,0.06);
+border-color:var(--stamp-dark);
+}
+.upload-icon{ width:80px; margin-bottom:15px; }
+.upload-icon svg{ width:100%; height:auto; filter:drop-shadow(0 6px 14px rgba(37,99,235,0.25)); }
+.upload-box h2{
+font-family:var(--serif); font-size:28px; font-weight:600; color:var(--ink); margin-bottom:10px;
+}
+.upload-box p{ color:var(--ink-soft); }
+input[type=file]{ display:none; }
+
+/* ============ EDITOR SHELL ============ */
+.editor-shell{
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
+}
+
+/* ---- Toolbar ---- */
+.editor-toolbar{
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:10px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+
+.tool-btn{
+  width:42px; height:42px;
+  border-radius:12px;
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--ink-soft);
+  font-size:1rem;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:background .15s ease, color .15s ease, border-color .15s ease;
+  flex-shrink:0;
+}
+.tool-btn:hover{ background:rgba(37,99,235,0.08); color:var(--stamp); }
+.tool-btn.active{ background:var(--stamp); color:#fff; box-shadow:0 3px 0 var(--stamp-dark); }
+.tool-btn:disabled{ opacity:0.35; cursor:not-allowed; }
+.tool-btn:disabled:hover{ background:transparent; color:var(--ink-soft); }
+
+.tool-divider{ width:1px; height:26px; background:var(--line); margin:0 4px; flex-shrink:0; }
+
+/* ---- Property bar ---- */
+.property-bar{
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+  font-size:0.82rem;
+  color:var(--ink-soft);
+}
+
+.property-group{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.color-swatch{
+  width:22px; height:22px;
+  border-radius:50%;
+  border:2px solid #fff;
+  box-shadow:0 0 0 1px var(--line);
+  cursor:pointer;
+  flex-shrink:0;
+}
+.color-swatch.selected{ box-shadow:0 0 0 2px var(--stamp); }
+
+.color-native{
+  width:28px; height:28px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:none;
+  padding:0;
+}
+
+.property-bar input[type="number"]{
+  width:56px;
+  padding:6px 8px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:0.85rem;
+  color:var(--ink);
+}
+
+.property-bar input[type="range"]{ width:90px; }
+
+.mini-toggle{
+  width:32px; height:32px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink-soft);
+  cursor:pointer;
+  font-size:0.85rem;
+}
+.mini-toggle.active{ background:var(--stamp); color:#fff; border-color:var(--stamp); }
+
+/* ---- Body: sidebar + canvas ---- */
+.editor-body{
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
+  width:100%;
+}
+
+.page-sidebar{
+  width:150px;
+  flex-shrink:0;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:14px;
+  max-height:74vh;
+  overflow-y:auto;
+}
+
+.page-sidebar h4{
+  font-size:0.78rem;
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+  color:var(--ink-soft);
+  margin-bottom:12px;
+  text-align:center;
+}
+
+.page-thumb-wrap{
+  position:relative;
+  margin-bottom:14px;
+  cursor:grab;
+}
+.page-thumb-wrap:active{ cursor:grabbing; }
+
+.page-thumb{
+  border:2px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  transition:border-color .15s ease;
+}
+.page-thumb.active-page{ border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+.page-thumb img{ width:100%; display:block; }
+
+.page-thumb-num{
+  text-align:center;
+  font-size:0.72rem;
+  font-weight:700;
+  color:var(--ink-soft);
+  margin-top:6px;
+}
+
+.page-thumb-actions{
+  position:absolute;
+  top:4px; right:4px;
+  display:flex;
+  gap:4px;
+}
+
+.page-thumb-actions button{
+  width:22px; height:22px;
+  border-radius:6px;
+  border:none;
+  background:rgba(13,37,69,0.65);
+  color:#fff;
+  font-size:0.65rem;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.page-thumb-actions button:hover{ background:var(--stamp); }
+
+.add-blank-btn{
+  width:100%;
+  padding:12px;
+  border:2px dashed var(--line);
+  border-radius:12px;
+  background:none;
+  color:var(--ink-soft);
+  font-size:0.8rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+.add-blank-btn:hover{ border-color:var(--stamp); color:var(--stamp); }
+
+/* ---- Canvas stage ---- */
+.canvas-stage{
+  flex:1;
+  min-width:0;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:24px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  overflow:auto;
+  max-height:74vh;
+}
+
+.canvas-wrap{
+  transform-origin:top center;
+  box-shadow:0 6px 24px rgba(13,37,69,0.18);
+}
+
+/* ---- Zoom controls ---- */
+.zoom-bar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:14px;
+}
+.zoom-bar button{
+  width:34px; height:34px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink-soft);
+  cursor:pointer;
+  font-size:0.9rem;
+}
+.zoom-bar button:hover{ border-color:var(--stamp); color:var(--stamp); }
+.zoom-label{
+  font-size:0.82rem;
+  font-weight:700;
+  color:var(--ink-soft);
+  min-width:48px;
+  text-align:center;
+}
+
+/* ---- Bottom action bar ---- */
+.export-bar{
+  margin-top:20px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.export-field{ flex:1; min-width:180px; }
+.export-field label{
+  display:block; margin-bottom:8px; font-weight:600; font-size:0.85rem; color:var(--ink);
+}
+.export-field input, .export-field select{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  color:var(--ink);
+  font-size:0.9rem;
+}
+.export-field input:focus, .export-field select:focus{
+  outline:none; border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.btn{
+  padding:14px 24px;
+  border:none;
+  border-radius:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s ease;
+  font-size:0.95rem;
+  white-space:nowrap;
+}
+.export-btn{
+  background:var(--stamp); color:#fff; box-shadow:0 4px 0 var(--stamp-dark);
+}
+.export-btn:hover{ transform:translateY(-2px); }
+.export-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark); }
+.export-btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none; }
+
+.loader{
+  width:28px; height:28px;
+  border:4px solid rgba(37,99,235,.15);
+  border-top:4px solid var(--stamp);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  display:none;
+}
+@keyframes spin{ 100%{ transform:rotate(360deg); } }
+
+.progress-label{ font-size:0.82rem; color:var(--ink-soft); display:none; }
+
+.error-msg{
+  width:100%;
+  text-align:center;
+  color:var(--danger);
+  font-weight:600;
+  margin-top:10px;
+  display:none;
+}
+
+/* ============ RESULT ============ */
+.results{ margin-top:24px; display:none; }
+.result-card{
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  padding:22px 24px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:16px;
+  box-shadow:var(--shadow);
+}
+.result-left{ display:flex; align-items:center; gap:16px; flex:1; min-width:240px; }
+.result-icon{
+  width:50px; height:60px; flex-shrink:0; border-radius:8px;
+  background:#fff; border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 8px rgba(13,37,69,0.08);
+}
+.result-icon svg{ width:26px; height:30px; }
+.result-text{ min-width:0; flex:1; }
+.result-rename{
+  width:100%; min-width:220px; padding:11px 14px;
+  border:1px solid var(--line); border-radius:12px; background:#fff;
+  color:var(--ink); font-size:0.9rem; font-weight:600;
+}
+.result-rename:focus{ outline:none; border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+.result-meta{ font-size:0.82rem; color:var(--ink-soft); margin-top:8px; display:flex; align-items:center; gap:6px; }
+.result-meta i{ color:var(--success); }
+.result-download{
+  padding:12px 22px; border-radius:12px; background:var(--success); color:#fff;
+  font-weight:600; font-size:0.9rem; box-shadow:0 4px 0 var(--success-dark);
+}
+.result-download:hover{ transform:translateY(-2px); }
+
+/* ============ SIGNATURE MODAL ============ */
+.modal-overlay{
+  position:fixed; inset:0;
+  background:rgba(13,37,69,0.55);
+  backdrop-filter:blur(4px);
+  display:none;
+  align-items:center; justify-content:center;
+  z-index:1000;
+  padding:20px;
+}
+.modal-overlay.open{ display:flex; }
+
+.modal-box{
+  background:#fff;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:26px;
+  width:100%;
+  max-width:560px;
+}
+.modal-box h3{
+  font-family:var(--serif);
+  font-size:1.2rem;
+  margin-bottom:6px;
+}
+.modal-box p{
+  font-size:0.85rem;
+  color:var(--ink-soft);
+  margin-bottom:16px;
+}
+.sig-pad-wrap{
+  border:2px dashed var(--line);
+  border-radius:14px;
+  background:var(--paper-raised);
+  margin-bottom:16px;
+}
+#sigPad{
+  width:100%;
+  height:200px;
+  display:block;
+  cursor:crosshair;
+  touch-action:none;
+}
+.modal-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.modal-actions button{
+  padding:11px 18px;
+  border-radius:12px;
+  font-weight:600;
+  font-size:0.88rem;
+  cursor:pointer;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink-soft);
+}
+.modal-actions .primary{
+  background:var(--stamp); color:#fff; border-color:var(--stamp);
+  box-shadow:0 3px 0 var(--stamp-dark);
+}
+.modal-actions button:hover{ transform:translateY(-1px); }
+
+@media(max-width:980px){
+  .editor-body{ flex-direction:column; }
+  .page-sidebar{
+    width:100%;
+    max-height:none;
+    display:flex;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:visible;
+    gap:12px;
+  }
+  .page-sidebar h4{ display:none; }
+  .page-thumb-wrap{ width:100px; flex-shrink:0; margin-bottom:0; }
+  .add-blank-btn{ width:100px; flex-shrink:0; height:100%; }
+  .canvas-stage{ max-height:60vh; }
+}
+
+@media(max-width:768px){
+  .title{ font-size:32px; }
+  .result-card{ flex-direction:column; align-items:flex-start; }
+  .editor-toolbar{ justify-content:center; }
+}
+
+/* ============ SIMPLE FOOTER ============ */
+.footer{ background:var(--ink); color:#dfe6f2; margin-top:60px; padding:40px 20px; }
+.footer-simple{
+  max-width:1180px; margin:auto; display:flex; align-items:center;
+  justify-content:space-between; flex-wrap:wrap; gap:20px;
+  padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,0.12);
+}
+.footer-brand{ display:flex; align-items:center; gap:12px; }
+.footer-brand img{ width:40px; height:40px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+.footer-title{ font-family:var(--serif); font-weight:700; font-size:1.05rem; color:#fff; }
+.footer-subtitle{ font-size:0.76rem; color:#9fb0cc; }
+.footer-simple-links{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+.footer-simple-links a{ font-size:0.88rem; color:#c8d2e6; transition:color .2s ease; }
+.footer-simple-links a:hover{color:#fff;}
+.footer-social{ display:flex; gap:10px; }
+.footer-social a{
+  width:36px; height:36px; border-radius:50%; border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.footer-social a:hover{ background:var(--stamp); border-color:var(--stamp); transform:translateY(-3px); }
+.footer-bottom{
+  max-width:1180px; margin:20px auto 0; display:flex; align-items:center;
+  justify-content:space-between; flex-wrap:wrap; gap:10px;
+}
+.copyright{ font-size:0.78rem; color:#8494b5; line-height:1.6; }
+@media(max-width:600px){
+  .footer-simple{flex-direction:column; text-align:center; justify-content:center;}
+  .footer-bottom{flex-direction:column; text-align:center; justify-content:center;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image">
+            </div>
+            <div>
+                <h2 class="logo-title">PDFBoon</h2>
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">Home</a>
+
+            <div class="current-tool-pill"><i class="fa-solid fa-pen-to-square"></i> Edit PDF</div>
+
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
+
+                    <div class="dropdown-category">Organize PDF</div>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+
+                    <div class="dropdown-category">Edit &amp; Optimize</div>
+                    <a href="edit.html" class="dropdown-link active"><i class="fa-solid fa-pen-to-square"></i> Edit PDF</a>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+
+                    <div class="dropdown-category">Convert PDF</div>
+                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+
+                    <div class="dropdown-category">Security</div>
+                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+                    <a href="unlock.html" class="dropdown-link"><i class="fa-solid fa-unlock"></i> Unlock PDF</a>
+
+                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <button class="mobile-menu" id="mobileMenuBtn" type="button">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+    <div class="breadcrumb-inner">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span class="breadcrumb-current"><i class="fa-solid fa-pen-to-square"></i> Edit PDF</span>
+    </div>
+</div>
+
+<!-- UPLOAD SCREEN -->
+<div class="container" id="uploadScreen">
+
+<h1 class="title">Edit Your PDF</h1>
+<p class="subtitle">Add text, draw, insert shapes, images and signatures, and manage pages — right in your browser</p>
+
+<label class="upload-box" id="uploadBox" for="pdfInput">
+<div class="upload-icon">
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M14 6C14 3.79086 15.7909 2 18 2H38L50 14V58C50 60.2091 48.2091 62 46 62H18C15.7909 62 14 60.2091 14 58V6Z" fill="#2563eb"/>
+  <path d="M38 2L50 14H40C38.8954 14 38 13.1046 38 12V2Z" fill="#1d4ed8"/>
+  <path d="M40.5 24.5L44.5 28.5L27 46H23V42L40.5 24.5Z" fill="#0891b2"/>
+  <path d="M43 22L47 26L44.5 28.5L40.5 24.5L43 22Z" fill="#067a95"/>
+  <rect x="22" y="49" width="10" height="2.4" rx="1.2" fill="#0891b2"/>
+</svg>
+</div>
+<h2>Drag & Drop a PDF File</h2>
+<p>or click here to Browse</p>
+<input type="file" id="pdfInput" accept="application/pdf">
+</label>
+
+</div>
+
+<!-- EDITOR SCREEN -->
+<div class="wide-container hidden" id="editorScreen">
+
+<div class="editor-toolbar" id="toolbar">
+
+  <button class="tool-btn active" data-tool="select" title="Select / Move"><i class="fa-solid fa-arrow-pointer"></i></button>
+  <button class="tool-btn" data-tool="text" title="Add Text"><i class="fa-solid fa-font"></i></button>
+  <button class="tool-btn" data-tool="draw" title="Draw"><i class="fa-solid fa-pen"></i></button>
+  <button class="tool-btn" data-tool="highlight" title="Highlighter"><i class="fa-solid fa-highlighter"></i></button>
+
+  <div class="tool-divider"></div>
+
+  <button class="tool-btn" data-tool="rect" title="Rectangle"><i class="fa-regular fa-square"></i></button>
+  <button class="tool-btn" data-tool="ellipse" title="Ellipse"><i class="fa-regular fa-circle"></i></button>
+  <button class="tool-btn" data-tool="line" title="Line"><i class="fa-solid fa-minus"></i></button>
+  <button class="tool-btn" data-tool="arrow" title="Arrow"><i class="fa-solid fa-arrow-right-long"></i></button>
+  <button class="tool-btn" data-tool="whiteout" title="Whiteout / Redact"><i class="fa-solid fa-eraser"></i></button>
+
+  <div class="tool-divider"></div>
+
+  <button class="tool-btn" id="imageBtn" title="Insert Image / Stamp"><i class="fa-regular fa-image"></i></button>
+  <button class="tool-btn" id="signatureBtn" title="Add Signature"><i class="fa-solid fa-signature"></i></button>
+
+  <div class="tool-divider"></div>
+
+  <button class="tool-btn" id="deleteBtn" title="Delete Selected (Del)"><i class="fa-solid fa-trash"></i></button>
+  <button class="tool-btn" id="undoBtn" title="Undo (Ctrl+Z)" disabled><i class="fa-solid fa-rotate-left"></i></button>
+  <button class="tool-btn" id="redoBtn" title="Redo (Ctrl+Y)" disabled><i class="fa-solid fa-rotate-right"></i></button>
+
+  <input type="file" id="imageInput" accept="image/*" hidden>
+
+</div>
+
+<div class="property-bar">
+
+  <div class="property-group">
+    <span>Color</span>
+    <span class="color-swatch selected" style="background:#2563eb" data-color="#2563eb"></span>
+    <span class="color-swatch" style="background:#ef4444" data-color="#ef4444"></span>
+    <span class="color-swatch" style="background:#10b981" data-color="#10b981"></span>
+    <span class="color-swatch" style="background:#f59e0b" data-color="#f59e0b"></span>
+    <span class="color-swatch" style="background:#0d2545" data-color="#0d2545"></span>
+    <span class="color-swatch" style="background:#ffffff" data-color="#ffffff"></span>
+    <input type="color" class="color-native" id="colorNative" value="#2563eb">
+  </div>
+
+  <div class="property-group">
+    <span>Stroke</span>
+    <input type="number" id="strokeWidth" value="3" min="1" max="40">
+  </div>
+
+  <div class="property-group">
+    <span>Font Size</span>
+    <input type="number" id="fontSize" value="28" min="6" max="200">
+    <button class="mini-toggle" id="boldToggle" title="Bold"><i class="fa-solid fa-bold"></i></button>
+    <button class="mini-toggle" id="italicToggle" title="Italic"><i class="fa-solid fa-italic"></i></button>
+  </div>
+
+  <div class="property-group">
+    <span>Opacity</span>
+    <input type="range" id="opacityRange" min="10" max="100" value="45">
+  </div>
+
+</div>
+
+<div class="editor-body">
+
+  <div class="page-sidebar">
+    <h4>Pages</h4>
+    <div id="pageThumbList"></div>
+    <button class="add-blank-btn" id="addBlankBtn"><i class="fa-solid fa-plus"></i> Add Blank Page</button>
+  </div>
+
+  <div style="flex:1; min-width:0;">
+
+    <div class="canvas-stage" id="canvasStage">
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="fabricCanvas"></canvas>
+      </div>
+    </div>
+
+    <div class="zoom-bar">
+      <button id="zoomOutBtn"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+      <button id="zoomInBtn"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+      <button id="zoomResetBtn" title="Reset Zoom"><i class="fa-solid fa-compress"></i></button>
+      <button id="rotatePageBtn" title="Rotate Current Page"><i class="fa-solid fa-rotate"></i></button>
+      <button id="deletePageBtn" title="Delete Current Page"><i class="fa-solid fa-file-circle-xmark"></i></button>
+      <button id="duplicatePageBtn" title="Duplicate Current Page"><i class="fa-solid fa-clone"></i></button>
+      <button id="pageNumbersBtn" title="Add Page Numbers to All Pages"><i class="fa-solid fa-list-ol"></i></button>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="export-bar">
+
+  <div class="export-field">
+    <label>Output File Name</label>
+    <input type="text" id="renameInput" placeholder="File name">
+  </div>
+
+  <div class="export-field" style="max-width:220px;">
+    <label>Export Quality</label>
+    <select id="qualityMode">
+      <option value="high">High Quality</option>
+      <option value="balanced" selected>Balanced</option>
+      <option value="compact">Compact (Smaller File)</option>
+    </select>
+  </div>
+
+  <button class="btn export-btn" id="exportBtn">
+    <i class="fa-solid fa-floppy-disk" style="margin-right:8px;"></i>Save PDF
+  </button>
+
+  <div class="loader" id="loader"></div>
+  <div class="progress-label" id="progressLabel">Rendering page 1...</div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+</div>
+
+<div class="results" id="results">
+<div class="result-card">
+<div class="result-left">
+<div class="result-icon">
+<svg viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 2C3 0.895431 3.89543 0 5 0H16L23 7V28C23 29.1046 22.1046 30 21 30H5C3.89543 30 3 29.1046 3 28V2Z" fill="#10b981"/>
+<path d="M16 0L23 7H18C16.8954 7 16 6.10457 16 5V0Z" fill="#0e9c6f"/>
+<path d="M7 15L11 19L19 10" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<div class="result-text">
+<input type="text" class="result-rename" id="resultRename">
+<div class="result-meta"><i class="fa-solid fa-circle-check"></i> Edited Successfully</div>
+</div>
+</div>
+<a class="result-download" id="downloadBtn"><i class="fa-solid fa-download" style="margin-right:8px;"></i>Download</a>
+</div>
+</div>
+
+</div>
+
+<!-- SIGNATURE MODAL -->
+<div class="modal-overlay" id="sigModal">
+  <div class="modal-box">
+    <h3>Draw Your Signature</h3>
+    <p>Draw with your mouse or finger, then add it to the page.</p>
+    <div class="sig-pad-wrap">
+      <canvas id="sigPad"></canvas>
+    </div>
+    <div class="modal-actions">
+      <button id="sigClearBtn">Clear</button>
+      <button id="sigCancelBtn">Cancel</button>
+      <button class="primary" id="sigAddBtn">Add to Page</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-simple">
+        <div class="footer-brand">
+            <img src="images/logo.png">
+            <div>
+                <h2 class="footer-title">PDFBoon</h2>
+                <p class="footer-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+        <div class="footer-simple-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">All Tools</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-social">
+            <a href="not.html"><i class="fab fa-facebook"></i></a>
+            <a href="not.html"><i class="fab fa-linkedin"></i></a>
+            <a href="not.html"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+        <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
+    </div>
+</footer>
+
+<script>
+
+/* ================= NAV / MOBILE / DROPDOWN ================= */
+
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
+
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) toolsDropdown.classList.remove('open');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') toolsDropdown.classList.remove('open');
+});
+
+/* ================= CONSTANTS ================= */
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const S = 1.5;              // fixed working scale used for editing AND export
+const BLANK_W = 595 * S;    // A4 @ 72dpi portrait
+const BLANK_H = 842 * S;
+
+/* ================= STATE ================= */
+
+const uploadScreen = document.getElementById('uploadScreen');
+const editorScreen = document.getElementById('editorScreen');
+const uploadBox = document.getElementById('uploadBox');
+const pdfInput = document.getElementById('pdfInput');
+
+let pdfDoc = null;
+let pages = [];            // {id,type,srcIndex,rotation,annotations,history:{stack,index},w,h}
+let currentPageId = null;
+let idSeq = 0;
+
+let fabricCanvas = null;
+let currentTool = 'select';
+let zoomLevel = 1;
+
+let currentColor = '#2563eb';
+let strokeWidthVal = 3;
+let fontSizeVal = 28;
+let isBold = false;
+let isItalic = false;
+let opacityVal = 0.45;
+
+let shapeOrigin = null;
+let shapeInProgress = null;
+
+/* ================= UPLOAD ================= */
+
+pdfInput.addEventListener('change', (e) => {
+  if (e.target.files.length) loadPdf(e.target.files[0]);
+});
+
+uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); uploadBox.classList.add('active'); });
+uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('active'));
+uploadBox.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove('active');
+  const file = [...e.dataTransfer.files].find(f => f.type === 'application/pdf');
+  if (file) loadPdf(file);
+});
+
+async function loadPdf(file){
+  const bytes = await file.arrayBuffer();
+  try{
+    pdfDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+  }catch(err){
+    alert('This file could not be opened. It may be corrupted or password protected (unlock it first).');
+    return;
+  }
+
+  pages = [];
+  for(let i = 0; i < pdfDoc.numPages; i++){
+    pages.push(makePageEntry({ type:'pdf', srcIndex:i }));
+  }
+
+  document.getElementById('renameInput').value = file.name.replace(/\.pdf$/i, '') + ' edited PDFBoon';
+
+  uploadScreen.classList.add('hidden');
+  editorScreen.classList.remove('hidden');
+
+  initFabricCanvas();
+  await renderAllThumbs();
+  await switchPage(pages[0].id);
+}
+
+function makePageEntry(opts){
+  return {
+    id: 'p' + (idSeq++),
+    type: opts.type,
+    srcIndex: opts.srcIndex ?? null,
+    rotation: 0,
+    annotations: null,
+    history: { stack: [], index: -1 },
+    thumbUrl: null
+  };
+}
+
+/* ================= FABRIC CANVAS INIT ================= */
+
+function initFabricCanvas(){
+  fabricCanvas = new fabric.Canvas('fabricCanvas', {
+    selection: true,
+    preserveObjectStacking: true
+  });
+
+  fabricCanvas.on('object:added', () => scheduleHistoryPush());
+  fabricCanvas.on('object:modified', () => scheduleHistoryPush());
+  fabricCanvas.on('object:removed', () => scheduleHistoryPush());
+  fabricCanvas.on('path:created', () => scheduleHistoryPush());
+
+  fabricCanvas.on('mouse:down', (opt) => onCanvasMouseDown(opt));
+  fabricCanvas.on('mouse:move', (opt) => onCanvasMouseMove(opt));
+  fabricCanvas.on('mouse:up', () => onCanvasMouseUp());
+}
+
+/* ================= PAGE RENDERING HELPERS ================= */
+
+async function getBackgroundCanvas(page, scale){
+  if(page.type === 'pdf'){
+    const pjsPage = await pdfDoc.getPage(page.srcIndex + 1);
+    const baseViewport = pjsPage.getViewport({ scale: 1 });
+    const totalRotation = (baseViewport.rotation + page.rotation) % 360;
+    const viewport = pjsPage.getViewport({ scale, rotation: totalRotation });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await pjsPage.render({ canvasContext: ctx, viewport }).promise;
+    return canvas;
+  } else {
+    let w = BLANK_W * (scale / S);
+    let h = BLANK_H * (scale / S);
+    if(page.rotation === 90 || page.rotation === 270){ const t = w; w = h; h = t; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+    return canvas;
+  }
+}
+
+function loadFromJSONAsync(canvas, json){
+  return new Promise((resolve) => {
+    if(!json){ resolve(); return; }
+    canvas.loadFromJSON(json, () => resolve());
+  });
+}
+
+/* Compose a page (background + annotations) onto a StaticCanvas at given scale/quality.
+   Returns the StaticCanvas element (canvas.getElement()) after rendering. */
+async function composePage(page, scale, quality){
+  const bg = await getBackgroundCanvas(page, scale);
+  const staticCanvas = new fabric.StaticCanvas(null, { width: bg.width, height: bg.height });
+  staticCanvas.setBackgroundImage(new fabric.Image(bg), staticCanvas.renderAll.bind(staticCanvas));
+
+  await loadFromJSONAsync(staticCanvas, page.annotations);
+  if(scale !== S) staticCanvas.setZoom(scale / S);
+  staticCanvas.renderAll();
+
+  return staticCanvas.getElement();
+}
+
+async function renderThumbFor(page){
+  const el = await composePage(page, 0.28 * S, 0.7);
+  page.thumbUrl = el.toDataURL('image/jpeg', 0.7);
+}
+
+async function renderAllThumbs(){
+  for(const p of pages) await renderThumbFor(p);
+  renderSidebar();
+}
+
+/* ================= SIDEBAR ================= */
+
+const pageThumbList = document.getElementById('pageThumbList');
+
+function renderSidebar(){
+  pageThumbList.innerHTML = '';
+  pages.forEach((p, idx) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'page-thumb-wrap';
+    wrap.dataset.id = p.id;
+    wrap.innerHTML = `
+      <div class="page-thumb ${p.id === currentPageId ? 'active-page' : ''}">
+        <img src="${p.thumbUrl || ''}" alt="page ${idx+1}">
+      </div>
+      <div class="page-thumb-num">Page ${idx+1}</div>
+      <div class="page-thumb-actions">
+        <button data-act="rotate" title="Rotate"><i class="fa-solid fa-rotate"></i></button>
+        <button data-act="delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `;
+    wrap.addEventListener('click', (e) => {
+      if(e.target.closest('button')) return;
+      switchPage(p.id);
+    });
+    wrap.querySelector('[data-act="rotate"]').addEventListener('click', () => rotatePage(p.id, 90));
+    wrap.querySelector('[data-act="delete"]').addEventListener('click', () => deletePage(p.id));
+    pageThumbList.appendChild(wrap);
+  });
+}
+
+Sortable.create(pageThumbList, {
+  animation: 150,
+  onEnd: () => {
+    const newOrder = [...pageThumbList.children].map(el => el.dataset.id);
+    pages.sort((a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id));
+    renderSidebar();
+  }
+});
+
+document.getElementById('addBlankBtn').addEventListener('click', async () => {
+  const idx = pages.findIndex(p => p.id === currentPageId);
+  const entry = makePageEntry({ type:'blank' });
+  pages.splice(idx + 1, 0, entry);
+  await renderThumbFor(entry);
+  renderSidebar();
+  await switchPage(entry.id);
+});
+
+/* ================= PAGE SWITCH ================= */
+
+async function switchPage(id){
+  if(currentPageId){
+    const prev = pages.find(p => p.id === currentPageId);
+    if(prev) prev.annotations = fabricCanvas.toJSON();
+  }
+
+  currentPageId = id;
+  const page = pages.find(p => p.id === id);
+
+  const bg = await getBackgroundCanvas(page, S);
+  fabricCanvas.setWidth(bg.width);
+  fabricCanvas.setHeight(bg.height);
+  fabricCanvas.setBackgroundImage(new fabric.Image(bg), fabricCanvas.renderAll.bind(fabricCanvas));
+
+  fabricCanvas.clear();
+  fabricCanvas.setBackgroundImage(new fabric.Image(bg), fabricCanvas.renderAll.bind(fabricCanvas));
+  await loadFromJSONAsync(fabricCanvas, page.annotations);
+  fabricCanvas.renderAll();
+
+  if(page.history.stack.length === 0){
+    page.history.stack.push(JSON.stringify(fabricCanvas.toJSON()));
+    page.history.index = 0;
+  }
+
+  applyToolToCanvas();
+  updateUndoRedoButtons();
+  renderSidebar();
+  applyZoom();
+}
+
+/* ================= HISTORY (per page) ================= */
+
+let historyTimer = null;
+function scheduleHistoryPush(){
+  if(!currentPageId) return;
+  clearTimeout(historyTimer);
+  historyTimer = setTimeout(() => {
+    const page = pages.find(p => p.id === currentPageId);
+    if(!page) return;
+    const json = JSON.stringify(fabricCanvas.toJSON());
+    if(page.history.stack[page.history.index] === json) return;
+    page.history.stack = page.history.stack.slice(0, page.history.index + 1);
+    page.history.stack.push(json);
+    page.history.index++;
+    if(page.history.stack.length > 30){
+      page.history.stack.shift();
+      page.history.index--;
+    }
+    updateUndoRedoButtons();
+    renderThumbFor(page).then(renderSidebar);
+  }, 260);
+}
+
+function updateUndoRedoButtons(){
+  const page = pages.find(p => p.id === currentPageId);
+  document.getElementById('undoBtn').disabled = !page || page.history.index <= 0;
+  document.getElementById('redoBtn').disabled = !page || page.history.index >= page.history.stack.length - 1;
+}
+
+document.getElementById('undoBtn').addEventListener('click', async () => {
+  const page = pages.find(p => p.id === currentPageId);
+  if(!page || page.history.index <= 0) return;
+  page.history.index--;
+  await loadHistoryState(page);
+});
+
+document.getElementById('redoBtn').addEventListener('click', async () => {
+  const page = pages.find(p => p.id === currentPageId);
+  if(!page || page.history.index >= page.history.stack.length - 1) return;
+  page.history.index++;
+  await loadHistoryState(page);
+});
+
+async function loadHistoryState(page){
+  const json = page.history.stack[page.history.index];
+  const bg = fabricCanvas.backgroundImage;
+  fabricCanvas.clear();
+  if(bg) fabricCanvas.setBackgroundImage(bg, fabricCanvas.renderAll.bind(fabricCanvas));
+  await loadFromJSONAsync(fabricCanvas, json);
+  fabricCanvas.renderAll();
+  updateUndoRedoButtons();
+}
+
+/* ================= PAGE ROTATE / DELETE / DUPLICATE ================= */
+
+function rotateAnnotationsJSON(json, oldW, oldH, delta){
+  if(!json || !json.objects || !json.objects.length) return json;
+  json.objects.forEach(obj => {
+    const cx = (obj.left ?? 0);
+    const cy = (obj.top ?? 0);
+    let nx, ny;
+    if(delta === 90){ nx = oldH - cy; ny = cx; }
+    else if(delta === 180){ nx = oldW - cx; ny = oldH - cy; }
+    else { nx = cy; ny = oldW - cx; } // 270
+    obj.left = nx;
+    obj.top = ny;
+    obj.angle = ((obj.angle || 0) + delta) % 360;
+  });
+  return json;
+}
+
+async function rotatePage(id, delta){
+  const page = pages.find(p => p.id === id);
+  if(!page) return;
+
+  if(id === currentPageId){
+    page.annotations = fabricCanvas.toJSON();
+  }
+
+  const oldW = fabricCanvas && id === currentPageId ? fabricCanvas.getWidth() : null;
+  const oldH = fabricCanvas && id === currentPageId ? fabricCanvas.getHeight() : null;
+
+  const bgBefore = await getBackgroundCanvas(page, S);
+  const w = bgBefore.width, h = bgBefore.height;
+
+  page.rotation = (page.rotation + delta) % 360;
+
+  if(page.annotations){
+    page.annotations = rotateAnnotationsJSON(page.annotations, w, h, delta);
+  }
+
+  await renderThumbFor(page);
+  renderSidebar();
+
+  if(id === currentPageId){
+    await switchPage(id);
+  }
+}
+
+document.getElementById('rotatePageBtn').addEventListener('click', () => {
+  if(currentPageId) rotatePage(currentPageId, 90);
+});
+
+async function deletePage(id){
+  if(pages.length <= 1){
+    alert("You can't delete the last remaining page.");
+    return;
+  }
+  const idx = pages.findIndex(p => p.id === id);
+  const wasActive = id === currentPageId;
+  pages.splice(idx, 1);
+
+  if(wasActive){
+    const nextIdx = Math.max(0, idx - 1);
+    await switchPage(pages[Math.min(nextIdx, pages.length - 1)].id);
+  } else {
+    renderSidebar();
+  }
+}
+
+document.getElementById('deletePageBtn').addEventListener('click', () => {
+  if(currentPageId) deletePage(currentPageId);
+});
+
+document.getElementById('duplicatePageBtn').addEventListener('click', async () => {
+  const idx = pages.findIndex(p => p.id === currentPageId);
+  const src = pages[idx];
+  if(id === currentPageId) src.annotations = fabricCanvas.toJSON();
+  else if(currentPageId) src.annotations = src.annotations;
+
+  const clone = makePageEntry({ type: src.type, srcIndex: src.srcIndex });
+  clone.rotation = src.rotation;
+  clone.annotations = src.annotations ? JSON.parse(JSON.stringify(src.annotations)) : null;
+
+  pages.splice(idx + 1, 0, clone);
+  await renderThumbFor(clone);
+  renderSidebar();
+  await switchPage(clone.id);
+});
+
+document.getElementById('pageNumbersBtn').addEventListener('click', async () => {
+  if(currentPageId){
+    pages.find(p => p.id === currentPageId).annotations = fabricCanvas.toJSON();
+  }
+
+  for(let i = 0; i < pages.length; i++){
+    const page = pages[i];
+    const bg = await getBackgroundCanvas(page, S);
+    const staticCanvas = new fabric.StaticCanvas(null, { width: bg.width, height: bg.height });
+    await loadFromJSONAsync(staticCanvas, page.annotations);
+
+    const label = new fabric.Text(`Page ${i + 1} of ${pages.length}`, {
+      fontSize: 16,
+      fill: '#3d5578',
+      fontFamily: 'Inter, sans-serif',
+      left: bg.width / 2,
+      top: bg.height - 30,
+      originX: 'center'
+    });
+    staticCanvas.add(label);
+
+    page.annotations = staticCanvas.toJSON();
+  }
+
+  await switchPage(currentPageId);
+  await renderAllThumbs();
+});
+
+/* ================= TOOLBAR ================= */
+
+const toolbar = document.getElementById('toolbar');
+toolbar.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    toolbar.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTool = btn.dataset.tool;
+    applyToolToCanvas();
+  });
+});
+
+function applyToolToCanvas(){
+  if(!fabricCanvas) return;
+  const drawTools = ['draw', 'highlight'];
+  fabricCanvas.isDrawingMode = drawTools.includes(currentTool);
+  fabricCanvas.selection = currentTool === 'select';
+  fabricCanvas.forEachObject(o => {
+    o.selectable = currentTool === 'select';
+    o.evented = currentTool === 'select';
+  });
+
+  if(currentTool === 'draw'){
+    fabricCanvas.freeDrawingBrush = new fabric.PencilBrush(fabricCanvas);
+    fabricCanvas.freeDrawingBrush.color = currentColor;
+    fabricCanvas.freeDrawingBrush.width = strokeWidthVal;
+  } else if(currentTool === 'highlight'){
+    fabricCanvas.freeDrawingBrush = new fabric.PencilBrush(fabricCanvas);
+    fabricCanvas.freeDrawingBrush.color = hexToRgba(currentColor, opacityVal);
+    fabricCanvas.freeDrawingBrush.width = Math.max(strokeWidthVal * 4, 14);
+  }
+}
+
+function hexToRgba(hex, alpha){
+  const h = hex.replace('#', '');
+  const bigint = parseInt(h.length === 3 ? h.split('').map(c=>c+c).join('') : h, 16);
+  const r = (bigint >> 16) & 255, g = (bigint >> 8) & 255, b = bigint & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+/* ---- Shape drawing (rect / ellipse / line / arrow / whiteout) ---- */
+
+function onCanvasMouseDown(opt){
+  const shapeTools = ['rect', 'ellipse', 'line', 'arrow', 'whiteout'];
+  if(!shapeTools.includes(currentTool)) return;
+  if(opt.target) return;
+
+  const p = fabricCanvas.getPointer(opt.e);
+  shapeOrigin = { x: p.x, y: p.y };
+
+  if(currentTool === 'rect' || currentTool === 'whiteout'){
+    shapeInProgress = new fabric.Rect({
+      left: p.x, top: p.y, width: 1, height: 1,
+      fill: currentTool === 'whiteout' ? '#ffffff' : 'transparent',
+      stroke: currentTool === 'whiteout' ? '' : currentColor,
+      strokeWidth: currentTool === 'whiteout' ? 0 : strokeWidthVal,
+      opacity: currentTool === 'whiteout' ? 1 : 1
+    });
+  } else if(currentTool === 'ellipse'){
+    shapeInProgress = new fabric.Ellipse({
+      left: p.x, top: p.y, rx: 1, ry: 1,
+      fill: 'transparent', stroke: currentColor, strokeWidth: strokeWidthVal
+    });
+  } else if(currentTool === 'line'){
+    shapeInProgress = new fabric.Line([p.x, p.y, p.x, p.y], {
+      stroke: currentColor, strokeWidth: strokeWidthVal
+    });
+  } else if(currentTool === 'arrow'){
+    shapeInProgress = buildArrow(p.x, p.y, p.x, p.y, currentColor, strokeWidthVal);
+  }
+
+  if(shapeInProgress) fabricCanvas.add(shapeInProgress);
+}
+
+function onCanvasMouseMove(opt){
+  if(!shapeInProgress || !shapeOrigin) return;
+  const p = fabricCanvas.getPointer(opt.e);
+
+  if(currentTool === 'rect' || currentTool === 'whiteout'){
+    shapeInProgress.set({
+      left: Math.min(p.x, shapeOrigin.x),
+      top: Math.min(p.y, shapeOrigin.y),
+      width: Math.abs(p.x - shapeOrigin.x),
+      height: Math.abs(p.y - shapeOrigin.y)
+    });
+  } else if(currentTool === 'ellipse'){
+    shapeInProgress.set({
+      left: Math.min(p.x, shapeOrigin.x),
+      top: Math.min(p.y, shapeOrigin.y),
+      rx: Math.abs(p.x - shapeOrigin.x) / 2,
+      ry: Math.abs(p.y - shapeOrigin.y) / 2
+    });
+  } else if(currentTool === 'line'){
+    shapeInProgress.set({ x2: p.x, y2: p.y });
+  } else if(currentTool === 'arrow'){
+    fabricCanvas.remove(shapeInProgress);
+    shapeInProgress = buildArrow(shapeOrigin.x, shapeOrigin.y, p.x, p.y, currentColor, strokeWidthVal);
+    fabricCanvas.add(shapeInProgress);
+  }
+
+  fabricCanvas.requestRenderAll();
+}
+
+function onCanvasMouseUp(){
+  if(shapeInProgress){
+    shapeInProgress.setCoords();
+    fabricCanvas.setActiveObject(shapeInProgress);
+  }
+  shapeInProgress = null;
+  shapeOrigin = null;
+}
+
+function buildArrow(x1, y1, x2, y2, color, width){
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  const line = new fabric.Line([x1, y1, x2, y2], { stroke: color, strokeWidth: width, selectable: false, evented: false });
+  const head = new fabric.Triangle({
+    left: x2, top: y2, width: width * 4, height: width * 5,
+    fill: color, angle: (angle * 180 / Math.PI) + 90,
+    originX: 'center', originY: 'center', selectable: false, evented: false
+  });
+  return new fabric.Group([line, head]);
+}
+
+/* ---- Text tool ---- */
+
+fabric?.Canvas && document.addEventListener('DOMContentLoaded', () => {});
+
+function addTextAt(x, y){
+  const text = new fabric.IText('Double-click to edit', {
+    left: x, top: y,
+    fontSize: fontSizeVal,
+    fill: currentColor,
+    fontFamily: 'Inter, sans-serif',
+    fontWeight: isBold ? 'bold' : 'normal',
+    fontStyle: isItalic ? 'italic' : 'normal'
+  });
+  fabricCanvas.add(text);
+  fabricCanvas.setActiveObject(text);
+}
+
+/* hook text placement into mouse:down as well */
+const originalMouseDown = onCanvasMouseDown;
+function onCanvasMouseDownWrapper(opt){
+  if(currentTool === 'text' && !opt.target){
+    const p = fabricCanvas.getPointer(opt.e);
+    addTextAt(p.x, p.y);
+    return;
+  }
+  originalMouseDown(opt);
+}
+
+/* re-bind mouse:down to include text handling (overrides earlier binding) */
+fabricCanvas?.off && fabricCanvas.off('mouse:down');
+
+/* ================= IMAGE / STAMP ================= */
+
+document.getElementById('imageBtn').addEventListener('click', () => {
+  document.getElementById('imageInput').click();
+});
+
+document.getElementById('imageInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    fabric.Image.fromURL(evt.target.result, (img) => {
+      img.scaleToWidth(Math.min(200, fabricCanvas.getWidth() * 0.4));
+      img.set({
+        left: fabricCanvas.getWidth() / 2,
+        top: fabricCanvas.getHeight() / 2,
+        originX: 'center',
+        originY: 'center'
+      });
+      fabricCanvas.add(img);
+      fabricCanvas.setActiveObject(img);
+    });
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+/* ================= SIGNATURE MODAL ================= */
+
+const sigModal = document.getElementById('sigModal');
+const sigPad = document.getElementById('sigPad');
+const sigCtx = sigPad.getContext('2d');
+let sigDrawing = false;
+
+function resizeSigPad(){
+  sigPad.width = sigPad.clientWidth;
+  sigPad.height = sigPad.clientHeight;
+  sigCtx.lineWidth = 3;
+  sigCtx.lineCap = 'round';
+  sigCtx.strokeStyle = '#0d2545';
+}
+
+function sigPointerPos(e){
+  const rect = sigPad.getBoundingClientRect();
+  const point = e.touches ? e.touches[0] : e;
+  return { x: point.clientX - rect.left, y: point.clientY - rect.top };
+}
+
+sigPad.addEventListener('pointerdown', (e) => {
+  sigDrawing = true;
+  const pos = sigPointerPos(e);
+  sigCtx.beginPath();
+  sigCtx.moveTo(pos.x, pos.y);
+});
+sigPad.addEventListener('pointermove', (e) => {
+  if(!sigDrawing) return;
+  const pos = sigPointerPos(e);
+  sigCtx.lineTo(pos.x, pos.y);
+  sigCtx.stroke();
+});
+window.addEventListener('pointerup', () => { sigDrawing = false; });
+
+document.getElementById('signatureBtn').addEventListener('click', () => {
+  sigModal.classList.add('open');
+  setTimeout(() => { resizeSigPad(); }, 50);
+});
+document.getElementById('sigCancelBtn').addEventListener('click', () => sigModal.classList.remove('open'));
+document.getElementById('sigClearBtn').addEventListener('click', () => sigCtx.clearRect(0, 0, sigPad.width, sigPad.height));
+
+document.getElementById('sigAddBtn').addEventListener('click', () => {
+  const dataUrl = sigPad.toDataURL('image/png');
+  fabric.Image.fromURL(dataUrl, (img) => {
+    img.scaleToWidth(Math.min(240, fabricCanvas.getWidth() * 0.5));
+    img.set({
+      left: fabricCanvas.getWidth() / 2,
+      top: fabricCanvas.getHeight() / 2,
+      originX: 'center',
+      originY: 'center'
+    });
+    fabricCanvas.add(img);
+    fabricCanvas.setActiveObject(img);
+  });
+  sigModal.classList.remove('open');
+});
+
+/* ================= DELETE / KEYBOARD ================= */
+
+document.getElementById('deleteBtn').addEventListener('click', deleteSelected);
+
+function deleteSelected(){
+  const objs = fabricCanvas.getActiveObjects();
+  if(!objs.length) return;
+  objs.forEach(o => fabricCanvas.remove(o));
+  fabricCanvas.discardActiveObject();
+  fabricCanvas.requestRenderAll();
+}
+
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement.tagName;
+  const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || (fabricCanvas && fabricCanvas.getActiveObject() && fabricCanvas.getActiveObject().isEditing);
+
+  if((e.key === 'Delete' || e.key === 'Backspace') && !isTyping){
+    e.preventDefault();
+    deleteSelected();
+  }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !isTyping){
+    e.preventDefault();
+    document.getElementById('undoBtn').click();
+  }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y' && !isTyping){
+    e.preventDefault();
+    document.getElementById('redoBtn').click();
+  }
+});
+
+/* ================= PROPERTY BAR ================= */
+
+document.querySelectorAll('.color-swatch').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    sw.classList.add('selected');
+    currentColor = sw.dataset.color;
+    document.getElementById('colorNative').value = currentColor;
+    applyStylePropToSelection('stroke', currentColor);
+    applyStylePropToSelection('fill', currentColor);
+    applyToolToCanvas();
+  });
+});
+
+document.getElementById('colorNative').addEventListener('input', (e) => {
+  currentColor = e.target.value;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  applyStylePropToSelection('stroke', currentColor);
+  applyStylePropToSelection('fill', currentColor);
+  applyToolToCanvas();
+});
+
+document.getElementById('strokeWidth').addEventListener('input', (e) => {
+  strokeWidthVal = parseFloat(e.target.value) || 1;
+  applyStylePropToSelection('strokeWidth', strokeWidthVal);
+  applyToolToCanvas();
+});
+
+document.getElementById('fontSize').addEventListener('input', (e) => {
+  fontSizeVal = parseFloat(e.target.value) || 12;
+  applyStylePropToSelection('fontSize', fontSizeVal);
+});
+
+document.getElementById('boldToggle').addEventListener('click', (e) => {
+  isBold = !isBold;
+  e.currentTarget.classList.toggle('active', isBold);
+  applyStylePropToSelection('fontWeight', isBold ? 'bold' : 'normal');
+});
+
+document.getElementById('italicToggle').addEventListener('click', (e) => {
+  isItalic = !isItalic;
+  e.currentTarget.classList.toggle('active', isItalic);
+  applyStylePropToSelection('fontStyle', isItalic ? 'italic' : 'normal');
+});
+
+document.getElementById('opacityRange').addEventListener('input', (e) => {
+  opacityVal = parseFloat(e.target.value) / 100;
+  applyStylePropToSelection('opacity', opacityVal);
+  applyToolToCanvas();
+});
+
+function applyStylePropToSelection(prop, value){
+  if(!fabricCanvas) return;
+  const objs = fabricCanvas.getActiveObjects();
+  if(!objs.length) return;
+  objs.forEach(o => o.set(prop, value));
+  fabricCanvas.requestRenderAll();
+  scheduleHistoryPush();
+}
+
+/* ================= ZOOM ================= */
+
+const canvasWrap = document.getElementById('canvasWrap');
+const zoomLabel = document.getElementById('zoomLabel');
+
+function applyZoom(){
+  canvasWrap.style.transform = `scale(${zoomLevel})`;
+  zoomLabel.textContent = Math.round(zoomLevel * 100) + '%';
+}
+
+document.getElementById('zoomInBtn').addEventListener('click', () => {
+  zoomLevel = Math.min(zoomLevel + 0.1, 2.5);
+  applyZoom();
+});
+document.getElementById('zoomOutBtn').addEventListener('click', () => {
+  zoomLevel = Math.max(zoomLevel - 0.1, 0.3);
+  applyZoom();
+});
+document.getElementById('zoomResetBtn').addEventListener('click', () => {
+  zoomLevel = 1;
+  applyZoom();
+});
+
+/* ================= EXPORT ================= */
+
+const exportBtn = document.getElementById('exportBtn');
+const loader = document.getElementById('loader');
+const progressLabel = document.getElementById('progressLabel');
+const errorMsg = document.getElementById('errorMsg');
+const results = document.getElementById('results');
+const resultRename = document.getElementById('resultRename');
+const downloadBtn = document.getElementById('downloadBtn');
+
+function getQuality(){
+  const mode = document.getElementById('qualityMode').value;
+  if(mode === 'high') return 0.95;
+  if(mode === 'compact') return 0.7;
+  return 0.85;
+}
+
+exportBtn.addEventListener('click', async () => {
+  errorMsg.style.display = 'none';
+  results.style.display = 'none';
+
+  if(currentPageId){
+    pages.find(p => p.id === currentPageId).annotations = fabricCanvas.toJSON();
+  }
+
+  exportBtn.disabled = true;
+  loader.style.display = 'block';
+  progressLabel.style.display = 'block';
+
+  try{
+    const quality = getQuality();
+    const newPdf = await PDFLib.PDFDocument.create();
+
+    for(let i = 0; i < pages.length; i++){
+      progressLabel.textContent = `Rendering page ${i + 1} of ${pages.length}...`;
+      const el = await composePage(pages[i], S, quality);
+      const imageData = el.toDataURL('image/jpeg', quality);
+      const jpg = await newPdf.embedJpg(imageData);
+      const pdfPage = newPdf.addPage([el.width, el.height]);
+      pdfPage.drawImage(jpg, { x: 0, y: 0, width: el.width, height: el.height });
+    }
+
+    const outBytes = await newPdf.save({ useObjectStreams: true });
+    const blob = new Blob([outBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+
+    const baseName = document.getElementById('renameInput').value.trim() || 'edited_document PDFBoon';
+    resultRename.value = baseName;
+    downloadBtn.href = url;
+    downloadBtn.download = `${baseName}.pdf`;
+
+    resultRename.oninput = () => {
+      const cleanName = resultRename.value.trim() || baseName;
+      downloadBtn.download = `${cleanName}.pdf`;
+    };
+
+    loader.style.display = 'none';
+    progressLabel.style.display = 'none';
+    exportBtn.disabled = false;
+
+    results.style.display = 'block';
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  }catch(err){
+    console.error(err);
+    loader.style.display = 'none';
+    progressLabel.style.display = 'none';
+    exportBtn.disabled = false;
+    errorMsg.textContent = 'Oops! Something went wrong while saving this PDF.';
+    errorMsg.style.display = 'block';
+  }
+});
+
+</script>
+
+</body>
+</html>
