@@ -52,6 +52,197 @@
       height: 100%;
       object-fit: cover;
     }
+
+    .top-controls{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin:20px auto;
+
+max-width:700px;
+
+gap:10px;
+
+flex-wrap:wrap;
+
+}
+
+#pdfName{
+
+flex:1;
+
+padding:12px;
+
+border-radius:8px;
+
+border:1px solid #ccc;
+
+font-size:16px;
+
+}
+
+.counter{
+
+background:#0d6efd;
+
+color:white;
+
+padding:10px 15px;
+
+border-radius:8px;
+
+font-weight:bold;
+
+}
+
+#preview-container{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+
+gap:15px;
+
+margin-top:25px;
+
+}
+
+.scan-card{
+
+position:relative;
+
+border-radius:12px;
+
+overflow:hidden;
+
+background:white;
+
+box-shadow:0 5px 15px rgba(0,0,0,.12);
+
+transition:.3s;
+
+}
+
+.scan-card:hover{
+
+transform:translateY(-5px);
+
+}
+
+.scan-card img{
+
+width:100%;
+
+height:180px;
+
+object-fit:cover;
+
+display:block;
+
+}
+
+.page-badge{
+
+position:absolute;
+
+top:8px;
+
+left:8px;
+
+background:#007bff;
+
+color:white;
+
+padding:4px 8px;
+
+border-radius:20px;
+
+font-size:12px;
+
+font-weight:bold;
+
+}
+
+.delete-btn{
+
+position:absolute;
+
+top:8px;
+
+right:8px;
+
+width:28px;
+
+height:28px;
+
+border:none;
+
+border-radius:50%;
+
+background:#ff3b30;
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+    /* Drag Effect */
+
+.scan-card {
+    cursor: grab;
+    user-select: none;
+}
+
+.scan-card.dragging {
+    opacity: .5;
+    transform: scale(.96);
+}
+
+.scan-card.over {
+    outline: 3px dashed #0d6efd;
+}
+
+/* Image Preview */
+
+#imageModal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+#imageModal.active{
+    display:flex;
+}
+
+#imageModal img{
+    width:95%;
+    max-width:900px;
+    max-height:92vh;
+    object-fit:contain;
+}
+
+#closePreview{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:50%;
+    background:white;
+    font-size:20px;
+    cursor:pointer;
+}
   </style>
 </head>
 <body>
@@ -65,61 +256,476 @@
   <br>
 
   <!-- PDF Generate karne ka button -->
-  <button class="btn btn-create" onclick="generatePDF()">📄 Create PDF</button>
+<button id="createPdfBtn" class="btn btn-create">
+    📄 Create PDF
+</button>
+  <div class="top-controls">
+
+    <input
+        type="text"
+        id="pdfName"
+        placeholder="Enter PDF Name"
+        value="PDFBoon_Scan">
+
+    <div class="counter">
+        <span id="pageCount">0</span> Pages Selected
+    </div>
+
+</div>
+
+<div id="preview-container"></div>
 
   <div id="preview-container"></div>
+  <div id="imageModal">
+    <button id="closePreview">✕</button>
+    <img id="previewImage">
+  </div>
 
   <script>
-    let images = [];
+    //==============================
+//
+// PDFBoon Scanner
+// Part-1
+//
+//==============================
+// PDFBoon Logo
+const pdfboonLogo = new Image();
+pdfboonLogo.src = "images/logo.png"; // Path check kar lena
+let images = [];
 
-    function handleFiles(files) {
-      const previewContainer = document.getElementById('preview-container');
-      
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          images.push(e.target.result);
-          
-          // Preview create karna
-          const box = document.createElement('div');
-          box.className = 'img-box';
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          box.appendChild(img);
-          previewContainer.appendChild(box);
-        };
-        reader.readAsDataURL(file);
-      });
+const cameraInput = document.getElementById("cameraInput");
+
+const previewContainer =
+document.getElementById("preview-container");
+
+const pageCount =
+document.getElementById("pageCount");
+
+cameraInput.addEventListener(
+"change",
+(e)=>{
+
+handleFiles(e.target.files);
+
+});
+
+function handleFiles(files){
+
+Array.from(files).forEach(file=>{
+
+if(!file.type.startsWith("image/")) return;
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+
+images.push({
+
+id:Date.now()+Math.random(),
+
+src:e.target.result,
+
+name:file.name
+
+});
+
+renderPreview();
+
+}
+
+reader.readAsDataURL(file);
+
+});
+
+}
+
+function renderPreview(){
+
+previewContainer.innerHTML="";
+
+images.forEach((item,index)=>{
+
+const card=document.createElement("div");
+
+card.className="scan-card";
+
+card.dataset.index=index;
+
+const img=document.createElement("img");
+
+img.src=item.src;
+
+img.draggable=false;
+
+const badge=document.createElement("div");
+
+badge.className="page-badge";
+
+badge.innerHTML=index+1;
+
+const remove=document.createElement("button");
+
+remove.className="delete-btn";
+
+remove.innerHTML="✕
+
+";
+
+remove.onclick=function(){
+
+deleteImage(index);
+
+};
+
+card.appendChild(img);
+
+card.appendChild(badge);
+
+card.appendChild(remove);
+
+previewContainer.appendChild(card);
+
+});
+
+pageCount.innerHTML=images.length;
+
+}
+
+function deleteImage(index){
+
+images.splice(index,1);
+
+renderPreview();
+
+}
+
+    //========================
+//
+// PART-2
+//
+//========================
+
+const modal = document.getElementById("imageModal");
+const previewImage = document.getElementById("previewImage");
+
+document
+.getElementById("closePreview")
+.onclick = () => {
+
+    modal.classList.remove("active");
+
+};
+
+let dragIndex = null;
+
+function enableDrag(){
+
+const cards =
+document.querySelectorAll(".scan-card");
+
+cards.forEach((card,index)=>{
+
+card.draggable = true;
+
+// Image Preview
+
+card.addEventListener("click",e=>{
+
+if(e.target.classList.contains("delete-btn")) return;
+
+previewImage.src = images[index].src;
+
+modal.classList.add("active");
+
+});
+
+// Drag Start
+
+card.addEventListener("dragstart",()=>{
+
+dragIndex=index;
+
+card.classList.add("dragging");
+
+});
+
+// Drag End
+
+card.addEventListener("dragend",()=>{
+
+card.classList.remove("dragging");
+
+});
+
+// Drag Over
+
+card.addEventListener("dragover",e=>{
+
+e.preventDefault();
+
+card.classList.add("over");
+
+});
+
+// Leave
+
+card.addEventListener("dragleave",()=>{
+
+card.classList.remove("over");
+
+});
+
+// Drop
+
+card.addEventListener("drop",()=>{
+
+card.classList.remove("over");
+
+const target=index;
+
+if(target===dragIndex) return;
+
+const moved=images.splice(dragIndex,1)[0];
+
+images.splice(target,0,moved);
+
+renderPreview();
+  enableDrag();
+
+});
+
+});
+
+}
+
+
+//==================================
+//
+// PDFBoon Scanner
+// Part 3A
+// Professional PDF Engine
+//
+//==================================
+
+document
+.getElementById("createPdfBtn")
+.addEventListener(
+"click",
+generatePDF
+);
+
+async function generatePDF(){
+/* ===========================
+   PDFBoon Footer Branding
+=========================== */
+
+// Wait for logo to load (first page only)
+if (!pdfboonLogo.complete) {
+    await new Promise(resolve => {
+        pdfboonLogo.onload = resolve;
+        pdfboonLogo.onerror = resolve;
+    });
+}
+
+// ---------- Footer Line ----------
+pdf.setDrawColor(220);
+pdf.line(
+    10,
+    pageHeight - 15,
+    pageWidth - 10,
+    pageHeight - 15
+);
+
+// ---------- Page Number ----------
+pdf.setFont("helvetica", "normal");
+pdf.setFontSize(10);
+pdf.setTextColor(120);
+
+pdf.text(
+    `Page ${i + 1} of ${images.length}`,
+    10,
+    pageHeight - 8
+);
+
+// ---------- Logo ----------
+try {
+
+    pdf.addImage(
+        pdfboonLogo,
+        "PNG",
+        pageWidth - 42,
+        pageHeight - 13,
+        6,
+        6
+    );
+
+} catch(e){
+    console.log("Logo not loaded");
+}
+
+// ---------- Watermark ----------
+pdf.setFontSize(10);
+pdf.setTextColor(130);
+
+pdf.text(
+    "Scanned by PDFBoon",
+    pageWidth - 10,
+    pageHeight - 8,
+    {
+        align: "right"
     }
+);
+try{
 
-    async function generatePDF() {
-      if (images.length === 0) {
-        alert("Kripya pehle kam se kam ek photo click karein!");
-        return;
-      }
+if(images.length===0){
 
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+alert(
+"Please select at least one image."
+);
 
-      for (let i = 0; i < images.length; i++) {
-        if (i > 0) {
-          pdf.addPage();
-        }
+return;
 
-        // Image add karna (Margin ke sath)
-        pdf.addImage(images[i], 'JPEG', 10, 10, pdfWidth - 20, pdfHeight - 30);
+}
 
-        // Niche "Scanned by PDFBoon" text add karna
-        pdf.setFontSize(12);
-        pdf.setTextColor(128, 128, 128); // Grey Color
-        pdf.text(img src="images/logo.png"Scanned by PDFBoon", pdfWidth / 2, pdfHeight - 10, { align: 'center' });
-      }
+const {
+jsPDF
+} = window.jspdf;
 
-      // PDF Download karna
-      pdf.save("PDFBoon_Scan.pdf");
-    }
+const pdf = new jsPDF({
+
+orientation:"portrait",
+
+unit:"mm",
+
+format:"a4",
+
+compress:true
+
+});
+
+const pageWidth =
+pdf.internal.pageSize.getWidth();
+
+const pageHeight =
+pdf.internal.pageSize.getHeight();
+
+for(
+let i=0;
+i<images.length;
+i++
+){
+
+if(i>0){
+
+pdf.addPage();
+
+}
+
+const img =
+new Image();
+
+img.src =
+images[i].src;
+
+await new Promise(resolve=>{
+
+img.onload = resolve;
+
+});
+
+const margin = 10;
+
+const maxWidth =
+pageWidth - (margin*2);
+
+const maxHeight =
+pageHeight - 25;
+
+const imgWidth =
+img.width;
+
+const imgHeight =
+img.height;
+
+const ratio =
+Math.min(
+
+maxWidth/imgWidth,
+
+maxHeight/imgHeight
+
+);
+
+const renderWidth =
+imgWidth * ratio;
+
+const renderHeight =
+imgHeight * ratio;
+
+const x =
+(pageWidth-renderWidth)/2;
+
+const y =
+(pageHeight-renderHeight)/2;
+
+pdf.addImage(
+
+images[i].src,
+
+"JPEG",
+
+x,
+
+y,
+
+renderWidth,
+
+renderHeight,
+
+undefined,
+
+"SLOW"
+
+);
+
+}
+
+const filenameInput =
+document.getElementById("pdfName");
+
+let filename =
+filenameInput
+? filenameInput.value.trim()
+: "PDFBoon_Scan";
+
+if(!filename){
+
+filename =
+"PDFBoon_Scan";
+
+}
+
+// Temporary save.
+// Part 3B me watermark,
+// logo aur page number add honge.
+
+pdf.save(
+filename + ".pdf"
+);
+
+}
+catch(error){
+
+console.error(error);
+
+alert(
+"PDF generation failed."
+);
+
+}
+
+}
+    
   </script>
 
 </body>
