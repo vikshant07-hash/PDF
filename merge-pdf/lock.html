@@ -5,20 +5,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/logo.png">
-<meta name="description" content="Remove password protection from your PDF files for free, right in your browser - PDFBoon.">
+<meta name="description" content="Password protect your PDF files with real AES encryption, free and secure, right in your browser - PDFBoon.">
 
-<meta name="keywords" content="Pdfboon, Unlock PDF, Remove PDF Password, Decrypt PDF, Vikshant Kralta">
+<meta name="keywords" content="Pdfboon, Lock PDF, Vikshant Kralta, Protect PDF, PDF Password, Encrypt PDF">
 
 <meta name="author" content="Vikshant Kralta">
 
 <meta name="robots" content="index, follow">
 
-<title>Unlock PDF - PDFBoon</title>
+<title>Lock PDF - PDFBoon</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@cantoo/pdf-lib@2.7.4/dist/pdf-lib.min.js"></script>
 
 <style>
 
@@ -142,6 +142,7 @@ padding:20px;
 .nav-link.active-link{color:var(--ink);}
 .nav-link.active-link::after{width:100%;}
 
+/* Current tool pill — shows which tool is active */
 .current-tool-pill{
   display:flex;
   align-items:center;
@@ -156,6 +157,7 @@ padding:20px;
 }
 .current-tool-pill i{font-size:0.75rem;}
 
+/* Tools button — professional standout look */
 .nav-tools-btn{
   display:flex;
   align-items:center;
@@ -211,7 +213,6 @@ padding:20px;
     transform:translateY(-130%);
     opacity:0;
     transition:transform .3s ease, opacity .3s ease;
-    z-index:200;
   }
   .nav-links.active{
     transform:translateY(0);
@@ -457,10 +458,6 @@ input[type=file]{
 display:none;
 }
 
-.hidden{
-display:none !important;
-}
-
 /* ============ FILE SUMMARY ============ */
 .file-summary{
 margin-top:24px;
@@ -468,7 +465,7 @@ background:var(--paper-raised);
 border:1px solid var(--line);
 border-radius:18px;
 padding:20px 24px;
-display:flex;
+display:none;
 align-items:center;
 gap:18px;
 box-shadow:var(--shadow);
@@ -482,11 +479,6 @@ border:1px solid var(--line);
 border-radius:10px;
 overflow:hidden;
 flex-shrink:0;
-display:flex;
-align-items:center;
-justify-content:center;
-color:var(--stamp);
-font-size:1.3rem;
 }
 
 .file-summary .preview canvas{
@@ -508,35 +500,6 @@ word-break:break-word;
 .file-summary .info .meta{
 font-size:0.85rem;
 color:var(--ink-soft);
-display:flex;
-align-items:center;
-gap:8px;
-flex-wrap:wrap;
-}
-
-.status-tag{
-display:inline-flex;
-align-items:center;
-gap:6px;
-padding:4px 10px;
-border-radius:100px;
-font-size:0.74rem;
-font-weight:700;
-}
-
-.status-tag.locked{
-background:rgba(239,68,68,0.10);
-color:var(--danger);
-}
-
-.status-tag.checking{
-background:rgba(37,99,235,0.10);
-color:var(--stamp-dark);
-}
-
-.status-tag.unlocked-status{
-background:rgba(16,185,129,0.10);
-color:var(--success-dark);
 }
 
 .remove-file{
@@ -546,10 +509,9 @@ color:var(--danger);
 font-size:0.85rem;
 font-weight:600;
 cursor:pointer;
-flex-shrink:0;
 }
 
-/* ============ SECTION / CARDS ============ */
+/* ============ PASSWORD SECTION ============ */
 .section{
 margin-top:30px;
 }
@@ -560,9 +522,9 @@ font-size:1.25rem;
 margin-bottom:16px;
 }
 
-.settings{
+.password-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:20px;
 }
 
@@ -590,10 +552,13 @@ font-size:0.8rem;
 line-height:1.5;
 }
 
-.card input,
-.card select{
+.password-field{
+position:relative;
+}
+
+.password-field input{
 width:100%;
-padding:14px;
+padding:14px 46px 14px 14px;
 border:1px solid var(--line);
 border-radius:12px;
 background:#fff;
@@ -602,19 +567,10 @@ font-size:0.95rem;
 transition:border-color .2s ease, box-shadow .2s ease;
 }
 
-.card input:focus,
-.card select:focus{
+.password-field input:focus{
 outline:none;
 border-color:var(--stamp);
 box-shadow:0 0 0 3px rgba(37,99,235,0.15);
-}
-
-.password-field{
-position:relative;
-}
-
-.password-field input{
-padding-right:46px;
 }
 
 .toggle-eye{
@@ -631,48 +587,200 @@ font-size:0.95rem;
 
 .toggle-eye:hover{color:var(--stamp);}
 
-.password-error{
-font-size:0.8rem;
+.strength-bar{
+width:100%;
+height:6px;
+background:var(--line);
+border-radius:20px;
+overflow:hidden;
+margin-top:12px;
+}
+
+.strength-fill{
+height:100%;
+width:0%;
+border-radius:20px;
+transition:.3s;
+background:var(--danger);
+}
+
+.strength-label{
+font-size:0.78rem;
 font-weight:600;
-color:var(--danger);
+margin-top:6px;
+color:var(--ink-soft);
+}
+
+.match-msg{
+font-size:0.8rem;
 margin-top:8px;
+font-weight:600;
 display:none;
 }
 
-.password-card.shake{
-animation: shake .4s ease;
+.match-msg.ok{color:var(--success-dark); display:block;}
+.match-msg.bad{color:var(--danger); display:block;}
+
+/* ============ PERMISSIONS (ADVANCED) ============ */
+.advanced-toggle{
+margin-top:22px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+color:var(--stamp);
+font-weight:600;
+font-size:0.9rem;
+cursor:pointer;
+user-select:none;
 }
 
-@keyframes shake{
-0%,100%{transform:translateX(0);}
-20%{transform:translateX(-6px);}
-40%{transform:translateX(6px);}
-60%{transform:translateX(-4px);}
-80%{transform:translateX(4px);}
+.advanced-toggle i{
+transition:transform .2s ease;
 }
 
-.info-note{
+.advanced-toggle.open i{
+transform:rotate(180deg);
+}
+
+.advanced-panel{
+display:none;
+margin-top:20px;
+}
+
+.advanced-panel.open{
+display:block;
+}
+
+.owner-note{
 display:flex;
 align-items:flex-start;
 gap:12px;
-background:rgba(37,99,235,0.06);
-border:1px solid rgba(37,99,235,0.20);
+background:rgba(245,158,11,0.08);
+border:1px solid rgba(245,158,11,0.35);
 padding:14px 16px;
 border-radius:14px;
-margin-top:20px;
+margin-bottom:20px;
 font-size:0.82rem;
 color:var(--ink-soft);
 line-height:1.55;
 }
 
-.info-note i{
-color:var(--stamp);
+.owner-note i{
+color:var(--warn);
 font-size:1rem;
 margin-top:2px;
 flex-shrink:0;
 }
 
-.info-note strong{color:var(--ink);}
+.owner-note strong{color:var(--ink);}
+
+.owner-note.same-warning{
+background:rgba(239,68,68,0.08);
+border-color:rgba(239,68,68,0.35);
+}
+
+.owner-note.same-warning i{color:var(--danger);}
+
+.permissions-heading{
+margin-bottom:14px;
+font-size:0.95rem;
+color:var(--ink);
+font-weight:600;
+}
+
+.permissions-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:14px;
+}
+
+.permission-item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#fff;
+border:1px solid var(--line);
+padding:14px 16px;
+border-radius:14px;
+gap:12px;
+}
+
+.permission-item .label{
+font-size:0.88rem;
+font-weight:600;
+color:var(--ink);
+}
+
+.permission-item .desc{
+font-size:0.76rem;
+color:var(--ink-soft);
+margin-top:2px;
+}
+
+.switch{
+position:relative;
+width:44px;
+height:24px;
+flex-shrink:0;
+}
+
+.switch input{
+opacity:0;
+width:0;
+height:0;
+}
+
+.slider{
+position:absolute;
+cursor:pointer;
+inset:0;
+background:var(--line);
+border-radius:24px;
+transition:.2s;
+}
+
+.slider::before{
+content:"";
+position:absolute;
+width:18px;
+height:18px;
+left:3px;
+top:3px;
+background:#fff;
+border-radius:50%;
+transition:.2s;
+box-shadow:0 1px 3px rgba(0,0,0,0.2);
+}
+
+.switch input:checked + .slider{
+background:var(--stamp);
+}
+
+.switch input:checked + .slider::before{
+transform:translateX(20px);
+}
+
+/* ============ RENAME ============ */
+.rename-card{
+margin-top:24px;
+}
+
+.rename-card input{
+width:100%;
+padding:14px;
+border:1px solid var(--line);
+border-radius:12px;
+background:#fff;
+color:var(--ink);
+font-size:0.95rem;
+}
+
+.rename-card input:focus{
+outline:none;
+border-color:var(--stamp);
+box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
 
 /* ============ ACTION AREA ============ */
 .action-area{
@@ -690,14 +798,14 @@ transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
 font-size:0.98rem;
 }
 
-.unlock-btn{
+.lock-btn{
 background:var(--stamp);
 color:white;
 box-shadow:0 4px 0 var(--stamp-dark);
 }
-.unlock-btn:hover{transform:translateY(-2px);}
-.unlock-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark);}
-.unlock-btn:disabled{
+.lock-btn:hover{transform:translateY(-2px);}
+.lock-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark);}
+.lock-btn:disabled{
 opacity:0.5;
 cursor:not-allowed;
 transform:none;
@@ -718,31 +826,6 @@ margin:20px auto 0;
 100%{
 transform:rotate(360deg);
 }
-}
-
-.progress{
-width:100%;
-max-width:500px;
-height:10px;
-background:var(--line);
-border-radius:20px;
-overflow:hidden;
-margin:18px auto 0;
-display:none;
-}
-
-.progress-bar{
-height:100%;
-width:0%;
-background:linear-gradient(to right,var(--stamp),var(--teal));
-transition:.3s;
-}
-
-.progress-label{
-font-size:0.8rem;
-color:var(--ink-soft);
-margin-top:10px;
-display:none;
 }
 
 .error-msg{
@@ -866,10 +949,6 @@ flex-direction:column;
 align-items:flex-start;
 }
 
-.file-summary{
-flex-wrap:wrap;
-}
-
 }
 
 /* ============ SIMPLE FOOTER ============ */
@@ -990,7 +1069,7 @@ gap:10px;
         <div class="nav-links" id="navLinks">
             <a href="index.html" class="nav-link">Home</a>
 
-            <div class="current-tool-pill"><i class="fa-solid fa-unlock"></i> Unlock PDF</div>
+            <div class="current-tool-pill"><i class="fa-solid fa-lock"></i> Lock PDF</div>
 
             <div class="nav-item" id="toolsDropdown">
                 <button class="nav-tools-btn" id="toolsToggle" type="button">
@@ -1009,8 +1088,7 @@ gap:10px;
                     <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
 
                     <div class="dropdown-category">Security</div>
-                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
-                    <a href="unlock.html" class="dropdown-link active"><i class="fa-solid fa-unlock"></i> Unlock PDF</a>
+                    <a href="lock.html" class="dropdown-link active"><i class="fa-solid fa-lock"></i> Lock PDF</a>
 
                     <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
                 </div>
@@ -1020,7 +1098,7 @@ gap:10px;
             <a href="contact.html" class="nav-link">Contact</a>
         </div>
 
-        <button class="mobile-menu" id="mobileMenuBtn" type="button">
+        <button class="mobile-menu" id="mobileMenuBtn">
             <i class="fa-solid fa-bars"></i>
         </button>
 
@@ -1034,22 +1112,22 @@ gap:10px;
         <i class="fa-solid fa-chevron-right"></i>
         <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
         <i class="fa-solid fa-chevron-right"></i>
-        <span class="breadcrumb-current"><i class="fa-solid fa-unlock"></i> Unlock PDF</span>
+        <span class="breadcrumb-current"><i class="fa-solid fa-lock"></i> Lock PDF</span>
     </div>
 </div>
 
 <div class="container">
 
 <h1 class="title">
-Remove Password from PDF
+Protect Your PDF with Password
 </h1>
 
 <p class="subtitle">
-Unlock a password-protected PDF and remove its restrictions, right in your browser
+Add a password to your PDF with AES encryption, right in your browser
 </p>
 
 <div class="trust-row">
-<div class="trust-pill"><i class="fa-solid fa-key"></i> You Provide the Password</div>
+<div class="trust-pill"><i class="fa-solid fa-lock"></i> AES Encryption</div>
 <div class="trust-pill"><i class="fa-solid fa-shield-halved"></i> 100% Browser-side</div>
 <div class="trust-pill"><i class="fa-solid fa-cloud-arrow-up"></i> No File Upload to Server</div>
 </div>
@@ -1063,12 +1141,12 @@ Unlock a password-protected PDF and remove its restrictions, right in your brows
   <rect x="21" y="46" width="22" height="3" rx="1.5" fill="#ffffff"/>
   <circle cx="32" cy="32" r="16" fill="#0891b2"/>
   <rect x="25" y="30" width="14" height="11" rx="2.5" fill="#ffffff"/>
-  <path d="M27 30V27C27 24.7909 28.7909 23 31 23C32.4517 23 33.7182 23.7714 34.4118 24.9256" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M28 30V26.5C28 24.567 29.567 23 31.5 23H32.5C34.433 23 36 24.567 36 26.5V30" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/>
   <circle cx="32" cy="35" r="1.8" fill="#0891b2"/>
 </svg>
 </div>
 
-<h2>Drag & Drop a Locked PDF</h2>
+<h2>Drag & Drop a PDF File</h2>
 
 <p>or click here to Browse</p>
 
@@ -1079,81 +1157,169 @@ accept="application/pdf">
 
 </label>
 
-<div class="file-summary hidden" id="fileSummary">
-<div class="preview" id="previewBox"><i class="fa-solid fa-file-pdf"></i></div>
+<div class="file-summary" id="fileSummary">
+<div class="preview">
+<canvas id="summaryPreview"></canvas>
+</div>
 <div class="info">
 <div class="name" id="summaryName">--</div>
-<div class="meta">
-<span id="summaryMeta">--</span>
-<span class="status-tag checking" id="statusTag"><i class="fa-solid fa-spinner fa-spin"></i> Checking...</span>
-</div>
+<div class="meta" id="summaryMeta">--</div>
 </div>
 <button class="remove-file" id="removeFile">Remove file</button>
 </div>
 
-<div class="section hidden" id="passwordSection">
+<div class="section">
 
-<h3 class="section-title">Enter Password</h3>
+<h3 class="section-title">Set Password</h3>
 
-<div class="settings">
+<div class="password-grid">
 
-<div class="card password-card" id="passwordCard">
-<label>PDF Password</label>
+<div class="card">
+<label>Password (Required to Open PDF)</label>
 <div class="password-field">
-<input type="password" id="pdfPassword" placeholder="Enter the password used to lock this PDF" autocomplete="off">
-<button class="toggle-eye" data-target="pdfPassword" type="button"><i class="fa-solid fa-eye"></i></button>
+<input type="password" id="userPassword" placeholder="Enter a strong password" autocomplete="new-password">
+<button class="toggle-eye" data-target="userPassword" type="button"><i class="fa-solid fa-eye"></i></button>
 </div>
-<div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
-<small>This file is password protected. Enter the correct password to continue — everything happens locally, nothing is sent anywhere.</small>
-</div>
-
-</div>
-
-</div>
-
-<div class="section hidden" id="settingsSection">
-
-<h3 class="section-title">Output Settings</h3>
-
-<div class="settings">
-
-<div class="card">
-<label>Output Quality</label>
-<select id="qualityMode">
-<option value="high">High Quality (Recommended)</option>
-<option value="balanced">Balanced</option>
-<option value="compact">Compact (Smaller File)</option>
-</select>
-<small>Higher quality keeps pages sharper but produces a larger file.</small>
+<div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+<div class="strength-label" id="strengthLabel">Password strength</div>
 </div>
 
 <div class="card">
+<label>Confirm Password</label>
+<div class="password-field">
+<input type="password" id="confirmPassword" placeholder="Re-enter password" autocomplete="new-password">
+<button class="toggle-eye" data-target="confirmPassword" type="button"><i class="fa-solid fa-eye"></i></button>
+</div>
+<div class="match-msg" id="matchMsg"></div>
+<small>Anyone opening this PDF will need this password.</small>
+</div>
+
+</div>
+
+<div class="advanced-toggle" id="advancedToggle">
+<span>Advanced: Owner Password &amp; Permissions</span>
+<i class="fa-solid fa-chevron-down"></i>
+</div>
+
+<div class="advanced-panel" id="advancedPanel">
+
+<div class="password-grid" style="margin-bottom:20px;">
+
+<div class="card">
+<label>Owner Password (Optional)</label>
+<div class="password-field">
+<input type="password" id="ownerPassword" placeholder="Leave blank to reuse the document password" autocomplete="new-password">
+<button class="toggle-eye" data-target="ownerPassword" type="button"><i class="fa-solid fa-eye"></i></button>
+</div>
+<small>The owner password unlocks full access — printing, editing and every permission below, no restrictions.</small>
+</div>
+
+</div>
+
+<div class="owner-note" id="ownerNote">
+<i class="fa-solid fa-circle-info"></i>
+<div>
+<strong>Why set an owner password?</strong> If you leave it blank, the document password doubles as the owner password — so anyone who opens the file automatically gets full permissions, and the toggles below won't really restrict anything. Set a separate owner password to make the permission limits below actually stick for people opening the file with the document password only.
+</div>
+</div>
+
+
+
+  <div class="owner-note" id="ownerNote">
+<i class="fa-solid fa-circle-info"></i>
+<div>
+<strong>Please Note:</strong>Permission restrictions depend on the PDF viewer. Adobe Acrobat Reader fully supports them, while some browsers and third-party PDF apps may ignore these restrictions. </div>
+  </div>
+
+<h4 class="permissions-heading">Permissions <span style="font-weight:400; color:var(--ink-soft);">(applied when the PDF is opened with the document password)</span></h4>
+
+<div class="permissions-grid">
+
+<div class="permission-item">
+<div>
+<div class="label">Printing</div>
+<div class="desc">Allow the document to be printed</div>
+</div>
+<label class="switch">
+<input type="checkbox" id="permPrinting" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+<div class="permission-item">
+<div>
+<div class="label">Copying Text</div>
+<div class="desc">Allow copying text &amp; graphics</div>
+</div>
+<label class="switch">
+<input type="checkbox" id="permCopying" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+<div class="permission-item">
+<div>
+<div class="label">Editing</div>
+<div class="desc">Allow content to be modified</div>
+</div>
+<label class="switch">
+<input type="checkbox" id="permModifying" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+<div class="permission-item">
+<div>
+<div class="label">Annotations</div>
+<div class="desc">Allow adding comments &amp; annotations</div>
+</div>
+<label class="switch">
+<input type="checkbox" id="permAnnotating" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+<div class="permission-item">
+<div>
+<div class="label">Form Filling</div>
+<div class="desc">Allow filling in form fields</div>
+</div>
+<label class="switch">
+<input type="checkbox" id="permForms" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+<div class="permission-item">
+<div>
+<div class="label">Document Assembly</div>
+<div class="desc">Allow inserting, deleting &amp; rotating pages</div>
+</div>
+<label class="switch">
+<input type="checkbox" id="permAssembly" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+</div>
+
+</div>
+
+<div class="card rename-card">
 <label>Output File Name</label>
 <input type="text" id="renameInput" placeholder="File name">
-<small>Saved as "&lt;name&gt;.pdf"</small>
+<small>Saved as "&lt;name&gt; locked PDFBoon.pdf"</small>
 </div>
 
 </div>
 
-<div class="info-note">
-<i class="fa-solid fa-circle-info"></i>
-<div><strong>How this works:</strong> once the password is verified, PDFBoon renders every page and rebuilds a brand-new PDF with no password and no printing/copying/editing restrictions attached. The visual content stays identical — only the protection is removed.</div>
-</div>
+<div class="action-area">
 
-</div>
-
-<div class="action-area hidden" id="actionArea">
-
-<button class="btn unlock-btn" id="unlockBtn" disabled>
-<i class="fa-solid fa-unlock" style="margin-right:8px;"></i>Remove Password
+<button class="btn lock-btn" id="lockBtn" disabled>
+<i class="fa-solid fa-lock" style="margin-right:8px;"></i>Lock PDF
 </button>
 
 <div class="loader" id="loader"></div>
-
-<div class="progress" id="progress">
-<div class="progress-bar" id="progressBar"></div>
-</div>
-<div class="progress-label" id="progressLabel">Processing pages...</div>
 
 <div class="error-msg" id="errorMsg"></div>
 
@@ -1168,18 +1334,18 @@ accept="application/pdf">
 <path d="M3 2C3 0.895431 3.89543 0 5 0H16L23 7V28C23 29.1046 22.1046 30 21 30H5C3.89543 30 3 29.1046 3 28V2Z" fill="#10b981"/>
 <path d="M16 0L23 7H18C16.8954 7 16 6.10457 16 5V0Z" fill="#0e9c6f"/>
 <rect x="8" y="17" width="10" height="8" rx="1.8" fill="#ffffff"/>
-<path d="M10.5 20.5C10.5 19.1193 11.6193 18 13 18C14.3807 18 15.5 19.1193 15.5 20.5" stroke="#0e9c6f" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M10.5 17V14.5C10.5 13.1193 11.6193 12 13 12C14.3807 12 15.5 13.1193 15.5 14.5V17" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
 </svg>
 </div>
 <div class="result-text">
 <input type="text" class="result-rename" id="resultRename">
-<div class="result-meta"><i class="fa-solid fa-circle-check"></i> Password &amp; Restrictions Removed</div>
+<div class="result-meta"><i class="fa-solid fa-circle-check"></i> Password Protected • AES Encrypted</div>
 </div>
 </div>
 <a class="result-download" id="downloadBtn"><i class="fa-solid fa-download" style="margin-right:8px;"></i>Download</a>
 </div>
 
-<p class="success-note">Your PDF is fully unlocked — no password, no printing/copying/editing restrictions.</p>
+<p class="success-note">Password has been applied successfully. Remember it — it cannot be recovered or reset if lost.</p>
 
 </div>
 
@@ -1248,7 +1414,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ============ UNLOCK LOGIC ============ */
+/* ============ LOCK LOGIC ============ */
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -1256,27 +1422,25 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 const pdfInput = document.getElementById('pdfInput');
 const uploadBox = document.getElementById('uploadBox');
 const fileSummary = document.getElementById('fileSummary');
-const previewBox = document.getElementById('previewBox');
 const summaryName = document.getElementById('summaryName');
 const summaryMeta = document.getElementById('summaryMeta');
-const statusTag = document.getElementById('statusTag');
 const removeFile = document.getElementById('removeFile');
 
-const passwordSection = document.getElementById('passwordSection');
-const passwordCard = document.getElementById('passwordCard');
-const pdfPasswordInput = document.getElementById('pdfPassword');
-const passwordError = document.getElementById('passwordError');
+const userPasswordInput = document.getElementById('userPassword');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+const ownerPasswordInput = document.getElementById('ownerPassword');
+const strengthFill = document.getElementById('strengthFill');
+const strengthLabel = document.getElementById('strengthLabel');
+const matchMsg = document.getElementById('matchMsg');
 
-const settingsSection = document.getElementById('settingsSection');
-const qualityMode = document.getElementById('qualityMode');
+const advancedToggle = document.getElementById('advancedToggle');
+const advancedPanel = document.getElementById('advancedPanel');
+const ownerNote = document.getElementById('ownerNote');
+
 const renameInput = document.getElementById('renameInput');
 
-const actionArea = document.getElementById('actionArea');
-const unlockBtn = document.getElementById('unlockBtn');
+const lockBtn = document.getElementById('lockBtn');
 const loader = document.getElementById('loader');
-const progress = document.getElementById('progress');
-const progressBar = document.getElementById('progressBar');
-const progressLabel = document.getElementById('progressLabel');
 const errorMsg = document.getElementById('errorMsg');
 
 const results = document.getElementById('results');
@@ -1285,9 +1449,6 @@ const downloadBtn = document.getElementById('downloadBtn');
 
 let currentFile = null;
 let currentPdfBytes = null;
-let needsPassword = false;
-let verifiedPassword = null; // password confirmed to work, or null if none needed
-let openPdfDoc = null;       // pdf.js document opened successfully (with password if required)
 
 /* ---------- File Upload ---------- */
 
@@ -1315,102 +1476,54 @@ removeFile.addEventListener('click', () => {
   resetTool();
 });
 
-function formatSize(bytes){
-  if(bytes > 1024 * 1024) return (bytes/(1024*1024)).toFixed(2)+' MB';
-  return (bytes/1024).toFixed(2)+' KB';
+function formatSize(bytes) {
+  if (bytes > 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  return (bytes / 1024).toFixed(2) + ' KB';
 }
 
-function resetTool(){
+function resetTool() {
   currentFile = null;
   currentPdfBytes = null;
-  needsPassword = false;
-  verifiedPassword = null;
-  openPdfDoc = null;
-
   pdfInput.value = '';
-  fileSummary.classList.add('hidden');
-  passwordSection.classList.add('hidden');
-  settingsSection.classList.add('hidden');
-  actionArea.classList.add('hidden');
+  fileSummary.style.display = 'none';
   results.style.display = 'none';
-
-  pdfPasswordInput.value = '';
-  hidePasswordError();
   hideError();
-  updateUnlockBtnState();
+  updateLockBtnState();
 }
 
-async function loadFile(file){
+async function loadFile(file) {
   hideError();
   results.style.display = 'none';
-  needsPassword = false;
-  verifiedPassword = null;
-  openPdfDoc = null;
-  hidePasswordError();
-  pdfPasswordInput.value = '';
 
   currentFile = file;
   currentPdfBytes = await file.arrayBuffer();
 
-  fileSummary.classList.remove('hidden');
+  let pdfDoc;
+  try {
+    pdfDoc = await pdfjsLib.getDocument({ data: currentPdfBytes.slice(0) }).promise;
+  } catch (err) {
+    showError('This file looks invalid, or is already password protected. Try a different file!');
+    currentFile = null;
+    currentPdfBytes = null;
+    updateLockBtnState();
+    return;
+  }
+
+  fileSummary.style.display = 'flex';
   summaryName.textContent = file.name;
-  summaryMeta.textContent = formatSize(file.size);
-  setStatusTag('checking', '<i class="fa-solid fa-spinner fa-spin"></i> Checking...');
-  passwordSection.classList.add('hidden');
-  settingsSection.classList.add('hidden');
-  actionArea.classList.add('hidden');
-  previewBox.innerHTML = '<i class="fa-solid fa-file-pdf"></i>';
+  summaryMeta.textContent = `${pdfDoc.numPages} Pages • ${formatSize(file.size)}`;
 
-  try{
-    const doc = await pdfjsLib.getDocument({ data: currentPdfBytes.slice(0) }).promise;
-    /* Opened without a password — either not encrypted, or only owner-restricted */
-    openPdfDoc = doc;
-    needsPassword = false;
-    setStatusTag('unlocked-status', '<i class="fa-solid fa-lock-open"></i> No password needed');
-    await renderThumb(doc);
-    revealSettings();
-  }catch(err){
-    if(err && err.name === 'PasswordException'){
-      needsPassword = true;
-      setStatusTag('locked', '<i class="fa-solid fa-lock"></i> Password protected');
-      passwordSection.classList.remove('hidden');
-      actionArea.classList.remove('hidden');
-      unlockBtn.innerHTML = '<i class="fa-solid fa-unlock" style="margin-right:8px;"></i>Unlock PDF';
-      pdfPasswordInput.focus();
-      updateUnlockBtnState();
-    } else {
-      setStatusTag('locked', '<i class="fa-solid fa-triangle-exclamation"></i> Could not read file');
-      showError('This file could not be read. It may be corrupted or not a valid PDF.');
-    }
-  }
-}
+  const page = await pdfDoc.getPage(1);
+  const viewport = page.getViewport({ scale: 0.4 });
+  const canvas = document.getElementById('summaryPreview');
+  const ctx = canvas.getContext('2d');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  await page.render({ canvasContext: ctx, viewport }).promise;
 
-function setStatusTag(type, html){
-  statusTag.className = 'status-tag ' + type;
-  statusTag.innerHTML = html;
-}
+  renameInput.value = file.name.replace(/\.pdf$/i, '');
 
-async function renderThumb(doc){
-  try{
-    const page = await doc.getPage(1);
-    const viewport = page.getViewport({ scale: 0.4 });
-    previewBox.innerHTML = '<canvas id="summaryPreview"></canvas>';
-    const canvas = document.getElementById('summaryPreview');
-    const ctx = canvas.getContext('2d');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    await page.render({ canvasContext: ctx, viewport }).promise;
-  }catch(err){
-    /* keep the file icon if a thumbnail can't be rendered */
-  }
-}
-
-function revealSettings(){
-  settingsSection.classList.remove('hidden');
-  actionArea.classList.remove('hidden');
-  unlockBtn.innerHTML = '<i class="fa-solid fa-unlock" style="margin-right:8px;"></i>Remove Password';
-  renameInput.value = currentFile.name.replace(/\.pdf$/i, '');
-  updateUnlockBtnState();
+  updateLockBtnState();
 }
 
 /* ---------- Password Show/Hide ---------- */
@@ -1419,7 +1532,7 @@ document.querySelectorAll('.toggle-eye').forEach(btn => {
   btn.addEventListener('click', () => {
     const target = document.getElementById(btn.dataset.target);
     const icon = btn.querySelector('i');
-    if(target.type === 'password'){
+    if (target.type === 'password') {
       target.type = 'text';
       icon.classList.remove('fa-eye');
       icon.classList.add('fa-eye-slash');
@@ -1431,160 +1544,196 @@ document.querySelectorAll('.toggle-eye').forEach(btn => {
   });
 });
 
-pdfPasswordInput.addEventListener('input', () => {
-  hidePasswordError();
-  updateUnlockBtnState();
-});
+/* ---------- Password Strength ---------- */
 
-pdfPasswordInput.addEventListener('keydown', (e) => {
-  if(e.key === 'Enter'){
-    e.preventDefault();
-    if(!unlockBtn.disabled) unlockBtn.click();
+function checkStrength(pwd) {
+  let score = 0;
+  if (pwd.length >= 6) score++;
+  if (pwd.length >= 10) score++;
+  if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+  return score;
+}
+
+userPasswordInput.addEventListener('input', () => {
+  const pwd = userPasswordInput.value;
+  const score = checkStrength(pwd);
+
+  let pct = 0, color = 'var(--danger)', label = 'Password strength';
+
+  if (!pwd) {
+    pct = 0; label = 'Password strength';
+  } else if (score <= 1) {
+    pct = 25; color = 'var(--danger)'; label = 'Weak password';
+  } else if (score <= 2) {
+    pct = 50; color = 'var(--warn)'; label = 'Fair password';
+  } else if (score <= 3) {
+    pct = 75; color = 'var(--teal)'; label = 'Good password';
+  } else {
+    pct = 100; color = 'var(--success)'; label = 'Strong password';
   }
+
+  strengthFill.style.width = pct + '%';
+  strengthFill.style.background = color;
+  strengthLabel.textContent = label;
+  strengthLabel.style.color = color;
+
+  checkMatch();
+  updateOwnerNote();
+  updateLockBtnState();
 });
 
-function showPasswordError(){
-  passwordError.style.display = 'block';
-  passwordCard.classList.remove('shake');
-  void passwordCard.offsetWidth; /* restart animation */
-  passwordCard.classList.add('shake');
-}
+confirmPasswordInput.addEventListener('input', () => {
+  checkMatch();
+  updateLockBtnState();
+});
 
-function hidePasswordError(){
-  passwordError.style.display = 'none';
-}
+function checkMatch() {
+  const pwd = userPasswordInput.value;
+  const confirm = confirmPasswordInput.value;
 
-/* ---------- Button / Error State ---------- */
-
-function updateUnlockBtnState(){
-  if(!currentPdfBytes){
-    unlockBtn.disabled = true;
+  if (!confirm) {
+    matchMsg.className = 'match-msg';
+    matchMsg.textContent = '';
     return;
   }
-  if(needsPassword && !openPdfDoc){
-    unlockBtn.disabled = pdfPasswordInput.value.length === 0;
+
+  if (pwd === confirm) {
+    matchMsg.className = 'match-msg ok';
+    matchMsg.textContent = '✓ Passwords match';
   } else {
-    unlockBtn.disabled = false;
+    matchMsg.className = 'match-msg bad';
+    matchMsg.textContent = '✕ Passwords do not match';
   }
 }
 
-function showError(msg){
+/* ---------- Owner Password Note ---------- */
+
+function updateOwnerNote() {
+  const userPwd = userPasswordInput.value;
+  const ownerPwd = ownerPasswordInput.value;
+
+  if (ownerPwd && ownerPwd === userPwd) {
+    ownerNote.classList.add('same-warning');
+    ownerNote.innerHTML = `
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <div><strong>Owner password matches the document password.</strong> That means anyone who opens the file gets full permissions automatically — the toggles below won't restrict anything. Use a different owner password to actually enforce these limits.</div>
+    `;
+  } else if (!ownerPwd) {
+    ownerNote.classList.remove('same-warning');
+    ownerNote.innerHTML = `
+      <i class="fa-solid fa-circle-info"></i>
+      <div><strong>Why set an owner password?</strong> If you leave it blank, the document password doubles as the owner password — so anyone who opens the file automatically gets full permissions, and the toggles below won't really restrict anything. Set a separate owner password to make the permission limits below actually stick for people opening the file with the document password only.</div>
+    `;
+  } else {
+    ownerNote.classList.remove('same-warning');
+    ownerNote.innerHTML = `
+      <i class="fa-solid fa-circle-check" style="color:var(--success);"></i>
+      <div><strong>Good — a separate owner password is set.</strong> Anyone opening with the document password will be limited by the permissions below; the owner password grants full, unrestricted access.</div>
+    `;
+  }
+}
+
+ownerPasswordInput.addEventListener('input', updateOwnerNote);
+
+/* ---------- Advanced Panel ---------- */
+
+advancedToggle.addEventListener('click', () => {
+  advancedToggle.classList.toggle('open');
+  advancedPanel.classList.toggle('open');
+});
+
+/* ---------- Lock Button State ---------- */
+
+function updateLockBtnState() {
+  const pwd = userPasswordInput.value;
+  const confirm = confirmPasswordInput.value;
+  lockBtn.disabled = !(currentPdfBytes && pwd && pwd === confirm && pwd.length >= 6);
+}
+
+/* ---------- Error Handling ---------- */
+
+function showError(msg) {
   errorMsg.textContent = msg;
   errorMsg.style.display = 'block';
 }
 
-function hideError(){
+function hideError() {
   errorMsg.style.display = 'none';
 }
 
-/* ---------- Quality Presets ---------- */
+/* ---------- Lock Logic ---------- */
 
-function getQualitySettings(){
-  const mode = qualityMode.value;
-  if(mode === 'high') return { scale: 2.2, quality: 0.94 };
-  if(mode === 'compact') return { scale: 1.4, quality: 0.7 };
-  return { scale: 1.8, quality: 0.85 };
-}
-
-/* ---------- Main Action ---------- */
-
-unlockBtn.addEventListener('click', async () => {
+lockBtn.addEventListener('click', async () => {
   hideError();
-  hidePasswordError();
-  results.style.display = 'none';
 
-  if(!currentPdfBytes){
+  const userPwd = userPasswordInput.value;
+  const confirmPwd = confirmPasswordInput.value;
+  const ownerPwd = ownerPasswordInput.value.trim();
+
+  if (!currentPdfBytes) {
     showError('Please upload a file first.');
     return;
   }
 
-  unlockBtn.disabled = true;
-  loader.style.display = 'block';
-
-  /* Step 1: make sure we have a successfully opened pdf.js document */
-  if(!openPdfDoc){
-    const pwd = pdfPasswordInput.value;
-    try{
-      openPdfDoc = await pdfjsLib.getDocument({ data: currentPdfBytes.slice(0), password: pwd }).promise;
-      verifiedPassword = pwd;
-      setStatusTag('unlocked-status', '<i class="fa-solid fa-circle-check"></i> Password verified');
-      await renderThumb(openPdfDoc);
-      revealSettings();
-    }catch(err){
-      loader.style.display = 'none';
-      unlockBtn.disabled = false;
-      if(err && err.name === 'PasswordException'){
-        showPasswordError();
-        pdfPasswordInput.focus();
-        pdfPasswordInput.select();
-      } else {
-        showError('This file could not be unlocked. It may be corrupted.');
-      }
-      updateUnlockBtnState();
-      return;
-    }
+  if (!userPwd || userPwd.length < 6) {
+    showError('Password must be at least 6 characters.');
+    return;
   }
 
-  /* Step 2: rebuild an unrestricted PDF from the rendered pages */
-  progress.style.display = 'block';
-  progressLabel.style.display = 'block';
-  progressBar.style.width = '0%';
+  if (userPwd !== confirmPwd) {
+    showError('Passwords do not match. Please check and try again.');
+    return;
+  }
 
-  try{
-    const { scale, quality } = getQualitySettings();
-    const totalPages = openPdfDoc.numPages;
-    const newPdf = await PDFLib.PDFDocument.create();
+  lockBtn.disabled = true;
+  loader.style.display = 'block';
 
-    for(let i = 1; i <= totalPages; i++){
-      const page = await openPdfDoc.getPage(i);
-      const viewport = page.getViewport({ scale });
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      await page.render({ canvasContext: ctx, viewport }).promise;
+  try {
+    const srcDoc = await PDFLib.PDFDocument.load(currentPdfBytes);
 
-      const imageData = canvas.toDataURL('image/jpeg', quality);
-      const jpg = await newPdf.embedJpg(imageData);
-      const pdfPage = newPdf.addPage([viewport.width, viewport.height]);
-      pdfPage.drawImage(jpg, { x: 0, y: 0, width: viewport.width, height: viewport.height });
+    srcDoc.encrypt({
+      userPassword: userPwd,
+      ownerPassword: ownerPwd || userPwd,
+      permissions: {
+        printing: document.getElementById('permPrinting').checked ? 'highResolution' : false,
+        modifying: document.getElementById('permModifying').checked,
+        copying: document.getElementById('permCopying').checked,
+        annotating: document.getElementById('permAnnotating').checked,
+        fillingForms: document.getElementById('permForms').checked,
+        documentAssembly: document.getElementById('permAssembly').checked,
+        contentAccessibility: true,
+      },
+    });
 
-      progressLabel.textContent = `Processing page ${i} of ${totalPages}...`;
-      progressBar.style.width = ((i / totalPages) * 100) + '%';
-    }
-
-    const outBytes = await newPdf.save({ useObjectStreams: true });
-    const blob = new Blob([outBytes], { type: 'application/pdf' });
+    const encryptedBytes = await srcDoc.save();
+    const blob = new Blob([encryptedBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
 
-    const baseName = renameInput.value.trim() || currentFile.name.replace(/\.pdf$/i, '') + ' unlocked PDFBoon';
+    const baseName = (renameInput.value.trim() || currentFile.name.replace(/\.pdf$/i, ''));
+    const outputName = `${baseName} locked PDFBoon`;
 
-    resultRename.value = baseName;
+    resultRename.value = outputName;
     downloadBtn.href = url;
-    downloadBtn.download = `${baseName}.pdf`;
+    downloadBtn.download = `${outputName}.pdf`;
 
     resultRename.oninput = () => {
-      const cleanName = resultRename.value.trim() || baseName;
+      const cleanName = resultRename.value.trim() || outputName;
       downloadBtn.download = `${cleanName}.pdf`;
     };
 
     loader.style.display = 'none';
-    progress.style.display = 'none';
-    progressLabel.style.display = 'none';
-    unlockBtn.disabled = false;
+    lockBtn.disabled = false;
 
     results.style.display = 'block';
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  }catch(err){
+  } catch (err) {
     console.error(err);
     loader.style.display = 'none';
-    progress.style.display = 'none';
-    progressLabel.style.display = 'none';
-    unlockBtn.disabled = false;
-    showError('Oops! Something went wrong while unlocking this file.');
+    lockBtn.disabled = false;
+    showError('Oops! Something went wrong while encrypting this file.');
   }
 });
 
