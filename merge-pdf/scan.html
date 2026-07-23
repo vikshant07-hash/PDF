@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDFBoon Scanner</title>
+  <!-- jsPDF Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+      background-color: #f4f6f9;
+      margin: 0;
+    }
+    h2 { color: #333; }
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px 5px;
+      display: inline-block;
+    }
+    .btn-create {
+      background-color: #28a745;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    #preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .img-box {
+      width: 100px;
+      height: 120px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>PDFBoon Mobile Scanner</h2>
+  
+  <!-- Camera se photo lene ya gallery se select karne ke liye button -->
+  <label for="cameraInput" class="btn">📸 Photo Click / Select Karein</label>
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" multiple onchange="handleFiles(this.files)">
+
+  <br>
+
+  <!-- PDF Generate karne ka button -->
+  <button class="btn btn-create" onclick="generatePDF()">📄 Create PDF</button>
+
+  <div id="preview-container"></div>
+
+  <script>
+    let images = [];
+
+    function handleFiles(files) {
+      const previewContainer = document.getElementById('preview-container');
+      
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          images.push(e.target.result);
+          
+          // Preview create karna
+          const box = document.createElement('div');
+          box.className = 'img-box';
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          box.appendChild(img);
+          previewContainer.appendChild(box);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function generatePDF() {
+      if (images.length === 0) {
+        alert("Kripya pehle kam se kam ek photo click karein!");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      for (let i = 0; i < images.length; i++) {
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        // Image add karna (Margin ke sath)
+        pdf.addImage(images[i], 'JPEG', 10, 10, pdfWidth - 20, pdfHeight - 30);
+
+        // Niche "Scanned by PDFBoon" text add karna
+        pdf.setFontSize(12);
+        pdf.setTextColor(128, 128, 128); // Grey Color
+        pdf.text("Scanned by PDFBoon", pdfWidth / 2, pdfHeight - 10, { align: 'center' });
+      }
+
+      // PDF Download karna
+      pdf.save("PDFBoon_Scan.pdf");
+    }
+  </script>
+
+</body>
+</html>
