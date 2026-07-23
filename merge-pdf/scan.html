@@ -573,7 +573,7 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
       <select id="pageNumberToggle">
         <option value="both" selected>Page Numbers & Logo Footer</option>
         <option value="pageOnly">Page Numbers Only</option>
-        <option value="none">Hide Footer Completely</option>
+        
       </select>
     </div>
   </div>
@@ -1422,7 +1422,7 @@ async function generatePDF() {
           const textWidth = pdf.getTextWidth(textString);
 
           if (userLogoData) {
-            const logoSize = 3.8;
+            const logoSize = 4;
             const gap = 1.0;
             const totalWidth = logoSize + gap + textWidth;
             const logoX = safeRightX - totalWidth;
