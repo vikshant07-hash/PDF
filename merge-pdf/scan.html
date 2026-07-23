@@ -2,18 +2,37 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" href="images/logo.png">
-<title>CamScanner Online - PDFBoon</title>
+<title>Smart Document Scanner - PDFBoon</title>
 
-<meta name="description" content="Professional CamScanner clone online. Scan documents, auto-crop with 4-point corner adjustments, apply Magic Color filters, and convert to PDF.">
-<meta name="keywords" content="CamScanner online, Scan to PDF, Edge Detection, Document Scanner">
+<meta name="description" content="Professional document scanner in your browser. Scan with camera, auto edge detection, perspective crop, watermarking, and PDF export with PDFBoon.">
+<meta name="keywords" content="PDF Tools, pdfboon, Document Scanner, CamScanner online, Edge detection PDF, PDFBoon">
 <meta name="author" content="Vikshant Kralta">
 
+<!-- External Font-Awesome & Fonts -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<!-- OpenCV readiness hook -->
+<script>
+  var cvReady = false;
+  var Module = {
+    onRuntimeInitialized: function () {
+      cvReady = true;
+      var status = document.getElementById('opencvStatus');
+      if (status) {
+        status.innerText = "⚡ Edge Engine Ready";
+        status.style.color = "var(--success)";
+      }
+    }
+  };
+</script>
+
+<!-- Libraries: jsPDF, OpenCV.js, and SortableJS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script async src="https://docs.opencv.org/4.7.0/opencv.js" id="opencv-script"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
 <style>
 :root{
@@ -27,6 +46,7 @@
   --teal:#0891b2;
   --success:#10b981;
   --success-dark:#0e9c6f;
+  --danger:#ef4444;
   --line:#d6e0ee;
   --shadow: 0 10px 30px rgba(13,37,69,0.10);
   --serif:'Fraunces', serif;
@@ -39,7 +59,10 @@
 
 body{
   font-family:var(--sans);
-  background: radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%), var(--paper);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+    radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+    var(--paper);
   color:var(--ink);
 }
 
@@ -48,395 +71,1275 @@ a{ text-decoration:none; color:inherit; }
 .container{ max-width:1180px; margin:auto; padding:0 20px; }
 
 /* NAVBAR */
-.navbar{ position:sticky; top:0; z-index:100; background:rgba(237,242,249,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
-.nav-container{ max-width:1180px; margin-inline:auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; }
-.logo-wrapper{ display:flex; align-items:center; gap:12px; }
-.logo-box{ width:44px; height:44px; border-radius:12px; overflow:hidden; background:#fff; border:1px solid var(--line); }
+.navbar{
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-container{
+  max-width:1180px; margin-inline:auto; padding:14px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:nowrap;
+}
+.logo-wrapper{ display:flex; align-items:center; gap:12px; min-width:0; }
+.logo-box{
+  width:44px; height:44px; min-width:44px; border-radius:12px;
+  overflow:hidden; background:#fff; border:1px solid var(--line);
+  box-shadow:var(--shadow); flex-shrink:0;
+}
 .logo-image{ width:100%; height:100%; object-fit:cover; }
-.logo-title{ font-family:var(--serif); font-weight:700; font-size:1.15rem; color:var(--ink); }
-.logo-subtitle{ font-size:0.75rem; color:var(--ink-soft); }
+.logo-title{ font-family:var(--serif); font-weight:700; font-size:1.15rem; color:var(--ink); line-height:1.2; white-space:nowrap; }
+.logo-subtitle{ font-size:0.75rem; color:var(--ink-soft); white-space:nowrap; }
 
 .nav-links{ display:flex; align-items:center; gap:26px; }
-.nav-link{ font-size:0.94rem; font-weight:500; color:var(--ink-soft); }
-.current-tool-pill{ display:flex; align-items:center; gap:8px; background:rgba(37,99,235,0.08); color:var(--stamp-dark); padding:7px 14px; border-radius:100px; font-size:0.85rem; font-weight:700; }
+.nav-link{
+  position:relative; font-size:0.94rem; font-weight:500; color:var(--ink-soft);
+  padding:6px 2px; transition:color .2s ease; white-space:nowrap;
+}
+.nav-link::after{
+  content:""; position:absolute; left:0; bottom:0; width:0; height:2px;
+  background:var(--stamp); transition:width .25s ease;
+}
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
 
-.hero{ max-width:1180px; margin:0 auto; padding:32px 24px 8px; text-align:center; }
-.hero h2{ font-family:var(--serif); font-size:32px; color:var(--ink); margin-bottom:8px; }
-.hero p{ color:var(--ink-soft); font-size:15px; }
+.current-tool-pill{
+  display:flex; align-items:center; gap:8px; background:rgba(37,99,235,0.08);
+  color:var(--stamp-dark); padding:7px 14px; border-radius:100px;
+  font-size:0.85rem; font-weight:700; white-space:nowrap;
+}
 
-.wrap{ max-width:1000px; margin:0 auto; padding:20px; }
+.mobile-menu{
+  display:none; width:40px; height:40px; align-items:center; justify-content:center;
+  border-radius:8px; color:var(--ink); font-size:1.1rem; flex-shrink:0; border:none;
+  background:none; cursor:pointer;
+}
 
-/* SCANNER LAYOUT */
-.scanner-card{
-  background:var(--paper-raised);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:20px;
+@media (max-width:920px){
+  .nav-links{
+    position:fixed; inset:70px 0 auto 0; flex-direction:column; align-items:flex-start;
+    background:var(--paper-raised); padding:20px 24px; gap:16px; border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow); transform:translateY(-130%); opacity:0; transition:all .3s ease;
+    z-index: 101;
+  }
+  .nav-links.active{ transform:translateY(0); opacity:1; }
+  .mobile-menu{ display:flex; }
+  .logo-subtitle{ display:none; }
+}
+
+/* BREADCRUMB BAR */
+.breadcrumb-bar{ background:var(--paper-raised); border-bottom:1px solid var(--line); }
+.breadcrumb-inner{
+  max-width:1180px; margin:auto; padding:12px 24px; display:flex;
+  align-items:center; gap:10px; font-size:0.85rem; color:var(--ink-soft);
+}
+.breadcrumb-inner a{ display:flex; align-items:center; gap:6px; color:var(--ink-soft); }
+.breadcrumb-inner a:hover{ color:var(--stamp); }
+.breadcrumb-current{ display:flex; align-items:center; gap:6px; color:var(--stamp-dark); font-weight:700; }
+
+/* HERO */
+.hero{ max-width:1180px; margin:0 auto; padding:48px 24px 8px; text-align:center; }
+.hero .eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-family:var(--mono);
+  font-size:11.5px; color:var(--stamp-dark); border:1px solid rgba(37,99,235,0.25);
+  background:var(--paper-raised); border-radius:100px; padding:6px 14px; margin-bottom:18px;
   box-shadow:var(--shadow);
-  margin-bottom:24px;
 }
-
-.viewport-holder{
-  position:relative;
-  width:100%;
-  max-width:680px;
-  height:480px;
-  margin:0 auto 16px;
-  background:#000;
-  border-radius:16px;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.hero .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--success); }
+.hero h2{
+  font-family:var(--serif); font-weight:700; font-size:clamp(28px,4.4vw,42px);
+  margin:0 0 12px; letter-spacing:-0.01em; color:var(--ink);
 }
+.hero p{ color:var(--ink-soft); font-size:15px; max-width:560px; margin:0 auto; }
 
-#videoFeed{ width:100%; height:100%; object-fit:contain; }
+.wrap{ max-width:1180px; margin:0 auto; padding:28px 24px 60px; }
 
-/* CROP CANVAS CONTAINER */
-.crop-container{
-  position:relative;
-  display:inline-block;
-  max-width:100%;
-  max-height:100%;
+/* SCAN CARD */
+.scan-card{
+  border:2px dashed var(--stamp); border-radius:24px; padding:42px 24px;
+  text-align:center; cursor:pointer; position:relative; transition:all .2s ease;
+  background:var(--paper-raised); margin-bottom:20px; box-shadow:var(--shadow);
 }
-
-#cropCanvas{ display:block; max-width:100%; max-height:480px; }
-
-.corner-handle{
-  position:absolute;
-  width:22px;
-  height:22px;
-  background:var(--stamp);
-  border:3px solid #fff;
-  border-radius:50%;
-  transform:translate(-50%, -50%);
-  cursor:move;
-  box-shadow:0 0 8px rgba(0,0,0,0.5);
-  z-index:10;
+.scan-card:hover{ border-color:var(--stamp-dark); background-color:rgba(37,99,235,0.06); }
+.scan-card .cam-badge{
+  width:56px; height:56px; border-radius:50%; background:var(--stamp); color:#fff;
+  display:flex; align-items:center; justify-content:center; margin:0 auto 16px;
+  font-size:22px; box-shadow:0 4px 0 var(--stamp-dark);
 }
+.scan-card h3{ font-family:var(--serif); font-weight:700; font-size:24px; margin:0 0 8px; color:var(--ink); }
+.scan-card p{ margin:0; color:var(--ink-muted); font-size:13.5px; }
+.scan-card .browse-hint{ color:var(--stamp-dark); font-weight:600; }
 
-.controls{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+.camera-unsupported{
+  display:none; align-items:center; gap:8px; justify-content:center; color:var(--danger);
+  font-size:12.5px; margin:-2px 0 28px; text-align:center;
+}
+.camera-unsupported.active{ display:flex; }
+
+.scan-mini{
+  display:none; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  border:1px dashed var(--stamp); border-radius:14px; padding:12px 18px; margin-bottom:24px; background:var(--paper-raised);
+}
+.scan-mini.active{ display:flex; }
+.scan-mini-left{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft); }
+
+/* SECTION LABEL */
+.section-label{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:0.05em; text-transform:uppercase;
+  color:var(--ink-muted); margin:20px 0 12px; display:flex; align-items:center; justify-content:space-between; gap:8px;
+}
+.section-label .title-side{ display:flex; align-items:center; gap:8px; }
+.section-label .title-side::before{ content:""; width:3px; height:13px; background:var(--stamp); border-radius:2px; display:inline-block; }
+
+/* GLOBAL CONTROL PANEL */
+.global-control-card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:var(--radius); padding:16px 20px; margin-bottom:28px; box-shadow:var(--shadow);
+  display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+}
+.global-control-card .title{ font-size:0.9rem; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:8px; }
+.global-control-card .controls{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+
+/* SETTINGS CARDS */
+.settings-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:28px;
+}
+.setting-card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow);
+}
+.setting-card label{ display:block; font-size:0.85rem; font-weight:600; color:var(--ink); margin-bottom:10px; }
+select, input[type="text"], input[type="number"]{
+  width:100%; background:#fff; border:1px solid var(--line); color:var(--ink);
+  border-radius:10px; padding:11px 14px; font-family:var(--sans); font-size:0.9rem; outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease; appearance:none; -webkit-appearance:none;
+}
+select{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1L5 5L9 1' stroke='%238493AA' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat:no-repeat; background-position:right 13px center; padding-right:32px;
+}
+select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+
+/* SUMMARY CARD */
+.summary-card{
+  background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius);
+  padding:20px 22px; margin-bottom:28px; display:flex; flex-wrap:wrap; gap:24px;
+  align-items:center; justify-content:space-between; box-shadow:var(--shadow);
+}
+.summary-stats{ display:flex; gap:26px; flex-wrap:wrap; }
+.summary-stat .num{ font-family:var(--mono); font-size:17px; font-weight:600; color:var(--ink); }
+.summary-stat .lbl{ font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.03em; }
 
 .btn{
-  border:none; border-radius:12px; padding:12px 20px; font-family:var(--sans);
-  font-weight:600; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; gap:8px;
-  transition:all .15s ease;
+  border:none; border-radius:12px; padding:10px 20px; font-family:var(--sans); font-weight:600;
+  font-size:0.88rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:all .15s ease; white-space:nowrap;
 }
-.btn-primary{ background:var(--stamp); color:#fff; }
-.btn-primary:hover{ background:var(--stamp-dark); }
-.btn-success{ background:var(--success); color:#fff; }
-.btn-success:hover{ background:var(--success-dark); }
-.btn-secondary{ background:#fff; border:1px solid var(--line); color:var(--ink-soft); }
+.btn:active{ transform:translateY(1px); }
+.btn:disabled{ opacity:0.4; cursor:not-allowed; }
+.btn-primary{ background:var(--stamp); color:#fff; box-shadow:0 4px 0 var(--stamp-dark); }
+.btn-primary:hover:not(:disabled){ transform:translateY(-2px); }
+.btn-success{ background:var(--success); color:#fff; box-shadow:0 4px 0 var(--success-dark); }
+.btn-secondary{ background:var(--ink-soft); color:#fff; }
+.btn-outline{ background:transparent; border:1px solid var(--line); color:var(--ink-soft); }
+.btn-outline:hover{ background:#fff; border-color:var(--stamp); color:var(--stamp); }
 
-/* PAGES LIST */
-.pages-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:16px; margin-top:20px; }
-.page-item{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:8px; position:relative; }
-.page-item img{ width:100%; aspect-ratio:3/4; object-fit:contain; border-radius:6px; background:#f0f0f0; }
-.page-item .remove-btn{
-  position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:#fff;
-  border:none; width:26px; height:26px; border-radius:50%; cursor:pointer;
+.download-box{
+  display:none; align-items:center; justify-content:space-between;
+  background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3);
+  border-radius:var(--radius); padding:18px 22px; margin-bottom:28px; gap:12px; flex-wrap:wrap;
+}
+.download-box.active{ display:flex; }
+.download-box .info{ display:flex; align-items:center; gap:10px; }
+.download-box svg{ width:22px; height:22px; color:var(--success-dark); flex:none; }
+.download-box h4{ margin:0; font-size:0.95rem; font-weight:700; color:var(--ink); font-family:var(--serif); }
+.download-box p{ margin:2px 0 0; font-size:12px; color:var(--ink-soft); font-family:var(--mono); }
+
+/* PREVIEW GRID */
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:18px; min-height:40px; margin-bottom:30px; }
+.page-card{
+  background:var(--paper-raised); border:1px solid var(--line); border-radius:14px;
+  padding:10px 10px 12px; position:relative; cursor:grab; box-shadow:var(--shadow);
+  transition:transform .2s ease, border-color .2s ease;
+}
+.page-card:hover{ transform:translateY(-4px); border-color:var(--stamp); }
+
+.page-thumb-frame{
+  width:100%; background:#fff; border:1px solid var(--line); position:relative;
+  overflow:hidden; border-radius:8px; height:180px;
+}
+.page-thumb-frame img{ width:100%; height:100%; object-fit:contain; display:block; }
+
+.page-tag{
+  position:absolute; top:-8px; left:-8px; background:var(--stamp-dark); color:#fff;
+  font-family:var(--mono); font-size:11px; font-weight:600; width:24px; height:24px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 8px rgba(27,79,140,0.4); z-index:2;
+}
+.page-actions{ position:absolute; top:6px; right:6px; display:flex; gap:4px; opacity:0; transition:opacity .15s ease; z-index:3; }
+.page-card:hover .page-actions{ opacity:1; }
+.icon-btn{
+  width:28px; height:28px; border-radius:7px; background:rgba(13,37,69,0.85);
+  border:none; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px;
+}
+.icon-btn:hover{ background:var(--stamp-dark); }
+.icon-btn.delete:hover{ background:var(--danger); }
+
+.empty-hint{
+  text-align:center; padding:40px 20px; color:var(--ink-muted); font-size:13px;
+  border:1px dashed var(--line); border-radius:var(--radius); background:var(--paper-raised); margin-bottom:28px;
 }
 
-.summary-bar{
-  display:flex; justify-content:space-between; align-items:center;
-  background:var(--paper-raised); padding:16px 24px; border-radius:16px; border:1px solid var(--line); margin-top:24px;
+/* EDIT CROP MODAL */
+.modal{
+  position:fixed; inset:0; background:rgba(13,37,69,0.85); backdrop-filter:blur(4px);
+  display:none; justify-content:center; align-items:center; z-index:1000; padding:15px;
 }
+.modal.active{ display:flex; }
+.modal-content{
+  background:var(--paper-raised); border-radius:18px; max-width:900px; width:100%;
+  max-height:92vh; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+.modal-header{
+  padding:16px 20px; border-bottom:1px solid var(--line); display:flex;
+  justify-content:space-between; align-items:center;
+}
+.modal-body{ padding:20px; display:flex; flex-wrap:wrap; gap:20px; overflow-y:auto; justify-content:center; }
+.canvas-wrapper{
+  position:relative; background:#000; border-radius:12px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; max-width:480px; width:100%; max-height:420px; min-height: 250px;
+}
+#cropCanvas{ max-width:100%; max-height:100%; display:block; touch-action:none; }
+.modal-sidebar{ flex:1; min-width:250px; display:flex; flex-direction:column; gap:16px; }
+.modal-footer{ padding:14px 20px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:10px; }
+.crop-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.crop-actions .btn{ flex:1; min-width:100px; }
+
+/* CAMERA MODAL */
+.camera-modal{ background:#000; padding:0; z-index: 2000; }
+.camera-stage{
+  position:relative; width:100vw; height:100vh; background:#000;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+.camera-stage video{ width:100%; height:100%; object-fit:cover; background:#000; }
+.camera-guide{
+  position:absolute; inset:12% 7%; border:2px dashed rgba(255,255,255,0.55);
+  border-radius:16px; pointer-events:none; z-index:1;
+}
+.camera-topbar{
+  position:absolute; top:0; left:0; right:0; z-index:2; display:flex; align-items:center;
+  justify-content:space-between; padding:calc(env(safe-area-inset-top,0px) + 14px) 18px 14px;
+  background:linear-gradient(180deg, rgba(0,0,0,0.6), transparent);
+}
+.camera-bottombar{
+  position:absolute; bottom:0; left:0; right:0; z-index:2; display:flex; align-items:center;
+  justify-content:space-between; padding:20px 24px calc(env(safe-area-inset-bottom,0px) + 20px);
+  background:linear-gradient(0deg, rgba(0,0,0,0.7), transparent);
+}
+.cam-icon-btn{
+  width:44px; height:44px; border-radius:50%; border:none; background:rgba(255,255,255,0.18);
+  color:#fff; display:flex; align-items:center; justify-content:center; font-size:17px; cursor:pointer;
+  backdrop-filter:blur(6px); flex-shrink:0;
+}
+.cam-icon-btn.active{ background:var(--stamp); }
+.cam-icon-btn:disabled{ opacity:0.3; cursor:not-allowed; }
+.camera-count{
+  color:#fff; font-family:var(--mono); font-size:12.5px; background:rgba(255,255,255,0.18);
+  padding:7px 16px; border-radius:100px; backdrop-filter:blur(6px); white-space:nowrap;
+}
+.capture-btn{
+  width:72px; height:72px; border-radius:50%; background:#fff; border:5px solid rgba(255,255,255,0.4);
+  cursor:pointer; box-shadow:0 0 0 2px rgba(0,0,0,0.25); flex-shrink:0; outline:none; transition:transform 0.1s ease;
+}
+.capture-btn:active{ transform:scale(0.9); }
+
+.camera-preview-thumb{
+  width:52px; height:52px; border-radius:10px; border:2px solid #fff; overflow:hidden;
+  position:relative; background:#222; display:none; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.5);
+}
+.camera-preview-thumb img{ width:100%; height:100%; object-fit:cover; }
+.camera-preview-thumb .badge{
+  position:absolute; top:-4px; right:-4px; background:var(--stamp); color:#fff;
+  font-size:10px; font-weight:bold; font-family:var(--mono); width:18px; height:18px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+}
+.camera-preview-thumb.pop{ animation:popAnim 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes popAnim{ 0%{transform:scale(0.6);} 100%{transform:scale(1);} }
+
+.camera-done-btn{
+  padding:11px 20px; border-radius:100px; background:var(--success); color:#fff; border:none;
+  font-weight:700; font-size:0.88rem; display:flex; align-items:center; gap:6px; cursor:pointer;
+  box-shadow:0 4px 0 var(--success-dark); white-space:nowrap;
+}
+.camera-error{
+  position:absolute; bottom:130px; left:50%; transform:translateX(-50%); background:rgba(239,68,68,0.94);
+  color:#fff; padding:12px 18px; border-radius:10px; font-size:13px; max-width:82%; text-align:center; z-index:3;
+}
+.flash-effect{
+  position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:4;
+}
+.flash-effect.active{ animation:flashFade .25s ease-out; }
+@keyframes flashFade{ 0%{opacity:0.85} 100%{opacity:0} }
+
+/* TOAST */
+#pbToast{
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:rgba(13,37,69,0.94);
+  color:#fff; padding:12px 20px; border-radius:12px; font-size:13.5px; z-index:5000;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3); max-width:86%; text-align:center; opacity:0;
+  transition:opacity .25s ease; pointer-events:none;
+}
+
+/* FOOTER */
+.footer{ background:var(--ink); color:#dfe6f2; margin-top:60px; padding:40px 20px; }
+.footer-simple{
+  max-width:1180px; margin:auto; display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:20px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,0.12);
+}
+.footer-brand{ display:flex; align-items:center; gap:12px; }
+.footer-brand img{ width:40px; height:40px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+.footer-title{ font-family:var(--serif); font-weight:700; font-size:1.05rem; color:#fff; }
+.footer-subtitle{ font-size:0.76rem; color:#9fb0cc; }
+.footer-simple-links{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+.footer-simple-links a{ font-size:0.88rem; color:#c8d2e6; transition:color .2s ease; }
+.footer-simple-links a:hover{ color:#fff; }
+.footer-bottom{ max-width:1180px; margin:20px auto 0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.copyright{ font-size:0.78rem; color:#8494b5; }
 </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo-wrapper">
-            <div class="logo-box"><img src="images/logo.png" class="logo-image" alt="Logo"></div>
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image" alt="Logo">
+            </div>
             <div>
                 <h2 class="logo-title">PDFBoon</h2>
-                <p class="logo-subtitle">CamScanner Online</p>
+                <p class="logo-subtitle">Smart Document Scanner</p>
             </div>
         </div>
-        <div class="nav-links">
+
+        <div class="nav-links" id="navLinks">
             <a href="index.html" class="nav-link">Home</a>
-            <div class="current-tool-pill"><i class="fa-solid fa-camera"></i> CamScanner Mode</div>
+            <div class="current-tool-pill"><i class="fa-solid fa-camera"></i> Smart Scanner Pro</div>
+            <a href="tools.html" class="nav-link">All Tools</a>
+            <a href="about.html" class="nav-link">About</a>
         </div>
+
+        <button class="mobile-menu" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
 </nav>
 
+<!-- BREADCRUMB STATUS BAR -->
+<div class="breadcrumb-bar">
+    <div class="breadcrumb-inner">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span class="breadcrumb-current"><i class="fa-solid fa-camera"></i> Document Scanner</span>
+    </div>
+</div>
+
+<!-- HERO -->
 <section class="hero">
-  <h2>CamScanner Document Scanner</h2>
-  <p>Capture photo, adjust 4 corners for auto-perspective crop, and apply Magic Color.</p>
+  <div class="eyebrow">
+    <span class="dot"></span>
+    <span id="opencvStatus">Loading Edge Engine...</span>
+  </div>
+  <h2>Smart Document Scanner Pro</h2>
+  <p>Scan pages directly with your camera, straighten perspective, apply custom watermarks, page numbers, and save high-quality PDFs.</p>
 </section>
 
 <div class="wrap">
-  <div class="scanner-card">
-    
-    <!-- STEP 1: CAMERA FEED -->
-    <div class="viewport-holder" id="videoBox">
-      <video id="videoFeed" autoplay playsinline></video>
-    </div>
 
-    <!-- STEP 2: CROPPER & CORNER ADJUSTMENT -->
-    <div class="viewport-holder" id="cropBox" style="display:none; background:#222;">
-      <div class="crop-container" id="cropWrapper">
-        <canvas id="cropCanvas"></canvas>
-        <div class="corner-handle" id="pt0"></div>
-        <div class="corner-handle" id="pt1"></div>
-        <div class="corner-handle" id="pt2"></div>
-        <div class="corner-handle" id="pt3"></div>
-      </div>
-    </div>
+  <!-- SCAN ENTRY POINT -->
+  <div class="scan-card" id="scanCard">
+    <div class="cam-badge"><i class="fa-solid fa-camera"></i></div>
+    <h3>Open Camera to Scan</h3>
+    <p>Point your camera at a document and capture — <span class="browse-hint">no file upload needed</span></p>
+  </div>
+  <p class="camera-unsupported" id="cameraUnsupported">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    Camera access isn't available on this browser/device (or the page isn't served over HTTPS).
+  </p>
 
+  <div class="scan-mini" id="scanMini">
+    <div class="scan-mini-left">
+      <i class="fa-solid fa-circle-plus" style="color:var(--stamp); font-size:18px;"></i>
+      <span>Add more document pages</span>
+    </div>
+    <button class="btn btn-secondary" id="addMoreBtn" style="padding:6px 14px; font-size:0.8rem;">
+      <i class="fa-solid fa-camera"></i> Scan More
+    </button>
+  </div>
+
+  <!-- PREVIEW GRID SECTION -->
+  <div class="section-label">
+    <span class="title-side">Scanned Document Pages (Drag to Reorder)</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty-hint" id="emptyState">No pages scanned yet. Tap "Open Camera to Scan" above to capture your first page!</div>
+
+  <!-- GLOBAL PAGE CONTROLS -->
+  <div class="global-control-card" id="globalControlCard">
+    <div class="title"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--stamp);"></i> All Pages Batch Edit</div>
     <div class="controls">
-      <select id="cameraSelect" class="btn btn-secondary" style="display:none;"></select>
-      <button class="btn btn-primary" id="captureBtn"><i class="fa-solid fa-camera"></i> Capture Photo</button>
-      
-      <!-- CROP ACTIONS -->
-      <button class="btn btn-success" id="applyCropBtn" style="display:none;"><i class="fa-solid fa-check"></i> Crop & Magic Filter</button>
-      <button class="btn btn-secondary" id="retakeBtn" style="display:none;"><i class="fa-solid fa-rotate-left"></i> Retake</button>
+      <select id="globalFilter" style="width:auto; padding:8px 30px 8px 12px; font-size:0.85rem;" onchange="applyGlobalFilter(this.value)">
+        <option value="" disabled selected>Apply Filter to All Pages</option>
+        <option value="magic">Magic Color (Auto Clean)</option>
+        <option value="bw">B&W Document (Sharp Text)</option>
+        <option value="grayscale">Grayscale</option>
+        <option value="none">Original Image</option>
+      </select>
+      <button class="btn btn-outline" onclick="rotateAllImages(90)" style="padding:8px 14px; font-size:0.82rem;"><i class="fa-solid fa-rotate-right"></i> Rotate All</button>
     </div>
   </div>
 
-  <!-- SCANNED PAGES -->
-  <h3 style="font-size:1.1rem; margin-top:20px;">Scanned Pages</h3>
-  <div class="pages-grid" id="pagesGrid"></div>
+  <!-- SETTINGS PANEL / EXPORT SETUP -->
+  <div class="section-label">
+    <span class="title-side">Export Setup & Document Customization</span>
+  </div>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <label for="pdfName">Document Title</label>
+      <input type="text" id="pdfName" value="Scanned_Document_PDFBoon">
+    </div>
 
-  <div class="summary-bar">
-    <span id="pageCount" style="font-weight:700;">0 Pages</span>
-    <button class="btn btn-primary" id="downloadPdfBtn" disabled><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+    <div class="setting-card">
+      <label for="pageSize">PDF Page Size</label>
+      <select id="pageSize">
+        <option value="a4">A4 (Standard)</option>
+        <option value="letter">Letter</option>
+        <option value="legal">Legal</option>
+      </select>
+    </div>
+
+    <div class="setting-card">
+      <label for="pageMargin">Page Margin</label>
+      <select id="pageMargin">
+        <option value="0">Zero Margin</option>
+        <option value="5">Small (5mm)</option>
+        <option value="10" selected>Normal (10mm)</option>
+      </select>
+    </div>
+
+    <div class="setting-card">
+      <label for="watermarkText"><i class="fa-solid fa-stamp"></i> Watermark Text</label>
+      <input type="text" id="watermarkText" placeholder="e.g., CONFIDENTIAL / PDFBoon">
+    </div>
+
+    <div class="setting-card">
+      <label for="watermarkOpacity">Watermark Opacity</label>
+      <select id="watermarkOpacity">
+        <option value="0.1">Light (10%)</option>
+        <option value="0.2" selected>Medium (20%)</option>
+        <option value="0.4">Dark (40%)</option>
+      </select>
+    </div>
+
+    <div class="setting-card">
+      <label for="pageNumberToggle">Page Numbers & Branding</label>
+      <select id="pageNumberToggle">
+        <option value="both" selected>Page Numbers & Logo Footer</option>
+        <option value="pageOnly">Page Numbers Only</option>
+        <option value="none">Hide Footer Completely</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- SUMMARY & ACTIONS -->
+  <div class="summary-card">
+    <div class="summary-stats">
+      <div class="summary-stat"><div class="num" id="statCount">0</div><div class="lbl">Pages Scanned</div></div>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <button class="btn btn-primary" id="generateBtn" disabled>
+        <i class="fa-solid fa-file-pdf"></i> Save Document PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- DOWNLOAD BOX -->
+  <div class="download-box" id="downloadBox">
+    <div class="info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+      <div>
+        <h4>Your Document PDF is Ready!</h4>
+        <p id="downloadMeta">—</p>
+      </div>
+    </div>
+    <a class="btn btn-success" id="downloadLink" download>
+      <i class="fa-solid fa-download"></i> Download PDF
+    </a>
+  </div>
+
+</div>
+
+<!-- CROP & FILTER MODAL -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 style="margin:0; font-size:1.05rem; font-family:var(--serif);">Crop Boundaries & Filters</h3>
+      <button class="icon-btn" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="canvas-wrapper">
+        <canvas id="cropCanvas"></canvas>
+      </div>
+      <div class="modal-sidebar">
+        <div class="setting-card" style="padding:14px;">
+          <label for="filterType">Scan Enhancement Filter</label>
+          <select id="filterType">
+            <option value="magic">Magic Color (Auto Clean)</option>
+            <option value="bw">B&W Document (Sharp Text)</option>
+            <option value="grayscale">Grayscale</option>
+            <option value="none">Original Image</option>
+          </select>
+        </div>
+
+        <div class="crop-actions">
+          <button class="btn btn-secondary" onclick="autoDetectCorners()"><i class="fa-solid fa-crosshairs"></i> Auto Edge</button>
+          <button class="btn btn-secondary" onclick="rotateCurrentImg(90)"><i class="fa-solid fa-rotate-right"></i> Rotate</button>
+          <button class="btn btn-secondary" onclick="resetCornersToOriginal()"><i class="fa-solid fa-arrows-rotate"></i> Reset</button>
+        </div>
+
+        <p style="font-size:12px; color:var(--ink-muted); line-height:1.5;">
+          💡 <b>Tip:</b> Drag the 4 red corners to set boundaries accurately.
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-success" onclick="saveEdits()">Apply Crop & Save</button>
+    </div>
   </div>
 </div>
 
-<canvas id="warpCanvas" style="display:none;"></canvas>
+<!-- CAMERA CAPTURE MODAL -->
+<div id="cameraModal" class="modal camera-modal">
+  <div class="camera-stage" id="cameraStage">
+    <video id="cameraVideo" autoplay playsinline muted></video>
+    <canvas id="captureCanvas" style="display:none;"></canvas>
+    <div class="camera-guide"></div>
+    <div class="flash-effect" id="flashOverlay"></div>
+
+    <div class="camera-topbar">
+      <button class="cam-icon-btn" id="cameraCloseBtn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+      <span class="camera-count" id="cameraPageCount">0 pages</span>
+      <button class="cam-icon-btn" id="torchBtn" title="Flash" style="display:none;"><i class="fa-solid fa-bolt"></i></button>
+    </div>
+
+    <div class="camera-bottombar">
+      <div class="camera-preview-thumb" id="cameraPreviewThumb" onclick="closeCamera()">
+        <img id="cameraPreviewImg" src="" alt="Thumbnail">
+        <span class="badge" id="cameraPreviewBadge">0</span>
+      </div>
+
+      <button class="cam-icon-btn" id="switchCamBtn" title="Switch Camera"><i class="fa-solid fa-camera-rotate"></i></button>
+      <button class="capture-btn" id="captureBtn" title="Capture Page"></button>
+      <button class="camera-done-btn" id="doneCameraBtn"><i class="fa-solid fa-check"></i> Done</button>
+    </div>
+
+    <div class="camera-error" id="cameraError" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-simple">
+        <div class="footer-brand">
+            <img src="images/logo.png" alt="Logo">
+            <div>
+                <h2 class="footer-title">PDFBoon</h2>
+                <p class="footer-subtitle">Fast &amp; Secure PDF Tools</p>
+            </div>
+        </div>
+        <div class="footer-simple-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">All Tools</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+        <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
+    </div>
+</footer>
 
 <script>
-let stream = null;
-const video = document.getElementById('videoFeed');
-const captureBtn = document.getElementById('captureBtn');
-const applyCropBtn = document.getElementById('applyCropBtn');
-const retakeBtn = document.getElementById('retakeBtn');
-const videoBox = document.getElementById('videoBox');
-const cropBox = document.getElementById('cropBox');
-const cropCanvas = document.getElementById('cropCanvas');
-const ctx = cropCanvas.getContext('2d');
-const cameraSelect = document.getElementById('cameraSelect');
+let images = [];
+let currentEditIndex = null;
+let userLogoData = null;
 
-let corners = [
-  {x: 40, y: 40},
-  {x: 300, y: 40},
-  {x: 300, y: 400},
-  {x: 40, y: 400}
-];
+let corners = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }];
+let activeCorner = null;
 
-let capturedImg = new Image();
-let scannedDocs = [];
+function toast(msg){
+  let t = document.getElementById('pbToast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'pbToast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2600);
+}
 
-// START CAMERA
-async function initCamera() {
-  try {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter(d => d.kind === 'videoinput');
-    
-    if(videoDevices.length > 1) {
-      cameraSelect.style.display = 'inline-block';
-      cameraSelect.innerHTML = videoDevices.map((d, i) => `<option value="${d.deviceId}">${d.label || 'Camera ' + (i+1)}</option>`).join('');
-    }
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
 
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { width: { ideal: 1920 }, height: { ideal: 1080 }, facingMode: "environment" }
+const customLogo = new Image();
+customLogo.src = "images/logo.png";
+customLogo.onload = function() {
+  const canvas = document.createElement("canvas");
+  canvas.width = customLogo.width; canvas.height = customLogo.height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(customLogo, 0, 0);
+  userLogoData = canvas.toDataURL("image/png");
+};
+
+const grid = document.getElementById("grid");
+Sortable.create(grid, {
+  animation: 150,
+  onEnd: function () {
+    const newImages = [];
+    grid.querySelectorAll(".page-card").forEach(card => {
+      const idx = parseInt(card.getAttribute("data-index"));
+      newImages.push(images[idx]);
     });
-    video.srcObject = stream;
-  } catch(e) {
-    alert("Camera permission required!");
+    images = newImages;
+    renderPreview();
+  }
+});
+
+const generateBtn = document.getElementById("generateBtn");
+
+function renderPreview() {
+  grid.innerHTML = "";
+  const has = images.length > 0;
+
+  document.getElementById("emptyState").style.display = has ? "none" : "block";
+  document.getElementById("scanMini").classList.toggle("active", has);
+  generateBtn.disabled = !has;
+
+  images.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "page-card";
+    card.setAttribute("data-index", index);
+
+    card.innerHTML = `
+      <div class="page-tag">${index + 1}</div>
+      <div class="page-actions">
+        <button class="icon-btn" onclick="event.stopPropagation(); openEditModal(${index})" title="Crop & Filter">✏️</button>
+        <button class="icon-btn delete" onclick="event.stopPropagation(); deleteImage(${index})" title="Remove">✕</button>
+      </div>
+      <div class="page-thumb-frame">
+        <img src="${item.processedSrc}" alt="Page ${index + 1}">
+      </div>
+    `;
+
+    card.onclick = () => openEditModal(index);
+    grid.appendChild(card);
+  });
+
+  document.getElementById("statCount").innerText = images.length;
+  updateCameraPreviewUI();
+}
+
+function updateCameraPreviewUI() {
+  const thumbBox = document.getElementById("cameraPreviewThumb");
+  const thumbImg = document.getElementById("cameraPreviewImg");
+  const thumbBadge = document.getElementById("cameraPreviewBadge");
+
+  if (images.length > 0) {
+    thumbImg.src = images[images.length - 1].processedSrc;
+    thumbBadge.textContent = images.length;
+    thumbBox.style.display = "block";
+    thumbBox.classList.remove("pop");
+    void thumbBox.offsetWidth;
+    thumbBox.classList.add("pop");
+  } else {
+    thumbBox.style.display = "none";
   }
 }
 
-// CAPTURE PHOTO
-captureBtn.addEventListener('click', () => {
-  const tempCanvas = document.createElement('canvas');
-  tempCanvas.width = video.videoWidth || 1280;
-  tempCanvas.height = video.videoHeight || 720;
-  const tempCtx = tempCanvas.getContext('2d');
-  tempCtx.drawImage(video, 0, 0);
+function deleteImage(index) {
+  images.splice(index, 1);
+  renderPreview();
+}
 
-  capturedImg.onload = () => {
-    videoBox.style.display = 'none';
-    cropBox.style.display = 'flex';
+/* GLOBAL BATCH EDITING */
+function applyGlobalFilter(filterValue) {
+  if (!images.length) {
+    toast("No pages available to apply filter.");
+    return;
+  }
+  images.forEach(imgObj => {
+    imgObj.filter = filterValue;
+    imgObj.processedSrc = applyFilterToDataUrl(imgObj.originalSrc, filterValue);
+  });
+  renderPreview();
+  toast(`Applied ${filterValue.toUpperCase()} filter to all pages!`);
+}
+
+function rotateAllImages(deg) {
+  if (!images.length) {
+    toast("No pages available to rotate.");
+    return;
+  }
+  images.forEach((imgObj) => {
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d");
+    const img = new Image();
+    img.src = imgObj.originalSrc;
     
-    captureBtn.style.display = 'none';
-    cameraSelect.style.display = 'none';
-    applyCropBtn.style.display = 'inline-flex';
-    retakeBtn.style.display = 'inline-flex';
+    tempCanvas.width = img.height || 800; 
+    tempCanvas.height = img.width || 600;
+    tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+    tempCtx.rotate((deg * Math.PI) / 180);
+    tempCtx.drawImage(img, -img.width / 2, -img.height / 2);
 
-    // Set Canvas scale
-    cropCanvas.width = capturedImg.width;
-    cropCanvas.height = capturedImg.height;
-    ctx.drawImage(capturedImg, 0, 0);
+    const rotatedData = tempCanvas.toDataURL("image/jpeg", 0.92);
+    imgObj.originalSrc = rotatedData;
+    imgObj.processedSrc = applyFilterToDataUrl(rotatedData, imgObj.filter || "magic");
+  });
+  renderPreview();
+  toast("Rotated all pages!");
+}
 
-    // Default Corners (Margin 10%)
-    const w = cropCanvas.width;
-    const h = cropCanvas.height;
-    corners = [
-      {x: w * 0.1, y: h * 0.1},
-      {x: w * 0.9, y: h * 0.1},
-      {x: w * 0.9, y: h * 0.9},
-      {x: w * 0.1, y: h * 0.9}
-    ];
+function applyFilterToDataUrl(dataUrl, filter) {
+  if (!cvReady || filter === "none") return dataUrl;
 
-    updateHandles();
-    drawCropOverlay();
-  };
-  capturedImg.src = tempCanvas.toDataURL('image/jpeg');
+  try {
+    const img = new Image();
+    img.src = dataUrl;
+    let src = cv.imread(img);
+    let dst = new cv.Mat();
+
+    if (filter === "bw") {
+      cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+      cv.adaptiveThreshold(dst, dst, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
+    } else if (filter === "grayscale") {
+      cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+    } else if (filter === "magic") {
+      let tmp = new cv.Mat();
+      cv.cvtColor(src, tmp, cv.COLOR_RGBA2RGB);
+      cv.addWeighted(tmp, 1.25, tmp, 0, -12, dst);
+      tmp.delete();
+    } else {
+      dst = src.clone();
+    }
+
+    let outCanvas = document.createElement("canvas");
+    cv.imshow(outCanvas, dst);
+    const result = outCanvas.toDataURL("image/jpeg", 0.92);
+    src.delete(); dst.delete();
+    return result;
+  } catch (e) {
+    return dataUrl;
+  }
+}
+
+/* CAMERA CAPTURE ENGINE */
+const cameraModal = document.getElementById("cameraModal");
+const cameraVideo = document.getElementById("cameraVideo");
+const captureCanvas = document.getElementById("captureCanvas");
+const cameraPageCount = document.getElementById("cameraPageCount");
+const torchBtn = document.getElementById("torchBtn");
+const switchCamBtn = document.getElementById("switchCamBtn");
+
+let mediaStream = null;
+let currentFacingMode = "environment";
+let torchOn = false;
+let torchSupported = false;
+
+const cameraSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+if (!cameraSupported) {
+  document.getElementById("cameraUnsupported").classList.add("active");
+  document.getElementById("scanCard").style.opacity = "0.5";
+  document.getElementById("scanCard").style.pointerEvents = "none";
+}
+
+document.getElementById("scanCard").addEventListener("click", openCamera);
+document.getElementById("addMoreBtn").addEventListener("click", openCamera);
+
+async function detectMultipleCameras() {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const count = devices.filter(d => d.kind === "videoinput").length;
+    switchCamBtn.style.display = count > 1 ? "flex" : "none";
+  } catch (e) {
+    switchCamBtn.style.display = "flex";
+  }
+}
+
+async function openCamera() {
+  if (!cameraSupported) {
+    toast("Camera isn't available on this browser/device.");
+    return;
+  }
+  document.getElementById("cameraError").style.display = "none";
+  cameraModal.classList.add("active");
+  cameraPageCount.textContent = images.length + (images.length === 1 ? " page" : " pages");
+  updateCameraPreviewUI();
+  await detectMultipleCameras();
+  await startStream(currentFacingMode);
+}
+
+async function startStream(facingMode) {
+  stopStream();
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: facingMode }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+    cameraVideo.srcObject = mediaStream;
+
+    const track = mediaStream.getVideoTracks()[0];
+    const caps = track.getCapabilities ? track.getCapabilities() : {};
+    torchSupported = !!caps.torch;
+    torchBtn.style.display = torchSupported ? "flex" : "none";
+    torchOn = false;
+    torchBtn.classList.remove("active");
+  } catch (err) {
+    showCameraError("Camera access was denied or is unavailable. Please check permissions.");
+  }
+}
+
+function stopStream() {
+  if (mediaStream) {
+    mediaStream.getTracks().forEach(t => t.stop());
+    mediaStream = null;
+  }
+}
+
+function showCameraError(msg) {
+  const el = document.getElementById("cameraError");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+switchCamBtn.addEventListener("click", () => {
+  currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
+  startStream(currentFacingMode);
 });
 
-// DRAW OVERLAY POLYGON
-function drawCropOverlay() {
-  ctx.drawImage(capturedImg, 0, 0);
-  ctx.strokeStyle = '#2563eb';
-  ctx.lineWidth = 6;
-  ctx.fillStyle = 'rgba(37, 99, 235, 0.2)';
+torchBtn.addEventListener("click", async () => {
+  if (!mediaStream) return;
+  const track = mediaStream.getVideoTracks()[0];
+  try {
+    torchOn = !torchOn;
+    await track.applyConstraints({ advanced: [{ torch: torchOn }] });
+    torchBtn.classList.toggle("active", torchOn);
+  } catch (e) {
+    torchOn = !torchOn;
+  }
+});
+
+document.getElementById("captureBtn").addEventListener("click", captureFrame);
+
+function captureFrame() {
+  if (!mediaStream) return;
+  const vw = cameraVideo.videoWidth || cameraVideo.clientWidth;
+  const vh = cameraVideo.videoHeight || cameraVideo.clientHeight;
+  if (!vw || !vh) return;
+
+  captureCanvas.width = vw;
+  captureCanvas.height = vh;
+  const cctx = captureCanvas.getContext("2d");
+  cctx.drawImage(cameraVideo, 0, 0, vw, vh);
+  
+  const dataUrl = captureCanvas.toDataURL("image/jpeg", 0.92);
+  const processedData = applyFilterToDataUrl(dataUrl, "magic");
+
+  images.push({
+    id: Date.now() + Math.random(),
+    originalSrc: dataUrl,
+    processedSrc: processedData,
+    rotation: 0,
+    filter: "magic"
+  });
+  
+  renderPreview();
+  cameraPageCount.textContent = images.length + (images.length === 1 ? " page" : " pages");
+  
+  const flash = document.getElementById("flashOverlay");
+  flash.classList.remove("active");
+  void flash.offsetWidth;
+  flash.classList.add("active");
+}
+
+document.getElementById("cameraCloseBtn").addEventListener("click", closeCamera);
+document.getElementById("doneCameraBtn").addEventListener("click", closeCamera);
+
+function closeCamera() {
+  stopStream();
+  cameraModal.classList.remove("active");
+}
+
+/* CROP SYSTEM */
+const editModal = document.getElementById("editModal");
+const cropCanvas = document.getElementById("cropCanvas");
+const ctx = cropCanvas.getContext("2d");
+let workingImg = new Image();
+
+function resetCornersToOriginal() {
+  const w = cropCanvas.width, h = cropCanvas.height;
+  corners = [{ x: 0, y: 0 }, { x: w, y: 0 }, { x: w, y: h }, { x: 0, y: h }];
+  drawCanvasOverlay();
+}
+
+function openEditModal(index) {
+  currentEditIndex = index;
+  document.getElementById("filterType").value = images[index].filter || "magic";
+
+  workingImg = new Image();
+  workingImg.onload = () => {
+    cropCanvas.width = workingImg.width;
+    cropCanvas.height = workingImg.height;
+    autoDetectCorners();
+    editModal.classList.add("active");
+  };
+  workingImg.src = images[index].originalSrc;
+}
+
+function closeEditModal() { editModal.classList.remove("active"); }
+
+function rotateCurrentImg(deg) {
+  const item = images[currentEditIndex];
+  item.rotation = ((item.rotation || 0) + deg) % 360;
+
+  const tempCanvas = document.createElement("canvas");
+  const tempCtx = tempCanvas.getContext("2d");
+  const swapped = Math.abs(deg) % 180 === 90;
+
+  if (swapped) {
+    tempCanvas.width = workingImg.height; tempCanvas.height = workingImg.width;
+  } else {
+    tempCanvas.width = workingImg.width; tempCanvas.height = workingImg.height;
+  }
+
+  tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+  tempCtx.rotate((deg * Math.PI) / 180);
+  tempCtx.drawImage(workingImg, -workingImg.width / 2, -workingImg.height / 2);
+
+  const rotatedDataUrl = tempCanvas.toDataURL("image/jpeg", 0.92);
+  item.originalSrc = rotatedDataUrl;
+
+  workingImg = new Image();
+  workingImg.onload = () => {
+    cropCanvas.width = workingImg.width;
+    cropCanvas.height = workingImg.height;
+    resetCornersToOriginal();
+  };
+  workingImg.src = rotatedDataUrl;
+}
+
+function autoDetectCorners() {
+  const w = cropCanvas.width, h = cropCanvas.height;
+  
+  if (!cvReady) {
+    resetCornersToOriginal();
+    return;
+  }
+
+  try {
+    let src = cv.imread(workingImg);
+    let gray = new cv.Mat();
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+
+    let blur = new cv.Mat();
+    cv.GaussianBlur(gray, blur, new cv.Size(5, 5), 0);
+    cv.Canny(blur, blur, 50, 150);
+
+    let contours = new cv.MatVector();
+    let hierarchy = new cv.Mat();
+    cv.findContours(blur, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+    let maxArea = 0, bestContour = null;
+    let minAreaThreshold = (w * h) * 0.15;
+
+    for (let i = 0; i < contours.size(); ++i) {
+      let cnt = contours.get(i);
+      let area = cv.contourArea(cnt);
+      if (area > minAreaThreshold && area > maxArea) {
+        let peri = cv.arcLength(cnt, true);
+        let approx = new cv.Mat();
+        cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+        if (approx.rows === 4) {
+          maxArea = area;
+          bestContour = approx;
+        }
+      }
+    }
+
+    if (bestContour) {
+      let pts = [];
+      for (let i = 0; i < 4; i++) {
+        pts.push({ x: bestContour.data32S[i * 2], y: bestContour.data32S[i * 2 + 1] });
+      }
+
+      pts.sort((a, b) => (a.y - b.y));
+      let top = pts.slice(0, 2).sort((a, b) => a.x - b.x);
+      let bottom = pts.slice(2, 4).sort((a, b) => b.x - a.x);
+
+      corners[0] = top[0];    // TL
+      corners[1] = top[1];    // TR
+      corners[2] = bottom[0]; // BR
+      corners[3] = bottom[1]; // BL
+    } else {
+      const mx = w * 0.05, my = h * 0.05;
+      corners = [{ x: mx, y: my }, { x: w - mx, y: my }, { x: w - mx, y: h - my }, { x: mx, y: h - my }];
+    }
+
+    src.delete(); gray.delete(); blur.delete(); contours.delete(); hierarchy.delete();
+  } catch (e) {
+    resetCornersToOriginal();
+  }
+
+  drawCanvasOverlay();
+}
+
+function drawCanvasOverlay() {
+  ctx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+  ctx.drawImage(workingImg, 0, 0);
 
   ctx.beginPath();
   ctx.moveTo(corners[0].x, corners[0].y);
-  ctx.lineTo(corners[1].x, corners[1].y);
-  ctx.lineTo(corners[2].x, corners[2].y);
-  ctx.lineTo(corners[3].x, corners[3].y);
+  for (let i = 1; i < 4; i++) ctx.lineTo(corners[i].x, corners[i].y);
   ctx.closePath();
+  ctx.strokeStyle = "#2563eb";
+  ctx.lineWidth = Math.max(3, cropCanvas.width / 200);
   ctx.stroke();
+  ctx.fillStyle = "rgba(37, 99, 235, 0.20)";
   ctx.fill();
-}
 
-// DRAGGABLE HANDLES LOGIC
-const handles = [
-  document.getElementById('pt0'),
-  document.getElementById('pt1'),
-  document.getElementById('pt2'),
-  document.getElementById('pt3')
-];
-
-function updateHandles() {
-  const rect = cropCanvas.getBoundingClientRect();
-  const scaleX = rect.width / cropCanvas.width;
-  const scaleY = rect.height / cropCanvas.height;
-
-  corners.forEach((pt, idx) => {
-    handles[idx].style.left = (pt.x * scaleX) + 'px';
-    handles[idx].style.top = (pt.y * scaleY) + 'px';
+  corners.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.max(12, cropCanvas.width / 50), 0, 2 * Math.PI);
+    ctx.fillStyle = "#ef4444"; ctx.fill();
+    ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
   });
 }
 
-handles.forEach((handle, idx) => {
-  let isDragging = false;
+function getCanvasCoords(e) {
+  const rect = cropCanvas.getBoundingClientRect();
+  const scaleX = cropCanvas.width / rect.width;
+  const scaleY = cropCanvas.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+}
 
-  const onMove = (e) => {
-    if (!isDragging) return;
-    const rect = cropCanvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    const scaleX = cropCanvas.width / rect.width;
-    const scaleY = cropCanvas.height / rect.height;
-
-    corners[idx].x = Math.max(0, Math.min(cropCanvas.width, (clientX - rect.left) * scaleX));
-    corners[idx].y = Math.max(0, Math.min(cropCanvas.height, (clientY - rect.top) * scaleY));
-
-    updateHandles();
-    drawCropOverlay();
-  };
-
-  const onEnd = () => {
-    isDragging = false;
-    window.removeEventListener('mousemove', onMove);
-    window.removeEventListener('touchmove', onMove);
-  };
-
-  handle.addEventListener('mousedown', () => { isDragging = true; window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onEnd); });
-  handle.addEventListener('touchstart', () => { isDragging = true; window.addEventListener('touchmove', onMove); window.addEventListener('touchend', onEnd); });
+cropCanvas.addEventListener("mousedown", (e) => {
+  const pos = getCanvasCoords(e);
+  activeCorner = corners.findIndex(p => Math.hypot(p.x - pos.x, p.y - pos.y) < (cropCanvas.width / 12));
 });
+cropCanvas.addEventListener("touchstart", (e) => {
+  const pos = getCanvasCoords(e);
+  activeCorner = corners.findIndex(p => Math.hypot(p.x - pos.x, p.y - pos.y) < (cropCanvas.width / 12));
+  if (activeCorner !== -1) e.preventDefault();
+}, { passive: false });
 
-// CROP & CAMSCANNER MAGIC COLOR FILTER
-applyCropBtn.addEventListener('click', () => {
-  const warpCanvas = document.getElementById('warpCanvas');
-  const w = 800; // Output Standard Size
-  const h = 1100;
-  warpCanvas.width = w;
-  warpCanvas.height = h;
-  const wCtx = warpCanvas.getContext('2d');
+window.addEventListener("mousemove", (e) => {
+  if (activeCorner === null || activeCorner === -1) return;
+  const pos = getCanvasCoords(e);
+  corners[activeCorner] = { x: Math.max(0, Math.min(cropCanvas.width, pos.x)), y: Math.max(0, Math.min(cropCanvas.height, pos.y)) };
+  drawCanvasOverlay();
+});
+window.addEventListener("touchmove", (e) => {
+  if (activeCorner === null || activeCorner === -1) return;
+  const pos = getCanvasCoords(e);
+  corners[activeCorner] = { x: Math.max(0, Math.min(cropCanvas.width, pos.x)), y: Math.max(0, Math.min(cropCanvas.height, pos.y)) };
+  drawCanvasOverlay();
+}, { passive: false });
 
-  // Simple Perspective Bounding Crop
-  const minX = Math.min(...corners.map(c => c.x));
-  const maxX = Math.max(...corners.map(c => c.x));
-  const minY = Math.min(...corners.map(c => c.y));
-  const maxY = Math.max(...corners.map(c => c.y));
+window.addEventListener("mouseup", () => activeCorner = null);
+window.addEventListener("touchend", () => activeCorner = null);
 
-  wCtx.drawImage(capturedImg, minX, minY, maxX - minX, maxY - minY, 0, 0, w, h);
+function saveEdits() {
+  if (currentEditIndex === null) return;
+  const filter = document.getElementById("filterType").value;
+  images[currentEditIndex].filter = filter;
 
-  // Apply CamScanner Magic Color Contrast
-  const imgData = wCtx.getImageData(0, 0, w, h);
-  const data = imgData.data;
+  if (cvReady) {
+    try {
+      let src = cv.imread(workingImg);
+      let dst = new cv.Mat();
 
-  for (let i = 0; i < data.length; i += 4) {
-    let r = data[i], g = data[i+1], b = data[i+2];
-    
-    // Magic Color Enhancement
-    r = (r - 128) * 1.4 + 128 + 15;
-    g = (g - 128) * 1.4 + 128 + 15;
-    b = (b - 128) * 1.4 + 128 + 15;
+      let w1 = Math.hypot(corners[1].x - corners[0].x, corners[1].y - corners[0].y);
+      let w2 = Math.hypot(corners[2].x - corners[3].x, corners[2].y - corners[3].y);
+      let finalWidth = Math.max(w1, w2);
 
-    data[i] = Math.min(255, Math.max(0, r));
-    data[i+1] = Math.min(255, Math.max(0, g));
-    data[i+2] = Math.min(255, Math.max(0, b));
+      let h1 = Math.hypot(corners[3].y - corners[0].y, corners[3].x - corners[0].x);
+      let h2 = Math.hypot(corners[2].y - corners[1].y, corners[2].x - corners[1].x);
+      let finalHeight = Math.max(h1, h2);
+
+      let srcCoords = cv.matFromArray(4, 1, cv.CV_32FC2, [
+        corners[0].x, corners[0].y, corners[1].x, corners[1].y,
+        corners[2].x, corners[2].y, corners[3].x, corners[3].y
+      ]);
+      let dstCoords = cv.matFromArray(4, 1, cv.CV_32FC2, [
+        0, 0, finalWidth, 0, finalWidth, finalHeight, 0, finalHeight
+      ]);
+
+      let M = cv.getPerspectiveTransform(srcCoords, dstCoords);
+      cv.warpPerspective(src, dst, M, new cv.Size(finalWidth, finalHeight), cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+
+      if (filter === "bw") {
+        cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
+        cv.adaptiveThreshold(dst, dst, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
+      } else if (filter === "grayscale") {
+        cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
+      } else if (filter === "magic") {
+        let tmp = new cv.Mat();
+        cv.cvtColor(dst, tmp, cv.COLOR_RGBA2RGB);
+        cv.addWeighted(tmp, 1.25, tmp, 0, -12, dst);
+        tmp.delete();
+      }
+
+      let outCanvas = document.createElement("canvas");
+      cv.imshow(outCanvas, dst);
+      images[currentEditIndex].processedSrc = outCanvas.toDataURL("image/jpeg", 0.92);
+
+      src.delete(); dst.delete(); srcCoords.delete(); dstCoords.delete(); M.delete();
+    } catch (e) {
+      images[currentEditIndex].processedSrc = cropCanvas.toDataURL("image/jpeg", 0.92);
+    }
+  } else {
+    images[currentEditIndex].processedSrc = cropCanvas.toDataURL("image/jpeg", 0.92);
   }
 
-  wCtx.putImageData(imgData, 0, 0);
-
-  scannedDocs.push(warpCanvas.toDataURL('image/jpeg', 0.9));
-  renderPages();
-  resetToCamera();
-});
-
-retakeBtn.addEventListener('click', resetToCamera);
-
-function resetToCamera() {
-  cropBox.style.display = 'none';
-  videoBox.style.display = 'flex';
-  captureBtn.style.display = 'inline-flex';
-  applyCropBtn.style.display = 'none';
-  retakeBtn.style.display = 'none';
+  renderPreview();
+  closeEditModal();
 }
 
-function renderPages() {
-  const grid = document.getElementById('pagesGrid');
-  grid.innerHTML = '';
-  scannedDocs.forEach((src, idx) => {
-    grid.innerHTML += `
-      <div class="page-item">
-        <button class="remove-btn" onclick="removeDoc(${idx})"><i class="fa-solid fa-xmark"></i></button>
-        <img src="${src}">
-      </div>
-    `;
-  });
-  document.getElementById('pageCount').innerText = `${scannedDocs.length} Page(s)`;
-  document.getElementById('downloadPdfBtn').disabled = scannedDocs.length === 0;
+/* EXPORT TO PDF WITH WATERMARK & PAGE NUMBERS */
+generateBtn.addEventListener("click", generatePDF);
+
+async function generatePDF() {
+  if (!images.length) return;
+
+  const originalBtnHTML = generateBtn.innerHTML;
+  generateBtn.disabled = true;
+  generateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const formatSelect = document.getElementById("pageSize").value;
+    const marginSelect = parseInt(document.getElementById("pageMargin").value);
+    const watermarkText = document.getElementById("watermarkText").value.trim();
+    const watermarkOpacity = parseFloat(document.getElementById("watermarkOpacity").value);
+    const pageFooterMode = document.getElementById("pageNumberToggle").value;
+
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: formatSelect, compress: true });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    for (let i = 0; i < images.length; i++) {
+      if (i > 0) pdf.addPage();
+
+      const img = new Image();
+      img.src = images[i].processedSrc;
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+
+      const margin = marginSelect;
+      const footerSpace = (pageFooterMode !== "none") ? 12 : 0;
+      const maxWidth = pageWidth - (margin * 2);
+      const maxHeight = pageHeight - (margin * 2) - footerSpace;
+
+      const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
+      const renderWidth = img.width * ratio;
+      const renderHeight = img.height * ratio;
+
+      const x = (pageWidth - renderWidth) / 2;
+      const y = margin + ((maxHeight - renderHeight) / 2);
+
+      pdf.addImage(images[i].processedSrc, "JPEG", x, y, renderWidth, renderHeight, undefined, "FAST");
+
+      /* WATERMARK ENGINE */
+      if (watermarkText !== "") {
+        pdf.saveGraphicsState();
+        pdf.setGState(new pdf.GState({ opacity: watermarkOpacity }));
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(40);
+        pdf.setTextColor(150, 150, 150);
+
+        // Center-rotated Watermark
+        pdf.text(watermarkText, pageWidth / 2, pageHeight / 2, {
+          align: "center",
+          angle: 45
+        });
+        pdf.restoreGraphicsState();
+      }
+
+      /* PAGE NUMBER & FOOTER ENGINE */
+      if (pageFooterMode !== "none") {
+        pdf.setDrawColor(214, 224, 238);
+        pdf.line(margin, pageHeight - 10, pageWidth - margin, pageHeight - 10);
+
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8);
+        pdf.setTextColor(132, 147, 170);
+        
+        // Render Page Number
+        pdf.text(`Page ${i + 1} of ${images.length}`, margin, pageHeight - 5);
+
+        // Render Branding / Custom Logo if selected
+        if (pageFooterMode === "both") {
+          const textString = "Scanned by PDFBoon";
+          const textWidth = pdf.getTextWidth(textString);
+          const rightX = pageWidth - margin;
+
+          if (userLogoData) {
+            const logoSize = 4.5, gap = 2;
+            const totalWidth = logoSize + gap + textWidth;
+            const logoX = rightX - totalWidth;
+
+            try {
+              pdf.addImage(userLogoData, "PNG", logoX, pageHeight - 8.5, logoSize, logoSize);
+            } catch (err) {}
+            pdf.text(textString, logoX + logoSize + gap, pageHeight - 5);
+          } else {
+            pdf.text(textString, rightX, pageHeight - 5, { align: "right" });
+          }
+        }
+      }
+    }
+
+    const blob = pdf.output("blob");
+    const url = URL.createObjectURL(blob);
+    let filename = document.getElementById("pdfName").value.trim() || "Scanned_Document_PDFBoon";
+    filename = filename.replace(/[\\/:*?"<>|]+/g, "_");
+    if (!filename.toLowerCase().endsWith(".pdf")) filename += ".pdf";
+
+    const downloadLink = document.getElementById("downloadLink");
+    downloadLink.href = url;
+    downloadLink.setAttribute("download", filename);
+
+    document.getElementById("downloadMeta").textContent = `${filename} · ${(blob.size / 1024 / 1024).toFixed(2)} MB · ${images.length} Pages`;
+    document.getElementById("downloadBox").classList.add("active");
+    document.getElementById("downloadBox").scrollIntoView({ behavior: "smooth", block: "center" });
+  } catch (err) {
+    toast("Something went wrong generating PDF.");
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.innerHTML = originalBtnHTML;
+  }
 }
-
-window.removeDoc = function(idx) {
-  scannedDocs.splice(idx, 1);
-  renderPages();
-};
-
-// DOWNLOAD PDF
-document.getElementById('downloadPdfBtn').addEventListener('click', () => {
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'mm', 'a4');
-
-  scannedDocs.forEach((img, idx) => {
-    if(idx > 0) pdf.addPage();
-    pdf.addImage(img, 'JPEG', 0, 0, 210, 297);
-  });
-
-  pdf.save('CamScanner_Doc.pdf');
-});
-
-initCamera();
 </script>
 </body>
 </html>
