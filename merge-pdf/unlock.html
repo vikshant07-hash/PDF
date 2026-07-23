@@ -1374,6 +1374,8 @@ async function loadFile(file){
       needsPassword = true;
       setStatusTag('locked', '<i class="fa-solid fa-lock"></i> Password protected');
       passwordSection.classList.remove('hidden');
+      actionArea.classList.remove('hidden');
+      unlockBtn.innerHTML = '<i class="fa-solid fa-unlock" style="margin-right:8px;"></i>Unlock PDF';
       pdfPasswordInput.focus();
       updateUnlockBtnState();
     } else {
@@ -1406,6 +1408,7 @@ async function renderThumb(doc){
 function revealSettings(){
   settingsSection.classList.remove('hidden');
   actionArea.classList.remove('hidden');
+  unlockBtn.innerHTML = '<i class="fa-solid fa-unlock" style="margin-right:8px;"></i>Remove Password';
   renameInput.value = currentFile.name.replace(/\.pdf$/i, '');
   updateUnlockBtnState();
 }
