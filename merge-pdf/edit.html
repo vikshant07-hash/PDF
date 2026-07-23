@@ -356,6 +356,9 @@ input[type=file]{ display:none; }
   gap:6px;
   flex-wrap:wrap;
   margin-bottom:14px;
+  position:sticky;
+  top:70px;
+  z-index:40;
 }
 
 .tool-btn{
@@ -546,7 +549,10 @@ input[type=file]{ display:none; }
 .canvas-wrap{
   transform-origin:top center;
   box-shadow:0 6px 24px rgba(13,37,69,0.18);
+  transition:transform .12s ease;
 }
+
+.canvas-wrap canvas{ touch-action:none; }
 
 /* ---- Zoom controls ---- */
 .zoom-bar{
@@ -555,6 +561,7 @@ input[type=file]{ display:none; }
   justify-content:center;
   gap:10px;
   margin-top:14px;
+  flex-wrap:wrap;
 }
 .zoom-bar button{
   width:34px; height:34px;
@@ -641,6 +648,14 @@ input[type=file]{ display:none; }
   font-weight:600;
   margin-top:10px;
   display:none;
+}
+
+.hint-msg{
+  width:100%;
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:0.78rem;
+  margin-top:4px;
 }
 
 /* ============ RESULT ============ */
@@ -745,6 +760,7 @@ input[type=file]{ display:none; }
 .modal-actions button:hover{ transform:translateY(-1px); }
 
 @media(max-width:980px){
+  .editor-toolbar{ top:0; }
   .editor-body{ flex-direction:column; }
   .page-sidebar{
     width:100%;
@@ -758,13 +774,14 @@ input[type=file]{ display:none; }
   .page-sidebar h4{ display:none; }
   .page-thumb-wrap{ width:100px; flex-shrink:0; margin-bottom:0; }
   .add-blank-btn{ width:100px; flex-shrink:0; height:100%; }
-  .canvas-stage{ max-height:60vh; }
+  .canvas-stage{ max-height:60vh; padding:14px; }
 }
 
 @media(max-width:768px){
   .title{ font-size:32px; }
   .result-card{ flex-direction:column; align-items:flex-start; }
   .editor-toolbar{ justify-content:center; }
+  .property-bar{ justify-content:center; }
 }
 
 /* ============ SIMPLE FOOTER ============ */
@@ -896,8 +913,8 @@ input[type=file]{ display:none; }
 
 <div class="editor-toolbar" id="toolbar">
 
-  <button class="tool-btn active" data-tool="select" title="Select / Move"><i class="fa-solid fa-arrow-pointer"></i></button>
-  <button class="tool-btn" data-tool="text" title="Add Text"><i class="fa-solid fa-font"></i></button>
+  <button class="tool-btn active" data-tool="select" title="Select / Move / Resize"><i class="fa-solid fa-arrow-pointer"></i></button>
+  <button class="tool-btn" data-tool="text" title="Add New Text — or click existing PDF text to edit it"><i class="fa-solid fa-font"></i></button>
   <button class="tool-btn" data-tool="draw" title="Draw"><i class="fa-solid fa-pen"></i></button>
   <button class="tool-btn" data-tool="highlight" title="Highlighter"><i class="fa-solid fa-highlighter"></i></button>
 
@@ -973,15 +990,16 @@ input[type=file]{ display:none; }
     </div>
 
     <div class="zoom-bar">
-      <button id="zoomOutBtn"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+      <button id="zoomOutBtn" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
       <span class="zoom-label" id="zoomLabel">100%</span>
-      <button id="zoomInBtn"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-      <button id="zoomResetBtn" title="Reset Zoom"><i class="fa-solid fa-compress"></i></button>
+      <button id="zoomInBtn" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+      <button id="zoomResetBtn" title="Fit to Width"><i class="fa-solid fa-compress"></i></button>
       <button id="rotatePageBtn" title="Rotate Current Page"><i class="fa-solid fa-rotate"></i></button>
       <button id="deletePageBtn" title="Delete Current Page"><i class="fa-solid fa-file-circle-xmark"></i></button>
       <button id="duplicatePageBtn" title="Duplicate Current Page"><i class="fa-solid fa-clone"></i></button>
       <button id="pageNumbersBtn" title="Add Page Numbers to All Pages"><i class="fa-solid fa-list-ol"></i></button>
     </div>
+    <p class="hint-msg">Tip: With the Text tool, tap on existing PDF text to edit it in place, or tap empty space to add new text.</p>
 
   </div>
 
@@ -1112,6 +1130,9 @@ const S = 1.5;              // fixed working scale used for editing AND export
 const BLANK_W = 595 * S;    // A4 @ 72dpi portrait
 const BLANK_H = 842 * S;
 
+// custom fabric object props we need to survive every toJSON() round-trip
+const CUSTOM_PROPS = ['pdfboonPageNum', 'pdfboonWhiteout'];
+
 /* ================= STATE ================= */
 
 const uploadScreen = document.getElementById('uploadScreen');
@@ -1120,13 +1141,15 @@ const uploadBox = document.getElementById('uploadBox');
 const pdfInput = document.getElementById('pdfInput');
 
 let pdfDoc = null;
-let pages = [];            // {id,type,srcIndex,rotation,annotations,history:{stack,index},w,h}
+let pages = [];            // {id,type,srcIndex,rotation,annotations,history:{stack,index},textItems,thumbUrl}
 let currentPageId = null;
 let idSeq = 0;
 
 let fabricCanvas = null;
 let currentTool = 'select';
 let zoomLevel = 1;
+let userAdjustedZoom = false;
+let resizeTimer = null;
 
 let currentColor = '#2563eb';
 let strokeWidthVal = 3;
@@ -1163,6 +1186,7 @@ async function loadPdf(file){
   }
 
   pages = [];
+  idSeq = 0;
   for(let i = 0; i < pdfDoc.numPages; i++){
     pages.push(makePageEntry({ type:'pdf', srcIndex:i }));
   }
@@ -1172,7 +1196,9 @@ async function loadPdf(file){
   uploadScreen.classList.add('hidden');
   editorScreen.classList.remove('hidden');
 
-  initFabricCanvas();
+  userAdjustedZoom = false;
+
+  if(!fabricCanvas) initFabricCanvas();
   await renderAllThumbs();
   await switchPage(pages[0].id);
 }
@@ -1184,6 +1210,7 @@ function makePageEntry(opts){
     srcIndex: opts.srcIndex ?? null,
     rotation: 0,
     annotations: null,
+    textItems: null,
     history: { stack: [], index: -1 },
     thumbUrl: null
   };
@@ -1205,6 +1232,10 @@ function initFabricCanvas(){
   fabricCanvas.on('mouse:down', (opt) => onCanvasMouseDown(opt));
   fabricCanvas.on('mouse:move', (opt) => onCanvasMouseMove(opt));
   fabricCanvas.on('mouse:up', () => onCanvasMouseUp());
+
+  // avoid the browser hijacking touch gestures while drawing/selecting
+  if(fabricCanvas.upperCanvasEl) fabricCanvas.upperCanvasEl.style.touchAction = 'none';
+  if(fabricCanvas.lowerCanvasEl) fabricCanvas.lowerCanvasEl.style.touchAction = 'none';
 }
 
 /* ================= PAGE RENDERING HELPERS ================= */
@@ -1234,6 +1265,49 @@ async function getBackgroundCanvas(page, scale){
     ctx.fillRect(0, 0, w, h);
     return canvas;
   }
+}
+
+/* Extract positions of the existing text layer of a PDF page so it can be
+   located and replaced with an editable text box ("edit existing text"). */
+async function ensureTextItems(page){
+  if(page.type !== 'pdf' || page.textItems) return;
+  try{
+    const pjsPage = await pdfDoc.getPage(page.srcIndex + 1);
+    const content = await pjsPage.getTextContent();
+    const baseViewport = pjsPage.getViewport({ scale: 1 });
+    const totalRotation = (baseViewport.rotation + page.rotation) % 360;
+    const viewport = pjsPage.getViewport({ scale: S, rotation: totalRotation });
+
+    page.textItems = content.items
+      .filter(item => item.str && item.str.trim().length > 0)
+      .map(item => {
+        const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+        const scaleFactor = Math.hypot(tx[0], tx[1]) || 10;
+        const fontHeight = Math.hypot(tx[2], tx[3]) || scaleFactor;
+        return {
+          str: item.str,
+          x: tx[4],
+          y: tx[5],
+          fontHeight,
+          width: Math.max((item.width || 0) * scaleFactor, fontHeight * 0.6)
+        };
+      });
+  }catch(err){
+    page.textItems = [];
+  }
+}
+
+function findTextItemAt(page, px, py){
+  if(!page || !page.textItems) return null;
+  for(let i = page.textItems.length - 1; i >= 0; i--){
+    const t = page.textItems[i];
+    const left = t.x;
+    const right = t.x + t.width;
+    const top = t.y - t.fontHeight * 1.05;
+    const bottom = t.y + t.fontHeight * 0.3;
+    if(px >= left && px <= right && py >= top && py <= bottom) return t;
+  }
+  return null;
 }
 
 function loadFromJSONAsync(canvas, json){
@@ -1320,16 +1394,18 @@ document.getElementById('addBlankBtn').addEventListener('click', async () => {
 async function switchPage(id){
   if(currentPageId){
     const prev = pages.find(p => p.id === currentPageId);
-    if(prev) prev.annotations = fabricCanvas.toJSON();
+    if(prev) prev.annotations = fabricCanvas.toJSON(CUSTOM_PROPS);
   }
 
   currentPageId = id;
   const page = pages.find(p => p.id === id);
+  if(!page) return;
+
+  await ensureTextItems(page);
 
   const bg = await getBackgroundCanvas(page, S);
   fabricCanvas.setWidth(bg.width);
   fabricCanvas.setHeight(bg.height);
-  fabricCanvas.setBackgroundImage(new fabric.Image(bg), fabricCanvas.renderAll.bind(fabricCanvas));
 
   fabricCanvas.clear();
   fabricCanvas.setBackgroundImage(new fabric.Image(bg), fabricCanvas.renderAll.bind(fabricCanvas));
@@ -1337,13 +1413,17 @@ async function switchPage(id){
   fabricCanvas.renderAll();
 
   if(page.history.stack.length === 0){
-    page.history.stack.push(JSON.stringify(fabricCanvas.toJSON()));
+    page.history.stack.push(JSON.stringify(fabricCanvas.toJSON(CUSTOM_PROPS)));
     page.history.index = 0;
   }
 
   applyToolToCanvas();
   updateUndoRedoButtons();
   renderSidebar();
+
+  if(!userAdjustedZoom){
+    zoomLevel = computeFitZoom();
+  }
   applyZoom();
 }
 
@@ -1356,7 +1436,7 @@ function scheduleHistoryPush(){
   historyTimer = setTimeout(() => {
     const page = pages.find(p => p.id === currentPageId);
     if(!page) return;
-    const json = JSON.stringify(fabricCanvas.toJSON());
+    const json = JSON.stringify(fabricCanvas.toJSON(CUSTOM_PROPS));
     if(page.history.stack[page.history.index] === json) return;
     page.history.stack = page.history.stack.slice(0, page.history.index + 1);
     page.history.stack.push(json);
@@ -1423,16 +1503,14 @@ async function rotatePage(id, delta){
   if(!page) return;
 
   if(id === currentPageId){
-    page.annotations = fabricCanvas.toJSON();
+    page.annotations = fabricCanvas.toJSON(CUSTOM_PROPS);
   }
-
-  const oldW = fabricCanvas && id === currentPageId ? fabricCanvas.getWidth() : null;
-  const oldH = fabricCanvas && id === currentPageId ? fabricCanvas.getHeight() : null;
 
   const bgBefore = await getBackgroundCanvas(page, S);
   const w = bgBefore.width, h = bgBefore.height;
 
   page.rotation = (page.rotation + delta) % 360;
+  page.textItems = null; // recompute text-hit boxes for the new orientation
 
   if(page.annotations){
     page.annotations = rotateAnnotationsJSON(page.annotations, w, h, delta);
@@ -1473,13 +1551,14 @@ document.getElementById('deletePageBtn').addEventListener('click', () => {
 
 document.getElementById('duplicatePageBtn').addEventListener('click', async () => {
   const idx = pages.findIndex(p => p.id === currentPageId);
+  if(idx === -1) return;
   const src = pages[idx];
-  if(id === currentPageId) src.annotations = fabricCanvas.toJSON();
-  else if(currentPageId) src.annotations = src.annotations;
+  src.annotations = fabricCanvas.toJSON(CUSTOM_PROPS);
 
   const clone = makePageEntry({ type: src.type, srcIndex: src.srcIndex });
   clone.rotation = src.rotation;
   clone.annotations = src.annotations ? JSON.parse(JSON.stringify(src.annotations)) : null;
+  clone.textItems = src.textItems ? JSON.parse(JSON.stringify(src.textItems)) : null;
 
   pages.splice(idx + 1, 0, clone);
   await renderThumbFor(clone);
@@ -1489,7 +1568,7 @@ document.getElementById('duplicatePageBtn').addEventListener('click', async () =
 
 document.getElementById('pageNumbersBtn').addEventListener('click', async () => {
   if(currentPageId){
-    pages.find(p => p.id === currentPageId).annotations = fabricCanvas.toJSON();
+    pages.find(p => p.id === currentPageId).annotations = fabricCanvas.toJSON(CUSTOM_PROPS);
   }
 
   for(let i = 0; i < pages.length; i++){
@@ -1498,17 +1577,23 @@ document.getElementById('pageNumbersBtn').addEventListener('click', async () => 
     const staticCanvas = new fabric.StaticCanvas(null, { width: bg.width, height: bg.height });
     await loadFromJSONAsync(staticCanvas, page.annotations);
 
+    // remove any page-number label added by a previous click, so they don't stack up
+    staticCanvas.getObjects().forEach(o => {
+      if(o.pdfboonPageNum) staticCanvas.remove(o);
+    });
+
     const label = new fabric.Text(`Page ${i + 1} of ${pages.length}`, {
       fontSize: 16,
       fill: '#3d5578',
       fontFamily: 'Inter, sans-serif',
       left: bg.width / 2,
       top: bg.height - 30,
-      originX: 'center'
+      originX: 'center',
+      pdfboonPageNum: true
     });
     staticCanvas.add(label);
 
-    page.annotations = staticCanvas.toJSON();
+    page.annotations = staticCanvas.toJSON(CUSTOM_PROPS);
   }
 
   await switchPage(currentPageId);
@@ -1555,9 +1640,22 @@ function hexToRgba(hex, alpha){
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-/* ---- Shape drawing (rect / ellipse / line / arrow / whiteout) ---- */
+/* ---- Unified pointer handling: text / shapes / whiteout ---- */
 
 function onCanvasMouseDown(opt){
+  if(currentTool === 'text'){
+    if(opt.target) return; // already-editable object under the cursor: let it be
+    const p = fabricCanvas.getPointer(opt.e);
+    const page = pages.find(pg => pg.id === currentPageId);
+    const hit = page ? findTextItemAt(page, p.x, p.y) : null;
+    if(hit){
+      editExistingText(hit);
+    } else {
+      addNewText(p.x, p.y);
+    }
+    return;
+  }
+
   const shapeTools = ['rect', 'ellipse', 'line', 'arrow', 'whiteout'];
   if(!shapeTools.includes(currentTool)) return;
   if(opt.target) return;
@@ -1571,7 +1669,8 @@ function onCanvasMouseDown(opt){
       fill: currentTool === 'whiteout' ? '#ffffff' : 'transparent',
       stroke: currentTool === 'whiteout' ? '' : currentColor,
       strokeWidth: currentTool === 'whiteout' ? 0 : strokeWidthVal,
-      opacity: currentTool === 'whiteout' ? 1 : 1
+      opacity: 1,
+      pdfboonWhiteout: currentTool === 'whiteout'
     });
   } else if(currentTool === 'ellipse'){
     shapeInProgress = new fabric.Ellipse({
@@ -1638,12 +1737,10 @@ function buildArrow(x1, y1, x2, y2, color, width){
   return new fabric.Group([line, head]);
 }
 
-/* ---- Text tool ---- */
+/* ---- Text tool: add new text, or edit text already present in the PDF ---- */
 
-fabric?.Canvas && document.addEventListener('DOMContentLoaded', () => {});
-
-function addTextAt(x, y){
-  const text = new fabric.IText('Double-click to edit', {
+function addNewText(x, y){
+  const text = new fabric.IText('Type here', {
     left: x, top: y,
     fontSize: fontSizeVal,
     fill: currentColor,
@@ -1653,21 +1750,39 @@ function addTextAt(x, y){
   });
   fabricCanvas.add(text);
   fabricCanvas.setActiveObject(text);
+  text.enterEditing();
+  text.selectAll();
 }
 
-/* hook text placement into mouse:down as well */
-const originalMouseDown = onCanvasMouseDown;
-function onCanvasMouseDownWrapper(opt){
-  if(currentTool === 'text' && !opt.target){
-    const p = fabricCanvas.getPointer(opt.e);
-    addTextAt(p.x, p.y);
-    return;
-  }
-  originalMouseDown(opt);
-}
+function editExistingText(item){
+  // Cover the original (rasterised) text with a white patch, then place an
+  // editable copy of the same text on top so it can be changed in place.
+  const padX = item.fontHeight * 0.25;
+  const whiteRect = new fabric.Rect({
+    left: item.x - padX * 0.5,
+    top: item.y - item.fontHeight * 1.05,
+    width: item.width + padX,
+    height: item.fontHeight * 1.35,
+    fill: '#ffffff',
+    stroke: '',
+    pdfboonWhiteout: true
+  });
+  fabricCanvas.add(whiteRect);
 
-/* re-bind mouse:down to include text handling (overrides earlier binding) */
-fabricCanvas?.off && fabricCanvas.off('mouse:down');
+  const text = new fabric.IText(item.str, {
+    left: item.x,
+    top: item.y - item.fontHeight,
+    fontSize: item.fontHeight,
+    fill: currentColor,
+    fontFamily: 'Inter, sans-serif',
+    fontWeight: isBold ? 'bold' : 'normal',
+    fontStyle: isItalic ? 'italic' : 'normal'
+  });
+  fabricCanvas.add(text);
+  fabricCanvas.setActiveObject(text);
+  text.enterEditing();
+  text.selectAll();
+}
 
 /* ================= IMAGE / STAMP ================= */
 
@@ -1844,10 +1959,22 @@ function applyStylePropToSelection(prop, value){
   scheduleHistoryPush();
 }
 
-/* ================= ZOOM ================= */
+/* ================= ZOOM / RESPONSIVE CANVAS ================= */
 
 const canvasWrap = document.getElementById('canvasWrap');
+const canvasStageEl = document.getElementById('canvasStage');
 const zoomLabel = document.getElementById('zoomLabel');
+
+function computeFitZoom(){
+  if(!fabricCanvas || !canvasStageEl) return 1;
+  const styles = getComputedStyle(canvasStageEl);
+  const padX = parseFloat(styles.paddingLeft || 0) + parseFloat(styles.paddingRight || 0);
+  const availableWidth = canvasStageEl.clientWidth - padX;
+  const canvasWidth = fabricCanvas.getWidth();
+  if(!canvasWidth || availableWidth <= 0) return 1;
+  const fit = availableWidth / canvasWidth;
+  return Math.max(0.2, Math.min(1, fit));
+}
 
 function applyZoom(){
   canvasWrap.style.transform = `scale(${zoomLevel})`;
@@ -1855,16 +1982,29 @@ function applyZoom(){
 }
 
 document.getElementById('zoomInBtn').addEventListener('click', () => {
-  zoomLevel = Math.min(zoomLevel + 0.1, 2.5);
+  zoomLevel = Math.min(zoomLevel + 0.1, 3);
+  userAdjustedZoom = true;
   applyZoom();
 });
 document.getElementById('zoomOutBtn').addEventListener('click', () => {
-  zoomLevel = Math.max(zoomLevel - 0.1, 0.3);
+  zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
+  userAdjustedZoom = true;
   applyZoom();
 });
 document.getElementById('zoomResetBtn').addEventListener('click', () => {
-  zoomLevel = 1;
+  zoomLevel = computeFitZoom();
+  userAdjustedZoom = false;
   applyZoom();
+});
+
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if(!userAdjustedZoom && fabricCanvas){
+      zoomLevel = computeFitZoom();
+      applyZoom();
+    }
+  }, 150);
 });
 
 /* ================= EXPORT ================= */
@@ -1889,7 +2029,7 @@ exportBtn.addEventListener('click', async () => {
   results.style.display = 'none';
 
   if(currentPageId){
-    pages.find(p => p.id === currentPageId).annotations = fabricCanvas.toJSON();
+    pages.find(p => p.id === currentPageId).annotations = fabricCanvas.toJSON(CUSTOM_PROPS);
   }
 
   exportBtn.disabled = true;
