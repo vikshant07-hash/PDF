@@ -1304,10 +1304,22 @@ async function generatePDF() {
           const textWidth = pdf.getTextWidth(textString);
           const rightX = pageWidth - margin;
 
-          if (userLogoData) {
-            const logoSize = 4.5, gap = 2;
-            const totalWidth = logoSize + gap + textWidth;
-            const logoX = rightX - totalWidth;
+          // नया और सुधरा हुआ कोड (Updated Code)
+if (userLogoData) {
+  const logoSize = 4.5;
+  const gap = 0.8; // <--- gap को 2 से घटाकर 0.8 या 1 कर दें (गैप कम हो जाएगा)
+  const totalWidth = logoSize + gap + textWidth;
+  const logoX = rightX - totalWidth;
+
+  try {
+    // Y-axis की एलाइनमेंट बेहतर करने के लिए थोड़ा एडजस्ट किया गया है
+    pdf.addImage(userLogoData, "PNG", logoX, pageHeight - 8.5, logoSize, logoSize);
+  } catch (err) {}
+  
+  // Image के तुरंत बाद Text की नई Position
+  pdf.text(textString, logoX + logoSize + gap, pageHeight - 5);
+}
+
 
             try {
               pdf.addImage(userLogoData, "PNG", logoX, pageHeight - 8.5, logoSize, logoSize);
