@@ -129,7 +129,6 @@
       outline: 3px dashed #0d6efd;
     }
 
-    /* Image Preview Modal */
     #imageModal {
       position: fixed;
       inset: 0;
@@ -169,8 +168,9 @@
 
   <h2>PDFBoon Mobile Scanner</h2>
   
-  <label for="cameraInput" class="btn">📸 Photo Select Karein</label>
-  <input type="file" id="cameraInput" accept="image/*" multiple>
+  <!-- Direct Camera Input -->
+  <label for="cameraInput" class="btn">📸 Photo Click Karein</label>
+  <input type="file" id="cameraInput" accept="image/*" capture="environment">
 
   <button id="createPdfBtn" class="btn btn-create">📄 Create PDF</button>
 
@@ -181,19 +181,16 @@
     </div>
   </div>
 
-  <!-- Unique Preview Container -->
   <div id="preview-container"></div>
 
-  <!-- Modal -->
   <div id="imageModal">
     <button id="closePreview">✕</button>
     <img id="previewImage" alt="Preview">
   </div>
 
   <script>
-    // Logo Loading
     const pdfboonLogo = new Image();
-    pdfboonLogo.src = "images/logo.png"; // Local logo path
+    pdfboonLogo.src = "images/logo.png";
 
     let images = [];
 
@@ -209,7 +206,7 @@
 
     function handleFiles(files) {
       const filesArray = Array.from(files);
-      let loaded = 0;
+      if (filesArray.length === 0) return;
 
       filesArray.forEach(file => {
         if (!file.type.startsWith("image/")) return;
@@ -222,10 +219,9 @@
             name: file.name
           });
           
-          loaded++;
-          if (loaded === filesArray.length) {
-            renderPreview();
-          }
+          renderPreview();
+          // Reset input value to allow taking another photo continuously
+          cameraInput.value = "";
         }
         reader.readAsDataURL(file);
       });
@@ -270,12 +266,10 @@
       renderPreview();
     }
 
-    // Modal Close
     document.getElementById("closePreview").onclick = () => {
       modal.classList.remove("active");
     };
 
-    // Drag & Drop Functionality
     let dragIndex = null;
 
     function enableDrag() {
@@ -284,14 +278,12 @@
       cards.forEach((card, index) => {
         card.draggable = true;
 
-        // Image Preview Modal on Click
         card.addEventListener("click", e => {
           if (e.target.classList.contains("delete-btn")) return;
           previewImage.src = images[index].src;
           modal.classList.add("active");
         });
 
-        // Drag Events
         card.addEventListener("dragstart", () => {
           dragIndex = index;
           card.classList.add("dragging");
@@ -322,7 +314,6 @@
       });
     }
 
-    // PDF Generator
     document.getElementById("createPdfBtn").addEventListener("click", generatePDF);
 
     async function generatePDF() {
@@ -343,7 +334,6 @@
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
 
-        // Logo wait promise
         if (!pdfboonLogo.complete) {
           await new Promise(resolve => {
             pdfboonLogo.onload = resolve;
@@ -365,7 +355,7 @@
 
           const margin = 10;
           const maxWidth = pageWidth - (margin * 2);
-          const maxHeight = pageHeight - 30; // Leave space for footer
+          const maxHeight = pageHeight - 30;
 
           const imgWidth = img.width;
           const imgHeight = img.height;
@@ -392,7 +382,6 @@
             "FAST"
           );
 
-          // --- Footer & Branding ---
           pdf.setDrawColor(220);
           pdf.line(10, pageHeight - 15, pageWidth - 10, pageHeight - 15);
 
@@ -401,16 +390,14 @@
           pdf.setTextColor(120);
           pdf.text(`Page ${i + 1} of ${images.length}`, 10, pageHeight - 8);
 
-          // Add Logo if loaded correctly
           try {
             if(pdfboonLogo.width > 0) {
               pdf.addImage(pdfboonLogo, "PNG", pageWidth - 45, pageHeight - 13, 6, 6);
             }
           } catch(e) {
-            console.log("Logo not loaded or unavailable");
+            console.log("Logo unavailable");
           }
 
-          // Watermark / Brand Name
           pdf.setFontSize(9);
           pdf.setTextColor(130);
           pdf.text("Scanned by PDFBoon", pageWidth - 10, pageHeight - 8, { align: "right" });
