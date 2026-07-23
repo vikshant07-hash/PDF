@@ -3,52 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDFBoon Pro Scanner</title>
-  <!-- jsPDF Library -->
+  <title>PDFBoon Scanner Pro</title>
+  
+  <!-- External Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- OpenCV.js for Advanced Image Processing & Edge Detection -->
+  <script async src="https://docs.opencv.org/4.7.0/opencv.js" id="opencv-script"></script>
+  <!-- SortableJS for Drag-and-Drop Page Reordering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
   <style>
     :root {
       --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --bg-color: #f8fafc;
+      --primary-dark: #1d4ed8;
+      --bg-color: #f1f5f9;
       --card-bg: #ffffff;
       --text-main: #0f172a;
+      --text-muted: #64748b;
       --border-color: #e2e8f0;
+      --danger: #ef4444;
+      --success: #10b981;
     }
 
+    * { box-sizing: border-box; }
+
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
       margin: 0;
-      padding: 20px;
+      padding: 15px;
     }
 
-    .container {
-      max-width: 900px;
+    .app-container {
+      max-width: 960px;
       margin: 0 auto;
     }
 
     header {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
-    header h2 {
+    header h1 {
       margin: 0;
       color: var(--primary);
-      font-size: 28px;
-      font-weight: 700;
+      font-size: 26px;
+      font-weight: 800;
     }
 
-    .toolbar {
+    .main-toolbar {
       background: var(--card-bg);
-      padding: 15px 20px;
+      padding: 16px;
       border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 12px;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
@@ -56,29 +67,30 @@
 
     .btn {
       background-color: var(--primary);
-      color: white;
+      color: #fff;
       padding: 10px 18px;
       border: none;
       border-radius: 8px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s;
+      transition: background 0.2s;
     }
 
-    .btn:hover { background-color: var(--primary-hover); }
-    .btn-success { background-color: #10b981; }
+    .btn:hover { background-color: var(--primary-dark); }
+    .btn-success { background-color: var(--success); }
     .btn-success:hover { background-color: #059669; }
     .btn-secondary { background-color: #64748b; }
+    .btn-secondary:hover { background-color: #475569; }
 
     input[type="file"] { display: none; }
 
     .settings-panel {
       background: var(--card-bg);
-      padding: 15px 20px;
+      padding: 16px;
       border-radius: 12px;
       border: 1px solid var(--border-color);
       display: grid;
@@ -90,29 +102,38 @@
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      text-align: left;
+      gap: 6px;
     }
 
     .form-group label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
     }
 
     .form-control {
-      padding: 8px 12px;
+      padding: 9px 12px;
       border-radius: 6px;
       border: 1px solid var(--border-color);
       font-size: 14px;
       outline: none;
     }
 
+    /* Document Pages Grid */
+    .pages-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
     #preview-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 15px;
-      margin-top: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      min-height: 150px;
     }
 
     .scan-card {
@@ -120,17 +141,15 @@
       border-radius: 10px;
       overflow: hidden;
       background: var(--card-bg);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       border: 1px solid var(--border-color);
       cursor: grab;
       transition: transform 0.2s;
     }
 
-    .scan-card:hover { transform: translateY(-3px); }
-
     .scan-card img {
       width: 100%;
-      height: 160px;
+      height: 180px;
       object-fit: cover;
       display: block;
     }
@@ -139,10 +158,10 @@
       position: absolute;
       top: 6px;
       left: 6px;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(15, 23, 42, 0.75);
       color: white;
       padding: 2px 8px;
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 11px;
       font-weight: 600;
     }
@@ -156,11 +175,11 @@
     }
 
     .icon-btn {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border: none;
       border-radius: 50%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(15, 23, 42, 0.75);
       color: white;
       font-size: 12px;
       cursor: pointer;
@@ -169,34 +188,35 @@
       justify-content: center;
     }
 
-    .icon-btn.delete { background: rgba(239, 68, 68, 0.8); }
+    .icon-btn.delete { background: rgba(239, 68, 68, 0.85); }
 
+    /* Modal Layout */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.85);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      padding: 10px;
+      padding: 15px;
     }
 
     .modal.active { display: flex; }
 
     .modal-content {
       background: var(--card-bg);
-      border-radius: 12px;
-      max-width: 800px;
+      border-radius: 14px;
+      max-width: 900px;
       width: 100%;
-      max-height: 90vh;
+      max-height: 92vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
     .modal-header {
-      padding: 12px 20px;
+      padding: 14px 20px;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
@@ -204,73 +224,82 @@
     }
 
     .modal-body {
-      padding: 15px;
+      padding: 20px;
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
+      gap: 20px;
       overflow-y: auto;
+      justify-content: center;
     }
 
-    .edit-canvas-container {
-      max-width: 450px;
-      max-height: 400px;
+    /* Crop Canvas Viewport */
+    .canvas-wrapper {
+      position: relative;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f1f5f9;
-      border-radius: 8px;
-      overflow: hidden;
+      max-width: 480px;
+      max-height: 450px;
     }
 
-    #editCanvas {
+    #cropCanvas {
       max-width: 100%;
-      max-height: 380px;
-      object-fit: contain;
+      max-height: 100%;
+      display: block;
     }
 
-    .edit-controls {
+    .modal-sidebar {
       flex: 1;
-      min-width: 220px;
+      min-width: 260px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      text-align: left;
+      gap: 16px;
     }
 
     .modal-footer {
-      padding: 12px 20px;
+      padding: 14px 20px;
       border-top: 1px solid var(--border-color);
       display: flex;
       justify-content: flex-end;
       gap: 10px;
     }
+
+    .status-msg {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="app-container">
     <header>
-      <h2>PDFBoon Mobile Scanner Pro</h2>
+      <h1>PDFBoon Scanner Pro</h1>
     </header>
 
-    <div class="toolbar">
+    <div class="main-toolbar">
       <div>
-        <label for="cameraInput" class="btn">📸 Photo Click</label>
-        <input type="file" id="cameraInput" accept="image/*" capture="environment">
+        <label for="cameraInput" class="btn">
+          📷 Scan Document
+        </label>
+        <input type="file" id="cameraInput" accept="image/*" multiple>
       </div>
-      <button id="createPdfBtn" class="btn btn-success">📄 Create PDF</button>
+      <button id="createPdfBtn" class="btn btn-success">📄 Save PDF Document</button>
     </div>
 
     <div class="settings-panel">
       <div class="form-group">
-        <label>PDF Name</label>
-        <input type="text" id="pdfName" class="form-control" value="PDFBoon_Scan">
+        <label>Document Name</label>
+        <input type="text" id="pdfName" class="form-control" value="PDFBoon_Document">
       </div>
       <div class="form-group">
         <label>Page Size</label>
         <select id="pageSize" class="form-control">
-          <option value="a4">A4 Standard</option>
+          <option value="a4">A4 (Standard)</option>
           <option value="letter">Letter</option>
           <option value="legal">Legal</option>
         </select>
@@ -278,66 +307,77 @@
       <div class="form-group">
         <label>Margin</label>
         <select id="pageMargin" class="form-control">
-          <option value="0">None (Full Page)</option>
+          <option value="0">Zero Margin</option>
           <option value="5">Small (5mm)</option>
           <option value="10" selected>Normal (10mm)</option>
         </select>
       </div>
     </div>
 
-    <div style="text-align: left; margin-bottom: 10px; font-weight: 600; font-size: 14px;">
-      Total Scanned Pages: <span id="pageCount" style="color: var(--primary);">0</span>
+    <div class="pages-header">
+      <span>Scanned Pages (<span id="pageCount">0</span>)</span>
+      <span class="status-msg" id="opencvStatus">Loading OpenCV Smart Scanner Engine...</span>
     </div>
 
     <div id="preview-container"></div>
   </div>
 
+  <!-- Smart Crop & Filter Modal -->
   <div id="editModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 style="margin:0; font-size: 16px;">Edit & Enhance Scan</h3>
+        <h3 style="margin:0; font-size: 16px;">Crop & Adjust Document</h3>
         <button class="icon-btn" onclick="closeEditModal()">✕</button>
       </div>
       <div class="modal-body">
-        <div class="edit-canvas-container">
-          <canvas id="editCanvas"></canvas>
+        <div class="canvas-wrapper">
+          <canvas id="cropCanvas"></canvas>
         </div>
-        <div class="edit-controls">
+        
+        <div class="modal-sidebar">
           <div class="form-group">
-            <label>Scan Filter</label>
-            <select id="filterType" class="form-control" onchange="applyFilters()">
-              <option value="none">Original</option>
-              <option value="bw">B&W Document Filter</option>
+            <label>Auto Edge & Filters</label>
+            <select id="filterType" class="form-control" onchange="applyProcessing()">
+              <option value="magic">Magic Color (Auto Clean)</option>
+              <option value="bw">B&W Document (Sharp Text)</option>
               <option value="grayscale">Grayscale</option>
+              <option value="none">Original Image</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Brightness</label>
-            <input type="range" id="brightness" min="-100" max="100" value="0" class="form-control" oninput="applyFilters()">
+
+          <div style="display:flex; gap: 8px;">
+            <button class="btn btn-secondary" style="flex:1;" onclick="autoDetectCorners()">🎯 Auto Detect</button>
+            <button class="btn btn-secondary" style="flex:1;" onclick="rotateCurrentImg(90)">↻ Rotate</button>
           </div>
-          <div class="form-group">
-            <label>Contrast</label>
-            <input type="range" id="contrast" min="-100" max="100" value="0" class="form-control" oninput="applyFilters()">
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-secondary" style="flex:1;" onclick="rotateImage(-90)">↺ Left</button>
-            <button class="btn btn-secondary" style="flex:1;" onclick="rotateImage(90)">↻ Right</button>
-          </div>
+
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+            💡 <b>Tip:</b> Red corners ko drag karke document ki actual boundaries adjust karein.
+          </p>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-        <button class="btn btn-success" onclick="saveEdits()">Save & Apply</button>
+        <button class="btn btn-success" onclick="saveEdits()">Apply Crop & Save</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Load Custom Logo from images/logo.png and convert to DataURL
+    let cvReady = false;
+    let images = [];
+    let currentEditIndex = null;
     let userLogoData = null;
-    const customLogo = new Image();
-    customLogo.src = "images/logo.png"; // Aapka logo path
 
+    // Corner points for Warp Perspective
+    let corners = [
+      { x: 0, y: 0 }, { x: 0, y: 0 },
+      { x: 0, y: 0 }, { x: 0, y: 0 }
+    ];
+    let activeCorner = null;
+
+    // Load Logo for PDF Footer Watermark
+    const customLogo = new Image();
+    customLogo.src = "images/logo.png";
     customLogo.onload = function() {
       const canvas = document.createElement("canvas");
       canvas.width = customLogo.width;
@@ -347,16 +387,32 @@
       userLogoData = canvas.toDataURL("image/png");
     };
 
-    customLogo.onerror = function() {
-      console.warn("Custom Logo (images/logo.png) not found. Check image path.");
+    // Load OpenCV Status Indicator
+    document.getElementById('opencv-script').onload = () => {
+      cv['onRuntimeInitialized'] = () => {
+        cvReady = true;
+        document.getElementById('opencvStatus').innerText = "⚡ OpenCV Engine Ready";
+        document.getElementById('opencvStatus').style.color = "#10b981";
+      };
     };
 
-    let images = [];
-    let currentEditIndex = null;
+    // Drag-and-Drop Page Sorting
+    const previewContainer = document.getElementById("preview-container");
+    Sortable.create(previewContainer, {
+      animation: 150,
+      onEnd: function () {
+        const newImages = [];
+        const cards = previewContainer.querySelectorAll(".scan-card");
+        cards.forEach(card => {
+          const idx = parseInt(card.getAttribute("data-index"));
+          newImages.push(images[idx]);
+        });
+        images = newImages;
+        renderPreview();
+      }
+    });
 
     const cameraInput = document.getElementById("cameraInput");
-    const previewContainer = document.getElementById("preview-container");
-    const pageCount = document.getElementById("pageCount");
 
     cameraInput.addEventListener("change", (e) => {
       const files = Array.from(e.target.files);
@@ -366,20 +422,21 @@
         if (!file.type.startsWith("image/")) return;
         const reader = new FileReader();
         reader.onload = function(evt) {
-          images.push({
+          const imgObj = {
             id: Date.now() + Math.random(),
             originalSrc: evt.target.result,
-            currentSrc: evt.target.result,
-            filter: 'none',
-            brightness: 0,
-            contrast: 0,
-            rotation: 0
-          });
+            processedSrc: evt.target.result,
+            rotation: 0,
+            filter: 'magic'
+          };
+          images.push(imgObj);
           renderPreview();
-          cameraInput.value = "";
+          // Automatically open modal for the last added file
+          openEditModal(images.length - 1);
         };
         reader.readAsDataURL(file);
       });
+      cameraInput.value = "";
     });
 
     function renderPreview() {
@@ -387,9 +444,10 @@
       images.forEach((item, index) => {
         const card = document.createElement("div");
         card.className = "scan-card";
+        card.setAttribute("data-index", index);
 
         const img = document.createElement("img");
-        img.src = item.currentSrc;
+        img.src = item.processedSrc;
 
         const badge = document.createElement("div");
         badge.className = "page-badge";
@@ -416,11 +474,10 @@
         card.appendChild(actions);
 
         card.onclick = () => openEditModal(index);
-
         previewContainer.appendChild(card);
       });
 
-      pageCount.innerText = images.length;
+      document.getElementById("pageCount").innerText = images.length;
     }
 
     function deleteImage(index) {
@@ -428,111 +485,240 @@
       renderPreview();
     }
 
-    /* Image Editing Controls */
+    /* Modal & Canvas Editing Engine */
     const editModal = document.getElementById("editModal");
-    const editCanvas = document.getElementById("editCanvas");
-    const ctx = editCanvas.getContext("2d");
-    let tempImage = new Image();
+    const cropCanvas = document.getElementById("cropCanvas");
+    const ctx = cropCanvas.getContext("2d");
+    let workingImg = new Image();
 
     function openEditModal(index) {
       currentEditIndex = index;
       const item = images[index];
-
       document.getElementById("filterType").value = item.filter;
-      document.getElementById("brightness").value = item.brightness;
-      document.getElementById("contrast").value = item.contrast;
 
-      tempImage = new Image();
-      tempImage.onload = () => {
-        applyFilters();
+      workingImg = new Image();
+      workingImg.onload = () => {
+        cropCanvas.width = workingImg.width;
+        cropCanvas.height = workingImg.height;
+        autoDetectCorners();
         editModal.classList.add("active");
       };
-      tempImage.src = item.originalSrc;
+      workingImg.src = item.originalSrc;
     }
 
     function closeEditModal() {
       editModal.classList.remove("active");
     }
 
-    function rotateImage(deg) {
-      if (currentEditIndex === null) return;
+    function rotateCurrentImg(deg) {
       images[currentEditIndex].rotation = (images[currentEditIndex].rotation + deg) % 360;
-      applyFilters();
-    }
-
-    function applyFilters() {
-      if (currentEditIndex === null || !tempImage.src) return;
-
-      const filter = document.getElementById("filterType").value;
-      const brightness = parseInt(document.getElementById("brightness").value);
-      const contrast = parseInt(document.getElementById("contrast").value);
-      const rotation = images[currentEditIndex].rotation;
-
-      if (Math.abs(rotation) % 180 === 90) {
-        editCanvas.width = tempImage.height;
-        editCanvas.height = tempImage.width;
+      // Simple rotation re-render
+      const tempCanvas = document.createElement("canvas");
+      const tempCtx = tempCanvas.getContext("2d");
+      
+      if (Math.abs(images[currentEditIndex].rotation) % 180 === 90) {
+        tempCanvas.width = workingImg.height;
+        tempCanvas.height = workingImg.width;
       } else {
-        editCanvas.width = tempImage.width;
-        editCanvas.height = tempImage.height;
+        tempCanvas.width = workingImg.width;
+        tempCanvas.height = workingImg.height;
       }
 
-      ctx.clearRect(0, 0, editCanvas.width, editCanvas.height);
-      ctx.save();
+      tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+      tempCtx.rotate((images[currentEditIndex].rotation * Math.PI) / 180);
+      tempCtx.drawImage(workingImg, -workingImg.width / 2, -workingImg.height / 2);
 
-      ctx.translate(editCanvas.width / 2, editCanvas.height / 2);
-      ctx.rotate((rotation * Math.PI) / 180);
-      ctx.drawImage(tempImage, -tempImage.width / 2, -tempImage.height / 2);
-      ctx.restore();
-
-      let imgData = ctx.getImageData(0, 0, editCanvas.width, editCanvas.height);
-      let data = imgData.data;
-
-      const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-
-      for (let i = 0; i < data.length; i += 4) {
-        let r = data[i];
-        let g = data[i + 1];
-        let b = data[i + 2];
-
-        r = factor * (r - 128) + 128 + brightness;
-        g = factor * (g - 128) + 128 + brightness;
-        b = factor * (b - 128) + 128 + brightness;
-
-        if (filter === "grayscale") {
-          let avg = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-          r = g = b = avg;
-        } else if (filter === "bw") {
-          let avg = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-          let bw = avg > 128 ? 255 : 0;
-          r = g = b = bw;
-        }
-
-        data[i] = Math.min(255, Math.max(0, r));
-        data[i + 1] = Math.min(255, Math.max(0, g));
-        data[i + 2] = Math.min(255, Math.max(0, b));
-      }
-
-      ctx.putImageData(imgData, 0, 0);
+      workingImg.src = tempCanvas.toDataURL();
     }
 
+    /* OpenCV Auto Edge Detection */
+    function autoDetectCorners() {
+      const w = cropCanvas.width;
+      const h = cropCanvas.height;
+
+      if (cvReady) {
+        try {
+          let src = cv.imread(workingImg);
+          let gray = new cv.Mat();
+          cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+          cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
+          cv.Canny(gray, gray, 75, 200);
+
+          let contours = new cv.MatVector();
+          let hierarchy = new cv.Mat();
+          cv.findContours(gray, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
+
+          let maxArea = 0;
+          let approxContour = new cv.Mat();
+
+          for (let i = 0; i < contours.size(); ++i) {
+            let cnt = contours.get(i);
+            let area = cv.contourArea(cnt);
+            if (area > 1000) {
+              let peri = cv.arcLength(cnt, true);
+              let approx = new cv.Mat();
+              cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+
+              if (approx.rows === 4 && area > maxArea) {
+                maxArea = area;
+                approxContour = approx;
+              }
+            }
+          }
+
+          if (maxArea > 0) {
+            corners[0] = { x: approxContour.data32S[0], y: approxContour.data32S[1] };
+            corners[1] = { x: approxContour.data32S[2], y: approxContour.data32S[3] };
+            corners[2] = { x: approxContour.data32S[4], y: approxContour.data32S[5] };
+            corners[3] = { x: approxContour.data32S[6], y: approxContour.data32S[7] };
+          } else {
+            // Default Fallback Corners
+            corners = [{ x: w * 0.05, y: h * 0.05 }, { x: w * 0.95, y: h * 0.05 }, { x: w * 0.95, y: h * 0.95 }, { x: w * 0.05, y: h * 0.95 }];
+          }
+
+          src.delete(); gray.delete(); contours.delete(); hierarchy.delete();
+        } catch (e) {
+          corners = [{ x: w * 0.05, y: h * 0.05 }, { x: w * 0.95, y: h * 0.05 }, { x: w * 0.95, y: h * 0.95 }, { x: w * 0.05, y: h * 0.95 }];
+        }
+      } else {
+        corners = [{ x: w * 0.05, y: h * 0.05 }, { x: w * 0.95, y: h * 0.05 }, { x: w * 0.95, y: h * 0.95 }, { x: w * 0.05, y: h * 0.95 }];
+      }
+
+      drawCanvasOverlay();
+    }
+
+    function drawCanvasOverlay() {
+      ctx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+      ctx.drawImage(workingImg, 0, 0);
+
+      // Draw Crop Polygon Overlay
+      ctx.beginPath();
+      ctx.moveTo(corners[0].x, corners[0].y);
+      for (let i = 1; i < 4; i++) ctx.lineTo(corners[i].x, corners[i].y);
+      ctx.closePath();
+      ctx.strokeStyle = "#2563eb";
+      ctx.lineWidth = Math.max(3, cropCanvas.width / 200);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(37, 99, 235, 0.2)";
+      ctx.fill();
+
+      // Draw Control Handles (Corners)
+      corners.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, Math.max(10, cropCanvas.width / 80), 0, 2 * Math.PI);
+        ctx.fillStyle = "#ef4444";
+        ctx.fill();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+
+    /* Draggable Corners Logic */
+    function getCanvasCoords(e) {
+      const rect = cropCanvas.getBoundingClientRect();
+      const scaleX = cropCanvas.width / rect.width;
+      const scaleY = cropCanvas.height / rect.height;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    }
+
+    cropCanvas.addEventListener("mousedown", handleStart);
+    cropCanvas.addEventListener("touchstart", handleStart);
+
+    function handleStart(e) {
+      const pos = getCanvasCoords(e);
+      activeCorner = corners.findIndex(p => Math.hypot(p.x - pos.x, p.y - pos.y) < 40);
+    }
+
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("touchmove", handleMove);
+
+    function handleMove(e) {
+      if (activeCorner === null) return;
+      const pos = getCanvasCoords(e);
+      corners[activeCorner] = { x: Math.max(0, Math.min(cropCanvas.width, pos.x)), y: Math.max(0, Math.min(cropCanvas.height, pos.y)) };
+      drawCanvasOverlay();
+    }
+
+    window.addEventListener("mouseup", () => activeCorner = null);
+    window.addEventListener("touchend", () => activeCorner = null);
+
+    /* Perspective Warp & Document Filters */
     function saveEdits() {
       if (currentEditIndex === null) return;
-      const item = images[currentEditIndex];
-      item.filter = document.getElementById("filterType").value;
-      item.brightness = document.getElementById("brightness").value;
-      item.contrast = document.getElementById("contrast").value;
-      item.currentSrc = editCanvas.toDataURL("image/jpeg", 0.9);
+
+      const filter = document.getElementById("filterType").value;
+      images[currentEditIndex].filter = filter;
+
+      if (cvReady) {
+        // Perspective Transformation using OpenCV
+        let src = cv.imread(workingImg);
+        let dst = new cv.Mat();
+
+        let w1 = Math.hypot(corners[1].x - corners[0].x, corners[1].y - corners[0].y);
+        let w2 = Math.hypot(corners[2].x - corners[3].x, corners[2].y - corners[3].y);
+        let finalWidth = Math.max(w1, w2);
+
+        let h1 = Math.hypot(corners[3].y - corners[0].y, corners[3].x - corners[0].x);
+        let h2 = Math.hypot(corners[2].y - corners[1].y, corners[2].x - corners[1].x);
+        let finalHeight = Math.max(h1, h2);
+
+        let srcCoords = cv.matFromArray(4, 1, cv.CV_32FC2, [
+          corners[0].x, corners[0].y,
+          corners[1].x, corners[1].y,
+          corners[2].x, corners[2].y,
+          corners[3].x, corners[3].y
+        ]);
+
+        let dstCoords = cv.matFromArray(4, 1, cv.CV_32FC2, [
+          0, 0,
+          finalWidth, 0,
+          finalWidth, finalHeight,
+          0, finalHeight
+        ]);
+
+        let M = cv.getPerspectiveTransform(srcCoords, dstCoords);
+        let dsize = new cv.Size(finalWidth, finalHeight);
+        cv.warpPerspective(src, dst, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+
+        // Processing Document Enhancements
+        if (filter === "bw") {
+          cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
+          cv.adaptiveThreshold(dst, dst, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
+        } else if (filter === "grayscale") {
+          cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
+        } else if (filter === "magic") {
+          // Sharp Magic Color Enhancement
+          let lab = new cv.Mat();
+          cv.cvtColor(dst, lab, cv.COLOR_RGBA2RGB);
+          cv.addWeighted(lab, 1.2, lab, 0, -10, dst);
+          lab.delete();
+        }
+
+        let outCanvas = document.createElement("canvas");
+        cv.imshow(outCanvas, dst);
+        images[currentEditIndex].processedSrc = outCanvas.toDataURL("image/jpeg", 0.92);
+
+        src.delete(); dst.delete(); srcCoords.delete(); dstCoords.delete(); M.delete();
+      } else {
+        images[currentEditIndex].processedSrc = cropCanvas.toDataURL("image/jpeg", 0.92);
+      }
 
       renderPreview();
       closeEditModal();
     }
 
-    /* PDF Generator Logic */
+    /* PDF Document Export Engine */
     document.getElementById("createPdfBtn").addEventListener("click", generatePDF);
 
     async function generatePDF() {
       if (images.length === 0) {
-        alert("Pehle kam se kam ek photo add karein.");
+        alert("Kripya kam se kam ek document photo upload/scan karein.");
         return;
       }
 
@@ -555,56 +741,61 @@
           if (i > 0) pdf.addPage();
 
           const img = new Image();
-          img.src = images[i].currentSrc;
+          img.src = images[i].processedSrc;
 
           await new Promise(resolve => { img.onload = resolve; });
 
           const margin = marginSelect;
+          const footerSpace = 12; 
           const maxWidth = pageWidth - (margin * 2);
-          const maxHeight = pageHeight - (margin * 2) - 15;
+          const maxHeight = pageHeight - (margin * 2) - footerSpace;
 
-          const imgWidth = img.width;
-          const imgHeight = img.height;
-          const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
-
-          const renderWidth = imgWidth * ratio;
-          const renderHeight = imgHeight * ratio;
+          const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
+          const renderWidth = img.width * ratio;
+          const renderHeight = img.height * ratio;
 
           const x = (pageWidth - renderWidth) / 2;
           const y = margin + ((maxHeight - renderHeight) / 2);
 
-          pdf.addImage(images[i].currentSrc, "JPEG", x, y, renderWidth, renderHeight, undefined, "FAST");
+          pdf.addImage(images[i].processedSrc, "JPEG", x, y, renderWidth, renderHeight, undefined, "FAST");
 
-          // Footer Line & Watermark
+          // Footer Divider Line
           pdf.setDrawColor(226, 232, 240);
-          pdf.line(10, pageHeight - 12, pageWidth - 10, pageHeight - 12);
+          pdf.line(margin, pageHeight - 10, pageWidth - margin, pageHeight - 10);
 
+          // Page Number Text
           pdf.setFont("helvetica", "normal");
           pdf.setFontSize(8);
-          pdf.setTextColor(120);
-          pdf.text(`Page ${i + 1} of ${images.length}`, 10, pageHeight - 6);
-
-          // Render User Logo if Available
-          if (userLogoData) {
-            try {
-              pdf.addImage(userLogoData, "PNG", pageWidth - 48, pageHeight - 11, 6, 6);
-            } catch (err) {
-              console.log("Error adding logo image: ", err);
-            }
-          }
-
-          // Watermark Text
-          pdf.setFontSize(8);
           pdf.setTextColor(100);
-          pdf.text("Scanned by PDFBoon", pageWidth - 10, pageHeight - 6, { align: "right" });
+          pdf.text(`Page ${i + 1} of ${images.length}`, margin, pageHeight - 5);
+
+          // Footer Watermark Alignment (Logo + Compact Text)
+          const textString = "Scanned by PDFBoon";
+          const textWidth = pdf.getTextWidth(textString);
+          const rightX = pageWidth - margin;
+
+          if (userLogoData) {
+            const logoSize = 4.5; 
+            const gap = 2; // Perfectly balanced gap
+            const totalWidth = logoSize + gap + textWidth;
+            const logoX = rightX - totalWidth;
+
+            try {
+              pdf.addImage(userLogoData, "PNG", logoX, pageHeight - 8.5, logoSize, logoSize);
+            } catch (err) { console.log(err); }
+
+            pdf.text(textString, logoX + logoSize + gap, pageHeight - 5);
+          } else {
+            pdf.text(textString, rightX, pageHeight - 5, { align: "right" });
+          }
         }
 
-        let filename = document.getElementById("pdfName").value.trim() || "PDFBoon_Scan";
+        let filename = document.getElementById("pdfName").value.trim() || "PDFBoon_Document";
         pdf.save(filename + ".pdf");
 
       } catch (error) {
         console.error(error);
-        alert("PDF Generate karne me error aaya: " + error.message);
+        alert("PDF generate karne me issue aaya: " + error.message);
       }
     }
   </script>
