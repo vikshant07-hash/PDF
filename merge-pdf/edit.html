@@ -1284,12 +1284,19 @@ async function ensureTextItems(page){
         const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
         const scaleFactor = Math.hypot(tx[0], tx[1]) || 10;
         const fontHeight = Math.hypot(tx[2], tx[3]) || scaleFactor;
+        const styleInfo = (content.styles && content.styles[item.fontName]) || {};
+        const famRaw = (styleInfo.fontFamily || '').toString();
+        const famLower = famRaw.toLowerCase();
         return {
           str: item.str,
           x: tx[4],
           y: tx[5],
           fontHeight,
-          width: Math.max((item.width || 0) * scaleFactor, fontHeight * 0.6)
+          width: Math.max((item.width || 0) * scaleFactor, fontHeight * 0.6),
+          fontFamily: famRaw || '',
+          isSerif: /serif|times|georgia|garamond|cambria/.test(famLower) && !/sans/.test(famLower),
+          isBold: /bold|black|heavy/.test(famLower),
+          isItalic: /italic|oblique/.test(famLower)
         };
       });
   }catch(err){
@@ -1754,9 +1761,52 @@ function addNewText(x, y){
   text.selectAll();
 }
 
+/* Sample the average dark-pixel colour under a text item from the rendered
+   background, so a replaced word keeps the original ink colour. */
+function sampleTextColor(item){
+  try{
+    const bgImg = fabricCanvas.backgroundImage;
+    const bgEl = bgImg && bgImg._element;
+    if(!bgEl || !bgEl.width) return '#000000';
+
+    const x0 = Math.max(0, Math.floor(item.x));
+    const y0 = Math.max(0, Math.floor(item.y - item.fontHeight * 1.05));
+    const w = Math.max(1, Math.min(Math.ceil(item.width), bgEl.width - x0));
+    const h = Math.max(1, Math.min(Math.ceil(item.fontHeight * 1.3), bgEl.height - y0));
+    if(w <= 0 || h <= 0) return '#000000';
+
+    const tmp = document.createElement('canvas');
+    tmp.width = w; tmp.height = h;
+    const ctx = tmp.getContext('2d');
+    ctx.drawImage(bgEl, x0, y0, w, h, 0, 0, w, h);
+    const data = ctx.getImageData(0, 0, w, h).data;
+
+    let r = 0, g = 0, b = 0, count = 0;
+    for(let i = 0; i < data.length; i += 4){
+      const rr = data[i], gg = data[i + 1], bb = data[i + 2];
+      if((rr + gg + bb) / 3 < 200){ r += rr; g += gg; b += bb; count++; }
+    }
+    if(count === 0) return '#000000';
+    return `rgb(${Math.round(r / count)},${Math.round(g / count)},${Math.round(b / count)})`;
+  }catch(err){
+    return '#000000';
+  }
+}
+
+/* Best-effort CSS font-family fallback chain based on what pdf.js reported. */
+function resolveFontFamily(item){
+  const raw = (item.fontFamily || '').trim();
+  const base = item.isSerif ? 'Georgia, "Times New Roman", serif' : 'Inter, Arial, sans-serif';
+  if(!raw) return base;
+  // keep the PDF's own family name first, fall back to a sane generic
+  const cleaned = raw.replace(/["']/g, '');
+  return `"${cleaned}", ${base}`;
+}
+
 function editExistingText(item){
   // Cover the original (rasterised) text with a white patch, then place an
-  // editable copy of the same text on top so it can be changed in place.
+  // editable copy on top that matches the original font size, weight, style,
+  // colour and width as closely as possible.
   const padX = item.fontHeight * 0.25;
   const whiteRect = new fabric.Rect({
     left: item.x - padX * 0.5,
@@ -1769,19 +1819,37 @@ function editExistingText(item){
   });
   fabricCanvas.add(whiteRect);
 
-  const text = new fabric.IText(item.str, {
+  const matchedColor = sampleTextColor(item);
+  const matchedFamily = resolveFontFamily(item);
+
+  const text = new fabric.Textbox(item.str, {
     left: item.x,
     top: item.y - item.fontHeight,
+    width: Math.max(item.width, item.fontHeight),
     fontSize: item.fontHeight,
-    fill: currentColor,
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: isBold ? 'bold' : 'normal',
-    fontStyle: isItalic ? 'italic' : 'normal'
+    fill: matchedColor,
+    fontFamily: matchedFamily,
+    fontWeight: item.isBold ? 'bold' : 'normal',
+    fontStyle: item.isItalic ? 'italic' : 'normal',
+    splitByGrapheme: false
   });
   fabricCanvas.add(text);
   fabricCanvas.setActiveObject(text);
   text.enterEditing();
   text.selectAll();
+
+  // keep the colour/font/size fields in the property bar in sync with what we detected
+  currentColor = matchedColor;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  document.getElementById('colorNative').value = rgbToHex(matchedColor);
+  document.getElementById('fontSize').value = Math.round(item.fontHeight);
+  fontSizeVal = item.fontHeight;
+}
+
+function rgbToHex(rgb){
+  const m = rgb.match(/\d+/g);
+  if(!m) return '#000000';
+  return '#' + m.slice(0, 3).map(n => (+n).toString(16).padStart(2, '0')).join('');
 }
 
 /* ================= IMAGE / STAMP ================= */
