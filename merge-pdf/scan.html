@@ -3,262 +3,424 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDFBoon Scanner</title>
+  <title>PDFBoon Pro Scanner</title>
   <!-- jsPDF Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --border-color: #e2e8f0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
-      background-color: #f4f6f9;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
       margin: 0;
+      padding: 20px;
     }
-    h2 { color: #333; }
-    .btn {
-      background-color: #007bff;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin: 10px 5px;
-      display: inline-block;
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
     }
-    .btn-create {
-      background-color: #28a745;
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
     }
-    input[type="file"] {
-      display: none;
+
+    header h2 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 28px;
+      font-weight: 700;
     }
-    
-    .top-controls {
+
+    /* Action Toolbar */
+    .toolbar {
+      background: var(--card-bg);
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
       display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
       justify-content: space-between;
       align-items: center;
-      margin: 20px auto;
-      max-width: 700px;
-      gap: 10px;
-      flex-wrap: wrap;
+      margin-bottom: 20px;
     }
 
-    #pdfName {
-      flex: 1;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    .counter {
-      background: #0d6efd;
+    .btn {
+      background-color: var(--primary);
       color: white;
-      padding: 10px 15px;
+      padding: 10px 18px;
+      border: none;
       border-radius: 8px;
-      font-weight: bold;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
     }
 
+    .btn:hover { background-color: var(--primary-hover); }
+    .btn-success { background-color: #10b981; }
+    .btn-success:hover { background-color: #059669; }
+    .btn-danger { background-color: #ef4444; }
+    .btn-secondary { background-color: #64748b; }
+
+    input[type="file"] { display: none; }
+
+    /* PDF Settings Panel */
+    .settings-panel {
+      background: var(--card-bg);
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      text-align: left;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .form-control {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-control:focus { border-color: var(--primary); }
+
+    /* Preview Grid */
     #preview-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 15px;
-      margin-top: 25px;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
+      margin-top: 10px;
     }
 
     .scan-card {
       position: relative;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      background: white;
-      box-shadow: 0 5px 15px rgba(0,0,0,.12);
-      transition: .3s;
+      background: var(--card-bg);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
       cursor: grab;
-      user-select: none;
+      transition: transform 0.2s;
     }
 
-    .scan-card:hover {
-      transform: translateY(-5px);
-    }
+    .scan-card:hover { transform: translateY(-3px); }
 
     .scan-card img {
       width: 100%;
-      height: 180px;
+      height: 160px;
       object-fit: cover;
       display: block;
     }
 
     .page-badge {
       position: absolute;
-      top: 8px;
-      left: 8px;
-      background: #007bff;
+      top: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.6);
       color: white;
-      padding: 4px 8px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
     }
 
-    .delete-btn {
+    .card-actions {
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 28px;
-      height: 28px;
+      top: 6px;
+      right: 6px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      width: 26px;
+      height: 26px;
       border: none;
       border-radius: 50%;
-      background: #ff3b30;
+      background: rgba(0,0,0,0.6);
       color: white;
-      font-size: 16px;
+      font-size: 12px;
       cursor: pointer;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
     }
 
-    .scan-card.dragging {
-      opacity: .5;
-      transform: scale(.96);
-    }
+    .icon-btn.delete { background: rgba(239, 68, 68, 0.8); }
 
-    .scan-card.over {
-      outline: 3px dashed #0d6efd;
-    }
-
-    #imageModal {
+    /* Modal Styling */
+    .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.85);
+      background: rgba(15, 23, 42, 0.8);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
+      z-index: 1000;
+      padding: 10px;
+      backdrop-filter: blur(4px);
     }
 
-    #imageModal.active {
+    .modal.active { display: flex; }
+
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
       display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    #imageModal img {
-      width: 95%;
-      max-width: 900px;
-      max-height: 92vh;
+    .modal-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .edit-canvas-container {
+      max-width: 450px;
+      max-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f5f9;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #editCanvas {
+      max-width: 100%;
+      max-height: 380px;
       object-fit: contain;
     }
 
-    #closePreview {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 42px;
-      height: 42px;
-      border: none;
-      border-radius: 50%;
-      background: white;
-      font-size: 20px;
-      cursor: pointer;
+    .edit-controls {
+      flex: 1;
+      min-width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
     }
   </style>
 </head>
 <body>
 
-  <h2>PDFBoon Mobile Scanner</h2>
-  
-  <!-- Direct Camera Input -->
-  <label for="cameraInput" class="btn">📸 Photo Click Karein</label>
-  <input type="file" id="cameraInput" accept="image/*" capture="environment">
+  <div class="container">
+    <header>
+      <h2>PDFBoon Mobile Scanner Pro</h2>
+    </header>
 
-  <button id="createPdfBtn" class="btn btn-create">📄 Create PDF</button>
-
-  <div class="top-controls">
-    <input type="text" id="pdfName" placeholder="Enter PDF Name" value="PDFBoon_Scan">
-    <div class="counter">
-      <span id="pageCount">0</span> Pages Selected
+    <!-- Top Action Toolbar -->
+    <div class="toolbar">
+      <div>
+        <label for="cameraInput" class="btn">📸 Click Picture</label>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment">
+      </div>
+      <button id="createPdfBtn" class="btn btn-success">📄 Create PDF</button>
     </div>
+
+    <!-- PDF Page & Margin Settings -->
+    <div class="settings-panel">
+      <div class="form-group">
+        <label>PDF Name</label>
+        <input type="text" id="pdfName" class="form-control" value="PDFBoon_Scan">
+      </div>
+      <div class="form-group">
+        <label>Page Size</label>
+        <select id="pageSize" class="form-control">
+          <option value="a4">A4 Standard</option>
+          <option value="letter">Letter</option>
+          <option value="legal">Legal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Margin</label>
+        <select id="pageMargin" class="form-control">
+          <option value="0">None (Full Page)</option>
+          <option value="5">Small (5mm)</option>
+          <option value="10" selected>Normal (10mm)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Scanned Pages Count & Preview Grid -->
+    <div style="text-align: left; margin-bottom: 10px; font-weight: 600; font-size: 14px;">
+      Total Scanned Pages: <span id="pageCount" style="color: var(--primary);">0</span>
+    </div>
+
+    <div id="preview-container"></div>
   </div>
 
-  <div id="preview-container"></div>
-
-  <div id="imageModal">
-    <button id="closePreview">✕</button>
-    <img id="previewImage" alt="Preview">
+  <!-- Image Editing & Filter Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="margin:0; font-size: 16px;">Edit & Enhance Scan</h3>
+        <button class="icon-btn" onclick="closeEditModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="edit-canvas-container">
+          <canvas id="editCanvas"></canvas>
+        </div>
+        <div class="edit-controls">
+          <div class="form-group">
+            <label>Scan Filter</label>
+            <select id="filterType" class="form-control" onchange="applyFilters()">
+              <option value="none">Original</option>
+              <option value="bw">B&W Document Filter</option>
+              <option value="grayscale">Grayscale</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Brightness</label>
+            <input type="range" id="brightness" min="-100" max="100" value="0" class="form-control" oninput="applyFilters()">
+          </div>
+          <div class="form-group">
+            <label>Contrast</label>
+            <input type="range" id="contrast" min="-100" max="100" value="0" class="form-control" oninput="applyFilters()">
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" style="flex:1;" onclick="rotateImage(-90)">↺ Left</button>
+            <button class="btn btn-secondary" style="flex:1;" onclick="rotateImage(90)">↻ Right</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-success" onclick="saveEdits()">Save & Apply</button>
+      </div>
+    </div>
   </div>
 
   <script>
     const pdfboonLogo = new Image();
     pdfboonLogo.src = "images/logo.png";
 
-    let images = [];
+    let images = []; // Holds { id, originalSrc, currentSrc, filter, brightness, contrast, rotation }
+    let currentEditIndex = null;
 
     const cameraInput = document.getElementById("cameraInput");
     const previewContainer = document.getElementById("preview-container");
     const pageCount = document.getElementById("pageCount");
-    const modal = document.getElementById("imageModal");
-    const previewImage = document.getElementById("previewImage");
 
     cameraInput.addEventListener("change", (e) => {
-      handleFiles(e.target.files);
-    });
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
 
-    function handleFiles(files) {
-      const filesArray = Array.from(files);
-      if (filesArray.length === 0) return;
-
-      filesArray.forEach(file => {
+      files.forEach(file => {
         if (!file.type.startsWith("image/")) return;
-
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function(evt) {
           images.push({
             id: Date.now() + Math.random(),
-            src: e.target.result,
-            name: file.name
+            originalSrc: evt.target.result,
+            currentSrc: evt.target.result,
+            filter: 'none',
+            brightness: 0,
+            contrast: 0,
+            rotation: 0
           });
-          
           renderPreview();
-          // Reset input value to allow taking another photo continuously
           cameraInput.value = "";
-        }
+        };
         reader.readAsDataURL(file);
       });
-    }
+    });
 
     function renderPreview() {
       previewContainer.innerHTML = "";
-
       images.forEach((item, index) => {
         const card = document.createElement("div");
         card.className = "scan-card";
-        card.dataset.index = index;
 
         const img = document.createElement("img");
-        img.src = item.src;
-        img.draggable = false;
+        img.src = item.currentSrc;
 
         const badge = document.createElement("div");
         badge.className = "page-badge";
         badge.innerText = index + 1;
 
-        const remove = document.createElement("button");
-        remove.className = "delete-btn";
-        remove.innerText = "✕";
-        remove.onclick = function(e) {
-          e.stopPropagation();
-          deleteImage(index);
-        };
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+        
+        const editBtn = document.createElement("button");
+        editBtn.className = "icon-btn";
+        editBtn.innerHTML = "✏️";
+        editBtn.onclick = (e) => { e.stopPropagation(); openEditModal(index); };
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "icon-btn delete";
+        delBtn.innerHTML = "✕";
+        delBtn.onclick = (e) => { e.stopPropagation(); deleteImage(index); };
+
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
 
         card.appendChild(img);
         card.appendChild(badge);
-        card.appendChild(remove);
+        card.appendChild(actions);
+
+        // Click to edit directly
+        card.onclick = () => openEditModal(index);
+
         previewContainer.appendChild(card);
       });
 
       pageCount.innerText = images.length;
-      enableDrag();
     }
 
     function deleteImage(index) {
@@ -266,152 +428,180 @@
       renderPreview();
     }
 
-    document.getElementById("closePreview").onclick = () => {
-      modal.classList.remove("active");
-    };
+    /* -------------------------------------------
+       Image Processing / Filter Modal Logic
+    ------------------------------------------- */
+    const editModal = document.getElementById("editModal");
+    const editCanvas = document.getElementById("editCanvas");
+    const ctx = editCanvas.getContext("2d");
+    let tempImage = new Image();
 
-    let dragIndex = null;
+    function openEditModal(index) {
+      currentEditIndex = index;
+      const item = images[index];
 
-    function enableDrag() {
-      const cards = document.querySelectorAll(".scan-card");
+      document.getElementById("filterType").value = item.filter;
+      document.getElementById("brightness").value = item.brightness;
+      document.getElementById("contrast").value = item.contrast;
 
-      cards.forEach((card, index) => {
-        card.draggable = true;
-
-        card.addEventListener("click", e => {
-          if (e.target.classList.contains("delete-btn")) return;
-          previewImage.src = images[index].src;
-          modal.classList.add("active");
-        });
-
-        card.addEventListener("dragstart", () => {
-          dragIndex = index;
-          card.classList.add("dragging");
-        });
-
-        card.addEventListener("dragend", () => {
-          card.classList.remove("dragging");
-        });
-
-        card.addEventListener("dragover", e => {
-          e.preventDefault();
-          card.classList.add("over");
-        });
-
-        card.addEventListener("dragleave", () => {
-          card.classList.remove("over");
-        });
-
-        card.addEventListener("drop", () => {
-          card.classList.remove("over");
-          const target = index;
-          if (target === dragIndex) return;
-
-          const moved = images.splice(dragIndex, 1)[0];
-          images.splice(target, 0, moved);
-          renderPreview();
-        });
-      });
+      tempImage = new Image();
+      tempImage.onload = () => {
+        applyFilters();
+        editModal.classList.add("active");
+      };
+      tempImage.src = item.originalSrc;
     }
 
+    function closeEditModal() {
+      editModal.classList.remove("active");
+    }
+
+    let tempRotation = 0;
+    function rotateImage(deg) {
+      if (currentEditIndex === null) return;
+      images[currentEditIndex].rotation = (images[currentEditIndex].rotation + deg) % 360;
+      applyFilters();
+    }
+
+    function applyFilters() {
+      if (currentEditIndex === null || !tempImage.src) return;
+
+      const filter = document.getElementById("filterType").value;
+      const brightness = parseInt(document.getElementById("brightness").value);
+      const contrast = parseInt(document.getElementById("contrast").value);
+      const rotation = images[currentEditIndex].rotation;
+
+      // Handle orientation dimensions
+      if (Math.abs(rotation) % 180 === 90) {
+        editCanvas.width = tempImage.height;
+        editCanvas.height = tempImage.width;
+      } else {
+        editCanvas.width = tempImage.width;
+        editCanvas.height = tempImage.height;
+      }
+
+      ctx.clearRect(0, 0, editCanvas.width, editCanvas.height);
+      ctx.save();
+
+      // Translate & Rotate Context
+      ctx.translate(editCanvas.width / 2, editCanvas.height / 2);
+      ctx.rotate((rotation * Math.PI) / 180);
+      ctx.drawImage(tempImage, -tempImage.width / 2, -tempImage.height / 2);
+      ctx.restore();
+
+      // Apply Pixel Manipulations
+      let imgData = ctx.getImageData(0, 0, editCanvas.width, editCanvas.height);
+      let data = imgData.data;
+
+      const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+      for (let i = 0; i < data.length; i += 4) {
+        let r = data[i];
+        let g = data[i + 1];
+        let b = data[i + 2];
+
+        // Brightness & Contrast
+        r = factor * (r - 128) + 128 + brightness;
+        g = factor * (g - 128) + 128 + brightness;
+        b = factor * (b - 128) + 128 + brightness;
+
+        if (filter === "grayscale") {
+          let avg = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          r = g = b = avg;
+        } else if (filter === "bw") {
+          let avg = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          let bw = avg > 128 ? 255 : 0; // High contrast B&W threshold
+          r = g = b = bw;
+        }
+
+        data[i] = Math.min(255, Math.max(0, r));
+        data[i + 1] = Math.min(255, Math.max(0, g));
+        data[i + 2] = Math.min(255, Math.max(0, b));
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    function saveEdits() {
+      if (currentEditIndex === null) return;
+      const item = images[currentEditIndex];
+      item.filter = document.getElementById("filterType").value;
+      item.brightness = document.getElementById("brightness").value;
+      item.contrast = document.getElementById("contrast").value;
+      item.currentSrc = editCanvas.toDataURL("image/jpeg", 0.9);
+
+      renderPreview();
+      closeEditModal();
+    }
+
+    /* -------------------------------------------
+       Professional PDF Generation
+    ------------------------------------------- */
     document.getElementById("createPdfBtn").addEventListener("click", generatePDF);
 
     async function generatePDF() {
       if (images.length === 0) {
-        alert("Please select at least one image.");
+        alert("Pehle kam se kam ek photo add karein.");
         return;
       }
 
       try {
         const { jsPDF } = window.jspdf;
+        const formatSelect = document.getElementById("pageSize").value;
+        const marginSelect = parseInt(document.getElementById("pageMargin").value);
+
         const pdf = new jsPDF({
           orientation: "portrait",
           unit: "mm",
-          format: "a4",
+          format: formatSelect,
           compress: true
         });
 
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
 
-        if (!pdfboonLogo.complete) {
-          await new Promise(resolve => {
-            pdfboonLogo.onload = resolve;
-            pdfboonLogo.onerror = resolve;
-          });
-        }
-
         for (let i = 0; i < images.length; i++) {
-          if (i > 0) {
-            pdf.addPage();
-          }
+          if (i > 0) pdf.addPage();
 
           const img = new Image();
-          img.src = images[i].src;
+          img.src = images[i].currentSrc;
 
-          await new Promise(resolve => {
-            img.onload = resolve;
-          });
+          await new Promise(resolve => { img.onload = resolve; });
 
-          const margin = 10;
+          const margin = marginSelect;
           const maxWidth = pageWidth - (margin * 2);
-          const maxHeight = pageHeight - 30;
+          const maxHeight = pageHeight - (margin * 2) - 15; // Bottom footer space
 
           const imgWidth = img.width;
           const imgHeight = img.height;
-
-          const ratio = Math.min(
-            maxWidth / imgWidth,
-            maxHeight / imgHeight
-          );
+          const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
 
           const renderWidth = imgWidth * ratio;
           const renderHeight = imgHeight * ratio;
 
           const x = (pageWidth - renderWidth) / 2;
-          const y = (pageHeight - 20 - renderHeight) / 2 + 5;
+          const y = margin + ((maxHeight - renderHeight) / 2);
 
-          pdf.addImage(
-            images[i].src,
-            "JPEG",
-            x,
-            y,
-            renderWidth,
-            renderHeight,
-            undefined,
-            "FAST"
-          );
+          pdf.addImage(images[i].currentSrc, "JPEG", x, y, renderWidth, renderHeight, undefined, "FAST");
 
-          pdf.setDrawColor(220);
-          pdf.line(10, pageHeight - 15, pageWidth - 10, pageHeight - 15);
+          // Footer Settings
+          pdf.setDrawColor(226, 232, 240);
+          pdf.line(10, pageHeight - 12, pageWidth - 10, pageHeight - 12);
 
           pdf.setFont("helvetica", "normal");
-          pdf.setFontSize(9);
-          pdf.setTextColor(120);
-          pdf.text(`Page ${i + 1} of ${images.length}`, 10, pageHeight - 8);
+          pdf.setFontSize(8);
+          pdf.setTextColor(100);
+          pdf.text(`Page ${i + 1} of ${images.length}`, 10, pageHeight - 6);
 
-          try {
-            if(pdfboonLogo.width > 0) {
-              pdf.addImage(pdfboonLogo, "PNG", pageWidth - 45, pageHeight - 13, 6, 6);
-            }
-          } catch(e) {
-            console.log("Logo unavailable");
-          }
-
-          pdf.setFontSize(9);
-          pdf.setTextColor(130);
-          pdf.text("Scanned by PDFBoon", pageWidth - 10, pageHeight - 8, { align: "right" });
+          pdf.text("Scanned by PDFBoon", pageWidth - 10, pageHeight - 6, { align: "right" });
         }
 
-        const filenameInput = document.getElementById("pdfName");
-        let filename = filenameInput ? filenameInput.value.trim() : "PDFBoon_Scan";
-        if (!filename) filename = "PDFBoon_Scan";
-
+        let filename = document.getElementById("pdfName").value.trim() || "PDFBoon_Scan";
         pdf.save(filename + ".pdf");
 
       } catch (error) {
         console.error(error);
-        alert("PDF generation failed: " + error.message);
+        alert("PDF Generate karne me error aaya: " + error.message);
       }
     }
   </script>
