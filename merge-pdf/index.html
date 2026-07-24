@@ -343,6 +343,24 @@ margin:0 auto 20px;
 color:var(--stamp);
 }
 
+/* ============ HERO VIDEO (5s looping clip, right under the heading) ============ */
+.hero-video-wrap{
+max-width:640px;
+margin:0 auto 28px;
+border-radius:22px;
+overflow:hidden;
+background:#000;
+border:1px solid var(--line);
+box-shadow:0 16px 34px rgba(13,37,69,0.18);
+}
+
+.hero-video{
+width:100%;
+aspect-ratio:16/9;
+object-fit:cover;
+display:block;
+}
+
 .hero p{
 font-size:1.05rem;
 color:var(--ink-soft);
@@ -908,6 +926,14 @@ color:var(--ink);
 
 <h1>Every PDF Tool You Need, <span>All in One Place</span></h1>
 
+<!-- 5s looping demo video, right under the heading -->
+<div class="hero-video-wrap">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto">
+    <source src="images/hero-demo.mp4" type="video/mp4">
+    <source src="images/hero-demo.webm" type="video/webm">
+  </video>
+</div>
+
 <p>Compress, merge, split, edit, unlock, scan documents, convert and lock your PDF files in seconds. Everything runs right inside your browser — fast, private, and completely free.</p>
 
 <div class="hero-actions">
@@ -1309,6 +1335,21 @@ document.querySelectorAll('.faq-question').forEach(btn => {
     }
   });
 });
+
+/* Hero video: make sure the 5s clip keeps looping even if a browser
+   pauses autoplay (e.g. tab was backgrounded) */
+const heroVideo = document.querySelector('.hero-video');
+if (heroVideo) {
+  heroVideo.addEventListener('ended', () => {
+    heroVideo.currentTime = 0;
+    heroVideo.play();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && heroVideo.paused) {
+      heroVideo.play().catch(() => {});
+    }
+  });
+}
 
 </script>
   <script>
