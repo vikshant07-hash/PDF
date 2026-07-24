@@ -929,106 +929,119 @@ color:var(--ink);
 
 <!-- 5s looping demo video, right under the heading -->
 <!-- PDFBoon Animation Section - START -->
-<section id="pdfboon-hero" style="width:100%; min-height:500px; background:transparent; display:flex; justify-content:center; align-items:center; overflow:hidden; position:relative; padding:60px 20px;">
+<!-- PDFBoon Round Logo Animation Section - START -->
+<section id="pdfboon-round" style="width:100%; min-height:550px; background:transparent; display:flex; justify-content:center; align-items:center; overflow:hidden; position:relative; padding:80px 20px;">
   
   <style>
-    #pdfboon-hero * { box-sizing: border-box; margin: 0; padding: 0; }
+    #pdfboon-round * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    #pdfboon-hero .wrapper {
+    #pdfboon-round .wrapper {
       text-align: center;
       z-index: 2;
-      animation: pdfboonFadeIn 0.8s ease-in;
+      position: relative;
     }
 
-    /* Logo Animation */
-    #pdfboon-hero .logo {
-      width: 160px;
-      height: 160px;
-      margin: 0 auto 25px;
+    /* 3D Round Logo Container */
+    #pdfboon-round .logo-3d {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 30px;
       position: relative;
-      animation: pdfboonFlyIn 1.2s cubic-bezier(.25,.8,.25,1) forwards;
-      filter: drop-shadow(0 0 30px rgba(0, 120, 255, 0.4));
+      transform-style: preserve-3d;
+      animation: pdfboonSpin 8s linear infinite;
     }
-    #pdfboon-hero .logo img {
+
+    /* Round Logo */
+    #pdfboon-round .logo-3d img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-    }
-    #pdfboon-hero .logo::after {
-      content: '';
-      position: absolute;
-      top: -25px; left: -25px; right: -25px; bottom: -25px;
-      background: radial-gradient(circle, rgba(0,150,255,0.25) 0%, transparent 70%);
       border-radius: 50%;
-      animation: pdfboonPulse 2s infinite;
-      z-index: -1;
+      object-fit: cover;
+      box-shadow: 0 0 40px rgba(0, 120, 255, 0.5), inset 0 0 20px rgba(255,255,255,0.3);
+      border: 4px solid rgba(0, 150, 255, 0.3);
+      animation: pdfboonGlow 2s ease-in-out infinite alternate;
     }
 
-    /* Text Animation */
-    #pdfboon-hero .title {
-      font-size: 52px;
-      font-weight: 800;
-      color: #0078ff;
+    /* Orbiting rings */
+    #pdfboon-round .ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      border: 2px solid rgba(0, 150, 255, 0.4);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #pdfboon-round .ring1 { width: 240px; height: 240px; animation: pdfboonOrbit 4s linear infinite; }
+    #pdfboon-round .ring2 { width: 280px; height: 280px; animation: pdfboonOrbit 6s linear infinite reverse; border-style: dashed; }
+
+    /* Text */
+    #pdfboon-round .title {
+      font-size: 56px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #0078ff, #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin: 0;
       opacity: 0;
-      transform: translateY(25px);
-      animation: pdfboonTextUp 0.8s 1.3s ease-out forwards;
-      text-shadow: 0 2px 12px rgba(0,120,255,0.2);
-      letter-spacing: -0.5px;
+      animation: pdfboonPop 0.8s 1s ease-out forwards;
+      letter-spacing: -1px;
     }
-    #pdfboon-hero .subtitle {
-      font-size: 22px;
+    #pdfboon-round .subtitle {
+      font-size: 20px;
       font-weight: 500;
-      color: #444;
-      margin-top: 10px;
+      color: #555;
+      margin-top: 12px;
       opacity: 0;
-      transform: translateY(25px);
-      animation: pdfboonTextUp 0.8s 1.6s ease-out forwards;
+      animation: pdfboonPop 0.8s 1.3s ease-out forwards;
     }
 
-    /* Keyframes - unique names to avoid conflict */
-    @keyframes pdfboonFlyIn {
-      0% { transform: scale(0.5) translateY(50px); opacity: 0; filter: blur(12px); }
-      100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
+    /* Keyframes */
+    @keyframes pdfboonSpin {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
     }
-    @keyframes pdfboonTextUp {
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes pdfboonGlow {
+      from { box-shadow: 0 0 30px rgba(0, 120, 255, 0.4); }
+      to { box-shadow: 0 0 60px rgba(0, 200, 255, 0.7); }
     }
-    @keyframes pdfboonPulse {
-      0%, 100% { transform: scale(1); opacity: 0.6; }
-      50% { transform: scale(1.15); opacity: 0.2; }
+    @keyframes pdfboonOrbit {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    @keyframes pdfboonFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    @keyframes pdfboonPop {
+      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    /* Particles */
-    #pdfboon-hero .particle {
+    /* Floating particles */
+    #pdfboon-round .dot {
       position: absolute;
-      width: 5px; height: 5px;
-      background: #00aaff;
+      width: 6px; height: 6px;
+      background: radial-gradient(circle, #00aaff, #0078ff);
       border-radius: 50%;
-      animation: pdfboonFloat 5s infinite linear;
+      animation: pdfboonFloatUp 6s infinite ease-in;
       z-index: 1;
     }
-    @keyframes pdfboonFloat {
-      from { transform: translateY(0) scale(0); opacity: 0; }
+    @keyframes pdfboonFloatUp {
+      0% { transform: translateY(0) scale(0); opacity: 0; }
       10% { opacity: 1; }
-      to { transform: translateY(-300px) scale(1); opacity: 0; }
+      100% { transform: translateY(-400px) scale(1.5); opacity: 0; }
     }
 
-    /* Mobile responsive */
+    /* Mobile */
     @media (max-width: 768px) {
-      #pdfboon-hero .title { font-size: 36px; }
-      #pdfboon-hero .subtitle { font-size: 18px; }
-      #pdfboon-hero .logo { width: 120px; height: 120px; }
+      #pdfboon-round .logo-3d { width: 140px; height: 140px; }
+      #pdfboon-round .ring1 { width: 170px; height: 170px; }
+      #pdfboon-round .ring2 { width: 200px; height: 200px; }
+      #pdfboon-round .title { font-size: 38px; }
     }
   </style>
 
   <div class="wrapper">
-    <!-- Yaha apna logo.png ka path daal do -->
-    <div class="logo">
+    <div class="logo-3d">
+      <div class="ring ring1"></div>
+      <div class="ring ring2"></div>
+      <!-- Yaha apna round logo.png daal do -->
       <img src="images/logo.png" alt="PDFBoon Logo">
     </div>
     <h1 class="title">PDFBoon</h1>
@@ -1037,20 +1050,21 @@ color:var(--ink);
 
 <script>
   (function() {
-    const section = document.getElementById('pdfboon-hero');
-    function createParticle() {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.bottom = '-10px';
-      p.style.animationDuration = 3 + Math.random() * 2 + 's';
-      section.appendChild(p);
-      setTimeout(() => p.remove(), 5000);
+    const section = document.getElementById('pdfboon-round');
+    function createDot() {
+      const d = document.createElement('div');
+      d.className = 'dot';
+      d.style.left = 40 + Math.random() * 20 + '%';
+      d.style.bottom = '-10px';
+      d.style.animationDelay = Math.random() * 2 + 's';
+      section.appendChild(d);
+      setTimeout(() => d.remove(), 6000);
     }
-    setInterval(createParticle, 250);
+    setInterval(createDot, 300);
   })();
 </script>
 </section>
+<!-- PDFBoon Round Logo Animation Section - END -->
 <!-- PDFBoon Animation Section - END -->
 
 <p>Compress, merge, split, edit, unlock, scan documents, convert and lock your PDF files in seconds. Everything runs right inside your browser — fast, private, and completely free.</p>
