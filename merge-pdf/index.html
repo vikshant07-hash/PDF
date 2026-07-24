@@ -928,12 +928,130 @@ color:var(--ink);
 <h1>Every PDF Tool You Need, <span>All in One Place</span></h1>
 
 <!-- 5s looping demo video, right under the heading -->
-<div class="hero-video-wrap">
-  <video class="hero-video" autoplay muted loop playsinline preload="auto">
-    <source src="images/hero-demo2.mp4" type="video/mp4">
-    <source src="images/hero-demo2.webm" type="video/webm">
-  </video>
-</div>
+<!-- PDFBoon Animation Section - START -->
+<section id="pdfboon-hero" style="width:100%; min-height:500px; background:transparent; display:flex; justify-content:center; align-items:center; overflow:hidden; position:relative; padding:60px 20px;">
+  
+  <style>
+    #pdfboon-hero * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    #pdfboon-hero .wrapper {
+      text-align: center;
+      z-index: 2;
+      animation: pdfboonFadeIn 0.8s ease-in;
+    }
+
+    /* Logo Animation */
+    #pdfboon-hero .logo {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 25px;
+      position: relative;
+      animation: pdfboonFlyIn 1.2s cubic-bezier(.25,.8,.25,1) forwards;
+      filter: drop-shadow(0 0 30px rgba(0, 120, 255, 0.4));
+    }
+    #pdfboon-hero .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    #pdfboon-hero .logo::after {
+      content: '';
+      position: absolute;
+      top: -25px; left: -25px; right: -25px; bottom: -25px;
+      background: radial-gradient(circle, rgba(0,150,255,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pdfboonPulse 2s infinite;
+      z-index: -1;
+    }
+
+    /* Text Animation */
+    #pdfboon-hero .title {
+      font-size: 52px;
+      font-weight: 800;
+      color: #0078ff;
+      margin: 0;
+      opacity: 0;
+      transform: translateY(25px);
+      animation: pdfboonTextUp 0.8s 1.3s ease-out forwards;
+      text-shadow: 0 2px 12px rgba(0,120,255,0.2);
+      letter-spacing: -0.5px;
+    }
+    #pdfboon-hero .subtitle {
+      font-size: 22px;
+      font-weight: 500;
+      color: #444;
+      margin-top: 10px;
+      opacity: 0;
+      transform: translateY(25px);
+      animation: pdfboonTextUp 0.8s 1.6s ease-out forwards;
+    }
+
+    /* Keyframes - unique names to avoid conflict */
+    @keyframes pdfboonFlyIn {
+      0% { transform: scale(0.5) translateY(50px); opacity: 0; filter: blur(12px); }
+      100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
+    }
+    @keyframes pdfboonTextUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pdfboonPulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.15); opacity: 0.2; }
+    }
+    @keyframes pdfboonFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Particles */
+    #pdfboon-hero .particle {
+      position: absolute;
+      width: 5px; height: 5px;
+      background: #00aaff;
+      border-radius: 50%;
+      animation: pdfboonFloat 5s infinite linear;
+      z-index: 1;
+    }
+    @keyframes pdfboonFloat {
+      from { transform: translateY(0) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      to { transform: translateY(-300px) scale(1); opacity: 0; }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      #pdfboon-hero .title { font-size: 36px; }
+      #pdfboon-hero .subtitle { font-size: 18px; }
+      #pdfboon-hero .logo { width: 120px; height: 120px; }
+    }
+  </style>
+
+  <div class="wrapper">
+    <!-- Yaha apna logo.png ka path daal do -->
+    <div class="logo">
+      <img src="images/logo.png" alt="PDFBoon Logo">
+    </div>
+    <h1 class="title">PDFBoon</h1>
+    <p class="subtitle">Easy, secure & fast</p>
+  </div>
+
+<script>
+  (function() {
+    const section = document.getElementById('pdfboon-hero');
+    function createParticle() {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.bottom = '-10px';
+      p.style.animationDuration = 3 + Math.random() * 2 + 's';
+      section.appendChild(p);
+      setTimeout(() => p.remove(), 5000);
+    }
+    setInterval(createParticle, 250);
+  })();
+</script>
+</section>
+<!-- PDFBoon Animation Section - END -->
 
 <p>Compress, merge, split, edit, unlock, scan documents, convert and lock your PDF files in seconds. Everything runs right inside your browser — fast, private, and completely free.</p>
 
