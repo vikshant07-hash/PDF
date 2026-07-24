@@ -858,6 +858,185 @@ color:var(--ink);
   line-height:1.6;
 }
 
+  /* Container Section Styling */
+.pdf-compress-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  width: 100%;
+}
+
+.compress-card-wrapper {
+  background: #1e293b;
+  padding: 35px 30px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 360px; /* Section ke andar responsive size */
+  position: relative;
+  overflow: hidden;
+}
+
+/* 3D Scene Wrapper */
+.scene-3d {
+  width: 110px;
+  height: 140px;
+  perspective: 800px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* 3D PDF Card */
+.pdf-file-card {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff4b4b, #dc2626);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-weight: bold;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+  position: relative;
+  transform-style: preserve-3d;
+  animation: compress3D 3.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Folded Corner Effect */
+.pdf-file-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-width: 0 22px 22px 0;
+  border-style: solid;
+  border-color: #1e293b #1e293b #991b1b #991b1b;
+  border-top-right-radius: 10px;
+}
+
+.pdf-label {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.pdf-subtext {
+  font-size: 11px;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Glow Effect */
+.glow-effect {
+  position: absolute;
+  top: 20px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.4) 0%, transparent 70%);
+  opacity: 0;
+  animation: glowPulse 3.5s infinite;
+}
+
+/* Status Text Styles */
+.status-box {
+  position: relative;
+  height: 24px;
+  width: 100%;
+  text-align: center;
+}
+
+.status-msg {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.status-msg.compressing {
+  color: #38bdf8;
+  animation: textFade 3.5s infinite;
+}
+
+.status-msg.success {
+  color: #22c55e;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  white-space: nowrap;
+  animation: successFade 3.5s infinite;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  height: 5px;
+  background: #334155;
+  border-radius: 3px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.progress-fill-line {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #22c55e);
+  width: 0%;
+  animation: progressLine 3.5s infinite;
+}
+
+/* Keyframes Animations */
+@keyframes compress3D {
+  0% {
+    transform: rotateY(0deg) rotateX(0deg) scale(1);
+    background: linear-gradient(135deg, #ff4b4b, #dc2626);
+  }
+  20% {
+    transform: rotateY(-20deg) rotateX(15deg) scale(1.02);
+  }
+  50% {
+    transform: rotateY(360deg) rotateX(0deg) scale(0.4, 0.3);
+    box-shadow: 0 2px 5px rgba(220, 38, 38, 0.8);
+  }
+  65% {
+    transform: rotateY(360deg) scale(0.9);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+  }
+  85%, 100% {
+    transform: rotateY(360deg) scale(1);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+  }
+}
+
+@keyframes progressLine {
+  0% { width: 0%; }
+  50% { width: 100%; }
+  100% { width: 100%; }
+}
+
+@keyframes textFade {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes successFade {
+  0%, 45% { opacity: 0; transform: translate(-50%, 8px); }
+  55%, 90% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; }
+}
+
+@keyframes glowPulse {
+  0%, 45% { opacity: 0; transform: scale(0.5); }
+  55% { opacity: 1; transform: scale(1.2); }
+  70%, 100% { opacity: 0; transform: scale(1.5); }
+}
+
+
 </style>
 </head>
 <body>
@@ -1096,6 +1275,31 @@ color:var(--ink);
 <div class="tools-grid">
 
 <div class="tool-card">
+  <section class="pdf-compress-section">
+  <div class="compress-card-wrapper">
+    <div class="glow-effect"></div>
+    
+    <!-- 3D PDF Animation Scene -->
+    <div class="scene-3d">
+      <div class="pdf-file-card">
+        <div class="pdf-label">PDF</div>
+        <div class="pdf-subtext">Document</div>
+      </div>
+    </div>
+
+    <!-- Dynamic Status Text -->
+    <div class="status-box">
+      <span class="status-msg compressing">Compressing PDF...</span>
+      <span class="status-msg success">✓ Compressed Successfully</span>
+    </div>
+
+    <!-- Progress Line -->
+    <div class="progress-bar-container">
+      <div class="progress-fill-line"></div>
+    </div>
+  </div>
+</section>
+
 <div class="tool-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);"><i class="fa-solid fa-file-zipper"></i></div>
 <h3>Compress PDF</h3>
 <p>Set a target size and shrink your PDF without losing quality.</p>
