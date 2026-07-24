@@ -1141,60 +1141,266 @@ color:var(--ink);
 
   <div class="hero-container">
     
-    <!-- 3D Logo Stage -->
-    <div class="hero-logo-stage" id="hero3dCard">
-      <!-- Ambient Glow Ring -->
-      <div class="hero-ambient-glow"></div>
+<!-- ============ PDFBOON REAL 3D ROUND REACTOR HERO ANIMATION ============ -->
+<section id="pdfboon-reactor-hero">
+  <style>
+    #pdfboon-reactor-hero {
+      position: relative;
+      width: 100%;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 45%, rgba(37, 99, 235, 0.08) 0%, transparent 65%);
+      overflow: hidden;
+      padding: 40px 20px;
+    }
 
-      <!-- High-tech Orbit Arc SVG -->
-      <svg class="hero-orbit-svg" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="88" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" />
-      </svg>
+    .reactor-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
 
-      <!-- Glassmorphic Logo Card -->
-      <div class="hero-logo-card">
+    /* Primary 3D Round Stage */
+    .round-reactor-stage {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 25px;
+      perspective: 800px;
+    }
+
+    /* 1. Outer Fast Orbital Ring */
+    .reactor-ring-outer {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      border: 3px dashed var(--stamp, #2563eb);
+      box-shadow: 0 0 20px rgba(37, 99, 235, 0.35);
+      animation: spinOuterRing 6s linear infinite;
+    }
+
+    /* 2. Middle Counter-Rotating Ring with Nodes */
+    .reactor-ring-mid {
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top: 3px solid #10b981; /* Green glow */
+      border-bottom: 3px solid #3b82f6; /* Blue glow */
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      animation: spinMidRing 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    /* 3. Inner Pulsing Core Ring */
+    .reactor-ring-inner {
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      animation: corePulseGlow 2.5s ease-in-out infinite alternate;
+    }
+
+    /* Center Round Logo Box */
+    .round-logo-core {
+      position: relative;
+      width: 135px;
+      height: 135px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #ffffff;
+      box-shadow: 
+        0 0 30px rgba(37, 99, 235, 0.3),
+        0 12px 28px rgba(13, 37, 69, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      overflow: hidden;
+      animation: logoFloatPulse 3.5s ease-in-out infinite;
+    }
+
+    .round-logo-core img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      z-index: 2;
+    }
+
+    /* 4. Scanning Radar Light Effect inside Logo */
+    .round-logo-core::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 0%, transparent 75%, rgba(37, 99, 235, 0.4) 100%);
+      animation: radarScan 2.5s linear infinite;
+      z-index: 1;
+    }
+
+    /* Orbiting Particles/Satellites */
+    .satellite-dot {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      z-index: 6;
+    }
+
+    .dot-1 { animation: orbitDot1 4s linear infinite; }
+    .dot-2 { animation: orbitDot2 6s linear infinite; }
+
+    /* Typography & Text Section */
+    .reactor-title {
+      font-family: 'Fraunces', serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--ink, #0d2545);
+      margin: 0 0 8px 0;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+
+    .reactor-subtitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink-soft, #475569);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--paper-raised, #ffffff);
+      padding: 6px 18px;
+      border-radius: 20px;
+      border: 1px solid var(--line, rgba(13, 37, 69, 0.1));
+      box-shadow: 0 4px 12px rgba(13, 37, 69, 0.05);
+    }
+
+    .reactor-subtitle i {
+      color: var(--stamp, #2563eb);
+      animation: sparkSpin 3s linear infinite;
+    }
+
+    /* --- KEYFRAME ANIMATIONS (HIGHLY VISIBLE) --- */
+
+    /* Outer Ring Fast Spin */
+    @keyframes spinOuterRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Middle Ring Counter-Spin with Tilt */
+    @keyframes spinMidRing {
+      0% { transform: rotate(360deg) rotateX(20deg); }
+      100% { transform: rotate(0deg) rotateX(20deg); }
+    }
+
+    /* Radar Conic Sweep */
+    @keyframes radarScan {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Core Pulsing Glow & Scale */
+    @keyframes corePulseGlow {
+      0% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 15px rgba(37, 99, 235, 0.2); }
+      100% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 35px rgba(16, 185, 129, 0.5); }
+    }
+
+    /* Center Logo Floating & Bouncing */
+    @keyframes logoFloatPulse {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-10px) scale(1.05); }
+    }
+
+    /* Orbit Dot 1 Path */
+    @keyframes orbitDot1 {
+      0% { transform: rotate(0deg) translateX(105px) rotate(0deg); }
+      100% { transform: rotate(360deg) translateX(105px) rotate(-360deg); }
+    }
+
+    /* Orbit Dot 2 Path */
+    @keyframes orbitDot2 {
+      0% { transform: rotate(360deg) translateX(125px) rotate(-360deg); }
+      100% { transform: rotate(0deg) translateX(125px) rotate(0deg); }
+    }
+
+    /* Sparkle Icon Rotation */
+    @keyframes sparkSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .round-reactor-stage { width: 210px; height: 210px; }
+      .reactor-ring-outer { width: 200px; height: 200px; }
+      .reactor-ring-mid { width: 170px; height: 170px; }
+      .reactor-ring-inner { width: 130px; height: 130px; }
+      .round-logo-core { width: 105px; height: 105px; }
+      .round-logo-core img { width: 70px; height: 70px; }
+      @keyframes orbitDot1 {
+        0% { transform: rotate(0deg) translateX(85px) rotate(0deg); }
+        100% { transform: rotate(360deg) translateX(85px) rotate(-360deg); }
+      }
+      @keyframes orbitDot2 {
+        0% { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+        100% { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+      }
+      .reactor-title { font-size: 36px; }
+      .reactor-subtitle { font-size: 13px; }
+    }
+  </style>
+
+  <div class="reactor-container">
+    
+    <!-- 3D Circular Reactor Visual Animation -->
+    <div class="round-reactor-stage">
+      
+      <!-- Outer Rotating Ring -->
+      <div class="reactor-ring-outer"></div>
+
+      <!-- Middle Counter-Rotating Ring -->
+      <div class="reactor-ring-mid"></div>
+
+      <!-- Inner Pulsing Glow Ring -->
+      <div class="reactor-ring-inner"></div>
+
+      <!-- Orbiting Glowing Dots -->
+      <div class="satellite-dot dot-1"></div>
+      <div class="satellite-dot dot-2" style="background:#2563eb; box-shadow:0 0 10px #2563eb;"></div>
+
+      <!-- Center Round Logo with Conic Radar Scan -->
+      <div class="round-logo-core">
         <img src="images/logo.png" alt="PDFBoon Logo">
       </div>
+
     </div>
 
-    <!-- Main Title & Badge -->
-    <h1 class="hero-title">PDFBoon</h1>
-    <div class="hero-subtitle-badge">
-      <span class="badge-dot"></span> Smart, Fast & Secure PDF Suite
+    <!-- Title & Tagline -->
+    <h1 class="reactor-title">PDFBoon</h1>
+    <div class="reactor-subtitle">
+      <i class="fa-solid fa-wand-magic-sparkles"></i> Easy, Secure & Fast PDF Tools
     </div>
 
   </div>
 </section>
+<!-- ============ END PDFBOON REACTOR HERO ANIMATION ============ -->
 
-<!-- Lightweight Interactive 3D Tilt Script (0 Lag) -->
-<script>
-  (function() {
-    const heroStage = document.getElementById('hero3dCard');
-    const heroCard = heroStage ? heroStage.querySelector('.hero-logo-card') : null;
-
-    if (!heroStage || !heroCard) return;
-
-    // Subtle 3D Tilt on Mouse move
-    document.addEventListener('mousemove', (e) => {
-      const rect = heroStage.getBoundingClientRect();
-      const x = e.clientX - (rect.left + rect.width / 2);
-      const y = e.clientY - (rect.top + rect.height / 2);
-
-      // Limiting angle for smooth subtle movement
-      const tiltX = (y / rect.height) * -15;
-      const tiltY = (x / rect.width) * 15;
-
-      heroStage.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-      heroCard.style.boxShadow = `${-tiltY}px ${tiltX}px 30px rgba(13, 37, 69, 0.12)`;
-    });
-
-    // Reset when mouse leaves
-    document.addEventListener('mouseleave', () => {
-      heroStage.style.transform = 'rotateX(0deg) rotateY(0deg)';
-      heroCard.style.boxShadow = '0 20px 40px rgba(13, 37, 69, 0.08)';
-    });
-  })();
-</script>
 <!-- ============ END PDFBOON HERO ANIMATION SECTION ============ -->
  
 
