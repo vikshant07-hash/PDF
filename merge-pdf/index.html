@@ -932,141 +932,274 @@ color:var(--ink);
 
 <!-- 5s looping demo video, right under the heading -->
 <!-- PDFBoon Animation Section - START -->
-<!-- PDFBoon Round Logo Animation Section - START -->
-<section id="pdfboon-round" style="width:100%; min-height:550px; background:transparent; display:flex; justify-content:center; align-items:center; overflow:hidden; position:relative; padding:80px 20px;">
-  
+
+     <!-- ============ PDFBOON HERO ANIMATION SECTION ============ -->
+<section id="pdfboon-hero-3d">
   <style>
-    #pdfboon-round * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    #pdfboon-round .wrapper {
+    #pdfboon-hero-3d {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.04) 0%, transparent 70%);
+      overflow: hidden;
+      padding: 40px 20px;
+    }
+
+    .hero-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
       z-index: 2;
-      position: relative;
+      perspective: 1000px;
     }
 
-    /* 3D Round Logo Container */
-    #pdfboon-round .logo-3d {
-      width: 200px;
-      height: 200px;
-      margin: 0 auto 30px;
+    /* 3D Glassmorphism Logo Stage */
+    .hero-logo-stage {
       position: relative;
+      width: 170px;
+      height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
       transform-style: preserve-3d;
-      animation: pdfboonSpin 8s linear infinite;
+      animation: heroFloat 4.5s ease-in-out infinite;
     }
 
-    /* Round Logo */
-    #pdfboon-round .logo-3d img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow: 0 0 40px rgba(0, 120, 255, 0.5), inset 0 0 20px rgba(255,255,255,0.3);
-      border: 4px solid rgba(0, 150, 255, 0.3);
-      animation: pdfboonGlow 2s ease-in-out infinite alternate;
-    }
-
-    /* Orbiting rings */
-    #pdfboon-round .ring {
+    /* Interactive Soft Ambient Ring */
+    .hero-ambient-glow {
       position: absolute;
-      top: 50%; left: 50%;
-      border: 2px solid rgba(0, 150, 255, 0.4);
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
-      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 70%);
+      filter: blur(20px);
+      animation: ambientPulse 4s ease-in-out infinite alternate;
+      z-index: 0;
     }
-    #pdfboon-round .ring1 { width: 240px; height: 240px; animation: pdfboonOrbit 4s linear infinite; }
-    #pdfboon-round .ring2 { width: 280px; height: 280px; animation: pdfboonOrbit 6s linear infinite reverse; border-style: dashed; }
 
-    /* Text */
-    #pdfboon-round .title {
-      font-size: 56px;
-      font-weight: 900;
-      background: linear-gradient(90deg, #0078ff, #00c6ff);
+    /* Orbiting Nodes (SVG Laser Arc) */
+    .hero-orbit-svg {
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      pointer-events: none;
+      z-index: 1;
+      animation: orbitSpin 14s linear infinite;
+    }
+
+    .hero-orbit-svg circle {
+      stroke-dasharray: 80, 180;
+      stroke-dashoffset: 0;
+      transform-origin: center;
+      animation: dashGlow 3s ease-in-out infinite alternate;
+    }
+
+    /* Glass Card Base for Logo */
+    .hero-logo-card {
+      position: relative;
+      width: 128px;
+      height: 128px;
+      border-radius: 36px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 
+        0 20px 40px rgba(13, 37, 69, 0.08),
+        0 2px 6px rgba(13, 37, 69, 0.04),
+        inset 0 1px 1px rgba(255, 255, 255, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    }
+
+    .hero-logo-card img {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 16px rgba(13, 37, 69, 0.12));
+      transition: transform 0.3s ease;
+      z-index: 2;
+    }
+
+    /* Holographic Light Sweep Edge */
+    .hero-logo-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 60%
+      );
+      transform: rotate(25deg) translateY(-100%);
+      animation: lightSweep 4.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 3;
+    }
+
+    /* Typography & Branding */
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: 52px;
+      font-weight: 800;
+      color: var(--ink, #0d2545);
+      margin: 0 0 10px 0;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--ink, #0d2545) 30%, var(--stamp, #2563eb));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin: 0;
-      opacity: 0;
-      animation: pdfboonPop 0.8s 1s ease-out forwards;
-      letter-spacing: -1px;
-    }
-    #pdfboon-round .subtitle {
-      font-size: 20px;
-      font-weight: 500;
-      color: #555;
-      margin-top: 12px;
-      opacity: 0;
-      animation: pdfboonPop 0.8s 1.3s ease-out forwards;
+      animation: heroTextFadeUp 1s ease-out forwards;
     }
 
-    /* Keyframes */
-    @keyframes pdfboonSpin {
-      from { transform: rotateY(0deg); }
-      to { transform: rotateY(360deg); }
-    }
-    @keyframes pdfboonGlow {
-      from { box-shadow: 0 0 30px rgba(0, 120, 255, 0.4); }
-      to { box-shadow: 0 0 60px rgba(0, 200, 255, 0.7); }
-    }
-    @keyframes pdfboonOrbit {
-      from { transform: translate(-50%, -50%) rotate(0deg); }
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-    @keyframes pdfboonPop {
-      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
+    .hero-subtitle-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: var(--paper-raised, #ffffff);
+      border: 1px solid var(--line, rgba(13, 37, 69, 0.1));
+      box-shadow: 0 4px 14px rgba(13, 37, 69, 0.05);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-soft, #475569);
+      animation: heroTextFadeUp 1s ease-out 0.2s forwards;
+      opacity: 0;
     }
 
-    /* Floating particles */
-    #pdfboon-round .dot {
-      position: absolute;
-      width: 6px; height: 6px;
-      background: radial-gradient(circle, #00aaff, #0078ff);
+    .hero-subtitle-badge .badge-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      animation: pdfboonFloatUp 6s infinite ease-in;
-      z-index: 1;
-    }
-    @keyframes pdfboonFloatUp {
-      0% { transform: translateY(0) scale(0); opacity: 0; }
-      10% { opacity: 1; }
-      100% { transform: translateY(-400px) scale(1.5); opacity: 0; }
+      background: var(--success, #10b981);
+      box-shadow: 0 0 8px var(--success, #10b981);
     }
 
-    /* Mobile */
+    /* --- Keyframe Animations --- */
+
+    /* Smooth Floating Animation */
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+      50% { transform: translateY(-12px) rotateX(4deg) rotateY(-4deg); }
+    }
+
+    /* Background Pulse */
+    @keyframes ambientPulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      100% { transform: scale(1.2); opacity: 0.9; }
+    }
+
+    /* Orbit Rotation */
+    @keyframes orbitSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Laser Arc Dash Effect */
+    @keyframes dashGlow {
+      0% { stroke-dasharray: 40, 200; stroke: #2563eb; }
+      100% { stroke-dasharray: 120, 120; stroke: #10b981; }
+    }
+
+    /* Light Sweep across Glass Card */
+    @keyframes lightSweep {
+      0%, 20% { transform: rotate(25deg) translateY(-120%); }
+      50%, 100% { transform: rotate(25deg) translateY(120%); }
+    }
+
+    /* Text Fade Up */
+    @keyframes heroTextFadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Responsive Fine-tuning */
     @media (max-width: 768px) {
-      #pdfboon-round .logo-3d { width: 140px; height: 140px; }
-      #pdfboon-round .ring1 { width: 170px; height: 170px; }
-      #pdfboon-round .ring2 { width: 200px; height: 200px; }
-      #pdfboon-round .title { font-size: 38px; }
+      #pdfboon-hero-3d { min-height: 380px; }
+      .hero-logo-stage { width: 140px; height: 140px; }
+      .hero-logo-card { width: 104px; height: 104px; border-radius: 28px; }
+      .hero-logo-card img { width: 64px; height: 64px; }
+      .hero-orbit-svg { width: 180px; height: 180px; }
+      .hero-title { font-size: 38px; }
+      .hero-subtitle-badge { font-size: 12px; padding: 5px 12px; }
     }
   </style>
 
-  <div class="wrapper">
-    <div class="logo-3d">
-      <div class="ring ring1"></div>
-      <div class="ring ring2"></div>
-      <!-- Yaha apna round logo.png daal do -->
-      <img src="images/logo.png" alt="PDFBoon Logo">
-    </div>
-    <h1 class="title">PDFBoon</h1>
-    <p class="subtitle">Easy, secure & fast</p>
-  </div>
+  <div class="hero-container">
+    
+    <!-- 3D Logo Stage -->
+    <div class="hero-logo-stage" id="hero3dCard">
+      <!-- Ambient Glow Ring -->
+      <div class="hero-ambient-glow"></div>
 
+      <!-- High-tech Orbit Arc SVG -->
+      <svg class="hero-orbit-svg" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="88" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+
+      <!-- Glassmorphic Logo Card -->
+      <div class="hero-logo-card">
+        <img src="images/logo.png" alt="PDFBoon Logo">
+      </div>
+    </div>
+
+    <!-- Main Title & Badge -->
+    <h1 class="hero-title">PDFBoon</h1>
+    <div class="hero-subtitle-badge">
+      <span class="badge-dot"></span> Smart, Fast & Secure PDF Suite
+    </div>
+
+  </div>
+</section>
+
+<!-- Lightweight Interactive 3D Tilt Script (0 Lag) -->
 <script>
   (function() {
-    const section = document.getElementById('pdfboon-round');
-    function createDot() {
-      const d = document.createElement('div');
-      d.className = 'dot';
-      d.style.left = 40 + Math.random() * 20 + '%';
-      d.style.bottom = '-10px';
-      d.style.animationDelay = Math.random() * 2 + 's';
-      section.appendChild(d);
-      setTimeout(() => d.remove(), 6000);
-    }
-    setInterval(createDot, 300);
+    const heroStage = document.getElementById('hero3dCard');
+    const heroCard = heroStage ? heroStage.querySelector('.hero-logo-card') : null;
+
+    if (!heroStage || !heroCard) return;
+
+    // Subtle 3D Tilt on Mouse move
+    document.addEventListener('mousemove', (e) => {
+      const rect = heroStage.getBoundingClientRect();
+      const x = e.clientX - (rect.left + rect.width / 2);
+      const y = e.clientY - (rect.top + rect.height / 2);
+
+      // Limiting angle for smooth subtle movement
+      const tiltX = (y / rect.height) * -15;
+      const tiltY = (x / rect.width) * 15;
+
+      heroStage.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      heroCard.style.boxShadow = `${-tiltY}px ${tiltX}px 30px rgba(13, 37, 69, 0.12)`;
+    });
+
+    // Reset when mouse leaves
+    document.addEventListener('mouseleave', () => {
+      heroStage.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      heroCard.style.boxShadow = '0 20px 40px rgba(13, 37, 69, 0.08)';
+    });
   })();
 </script>
-</section>
+<!-- ============ END PDFBOON HERO ANIMATION SECTION ============ -->
+ 
+
+
+
 <!-- PDFBoon Round Logo Animation Section - END -->
 <!-- PDFBoon Animation Section - END -->
 
@@ -3335,7 +3468,7 @@ color:var(--ink);
   <!-- Dynamic Status Indicator -->
   <div class="alltools-status-area">
     <span class="alltools-status-text exploring">
-      <i class="fa-solid fa-boxes-stacked"></i> 20+ Tools Available...
+      <i class="fa-solid fa-boxes-stacked"></i> 8+ Tools Available...
     </span>
     <span class="alltools-status-text success">
       <i class="fa-solid fa-circle-check"></i> Complete PDF Toolkit!
