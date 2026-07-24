@@ -1331,16 +1331,258 @@ color:var(--ink);
 </div>
 <!-- ============ END COMPRESS TOOL CARD ============ -->
 
+      <!-- ============ MERGE PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
+<div class="tool-card tool-card-merge-blend">
+  <style>
+    /* Card Styling & Seamless Blend */
+    .tool-card-merge-blend {
+      position: relative;
+      overflow: hidden;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .tool-card-merge-blend:hover {
+      transform: translateY(-4px);
+      border-color: var(--stamp);
+      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
+    }
+
+    /* Seamless Stage for Merge Animation */
+    .merge-anim-stage {
+      width: 100%;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: transparent;
+      margin: 4px 0 8px;
+      perspective: 800px;
+    }
+
+    /* Container holding merging documents */
+    .merge-docs-wrap {
+      position: relative;
+      width: 100px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Base PDF Document Styles */
+    .merge-doc {
+      width: 52px;
+      height: 68px;
+      background: linear-gradient(135deg, #ffffff, #f1f5f9);
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
+      position: absolute;
+      transition: all 0.3s ease;
+    }
+
+    .merge-doc i {
+      font-size: 22px;
+      color: #ef4444; /* PDF Red */
+    }
+
+    .merge-doc .doc-num {
+      font-size: 8px;
+      font-weight: 800;
+      color: var(--ink-soft);
+      margin-top: 3px;
+    }
+
+    /* Left PDF Document Animation */
+    .merge-doc-left {
+      animation: mergeDocLeft 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Right PDF Document Animation */
+    .merge-doc-right {
+      animation: mergeDocRight 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Merged Result Document */
+    .merged-doc-final {
+      width: 58px;
+      height: 76px;
+      background: linear-gradient(135deg, #ffffff, #f1f5f9);
+      border: 1.5px solid var(--stamp);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
+      position: absolute;
+      opacity: 0;
+      transform: scale(0.6) rotateY(180deg);
+      animation: mergeDocFinal 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .merged-doc-final i {
+      font-size: 26px;
+      color: var(--stamp);
+    }
+
+    .merged-doc-final .final-badge {
+      font-size: 8px;
+      font-weight: 800;
+      color: var(--success);
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Combining Sparkle / Burst Effect */
+    .merge-sparkle {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+      opacity: 0;
+      animation: mergeGlow 3.8s infinite;
+      pointer-events: none;
+    }
+
+    /* Live Status Messaging */
+    .merge-status-area {
+      position: relative;
+      height: 20px;
+      width: 100%;
+      text-align: center;
+      margin-top: -5px;
+    }
+
+    .merge-status-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .merge-status-text.merging {
+      color: var(--stamp);
+      animation: mergeTextOut 3.8s infinite;
+    }
+
+    .merge-status-text.success {
+      color: var(--success);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      white-space: nowrap;
+      animation: mergeTextIn 3.8s infinite;
+    }
+
+    /* --- Keyframe Animations --- */
+
+    /* Left Document Movement */
+    @keyframes mergeDocLeft {
+      0%, 15% { transform: translateX(-32px) rotate(-8deg) scale(1); opacity: 1; }
+      40% { transform: translateX(0px) rotate(0deg) scale(0.9); opacity: 0.8; }
+      50%, 100% { transform: translateX(0px) rotate(0deg) scale(0.5); opacity: 0; }
+    }
+
+    /* Right Document Movement */
+    @keyframes mergeDocRight {
+      0%, 15% { transform: translateX(32px) rotate(8deg) scale(1); opacity: 1; }
+      40% { transform: translateX(0px) rotate(0deg) scale(0.9); opacity: 0.8; }
+      50%, 100% { transform: translateX(0px) rotate(0deg) scale(0.5); opacity: 0; }
+    }
+
+    /* Final Combined Document Pop */
+    @keyframes mergeDocFinal {
+      0%, 40% { opacity: 0; transform: scale(0.5) rotateY(90deg); }
+      52% { opacity: 1; transform: scale(1.1) rotateY(0deg); }
+      65%, 90% { opacity: 1; transform: scale(1) rotateY(0deg); border-color: var(--success); }
+      100% { opacity: 0; transform: scale(0.8) rotateY(0deg); }
+    }
+
+    /* Fusion Glow */
+    @keyframes mergeGlow {
+      0%, 35% { transform: scale(0.3); opacity: 0; }
+      45% { transform: scale(1.3); opacity: 0.9; }
+      65%, 100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    /* Status Text Fade Animations */
+    @keyframes mergeTextOut {
+      0%, 40% { opacity: 1; transform: scale(1); }
+      48%, 100% { opacity: 0; transform: scale(0.9); }
+    }
+
+    @keyframes mergeTextIn {
+      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
+      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; }
+    }
+  </style>
+
+  <!-- Tool Icon Header -->
+  <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+    <i class="fa-solid fa-object-group"></i>
+  </div>
+  
+  <h3>Merge PDF</h3>
+  <p>Combine multiple PDF files into a single organized document.</p>
+
+  <!-- Seamless Embedded Animation -->
+  <div class="merge-anim-stage">
+    <div class="merge-sparkle"></div>
+    <div class="merge-docs-wrap">
       
-    
+      <!-- Left PDF -->
+      <div class="merge-doc merge-doc-left">
+        <i class="fa-solid fa-file-pdf"></i>
+        <span class="doc-num">DOC 1</span>
+      </div>
 
+      <!-- Right PDF -->
+      <div class="merge-doc merge-doc-right">
+        <i class="fa-solid fa-file-pdf"></i>
+        <span class="doc-num">DOC 2</span>
+      </div>
 
-<div class="tool-card">
-<div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-object-group"></i></div>
-<h3>Merge PDF</h3>
-<p>Combine multiple PDF files into a single organized document.</p>
-<a href="merge.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      <!-- Merged Result PDF -->
+      <div class="merged-doc-final">
+        <i class="fa-solid fa-file-circle-check"></i>
+        <span class="final-badge">MERGED</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Dynamic Status Indicator -->
+  <div class="merge-status-area">
+    <span class="merge-status-text merging">
+      <i class="fa-solid fa-object-group"></i> Combining Files...
+    </span>
+    <span class="merge-status-text success">
+      <i class="fa-solid fa-circle-check"></i> Merged Successfully!
+    </span>
+  </div>
+
+  <a href="merge.html" class="tool-card-link" style="margin-top: 8px;">
+    Open Tool <i class="fa-solid fa-arrow-right"></i>
+  </a>
 </div>
+
 
 <div class="tool-card">
 <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-scissors"></i></div>
