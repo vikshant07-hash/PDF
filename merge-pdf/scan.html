@@ -6,7 +6,7 @@
 <link rel="icon" href="images/logo.png">
 <title>Smart Document Scanner - PDFBoon</title>
 
-<meta name="description" content="Professional online document scanner. Scan with your camera, auto edge detection, perspective crop, watermarking, and crisp PDF export with PDFBoon.">
+<meta name="description" content="Professional online document scanner. Scan with your camera, auto edge detection, perspective crop, watermarking, direct sharing, and crisp PDF export with PDFBoon.">
 <meta name="keywords" content="Pdfboon, PDF Tools, Document Scanner, Scan to PDF, CamScanner online, Edge detection PDF, Vikshant Kralta">
 <meta name="author" content="Vikshant Kralta">
 <meta name="robots" content="index, follow">
@@ -69,7 +69,7 @@ a{ text-decoration:none; color:inherit; }
 
 .container{ max-width:1180px; margin:auto; padding:0 20px; }
 
-/* ============ NAVBAR (structure matched to compress.html) ============ */
+/* ============ NAVBAR ============ */
 .navbar{
   position:sticky; top:0; z-index:100;
   background:rgba(237,242,249,0.85);
@@ -303,7 +303,7 @@ a{ text-decoration:none; color:inherit; }
 
 .wrap{ max-width:1180px; margin:0 auto; padding:28px 24px 60px; }
 
-/* ============ SCAN CARD (camera-only entry point) ============ */
+/* ============ SCAN CARD ============ */
 .scan-card{
   border:2px dashed var(--stamp); border-radius:24px; padding:42px 24px;
   text-align:center; cursor:pointer; position:relative; transition:all .2s ease;
@@ -461,7 +461,6 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
 }
 #cropCanvas{ max-width:100%; max-height:100%; display:block; touch-action:none; }
 
-/* MAGNIFIER LENS */
 .magnifier-lens{
   position:absolute; width:120px; height:120px; border-radius:50%;
   border:3px solid #ffffff; box-shadow:0 8px 20px rgba(0,0,0,0.6);
@@ -473,7 +472,7 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
 .crop-actions{ display:flex; gap:8px; flex-wrap:wrap; }
 .crop-actions .btn{ flex:1; min-width:100px; }
 
-/* ============ CAMERA MODAL (professional layout) ============ */
+/* ============ CAMERA MODAL ============ */
 .camera-modal{ background:#000; padding:0; z-index:2000; }
 .camera-stage{
   position:relative; width:100vw; height:100vh; background:#000;
@@ -771,7 +770,6 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
       <label for="pageNumberToggle">Page Numbers &amp; Branding</label>
       <select id="pageNumberToggle">
         <option value="both" selected>Page Numbers &amp; Logo Footer</option>
-        
       </select>
     </div>
   </div>
@@ -788,7 +786,7 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
     </div>
   </div>
 
-  <!-- DOWNLOAD BOX -->
+  <!-- DOWNLOAD & SHARE BOX (UPDATED WITH SHARE BUTTON) -->
   <div class="download-box" id="downloadBox">
     <div class="info">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
@@ -797,9 +795,14 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
         <p id="downloadMeta">—</p>
       </div>
     </div>
-    <a class="btn btn-success" id="downloadLink" download>
-      <i class="fa-solid fa-download"></i> Download PDF
-    </a>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="btn btn-success" id="downloadLink" download>
+        <i class="fa-solid fa-download"></i> Download PDF
+      </a>
+      <button class="btn btn-primary" id="shareBtn" type="button" style="background:var(--teal); box-shadow:0 4px 0 #0e7490;">
+        <i class="fa-solid fa-share-nodes"></i> Share PDF
+      </button>
+    </div>
   </div>
 
 </div>
@@ -916,7 +919,7 @@ select:focus, input[type="text"]:focus, input[type="number"]:focus{ border-color
 
 <script>
 
-/* ================= NAV / MOBILE / DROPDOWN (matches compress.html) ================= */
+/* ================= NAV / MOBILE / DROPDOWN ================= */
 
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('active');
@@ -944,13 +947,12 @@ document.addEventListener('keydown', (e) => {
 let images = [];
 let currentEditIndex = null;
 let userLogoData = null;
+let generatedPdfFile = null; // Store generated PDF file for Web Share API
 
-// Corner points for perspective warp — default is always the FULL image
-// (i.e. "original", uncropped) until the user explicitly adjusts/detects them.
 let corners = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }];
 let activeCorner = null;
 
-/* ---------------- Toast (non-blocking premium notices) ---------------- */
+/* ---------------- Toast Notification ---------------- */
 function toast(msg){
   let t = document.getElementById('pbToast');
   if(!t){
@@ -964,7 +966,7 @@ function toast(msg){
   t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2600);
 }
 
-/* ---------------- Async image loading helper (fixes async bugs) ---------------- */
+/* ---------------- Async image loading helper ---------------- */
 function loadImageAsync(src){
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -1056,13 +1058,7 @@ function deleteImage(index) {
   renderPreview();
 }
 
-/* =====================================================================
-   FILTER ENGINE (used by crop-modal save AND batch "apply to all")
-   Always operates on a fully-loaded <img> element — never on an <img>
-   whose src was "just set", which was the root cause of the old
-   Global Filter / Rotate All features silently failing or corrupting
-   pages (cv.imread() on a not-yet-decoded image).
-   ===================================================================== */
+/* ================= FILTER ENGINE ================= */
 
 function applyFilterToImageEl(imgEl, filter){
   const plainCanvas = () => {
@@ -1102,7 +1098,7 @@ function applyFilterToImageEl(imgEl, filter){
   }
 }
 
-/* GLOBAL BATCH EDITING (now properly async so it can't run on undecoded images) */
+/* GLOBAL BATCH EDITING */
 async function applyGlobalFilter(filterValue) {
   if (!images.length) {
     toast("No pages available to apply filter.");
@@ -1126,12 +1122,7 @@ async function applyGlobalFilter(filterValue) {
   document.getElementById("globalFilter").value = "";
 }
 
-/* Rotate ALL pages — fixed to await image decode before drawing (the old
-   version read img.width/img.height synchronously right after setting
-   img.src, which is always 0 for a not-yet-loaded image, silently
-   producing blank/corrupted pages). Rotation itself never depends on
-   OpenCV, so it works even before the edge-detection engine finishes
-   loading. Default stays "original" — no filter is auto-applied here. */
+/* Rotate ALL pages */
 async function rotateAllImages(deg) {
   if (!images.length) {
     toast("No pages available to rotate.");
@@ -1153,7 +1144,7 @@ async function rotateAllImages(deg) {
 
     const rotatedData = tempCanvas.toDataURL("image/jpeg", 0.92);
     imgObj.originalSrc = rotatedData;
-    imgObj.processedSrc = rotatedData; // stays "original" until user applies a filter
+    imgObj.processedSrc = rotatedData;
     imgObj.rotation = ((imgObj.rotation || 0) + deg) % 360;
   }
 
@@ -1161,9 +1152,7 @@ async function rotateAllImages(deg) {
   toast("Rotated all pages!");
 }
 
-/* =====================================================================
-   CAMERA CAPTURE (the only way to add pages — no file upload)
-   ===================================================================== */
+/* ================= CAMERA CAPTURE ================= */
 
 const cameraModal = document.getElementById("cameraModal");
 const cameraVideo = document.getElementById("cameraVideo");
@@ -1195,7 +1184,7 @@ async function detectMultipleCameras() {
     const count = devices.filter(d => d.kind === "videoinput").length;
     switchCamBtn.style.display = count > 1 ? "flex" : "none";
   } catch (e) {
-    switchCamBtn.style.display = "flex"; // let it fail gracefully on tap
+    switchCamBtn.style.display = "flex";
   }
 }
 
@@ -1224,7 +1213,7 @@ async function startStream(facingMode) {
       audio: false
     });
     cameraVideo.srcObject = mediaStream;
-    try { await cameraVideo.play(); } catch (playErr) { /* some browsers auto-play once metadata is ready */ }
+    try { await cameraVideo.play(); } catch (playErr) {}
 
     const track = mediaStream.getVideoTracks()[0];
     const caps = track.getCapabilities ? track.getCapabilities() : {};
@@ -1266,16 +1255,12 @@ torchBtn.addEventListener("click", async () => {
     await track.applyConstraints({ advanced: [{ torch: torchOn }] });
     torchBtn.classList.toggle("active", torchOn);
   } catch (e) {
-    torchOn = !torchOn; // revert — unsupported mid-stream
+    torchOn = !torchOn;
   }
 });
 
 captureBtn.addEventListener("click", captureFrame);
 
-/* Capture is intentionally instant and filter-free: it just grabs the raw
-   frame so continuous multi-page scanning never stalls. The page starts
-   out as its own "original" — filters/crop are opt-in, applied later
-   from the crop modal or the batch "Apply Filter to All Pages" control. */
 function captureFrame() {
   if (!mediaStream) return;
   const vw = cameraVideo.videoWidth || cameraVideo.clientWidth;
@@ -1314,9 +1299,7 @@ function closeCamera() {
   cameraModal.classList.remove("active");
 }
 
-/* =====================================================================
-   CROP / FILTER EDIT MODAL WITH MAGNIFIER LENS
-   ===================================================================== */
+/* ================= CROP / FILTER EDIT MODAL ================= */
 
 const editModal = document.getElementById("editModal");
 const cropCanvas = document.getElementById("cropCanvas");
@@ -1338,8 +1321,6 @@ function openEditModal(index) {
   workingImg.onload = () => {
     cropCanvas.width = workingImg.width;
     cropCanvas.height = workingImg.height;
-    // Default crop = the full/original image. Auto-detect is opt-in only,
-    // so nothing gets cropped away without the user asking for it.
     resetCornersToOriginal();
     editModal.classList.add("active");
   };
@@ -1381,7 +1362,6 @@ function rotateCurrentImg(deg) {
   workingImg.src = rotatedDataUrl;
 }
 
-/* OpenCV Border Detection — runs ONLY when the user taps "Auto Edge" */
 function autoDetectCorners() {
   const w = cropCanvas.width, h = cropCanvas.height;
 
@@ -1429,10 +1409,10 @@ function autoDetectCorners() {
       let top = pts.slice(0, 2).sort((a, b) => a.x - b.x);
       let bottom = pts.slice(2, 4).sort((a, b) => b.x - a.x);
 
-      corners[0] = top[0];    // TL
-      corners[1] = top[1];    // TR
-      corners[2] = bottom[0]; // BR
-      corners[3] = bottom[1]; // BL
+      corners[0] = top[0];
+      corners[1] = top[1];
+      corners[2] = bottom[0];
+      corners[3] = bottom[1];
     } else {
       toast("Couldn't detect document edges automatically — adjust the corners manually.");
     }
@@ -1627,9 +1607,7 @@ function saveEdits() {
   closeEditModal();
 }
 
-/* =====================================================================
-   PDF GENERATION — margins, watermark, page numbers, logo footer
-   ===================================================================== */
+/* ================= PDF GENERATION ================= */
 
 generateBtn.addEventListener("click", generatePDF);
 
@@ -1721,6 +1699,9 @@ async function generatePDF() {
     filename = filename.replace(/[\\/:*?"<>|]+/g, "_");
     if (!filename.toLowerCase().endsWith(".pdf")) filename += ".pdf";
 
+    // File Object for Web Share API
+    generatedPdfFile = new File([blob], filename, { type: "application/pdf" });
+
     const downloadLink = document.getElementById("downloadLink");
     downloadLink.href = url;
     downloadLink.setAttribute("download", filename);
@@ -1736,6 +1717,45 @@ async function generatePDF() {
     generateBtn.innerHTML = originalBtnHTML;
   }
 }
+
+/* ================= WEB SHARE API FUNCTIONALITY ================= */
+
+async function sharePDF() {
+  if (!generatedPdfFile) {
+    toast("No PDF file available to share.");
+    return;
+  }
+
+  // Check if browser supports Web Share API with Files
+  if (navigator.canShare && navigator.canShare({ files: [generatedPdfFile] })) {
+    try {
+      await navigator.share({
+        files: [generatedPdfFile],
+        title: generatedPdfFile.name,
+        text: 'Here is your scanned document created with PDFBoon Scanner.'
+      });
+      toast("PDF shared successfully!");
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        toast("Sharing failed or was canceled.");
+      }
+    }
+  } else {
+    // Fallback if browser doesn't support direct file sharing
+    toast("Direct file sharing isn't supported on this browser. Downloading file first...");
+    
+    const downloadLink = document.getElementById("downloadLink");
+    downloadLink.click();
+
+    setTimeout(() => {
+      const shareText = encodeURIComponent("I scanned a document using PDFBoon Scanner!");
+      window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
+    }, 1000);
+  }
+}
+
+document.getElementById("shareBtn").addEventListener("click", sharePDF);
+
 </script>
 </body>
 </html>
