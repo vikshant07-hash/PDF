@@ -469,7 +469,72 @@ font-size:0.96rem;
 line-height:1.6;
 }
 
+/* ============ POPULAR TOOLS ============ */
+.tools-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
 
+.tool-card{
+background:var(--paper-raised);
+border:1px solid var(--line);
+border-radius:20px;
+padding:26px;
+box-shadow:var(--shadow);
+transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+display:flex;
+flex-direction:column;
+gap:12px;
+  min-width:0;
+}
+
+.tool-card:hover{
+transform:translateY(-4px);
+border-color:var(--stamp);
+box-shadow:0 16px 34px rgba(13,37,69,0.14);
+}
+
+.tool-icon{
+width:50px;
+height:50px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:1.3rem;
+color:#fff;
+box-shadow:0 6px 14px rgba(13,37,69,0.15);
+}
+
+.tool-card h3{
+font-family:var(--serif);
+font-size:1.1rem;
+font-weight:700;
+color:var(--ink);
+}
+
+.tool-card p{
+font-size:0.85rem;
+color:var(--ink-soft);
+line-height:1.5;
+flex:1;
+  word-break: break-word;
+}
+
+.tool-card-link{
+font-size:0.85rem;
+font-weight:700;
+color:var(--stamp);
+display:inline-flex;
+align-items:center;
+gap:6px;
+}
+
+.view-all-wrap{
+text-align:center;
+margin-top:36px;
+}
 
 /* ============ FEATURES ============ */
 .features-grid{
@@ -1374,7 +1439,7 @@ color:var(--ink);
 <p>Our most used tools, ready to go — pick one and get started in seconds.</p>
 </div>
 
-<div class="tools-grid">
+
 
 <div class="tool-card">
   
@@ -3632,7 +3697,6 @@ color:var(--ink);
 
 </div>
 
-</div>
 </section>
 
 <!-- WHY PDFBOON -->
