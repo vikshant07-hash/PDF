@@ -70,69 +70,94 @@ body{
   gap:6px;
 }
 
-/* ============ FULLSCREEN CAMERA ============ */
+/* ============ FULLSCREEN CAMERA - REALISTIC ============ */
 .camera-overlay{
   position:fixed; inset:0; background:#000; z-index:9999;
   display:none; flex-direction:column;
 }
 .camera-overlay.active{ display:flex; }
 
-.camera-header{
+.camera-top-bar{
+  position:absolute; top:0; left:0; right:0; z-index:10;
   padding:16px 20px;
   display:flex;
   justify-content:space-between;
   align-items:center;
   background:linear-gradient(180deg, rgba(0,0,0,0.7), transparent);
-  z-index:10;
 }
-.camera-header .cam-btn{
-  background:rgba(255,255,255,0.15);
+.camera-top-bar .close-btn{
+  background:rgba(255,255,255,0.2);
   border:none; color:#fff; width:44px; height:44px;
-  border-radius:50%; font-size:18px; cursor:pointer;
+  border-radius:50%; font-size:20px; cursor:pointer;
   backdrop-filter:blur(8px);
   transition:all .2s;
 }
-.camera-header .cam-btn:active{ transform:scale(0.9); }
-.camera-header .cam-count{
+.camera-top-bar .close-btn:active{ transform:scale(0.9); }
+.camera-top-bar .info{
   color:#fff; font-size:14px; background:rgba(0,0,0,0.5);
   padding:6px 16px; border-radius:20px;
   font-weight:500;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
+.camera-top-bar .info .dot{
+  width:8px; height:8px; border-radius:50%;
+  background:#ef4444; animation:recPulse 1.5s infinite;
+}
+@keyframes recPulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-.camera-view{
+.camera-viewport{
   flex:1; position:relative; overflow:hidden;
   background:#000;
 }
-.camera-view video{
+.camera-viewport video{
   width:100%; height:100%; object-fit:cover;
 }
-.camera-guide{
-  position:absolute; inset:8% 5%; border:2px dashed rgba(255,255,255,0.35);
-  border-radius:16px; pointer-events:none;
+.camera-guide-overlay{
+  position:absolute; inset:0; pointer-events:none;
 }
-.camera-guide .corner{
+.camera-guide-overlay .guide-box{
+  position:absolute; inset:10% 6%; border:2px dashed rgba(255,255,255,0.35);
+  border-radius:16px;
+}
+.camera-guide-overlay .corner{
   position:absolute; width:30px; height:30px; border-color:rgba(255,255,255,0.6);
   border-style:solid; border-width:0;
 }
-.camera-guide .tl{ top:-2px; left:-2px; border-top-width:3px; border-left-width:3px; }
-.camera-guide .tr{ top:-2px; right:-2px; border-top-width:3px; border-right-width:3px; }
-.camera-guide .bl{ bottom:-2px; left:-2px; border-bottom-width:3px; border-left-width:3px; }
-.camera-guide .br{ bottom:-2px; right:-2px; border-bottom-width:3px; border-right-width:3px; }
+.camera-guide-overlay .tl{ top:-2px; left:-2px; border-top-width:3px; border-left-width:3px; }
+.camera-guide-overlay .tr{ top:-2px; right:-2px; border-top-width:3px; border-right-width:3px; }
+.camera-guide-overlay .bl{ bottom:-2px; left:-2px; border-bottom-width:3px; border-left-width:3px; }
+.camera-guide-overlay .br{ bottom:-2px; right:-2px; border-bottom-width:3px; border-right-width:3px; }
+.camera-guide-overlay .center-cross{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:40px; height:40px; opacity:0.3;
+}
+.camera-guide-overlay .center-cross::before,
+.camera-guide-overlay .center-cross::after{
+  content:''; position:absolute; background:rgba(255,255,255,0.4);
+}
+.camera-guide-overlay .center-cross::before{
+  width:2px; height:100%; left:50%; transform:translateX(-50%);
+}
+.camera-guide-overlay .center-cross::after{
+  height:2px; width:100%; top:50%; transform:translateY(-50%);
+}
 
-.camera-footer{
-  padding:20px 24px calc(env(safe-area-inset-bottom,0px) + 20px);
+.camera-bottom-bar{
+  position:absolute; bottom:0; left:0; right:0; z-index:10;
+  padding:16px 24px calc(env(safe-area-inset-bottom,0px) + 20px);
   display:grid; grid-template-columns:1fr auto 1fr;
   align-items:center;
   background:linear-gradient(0deg, rgba(0,0,0,0.8), transparent);
-  z-index:10;
 }
-.camera-footer .thumb{
+.camera-bottom-bar .thumb{
   width:52px; height:52px; border-radius:10px; border:2px solid #fff;
   overflow:hidden; display:none; cursor:pointer;
   position:relative; background:#222;
 }
-.camera-footer .thumb img{ width:100%; height:100%; object-fit:cover; }
-.camera-footer .thumb .badge{
+.camera-bottom-bar .thumb img{ width:100%; height:100%; object-fit:cover; }
+.camera-bottom-bar .thumb .badge{
   position:absolute; top:-4px; right:-4px;
   background:var(--stamp); color:#fff; font-size:10px; font-weight:bold;
   width:18px; height:18px; border-radius:50%;
@@ -152,16 +177,18 @@ body{
 }
 .capture-btn:disabled{ opacity:0.5; cursor:not-allowed; }
 
-.camera-footer .right-actions{
+.camera-bottom-bar .right-actions{
   display:flex; gap:10px; justify-content:flex-end;
 }
-.camera-footer .right-actions .cam-btn{
+.camera-bottom-bar .right-actions .cam-btn{
   background:rgba(255,255,255,0.15);
   border:none; color:#fff; width:44px; height:44px;
   border-radius:50%; font-size:16px; cursor:pointer;
   backdrop-filter:blur(8px);
+  transition:all .2s;
 }
-.camera-footer .right-actions .cam-btn:active{ transform:scale(0.9); }
+.camera-bottom-bar .right-actions .cam-btn:active{ transform:scale(0.9); }
+.camera-bottom-bar .right-actions .cam-btn.active{ background:rgba(255,255,255,0.3); }
 .done-cam-btn{
   background:var(--success); color:#fff; border:none;
   padding:10px 18px; border-radius:25px; font-weight:700;
@@ -220,7 +247,7 @@ body{
 .toolbar .btn-success{ background:var(--success); color:#fff; }
 .toolbar .btn-danger{ background:var(--danger); color:#fff; }
 
-/* ============ GRID - Preview Images ============ */
+/* ============ GRID ============ */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
@@ -281,10 +308,9 @@ body{
   background:var(--paper-raised);
   margin-bottom:20px;
 }
-.empty-state i{ font-size:32px; display:block; margin-bottom:12px; opacity:0.5; }
 
-/* ============ EDIT MODAL ============ */
-.edit-modal{
+/* ============ CROP MODAL ============ */
+.crop-modal{
   position:fixed; inset:0; background:rgba(0,0,0,0.85);
   backdrop-filter:blur(8px);
   z-index:10000;
@@ -293,8 +319,8 @@ body{
   align-items:center;
   justify-content:center;
 }
-.edit-modal.active{ display:flex; }
-.edit-modal .panel{
+.crop-modal.active{ display:flex; }
+.crop-modal .panel{
   background:var(--paper-raised);
   border-radius:20px;
   max-width:960px; width:100%;
@@ -304,7 +330,7 @@ body{
   overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,0.5);
 }
-.edit-modal .panel-header{
+.crop-modal .panel-header{
   padding:16px 24px;
   border-bottom:1px solid var(--line);
   display:flex;
@@ -312,14 +338,14 @@ body{
   align-items:center;
   background:var(--paper-raised);
 }
-.edit-modal .panel-header h3{ font-family:var(--serif); font-size:1.1rem; }
-.edit-modal .panel-header .close-btn{
+.crop-modal .panel-header h3{ font-family:var(--serif); font-size:1.1rem; }
+.crop-modal .panel-header .close-btn{
   background:none; border:none; font-size:24px;
   cursor:pointer; color:var(--ink-soft);
   transition:color .2s;
 }
-.edit-modal .panel-header .close-btn:hover{ color:var(--ink); }
-.edit-modal .panel-body{
+.crop-modal .panel-header .close-btn:hover{ color:var(--ink); }
+.crop-modal .panel-body{
   padding:20px;
   display:flex;
   flex-wrap:wrap;
@@ -328,7 +354,7 @@ body{
   flex:1;
   background:var(--paper);
 }
-.edit-modal .panel-body .preview-area{
+.crop-modal .panel-body .crop-area{
   flex:1; min-width:300px;
   background:#000; border-radius:12px;
   overflow:hidden;
@@ -336,67 +362,41 @@ body{
   align-items:center;
   justify-content:center;
   position:relative;
-  min-height:320px;
+  min-height:350px;
   max-height:500px;
 }
-.edit-modal .panel-body .preview-area img{
+.crop-modal .panel-body .crop-area canvas{
   max-width:100%; max-height:100%;
   display:block;
-  object-fit:contain;
+  cursor:crosshair;
 }
-.edit-modal .panel-body .settings-area{
+.crop-modal .panel-body .crop-settings{
   flex:0 0 280px;
   display:flex;
   flex-direction:column;
   gap:12px;
 }
-.edit-modal .panel-body .settings-area .group label{
+.crop-modal .panel-body .crop-settings .group label{
   font-size:0.78rem; font-weight:600;
   color:var(--ink-soft);
   display:block; margin-bottom:4px;
 }
-.edit-modal .panel-body .settings-area .group input[type="range"]{
-  width:100%; accent-color:var(--stamp);
-  cursor:pointer;
+.crop-modal .panel-body .crop-settings .group .btn-row{
+  display:flex; gap:8px; flex-wrap:wrap;
 }
-.edit-modal .panel-body .settings-area .group select{
-  width:100%; padding:8px 12px;
-  border-radius:8px; border:1px solid var(--line);
-  font-family:var(--sans); font-size:0.85rem;
-  background:#fff; cursor:pointer;
-}
-.edit-modal .panel-body .settings-area .group .range-val{
-  float:right; font-weight:600; color:var(--stamp);
-}
-.edit-modal .panel-body .settings-area .filter-btns{
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:6px;
-}
-.edit-modal .panel-body .settings-area .filter-btns button{
-  padding:6px 10px; border-radius:8px;
+.crop-modal .panel-body .crop-settings .group .btn-row button{
+  flex:1; padding:8px 12px; border-radius:8px;
   border:1px solid var(--line); background:#fff;
-  cursor:pointer; font-size:0.75rem;
-  font-weight:500; transition:all .2s;
-}
-.edit-modal .panel-body .settings-area .filter-btns button:hover{ border-color:var(--stamp); background:rgba(37,99,235,0.05); }
-.edit-modal .panel-body .settings-area .group .row-btns{
-  display:flex; gap:6px;
-}
-.edit-modal .panel-body .settings-area .group .row-btns button{
-  flex:1; padding:6px; border-radius:8px;
-  border:1px solid var(--line); background:#fff;
-  cursor:pointer; font-size:0.8rem; transition:all .2s;
-}
-.edit-modal .panel-body .settings-area .group .row-btns button:hover{ border-color:var(--stamp); background:rgba(37,99,235,0.05); }
-.edit-modal .panel-body .settings-area .apply-all-btn{
-  padding:10px; border-radius:10px;
-  border:none; background:var(--stamp); color:#fff;
-  font-weight:600; cursor:pointer; width:100%;
+  cursor:pointer; font-size:0.8rem;
   transition:all .2s;
+  min-width:60px;
 }
-.edit-modal .panel-body .settings-area .apply-all-btn:hover{ background:var(--stamp-dark); }
-.edit-modal .panel-body .settings-area .apply-all-btn:active{ transform:scale(0.97); }
-.edit-modal .panel-footer{
+.crop-modal .panel-body .crop-settings .group .btn-row button:hover{ border-color:var(--stamp); background:rgba(37,99,235,0.05); }
+.crop-modal .panel-body .crop-settings .group .btn-row button.primary{
+  background:var(--stamp); color:#fff; border-color:var(--stamp);
+}
+.crop-modal .panel-body .crop-settings .group .btn-row button.primary:hover{ background:var(--stamp-dark); }
+.crop-modal .panel-footer{
   padding:14px 24px;
   border-top:1px solid var(--line);
   display:flex;
@@ -404,21 +404,25 @@ body{
   gap:10px;
   background:var(--paper-raised);
 }
-.edit-modal .panel-footer .btn{
+.crop-modal .panel-footer .btn{
   padding:10px 24px; border-radius:10px;
   border:none; font-weight:600; cursor:pointer;
   transition:all .2s;
 }
-.edit-modal .panel-footer .btn:active{ transform:scale(0.95); }
-.edit-modal .panel-footer .btn-secondary{
+.crop-modal .panel-footer .btn:active{ transform:scale(0.95); }
+.crop-modal .panel-footer .btn-secondary{
   background:var(--ink-soft); color:#fff;
 }
-.edit-modal .panel-footer .btn-secondary:hover{ background:var(--ink); }
-.edit-modal .panel-footer .btn-success{
+.crop-modal .panel-footer .btn-secondary:hover{ background:var(--ink); }
+.crop-modal .panel-footer .btn-success{
   background:var(--success); color:#fff;
   box-shadow:0 3px 0 var(--success-dark);
 }
-.edit-modal .panel-footer .btn-success:hover{ transform:translateY(-2px); }
+.crop-modal .panel-footer .btn-success:hover{ transform:translateY(-2px); }
+.crop-modal .panel-footer .btn-primary{
+  background:var(--stamp); color:#fff;
+}
+.crop-modal .panel-footer .btn-primary:hover{ background:var(--stamp-dark); }
 
 /* ============ SETTINGS BAR ============ */
 .settings-bar{
@@ -590,13 +594,13 @@ body{
 @media(max-width:768px){
   .container{ padding:12px; }
   .grid{ grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px; }
-  .edit-modal .panel-body{ flex-direction:column; }
-  .edit-modal .panel-body .settings-area{ flex:1; }
-  .edit-modal .panel-body .preview-area{ min-height:200px; max-height:300px; }
+  .crop-modal .panel-body{ flex-direction:column; }
+  .crop-modal .panel-body .crop-settings{ flex:1; }
+  .crop-modal .panel-body .crop-area{ min-height:200px; max-height:300px; }
   .toolbar{ gap:8px; }
   .toolbar .btn{ font-size:0.75rem; padding:6px 12px; }
   .settings-bar{ grid-template-columns:1fr 1fr; }
-  .camera-footer{ padding:12px 16px; }
+  .camera-bottom-bar{ padding:12px 16px; }
   .capture-btn{ width:60px; height:60px; }
   .navbar .nav-links{ display:none; }
   .summary{ flex-direction:column; align-items:stretch; }
@@ -635,25 +639,33 @@ body{
   </div>
 </nav>
 
-<!-- ============ FULLSCREEN CAMERA ============ -->
+<!-- ============ FULLSCREEN CAMERA - REALISTIC ============ -->
 <div class="camera-overlay" id="cameraOverlay">
-  <div class="camera-header">
-    <button class="cam-btn" onclick="closeCamera()"><i class="fa-solid fa-xmark"></i></button>
-    <span class="cam-count" id="camCount">0 pages</span>
-    <button class="cam-btn" id="torchBtn" style="display:none;"><i class="fa-solid fa-bolt"></i></button>
+  <div class="camera-top-bar">
+    <button class="close-btn" onclick="closeCamera()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="info">
+      <span class="dot"></span>
+      <span id="camCount">0 pages</span>
+    </div>
+    <button class="close-btn" id="torchBtn" style="display:none; background:rgba(255,255,255,0.15);"><i class="fa-solid fa-bolt"></i></button>
   </div>
-  <div class="camera-view">
+  
+  <div class="camera-viewport">
     <video id="camVideo" autoplay playsinline muted></video>
     <canvas id="captureCanvas" style="display:none;"></canvas>
-    <div class="camera-guide">
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
+    <div class="camera-guide-overlay">
+      <div class="guide-box">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+      </div>
+      <div class="center-cross"></div>
     </div>
     <div class="flash-overlay" id="flashOverlay"></div>
   </div>
-  <div class="camera-footer">
+  
+  <div class="camera-bottom-bar">
     <div class="thumb" id="camThumb" onclick="closeCamera()">
       <img id="thumbImg" src="">
       <span class="badge" id="thumbBadge">0</span>
@@ -662,6 +674,55 @@ body{
     <div class="right-actions">
       <button class="cam-btn" id="switchBtn" style="display:none;"><i class="fa-solid fa-camera-rotate"></i></button>
       <button class="done-cam-btn" id="doneCamBtn"><i class="fa-solid fa-check"></i> Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CROP MODAL ============ -->
+<div class="crop-modal" id="cropModal">
+  <div class="panel">
+    <div class="panel-header">
+      <h3><i class="fa-solid fa-crop" style="color:var(--stamp);"></i> Crop & Edge Detection</h3>
+      <button class="close-btn" onclick="closeCropModal()">&times;</button>
+    </div>
+    <div class="panel-body">
+      <div class="crop-area">
+        <canvas id="cropCanvas"></canvas>
+      </div>
+      <div class="crop-settings">
+        <div class="group">
+          <label>Auto Edge Detection</label>
+          <div class="btn-row">
+            <button class="primary" onclick="autoDetectEdges()"><i class="fa-solid fa-crosshairs"></i> Detect</button>
+            <button onclick="resetCrop()"><i class="fa-solid fa-arrows-rotate"></i> Reset</button>
+          </div>
+        </div>
+        <div class="group">
+          <label>Apply To</label>
+          <div class="btn-row">
+            <button onclick="applyCropToCurrent()"><i class="fa-solid fa-check"></i> This Page</button>
+            <button onclick="applyCropToAll()"><i class="fa-solid fa-copy"></i> All Pages</button>
+          </div>
+        </div>
+        <div class="group">
+          <label>Quick Crop</label>
+          <div class="btn-row">
+            <button onclick="setCropPreset('auto')">Auto</button>
+            <button onclick="setCropPreset('document')">Document</button>
+            <button onclick="setCropPreset('square')">Square</button>
+            <button onclick="setCropPreset('wide')">Wide</button>
+          </div>
+        </div>
+        <div class="group">
+          <label style="color:var(--ink-muted); font-size:0.7rem;">
+            <i class="fa-solid fa-info-circle"></i> Drag corners to adjust crop
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn btn-secondary" onclick="closeCropModal()">Cancel</button>
+      <button class="btn btn-success" onclick="applyCropToCurrent()"><i class="fa-solid fa-check"></i> Apply Crop</button>
     </div>
   </div>
 </div>
@@ -686,10 +747,10 @@ body{
     <button class="btn btn-danger" onclick="clearAll()"><i class="fa-solid fa-trash"></i> Clear</button>
   </div>
 
-  <!-- GRID - Preview Images with Edit Icons -->
+  <!-- GRID -->
   <div class="grid" id="grid"></div>
   <div class="empty-state" id="emptyState">
-    <i class="fa-regular fa-image"></i>
+    <i class="fa-regular fa-image" style="font-size:32px; display:block; margin-bottom:12px; opacity:0.5;"></i>
     No pages scanned yet. Tap "Scan Document" to capture your first page.
   </div>
 
@@ -776,70 +837,6 @@ body{
 
 </div>
 
-<!-- ============ EDIT MODAL ============ -->
-<div class="edit-modal" id="editModal">
-  <div class="panel">
-    <div class="panel-header">
-      <h3><i class="fa-solid fa-sliders" style="color:var(--stamp);"></i> Edit Page</h3>
-      <button class="close-btn" onclick="closeEditModal()">&times;</button>
-    </div>
-    <div class="panel-body">
-      <div class="preview-area">
-        <img id="editPreview" src="" alt="Preview">
-      </div>
-      <div class="settings-area">
-        <div class="group">
-          <label>Filter</label>
-          <select id="editFilter" onchange="updateEditPreview()">
-            <option value="none">Original</option>
-            <option value="magic" selected>✨ Magic Enhance</option>
-            <option value="bw">⚫ B&W Document</option>
-            <option value="grayscale">🎨 Grayscale</option>
-            <option value="bright">☀️ Brightness+</option>
-            <option value="contrast">🔲 High Contrast</option>
-            <option value="sharpen">🔍 Sharpen</option>
-          </select>
-        </div>
-        <div class="group">
-          <label>Brightness <span class="range-val" id="brightVal">0</span></label>
-          <input type="range" id="brightness" min="-100" max="100" value="0" oninput="updateEditPreview()">
-        </div>
-        <div class="group">
-          <label>Contrast <span class="range-val" id="contrastVal">0</span></label>
-          <input type="range" id="contrast" min="-100" max="100" value="0" oninput="updateEditPreview()">
-        </div>
-        <div class="group">
-          <label>Quick Filters</label>
-          <div class="filter-btns">
-            <button onclick="quickFilter('magic')">✨ Magic</button>
-            <button onclick="quickFilter('bw')">⚫ B&W</button>
-            <button onclick="quickFilter('grayscale')">🎨 Gray</button>
-            <button onclick="quickFilter('bright')">☀️ Bright</button>
-          </div>
-        </div>
-        <div class="group">
-          <label>Rotation</label>
-          <div class="row-btns">
-            <button onclick="rotateEditImage(-90)">↺ 90°</button>
-            <button onclick="rotateEditImage(90)">↻ 90°</button>
-            <button onclick="resetEditImage()">↺ Reset</button>
-          </div>
-        </div>
-        <button class="apply-all-btn" onclick="applyToAllPages()">
-          <i class="fa-solid fa-copy"></i> Apply to All Pages
-        </button>
-      </div>
-    </div>
-    <div class="panel-footer">
-      <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-      <button class="btn btn-success" onclick="saveEdit()"><i class="fa-solid fa-check"></i> Apply & Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============ TOAST ============ -->
-<div id="toast"></div>
-
 <!-- ============ FOOTER ============ -->
 <footer class="footer">
   <div class="footer-inner">
@@ -868,18 +865,21 @@ body{
   </div>
 </footer>
 
+<!-- ============ TOAST ============ -->
+<div id="toast"></div>
+
 <script>
 // ======================= STATE =======================
 let images = [];
-let editIndex = null;
-let editImageData = null;
-let editFilter = 'magic';
-let editBrightness = 0;
-let editContrast = 0;
+let cropIndex = null;
+let cropImageData = null;
+let cropPoints = [];
 let generatedFile = null;
 let mediaStream = null;
 let facingMode = 'environment';
 let torchOn = false;
+let isDragging = false;
+let dragPoint = -1;
 
 // ======================= TOAST =======================
 function toast(msg){
@@ -918,21 +918,18 @@ function processImage(img, filter, brightness, contrast){
   for(let i = 0; i < data.length; i += 4){
     let r = data[i], g = data[i+1], bl = data[i+2];
 
-    // Contrast
     if(contrast !== 0){
       r = factor * (r - 128) + 128;
       g = factor * (g - 128) + 128;
       bl = factor * (bl - 128) + 128;
     }
 
-    // Brightness
     if(brightness !== 0){
       r += b * 255;
       g += b * 255;
       bl += b * 255;
     }
 
-    // Filters
     if(filter === 'grayscale'){
       const gray = r * 0.299 + g * 0.587 + bl * 0.114;
       r = g = bl = gray;
@@ -1004,12 +1001,12 @@ function renderGrid(){
     card.innerHTML = `
       <div class="num">${index + 1}</div>
       <div class="actions">
-        <button class="icon-btn edit-btn" onclick="event.stopPropagation(); openEditModal(${index})"><i class="fa-solid fa-pen"></i></button>
-        <button class="icon-btn del-btn" onclick="event.stopPropagation(); removePage(${index})"><i class="fa-solid fa-xmark"></i></button>
+        <button class="icon-btn edit-btn" onclick="event.stopPropagation(); openCropModal(${index})" title="Crop & Edit"><i class="fa-solid fa-crop"></i></button>
+        <button class="icon-btn del-btn" onclick="event.stopPropagation(); removePage(${index})" title="Remove"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="thumb"><img src="${item.data}" alt="Page ${index+1}" loading="lazy"></div>
     `;
-    card.onclick = () => openEditModal(index);
+    card.onclick = () => openCropModal(index);
     gridEl.appendChild(card);
   });
 
@@ -1153,113 +1150,290 @@ function captureFrame(){
   toast('Page captured!');
 }
 
-// ======================= EDIT MODAL =======================
-function openEditModal(index){
-  editIndex = index;
+// ======================= CROP MODAL =======================
+const cropCanvas = document.getElementById('cropCanvas');
+const ctx = cropCanvas.getContext('2d');
+let cropImg = new Image();
+
+function openCropModal(index){
+  cropIndex = index;
   const img = images[index];
-  editImageData = img.original;
-  editFilter = img.filter || 'magic';
-  editBrightness = img.brightness || 0;
-  editContrast = img.contrast || 0;
-
-  document.getElementById('editPreview').src = img.data;
-  document.getElementById('editFilter').value = editFilter;
-  document.getElementById('brightness').value = editBrightness;
-  document.getElementById('contrast').value = editContrast;
-  document.getElementById('brightVal').textContent = editBrightness;
-  document.getElementById('contrastVal').textContent = editContrast;
-
-  document.getElementById('editModal').classList.add('active');
+  cropImageData = img.original;
+  
+  cropImg.onload = function(){
+    cropCanvas.width = cropImg.width;
+    cropCanvas.height = cropImg.height;
+    resetCrop();
+    document.getElementById('cropModal').classList.add('active');
+  };
+  cropImg.src = cropImageData;
 }
 
-function closeEditModal(){
-  document.getElementById('editModal').classList.remove('active');
-  editIndex = null;
-  editImageData = null;
+function closeCropModal(){
+  document.getElementById('cropModal').classList.remove('active');
+  cropIndex = null;
+  cropImageData = null;
 }
 
-function updateEditPreview(){
-  if(editIndex === null) return;
-  const filter = document.getElementById('editFilter').value;
-  const brightness = parseInt(document.getElementById('brightness').value);
-  const contrast = parseInt(document.getElementById('contrast').value);
-  document.getElementById('brightVal').textContent = brightness;
-  document.getElementById('contrastVal').textContent = contrast;
+function resetCrop(){
+  const w = cropCanvas.width;
+  const h = cropCanvas.height;
+  cropPoints = [
+    {x: w * 0.05, y: h * 0.05},
+    {x: w * 0.95, y: h * 0.05},
+    {x: w * 0.95, y: h * 0.95},
+    {x: w * 0.05, y: h * 0.95}
+  ];
+  drawCropCanvas();
+}
 
-  loadImage(editImageData).then(img => {
-    const processed = processImage(img, filter, brightness, contrast);
-    document.getElementById('editPreview').src = processed;
+function drawCropCanvas(){
+  ctx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+  ctx.drawImage(cropImg, 0, 0);
+  
+  // Draw crop area
+  ctx.beginPath();
+  ctx.moveTo(cropPoints[0].x, cropPoints[0].y);
+  for(let i = 1; i < 4; i++){
+    ctx.lineTo(cropPoints[i].x, cropPoints[i].y);
+  }
+  ctx.closePath();
+  ctx.strokeStyle = '#2563eb';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
+  ctx.fill();
+  
+  // Draw corner handles
+  cropPoints.forEach((p, i) => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 8, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ef4444';
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
   });
 }
 
-function quickFilter(filter){
-  document.getElementById('editFilter').value = filter;
-  updateEditPreview();
+function getCanvasCoords(e){
+  const rect = cropCanvas.getBoundingClientRect();
+  const scaleX = cropCanvas.width / rect.width;
+  const scaleY = cropCanvas.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: Math.max(0, Math.min(cropCanvas.width, (clientX - rect.left) * scaleX)),
+    y: Math.max(0, Math.min(cropCanvas.height, (clientY - rect.top) * scaleY))
+  };
 }
 
-function rotateEditImage(deg){
-  if(editIndex === null) return;
-  loadImage(editImageData).then(img => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const swapped = Math.abs(deg) % 180 === 90;
-    canvas.width = swapped ? img.height : img.width;
-    canvas.height = swapped ? img.width : img.height;
-    ctx.translate(canvas.width/2, canvas.height/2);
-    ctx.rotate(deg * Math.PI / 180);
-    ctx.drawImage(img, -img.width/2, -img.height/2);
-    editImageData = canvas.toDataURL('image/jpeg', 0.92);
-    document.getElementById('editPreview').src = editImageData;
+cropCanvas.addEventListener('mousedown', (e) => {
+  const pos = getCanvasCoords(e);
+  cropPoints.forEach((p, i) => {
+    if(Math.hypot(p.x - pos.x, p.y - pos.y) < 15){
+      isDragging = true;
+      dragPoint = i;
+    }
   });
+});
+
+cropCanvas.addEventListener('mousemove', (e) => {
+  if(isDragging && dragPoint >= 0){
+    const pos = getCanvasCoords(e);
+    cropPoints[dragPoint] = pos;
+    drawCropCanvas();
+  }
+});
+
+cropCanvas.addEventListener('mouseup', () => {
+  isDragging = false;
+  dragPoint = -1;
+});
+
+cropCanvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  const pos = getCanvasCoords(e);
+  cropPoints.forEach((p, i) => {
+    if(Math.hypot(p.x - pos.x, p.y - pos.y) < 20){
+      isDragging = true;
+      dragPoint = i;
+    }
+  });
+}, {passive: false});
+
+cropCanvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  if(isDragging && dragPoint >= 0){
+    const pos = getCanvasCoords(e);
+    cropPoints[dragPoint] = pos;
+    drawCropCanvas();
+  }
+}, {passive: false});
+
+cropCanvas.addEventListener('touchend', () => {
+  isDragging = false;
+  dragPoint = -1;
+});
+
+function autoDetectEdges(){
+  toast('Detecting document edges...');
+  
+  // Simple edge detection using canvas
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = cropCanvas.width;
+  tempCanvas.height = cropCanvas.height;
+  const tempCtx = tempCanvas.getContext('2d');
+  tempCtx.drawImage(cropImg, 0, 0);
+  
+  const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+  const data = imageData.data;
+  
+  // Find document edges (simple approach - find darkest corners)
+  const w = tempCanvas.width;
+  const h = tempCanvas.height;
+  
+  // Sample from corners to find document boundaries
+  const samples = [
+    {x: w*0.1, y: h*0.1}, {x: w*0.9, y: h*0.1},
+    {x: w*0.9, y: h*0.9}, {x: w*0.1, y: h*0.9}
+  ];
+  
+  // Find darkest points near corners
+  const margin = Math.min(w, h) * 0.05;
+  const points = samples.map((s, idx) => {
+    let bestX = s.x, bestY = s.y;
+    let bestDark = 255;
+    
+    for(let dy = -margin; dy <= margin; dy += 4){
+      for(let dx = -margin; dx <= margin; dx += 4){
+        const px = Math.max(0, Math.min(w-1, s.x + dx));
+        const py = Math.max(0, Math.min(h-1, s.y + dy));
+        const idx2 = (py * w + px) * 4;
+        const brightness = (data[idx2] + data[idx2+1] + data[idx2+2]) / 3;
+        if(brightness < bestDark){
+          bestDark = brightness;
+          bestX = px;
+          bestY = py;
+        }
+      }
+    }
+    return {x: bestX, y: bestY};
+  });
+  
+  // Order points: top-left, top-right, bottom-right, bottom-left
+  points.sort((a,b) => a.y - b.y);
+  const top = points.slice(0,2).sort((a,b) => a.x - b.x);
+  const bottom = points.slice(2,4).sort((a,b) => b.x - a.x);
+  
+  cropPoints = [
+    top[0], top[1],
+    bottom[0], bottom[1]
+  ];
+  
+  drawCropCanvas();
+  toast('Edges detected! Adjust if needed.');
 }
 
-function resetEditImage(){
-  if(editIndex === null) return;
-  editImageData = images[editIndex].original;
-  document.getElementById('brightness').value = 0;
-  document.getElementById('contrast').value = 0;
-  document.getElementById('editFilter').value = 'magic';
-  document.getElementById('brightVal').textContent = '0';
-  document.getElementById('contrastVal').textContent = '0';
-  document.getElementById('editPreview').src = editImageData;
+function setCropPreset(type){
+  const w = cropCanvas.width;
+  const h = cropCanvas.height;
+  const margin = Math.min(w, h) * 0.08;
+  
+  switch(type){
+    case 'auto':
+      autoDetectEdges();
+      return;
+    case 'document':
+      cropPoints = [
+        {x: margin, y: margin},
+        {x: w - margin, y: margin},
+        {x: w - margin, y: h - margin},
+        {x: margin, y: h - margin}
+      ];
+      break;
+    case 'square':
+      const size = Math.min(w, h) - margin * 2;
+      const xOffset = (w - size) / 2;
+      const yOffset = (h - size) / 2;
+      cropPoints = [
+        {x: xOffset, y: yOffset},
+        {x: xOffset + size, y: yOffset},
+        {x: xOffset + size, y: yOffset + size},
+        {x: xOffset, y: yOffset + size}
+      ];
+      break;
+    case 'wide':
+      const wMargin = w * 0.05;
+      const hMargin = h * 0.12;
+      cropPoints = [
+        {x: wMargin, y: hMargin},
+        {x: w - wMargin, y: hMargin},
+        {x: w - wMargin, y: h - hMargin},
+        {x: wMargin, y: h - hMargin}
+      ];
+      break;
+  }
+  drawCropCanvas();
 }
 
-function applyToAllPages(){
-  if(editIndex === null) return;
-  const filter = document.getElementById('editFilter').value;
-  const brightness = parseInt(document.getElementById('brightness').value);
-  const contrast = parseInt(document.getElementById('contrast').value);
+function applyCropToCurrent(){
+  if(cropIndex === null) return;
+  
+  // Get cropped image
+  const tempCanvas = document.createElement('canvas');
+  const tempCtx = tempCanvas.getContext('2d');
+  
+  // Calculate crop area
+  const minX = Math.min(...cropPoints.map(p => p.x));
+  const maxX = Math.max(...cropPoints.map(p => p.x));
+  const minY = Math.min(...cropPoints.map(p => p.y));
+  const maxY = Math.max(...cropPoints.map(p => p.y));
+  
+  const cropW = maxX - minX;
+  const cropH = maxY - minY;
+  
+  tempCanvas.width = cropW;
+  tempCanvas.height = cropH;
+  
+  tempCtx.drawImage(cropImg, minX, minY, cropW, cropH, 0, 0, cropW, cropH);
+  const croppedData = tempCanvas.toDataURL('image/jpeg', 0.92);
+  
+  images[cropIndex].original = croppedData;
+  images[cropIndex].data = croppedData;
+  
+  renderGrid();
+  closeCropModal();
+  toast('Crop applied to page!');
+}
 
-  toast('Applying to all pages...');
-  Promise.all(images.map((img, i) => {
-    return loadImage(img.original).then(el => {
-      const processed = processImage(el, filter, brightness, contrast);
-      images[i].data = processed;
-      images[i].filter = filter;
-      images[i].brightness = brightness;
-      images[i].contrast = contrast;
-    });
+function applyCropToAll(){
+  if(cropIndex === null) return;
+  
+  const minX = Math.min(...cropPoints.map(p => p.x));
+  const maxX = Math.max(...cropPoints.map(p => p.x));
+  const minY = Math.min(...cropPoints.map(p => p.y));
+  const maxY = Math.max(...cropPoints.map(p => p.y));
+  const cropW = maxX - minX;
+  const cropH = maxY - minY;
+  
+  toast('Applying crop to all pages...');
+  
+  Promise.all(images.map(async (img, i) => {
+    const imgEl = await loadImage(img.original);
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = cropW;
+    tempCanvas.height = cropH;
+    tempCtx.drawImage(imgEl, minX, minY, cropW, cropH, 0, 0, cropW, cropH);
+    const data = tempCanvas.toDataURL('image/jpeg', 0.92);
+    images[i].original = data;
+    images[i].data = data;
+    return true;
   })).then(() => {
     renderGrid();
-    toast('Applied to all pages!');
-  });
-}
-
-function saveEdit(){
-  if(editIndex === null) return;
-  const filter = document.getElementById('editFilter').value;
-  const brightness = parseInt(document.getElementById('brightness').value);
-  const contrast = parseInt(document.getElementById('contrast').value);
-
-  loadImage(editImageData).then(img => {
-    const processed = processImage(img, filter, brightness, contrast);
-    images[editIndex].data = processed;
-    images[editIndex].filter = filter;
-    images[editIndex].brightness = brightness;
-    images[editIndex].contrast = contrast;
-    renderGrid();
-    closeEditModal();
-    toast('Page updated!');
+    closeCropModal();
+    toast('Crop applied to all pages!');
   });
 }
 
@@ -1295,7 +1469,6 @@ function rotateAll(deg){
       const data = canvas.toDataURL('image/jpeg', 0.92);
       images[i].original = data;
       images[i].data = data;
-      images[i].rotation = (img.rotation || 0) + deg;
     });
   })).then(() => {
     renderGrid();
@@ -1320,7 +1493,6 @@ async function generatePDF(){
     const margin = parseInt(document.getElementById('margin').value);
     const watermark = document.getElementById('watermark').value.trim();
     const watermarkOpacity = parseFloat(document.getElementById('watermarkOpacity').value);
-    const quality = parseFloat(document.getElementById('quality').value);
 
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: format });
     const pageW = pdf.internal.pageSize.getWidth();
@@ -1339,7 +1511,6 @@ async function generatePDF(){
 
       pdf.addImage(images[i].data, 'JPEG', x, y, rw, rh, undefined, 'FAST');
 
-      // Watermark
       if(watermark){
         pdf.saveGraphicsState();
         pdf.setGState(new pdf.GState({ opacity: watermarkOpacity }));
@@ -1350,7 +1521,6 @@ async function generatePDF(){
         pdf.restoreGraphicsState();
       }
 
-      // Footer
       const fy = pageH - margin + 2;
       pdf.setDrawColor(200,200,200);
       pdf.setLineWidth(0.3);
@@ -1360,7 +1530,6 @@ async function generatePDF(){
       pdf.setTextColor(140,140,150);
       pdf.text(`Page ${i+1} of ${images.length}`, margin, fy + 4);
       
-      // Logo in footer
       try {
         const logoImg = new Image();
         logoImg.src = 'images/logo.png';
@@ -1428,7 +1597,7 @@ renderGrid();
 // Close modals with Escape
 document.addEventListener('keydown', (e) => {
   if(e.key === 'Escape'){
-    closeEditModal();
+    closeCropModal();
     closeCamera();
   }
 });
