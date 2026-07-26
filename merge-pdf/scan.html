@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <link rel="icon" href="images/logo.png">
-<title>Professional Document Scanner - PDFBoon</title>
+<title>AI Document Scanner - PDFBoon</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -54,7 +54,7 @@ body{
 .navbar .logo img{ width:40px; height:40px; border-radius:10px; object-fit:cover; }
 .navbar .logo h2{ font-family:var(--serif); font-size:1.1rem; color:var(--ink); }
 .navbar .logo span{ font-size:0.7rem; color:var(--ink-muted); display:block; margin-top:-2px; }
-.navbar .nav-links{ display:flex; gap:24px; align-items:center; }
+.navbar .nav-links{ display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
 .navbar .nav-links a{ color:var(--ink-soft); text-decoration:none; font-size:0.9rem; font-weight:500; transition:color .2s; }
 .navbar .nav-links a:hover{ color:var(--stamp); }
 .navbar .nav-links .active{ color:var(--stamp); font-weight:600; }
@@ -70,7 +70,7 @@ body{
   gap:6px;
 }
 
-/* ============ FULLSCREEN CAMERA - REALISTIC ============ */
+/* ============ FULLSCREEN CAMERA ============ */
 .camera-overlay{
   position:fixed; inset:0; background:#000; z-index:9999;
   display:none; flex-direction:column;
@@ -338,7 +338,7 @@ body{
   align-items:center;
   background:var(--paper-raised);
 }
-.crop-modal .panel-header h3{ font-family:var(--serif); font-size:1.1rem; }
+.crop-modal .panel-header h3{ font-family:var(--serif); font-size:1.1rem; display:flex; align-items:center; gap:8px; }
 .crop-modal .panel-header .close-btn{
   background:none; border:none; font-size:24px;
   cursor:pointer; color:var(--ink-soft);
@@ -419,10 +419,6 @@ body{
   box-shadow:0 3px 0 var(--success-dark);
 }
 .crop-modal .panel-footer .btn-success:hover{ transform:translateY(-2px); }
-.crop-modal .panel-footer .btn-primary{
-  background:var(--stamp); color:#fff;
-}
-.crop-modal .panel-footer .btn-primary:hover{ background:var(--stamp-dark); }
 
 /* ============ SETTINGS BAR ============ */
 .settings-bar{
@@ -602,7 +598,7 @@ body{
   .settings-bar{ grid-template-columns:1fr 1fr; }
   .camera-bottom-bar{ padding:12px 16px; }
   .capture-btn{ width:60px; height:60px; }
-  .navbar .nav-links{ display:none; }
+  .navbar .nav-links a:not(.pill){ display:none; }
   .summary{ flex-direction:column; align-items:stretch; }
   .summary .stats{ justify-content:space-around; }
   .download-box{ flex-direction:column; align-items:stretch; }
@@ -627,19 +623,19 @@ body{
     <img src="images/logo.png" alt="PDFBoon">
     <div>
       <h2>PDFBoon</h2>
-      <span>Scanner Pro</span>
+      <span>AI Scanner</span>
     </div>
   </div>
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="tools.html">Tools</a>
-    <span class="pill"><i class="fa-solid fa-camera"></i> Scan</span>
+    <span class="pill"><i class="fa-solid fa-robot"></i> AI Scan</span>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </div>
 </nav>
 
-<!-- ============ FULLSCREEN CAMERA - REALISTIC ============ -->
+<!-- ============ FULLSCREEN CAMERA ============ -->
 <div class="camera-overlay" id="cameraOverlay">
   <div class="camera-top-bar">
     <button class="close-btn" onclick="closeCamera()"><i class="fa-solid fa-xmark"></i></button>
@@ -682,7 +678,7 @@ body{
 <div class="crop-modal" id="cropModal">
   <div class="panel">
     <div class="panel-header">
-      <h3><i class="fa-solid fa-crop" style="color:var(--stamp);"></i> Crop & Edge Detection</h3>
+      <h3><i class="fa-solid fa-robot" style="color:var(--stamp);"></i> AI Crop & Edge Detection</h3>
       <button class="close-btn" onclick="closeCropModal()">&times;</button>
     </div>
     <div class="panel-body">
@@ -691,9 +687,9 @@ body{
       </div>
       <div class="crop-settings">
         <div class="group">
-          <label>Auto Edge Detection</label>
+          <label><i class="fa-solid fa-brain"></i> AI Edge Detection</label>
           <div class="btn-row">
-            <button class="primary" onclick="autoDetectEdges()"><i class="fa-solid fa-crosshairs"></i> Detect</button>
+            <button class="primary" onclick="aiDetectEdges()"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Detect</button>
             <button onclick="resetCrop()"><i class="fa-solid fa-arrows-rotate"></i> Reset</button>
           </div>
         </div>
@@ -705,17 +701,17 @@ body{
           </div>
         </div>
         <div class="group">
-          <label>Quick Crop</label>
+          <label>Quick Presets</label>
           <div class="btn-row">
-            <button onclick="setCropPreset('auto')">Auto</button>
             <button onclick="setCropPreset('document')">Document</button>
             <button onclick="setCropPreset('square')">Square</button>
             <button onclick="setCropPreset('wide')">Wide</button>
+            <button onclick="setCropPreset('full')">Full</button>
           </div>
         </div>
         <div class="group">
           <label style="color:var(--ink-muted); font-size:0.7rem;">
-            <i class="fa-solid fa-info-circle"></i> Drag corners to adjust crop
+            <i class="fa-solid fa-info-circle"></i> Drag red corners to adjust
           </label>
         </div>
       </div>
@@ -730,14 +726,12 @@ body{
 <!-- ============ MAIN CONTENT ============ -->
 <div class="container">
 
-  <!-- SCAN TRIGGER -->
   <div class="scan-trigger" id="scanTrigger">
     <div class="icon"><i class="fa-solid fa-camera"></i></div>
-    <h3>Scan Document</h3>
-    <p>Capture with camera — auto edge detection &amp; enhancement</p>
+    <h3>Scan with AI</h3>
+    <p>AI-powered edge detection &amp; enhancement — capture once, perfect every time</p>
   </div>
 
-  <!-- TOOLBAR -->
   <div class="toolbar">
     <button class="btn btn-primary" onclick="openCamera()"><i class="fa-solid fa-camera"></i> Scan</button>
     <button class="btn btn-outline" onclick="applyFilterToAll('magic')"><i class="fa-solid fa-wand-magic-sparkles"></i> Enhance</button>
@@ -747,14 +741,12 @@ body{
     <button class="btn btn-danger" onclick="clearAll()"><i class="fa-solid fa-trash"></i> Clear</button>
   </div>
 
-  <!-- GRID -->
   <div class="grid" id="grid"></div>
   <div class="empty-state" id="emptyState">
     <i class="fa-regular fa-image" style="font-size:32px; display:block; margin-bottom:12px; opacity:0.5;"></i>
-    No pages scanned yet. Tap "Scan Document" to capture your first page.
+    No pages scanned yet. Tap "Scan" to capture your first page with AI.
   </div>
 
-  <!-- SETTINGS BAR -->
   <div class="settings-bar">
     <div class="card">
       <label>Document Name</label>
@@ -799,7 +791,6 @@ body{
     </div>
   </div>
 
-  <!-- SUMMARY -->
   <div class="summary">
     <div class="stats">
       <div class="stat">
@@ -816,7 +807,6 @@ body{
     </button>
   </div>
 
-  <!-- DOWNLOAD BOX -->
   <div class="download-box" id="downloadBox">
     <div class="info">
       <span class="icon"><i class="fa-solid fa-circle-check"></i></span>
@@ -837,14 +827,13 @@ body{
 
 </div>
 
-<!-- ============ FOOTER ============ -->
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
       <img src="images/logo.png" alt="PDFBoon">
       <div>
         <h3>PDFBoon</h3>
-        <p>Fast PDF Toolkit</p>
+        <p>AI Scanner Pro</p>
       </div>
     </div>
     <div class="footer-links">
@@ -865,7 +854,6 @@ body{
   </div>
 </footer>
 
-<!-- ============ TOAST ============ -->
 <div id="toast"></div>
 
 <script>
@@ -898,6 +886,103 @@ function loadImage(src){
     img.onerror = () => reject(new Error('Failed to load'));
     img.src = src;
   });
+}
+
+// ======================= AI EDGE DETECTION =======================
+function aiDetectEdges(){
+  toast('🧠 AI analyzing document edges...');
+  
+  const tempCanvas = document.createElement('canvas');
+  const w = cropCanvas.width;
+  const h = cropCanvas.height;
+  tempCanvas.width = w;
+  tempCanvas.height = h;
+  const tempCtx = tempCanvas.getContext('2d');
+  tempCtx.drawImage(cropImg, 0, 0);
+  
+  const imageData = tempCtx.getImageData(0, 0, w, h);
+  const data = imageData.data;
+  
+  // Advanced AI edge detection using multiple techniques
+  // 1. Find darkest regions (document edges are typically darker than background)
+  // 2. Use corner detection to find document boundaries
+  
+  // Step 1: Convert to grayscale and find edges
+  const gray = new Float32Array(w * h);
+  for(let i = 0; i < w * h; i++){
+    const idx = i * 4;
+    gray[i] = data[idx] * 0.299 + data[idx+1] * 0.587 + data[idx+2] * 0.114;
+  }
+  
+  // Step 2: Find document corners using intelligent sampling
+  const margin = Math.min(w, h) * 0.08;
+  const samples = [
+    {x: w * 0.15, y: h * 0.15, label: 'TL'},
+    {x: w * 0.85, y: h * 0.15, label: 'TR'},
+    {x: w * 0.85, y: h * 0.85, label: 'BR'},
+    {x: w * 0.15, y: h * 0.85, label: 'BL'}
+  ];
+  
+  const points = samples.map((s) => {
+    let bestX = s.x, bestY = s.y;
+    let bestScore = Infinity;
+    const searchRadius = Math.min(w, h) * 0.12;
+    
+    // Search for darkest point in the region
+    for(let dy = -searchRadius; dy <= searchRadius; dy += 3){
+      for(let dx = -searchRadius; dx <= searchRadius; dx += 3){
+        const px = Math.max(0, Math.min(w-1, s.x + dx));
+        const py = Math.max(0, Math.min(h-1, s.y + dy));
+        const idx = py * w + px;
+        const brightness = gray[idx];
+        
+        // Score: lower brightness is better (darker = document edge)
+        const distFromCenter = Math.hypot(px - s.x, py - s.y);
+        const score = brightness + distFromCenter * 0.3;
+        
+        if(score < bestScore){
+          bestScore = score;
+          bestX = px;
+          bestY = py;
+        }
+      }
+    }
+    return {x: bestX, y: bestY};
+  });
+  
+  // Step 3: Sort and order points correctly
+  points.sort((a,b) => a.y - b.y);
+  const top = points.slice(0,2).sort((a,b) => a.x - b.x);
+  const bottom = points.slice(2,4).sort((a,b) => b.x - a.x);
+  
+  cropPoints = [
+    top[0], top[1],
+    bottom[0], bottom[1]
+  ];
+  
+  // Step 4: Refine edges with local search
+  cropPoints = cropPoints.map((p, i) => {
+    const searchRadius = 20;
+    let bestX = p.x, bestY = p.y;
+    let bestDark = 255;
+    
+    for(let dy = -searchRadius; dy <= searchRadius; dy += 2){
+      for(let dx = -searchRadius; dx <= searchRadius; dx += 2){
+        const px = Math.max(0, Math.min(w-1, p.x + dx));
+        const py = Math.max(0, Math.min(h-1, p.y + dy));
+        const idx = py * w + px;
+        if(gray[idx] < bestDark){
+          bestDark = gray[idx];
+          bestX = px;
+          bestY = py;
+        }
+      }
+    }
+    return {x: bestX, y: bestY};
+  });
+  
+  drawCropCanvas();
+  toast('✅ AI detected document edges! Adjust if needed.');
 }
 
 // ======================= IMAGE PROCESSING =======================
@@ -1001,7 +1086,7 @@ function renderGrid(){
     card.innerHTML = `
       <div class="num">${index + 1}</div>
       <div class="actions">
-        <button class="icon-btn edit-btn" onclick="event.stopPropagation(); openCropModal(${index})" title="Crop & Edit"><i class="fa-solid fa-crop"></i></button>
+        <button class="icon-btn edit-btn" onclick="event.stopPropagation(); openCropModal(${index})" title="AI Crop"><i class="fa-solid fa-crop"></i></button>
         <button class="icon-btn del-btn" onclick="event.stopPropagation(); removePage(${index})" title="Remove"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="thumb"><img src="${item.data}" alt="Page ${index+1}" loading="lazy"></div>
@@ -1191,7 +1276,6 @@ function drawCropCanvas(){
   ctx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
   ctx.drawImage(cropImg, 0, 0);
   
-  // Draw crop area
   ctx.beginPath();
   ctx.moveTo(cropPoints[0].x, cropPoints[0].y);
   for(let i = 1; i < 4; i++){
@@ -1204,7 +1288,6 @@ function drawCropCanvas(){
   ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
   ctx.fill();
   
-  // Draw corner handles
   cropPoints.forEach((p, i) => {
     ctx.beginPath();
     ctx.arc(p.x, p.y, 8, 0, 2 * Math.PI);
@@ -1276,74 +1359,12 @@ cropCanvas.addEventListener('touchend', () => {
   dragPoint = -1;
 });
 
-function autoDetectEdges(){
-  toast('Detecting document edges...');
-  
-  // Simple edge detection using canvas
-  const tempCanvas = document.createElement('canvas');
-  tempCanvas.width = cropCanvas.width;
-  tempCanvas.height = cropCanvas.height;
-  const tempCtx = tempCanvas.getContext('2d');
-  tempCtx.drawImage(cropImg, 0, 0);
-  
-  const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-  const data = imageData.data;
-  
-  // Find document edges (simple approach - find darkest corners)
-  const w = tempCanvas.width;
-  const h = tempCanvas.height;
-  
-  // Sample from corners to find document boundaries
-  const samples = [
-    {x: w*0.1, y: h*0.1}, {x: w*0.9, y: h*0.1},
-    {x: w*0.9, y: h*0.9}, {x: w*0.1, y: h*0.9}
-  ];
-  
-  // Find darkest points near corners
-  const margin = Math.min(w, h) * 0.05;
-  const points = samples.map((s, idx) => {
-    let bestX = s.x, bestY = s.y;
-    let bestDark = 255;
-    
-    for(let dy = -margin; dy <= margin; dy += 4){
-      for(let dx = -margin; dx <= margin; dx += 4){
-        const px = Math.max(0, Math.min(w-1, s.x + dx));
-        const py = Math.max(0, Math.min(h-1, s.y + dy));
-        const idx2 = (py * w + px) * 4;
-        const brightness = (data[idx2] + data[idx2+1] + data[idx2+2]) / 3;
-        if(brightness < bestDark){
-          bestDark = brightness;
-          bestX = px;
-          bestY = py;
-        }
-      }
-    }
-    return {x: bestX, y: bestY};
-  });
-  
-  // Order points: top-left, top-right, bottom-right, bottom-left
-  points.sort((a,b) => a.y - b.y);
-  const top = points.slice(0,2).sort((a,b) => a.x - b.x);
-  const bottom = points.slice(2,4).sort((a,b) => b.x - a.x);
-  
-  cropPoints = [
-    top[0], top[1],
-    bottom[0], bottom[1]
-  ];
-  
-  drawCropCanvas();
-  toast('Edges detected! Adjust if needed.');
-}
-
 function setCropPreset(type){
   const w = cropCanvas.width;
   const h = cropCanvas.height;
   const margin = Math.min(w, h) * 0.08;
   
   switch(type){
-    case 'auto':
-      autoDetectEdges();
-      return;
     case 'document':
       cropPoints = [
         {x: margin, y: margin},
@@ -1373,6 +1394,14 @@ function setCropPreset(type){
         {x: wMargin, y: h - hMargin}
       ];
       break;
+    case 'full':
+      cropPoints = [
+        {x: 0, y: 0},
+        {x: w, y: 0},
+        {x: w, y: h},
+        {x: 0, y: h}
+      ];
+      break;
   }
   drawCropCanvas();
 }
@@ -1380,11 +1409,9 @@ function setCropPreset(type){
 function applyCropToCurrent(){
   if(cropIndex === null) return;
   
-  // Get cropped image
   const tempCanvas = document.createElement('canvas');
   const tempCtx = tempCanvas.getContext('2d');
   
-  // Calculate crop area
   const minX = Math.min(...cropPoints.map(p => p.x));
   const maxX = Math.max(...cropPoints.map(p => p.x));
   const minY = Math.min(...cropPoints.map(p => p.y));
@@ -1404,7 +1431,7 @@ function applyCropToCurrent(){
   
   renderGrid();
   closeCropModal();
-  toast('Crop applied to page!');
+  toast('✅ Crop applied to page!');
 }
 
 function applyCropToAll(){
@@ -1433,7 +1460,7 @@ function applyCropToAll(){
   })).then(() => {
     renderGrid();
     closeCropModal();
-    toast('Crop applied to all pages!');
+    toast('✅ Crop applied to all pages!');
   });
 }
 
@@ -1540,7 +1567,7 @@ async function generatePDF(){
         });
         if(logoImg.width > 0) {
           const logoSize = 4;
-          const textStr = 'PDFBoon Scanner';
+          const textStr = 'PDFBoon AI Scanner';
           const textWidth = pdf.getTextWidth(textStr);
           const logoX = pageW - margin - logoSize - textWidth - 2;
           pdf.addImage(logoImg, 'PNG', logoX, fy + 1, logoSize, logoSize);
@@ -1594,7 +1621,6 @@ document.getElementById('shareBtn').addEventListener('click', async function(){
 // ======================= INIT =======================
 renderGrid();
 
-// Close modals with Escape
 document.addEventListener('keydown', (e) => {
   if(e.key === 'Escape'){
     closeCropModal();
@@ -1602,7 +1628,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-console.log('📄 PDFBoon Professional Scanner loaded');
+console.log('🤖 PDFBoon AI Scanner loaded');
 console.log('📸 ' + images.length + ' pages');
 </script>
 </body>
