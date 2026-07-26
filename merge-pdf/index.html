@@ -1,4027 +1,915 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="images/logo.png">
-<meta name="description" content="PDFBoon — free, secure PDF tools that work right in your browser. Compress, merge, split, convert, scan, edit pdf, lock and unlock PDFs in seconds, no sign-up needed.">
-
-<meta name="keywords" content="Pdfboon, PDF Tools, Compress PDF, Merge PDF, Split PDF, Lock PDF, Scan Pdf, scan to pdf, Unlock pdf, create pdf, img to pdf, edit pdf, vikshant kralta, Vikshant, Online PDF Tools">
-
-<meta name="author" content="Vikshant Kralta">
-
-<meta name="robots" content="index, follow">
-
-<title>PDFBoon — Free & Secure PDF Tools</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+  <link rel="icon" href="images/logo.png">
+  <meta name="description" content="PDFBoon — free, secure PDF tools that work right in your browser. Compress, merge, split, convert, scan, edit pdf, lock and unlock PDFs in seconds, no sign-up needed.">
+  <meta name="keywords" content="Pdfboon, PDF Tools, Compress PDF, Merge PDF, Split PDF, Lock PDF, Scan Pdf, scan to pdf, Unlock pdf, create pdf, img to pdf, edit pdf, vikshant kralta, Vikshant, Online PDF Tools">
+  <meta name="author" content="Vikshant Kralta">
+  <meta name="robots" content="index, follow">
+  <title>PDFBoon — Free & Secure PDF Tools</title>
   <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2563eb">
-
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-
-:root{
-  --ink:#0d2545;
-  --ink-soft:#3d5578;
-  --paper:#edf2f9;
-  --paper-raised:#f8fafc;
-  --stamp:#2563eb;
-  --stamp-dark:#1d4ed8;
-  --teal:#0891b2;
-  --success:#10b981;
-  --success-dark:#0e9c6f;
-  --danger:#ef4444;
-  --warn:#f59e0b;
-  --violet:#7c3aed;
-  --line:#d6e0ee;
-  --shadow: 0 10px 30px rgba(13,37,69,0.10);
-  --serif:'Fraunces', serif;
-  --sans:'Inter', sans-serif;
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:var(--sans);
-background:
-  radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
-  radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
-  var(--paper);
-color:var(--ink);
-  
-}
-  html, body { overflow-x: hidden; max-width: 100%; }
-
-a{ text-decoration:none; color:inherit; }
-ul{list-style:none;}
-img{max-width:100%;}
-
-.container{
-max-width:100%;
-margin:auto;
-padding:0 20px;
-}
-
-/* ============ NAVBAR ============ */
-.navbar{
-  position:sticky; top:0; z-index:100;
-  background:rgba(237,242,249,0.85);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
-}
-.nav-container{
-  max-width:100%;
-  margin-inline:auto;
-  padding:14px 24px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  flex-wrap:nowrap;
-}
-.logo-wrapper{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-width:0;
-}
-.logo-box{
-  width:44px;
-  height:44px;
-  min-width:44px;
-  border-radius:12px;
-  overflow:hidden;
-  background:#fff;
-  border:1px solid var(--line);
-  box-shadow:var(--shadow);
-  flex-shrink:0;
-}
-.logo-image{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.logo-title{
-  font-family:var(--serif);
-  font-weight:700;
-  font-size:1.15rem;
-  color:var(--ink);
-  line-height:1.2;
-  white-space:nowrap;
-}
-.logo-subtitle{
-  font-size:0.75rem;
-  color:var(--ink-soft);
-  white-space:nowrap;
-}
-.nav-links{
-  display:flex;
-  align-items:center;
-  gap:30px;
-}
-.nav-link{
-  position:relative;
-  font-size:0.94rem;
-  font-weight:500;
-  color:var(--ink-soft);
-  padding:6px 2px;
-  transition:color .2s ease;
-  white-space:nowrap;
-}
-.nav-link::after{
-  content:"";
-  position:absolute; left:0; bottom:0;
-  width:0; height:2px;
-  background:var(--stamp);
-  transition:width .25s ease;
-}
-.nav-link:hover{color:var(--ink);}
-.nav-link:hover::after{width:100%;}
-.nav-link.active-link{color:var(--ink);}
-.nav-link.active-link::after{width:100%;}
-
-/* Tools button — professional standout look */
-.nav-tools-btn{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  background:var(--stamp);
-  color:#fff !important;
-  padding:10px 18px;
-  border-radius:12px;
-  font-size:0.9rem;
-  font-weight:600;
-  border:none;
-  cursor:pointer;
-  box-shadow:0 4px 0 var(--stamp-dark);
-  transition:transform .15s ease;
-  white-space:nowrap;
-  font-family:var(--sans);
-}
-.nav-tools-btn:hover{transform:translateY(-2px);}
-.nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
-.nav-tools-btn .dropdown-arrow{
-  font-size:0.68rem;
-  transition:transform .2s ease;
-}
-.nav-item.open .nav-tools-btn .dropdown-arrow{
-  transform:rotate(180deg);
-}
-
-.mobile-menu{
-  display:none;
-  width:40px; height:40px;
-  align-items:center; justify-content:center;
-  border-radius:8px;
-  color:var(--ink);
-  font-size:1.1rem;
-  flex-shrink:0;
-  border:none;
-  background:none;
-  cursor:pointer;
-}
-.mobile-menu:hover{background:rgba(37,99,235,0.08);}
-
-@media (max-width:920px){
-  .nav-links{
-    position:fixed;
-    inset:70px 0 auto 0;
-    flex-direction:column;
-    align-items:flex-start;
-    background:var(--paper-raised);
-    padding:20px 24px;
-    gap:16px;
-    border-bottom:1px solid var(--line);
-    box-shadow:var(--shadow);
-    transform:translateY(-130%);
-    opacity:0;
-    transition:transform .3s ease, opacity .3s ease;
-  }
-  .nav-links.active{
-    transform:translateY(0);
-    opacity:1;
-  }
-  .mobile-menu{display:flex;}
-  .logo-subtitle{display:none;}
-  .nav-tools-btn{width:100%; justify-content:space-between;}
-}
-
-/* ============ NAV TOOLS DROPDOWN ============ */
-.nav-item{
-  position:relative;
-}
-
-.dropdown-menu{
-  position:absolute;
-  top:calc(100% + 14px);
-  left:50%;
-  transform:translateX(-50%);
-  min-width:250px;
-  background:var(--paper-raised);
-  border:1px solid var(--line);
-  border-radius:16px;
-  box-shadow:var(--shadow);
-  padding:10px;
-  display:none;
-  flex-direction:column;
-  gap:4px;
-  z-index:999;
-}
-
-.nav-item.open .dropdown-menu{
-  display:flex;
-}
-
-.dropdown-category{
-  font-size:0.68rem;
-  font-weight:700;
-  letter-spacing:0.05em;
-  text-transform:uppercase;
-  color:var(--ink-soft);
-  padding:10px 12px 4px;
-}
-
-.dropdown-link{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px 12px;
-  border-radius:10px;
-  font-size:0.88rem;
-  font-weight:500;
-  color:var(--ink-soft);
-  transition:background .15s ease, color .15s ease;
-  white-space:nowrap;
-}
-
-.dropdown-link i{
-  width:16px;
-  text-align:center;
-  color:var(--stamp);
-  font-size:0.85rem;
-}
-
-.dropdown-link:hover{
-  background:rgba(37,99,235,0.08);
-  color:var(--ink);
-}
-
-.dropdown-link.view-all{
-  margin-top:4px;
-  padding-top:12px;
-  border-top:1px solid var(--line);
-  border-radius:10px;
-  font-weight:600;
-  color:var(--stamp);
-}
-
-.dropdown-link.view-all i{color:var(--stamp);}
-
-@media (max-width:920px){
-
-  .nav-item{width:100%;}
-
-  .dropdown-menu{
-    position:static;
-    transform:none;
-    min-width:0;
-    width:100%;
-    box-shadow:none;
-    border:none;
-    background:rgba(37,99,235,0.04);
-    margin-top:10px;
-    padding:6px;
-    display:none;
-    flex-direction:column;
-  }
-
-  .nav-item.open .dropdown-menu{
-    display:flex;
-  }
-
-}
-
-/* ============ HERO ============ */
-.hero{
-padding:70px 20px 40px;
-text-align:center;
-}
-
-.hero-badge{
-display:inline-flex;
-align-items:center;
-gap:8px;
-background:var(--paper-raised);
-border:1px solid var(--line);
-padding:8px 18px;
-border-radius:100px;
-font-size:0.8rem;
-font-weight:600;
-color:var(--stamp-dark);
-box-shadow:var(--shadow);
-margin-bottom:26px;
-}
-
-.hero-badge i{color:var(--success);}
-
-.hero h1{
-font-family:var(--serif);
-font-size:52px;
-font-weight:700;
-color:var(--ink);
-line-height:1.15;
-max-width:760px;
-margin:0 auto 20px;
-}
-
-.hero h1 span{
-color:var(--stamp);
-}
-
-/* ============ HERO VIDEO (5s looping clip, right under the heading) ============ */
-.hero-video-wrap{
-width: auto;
-  height:auto;
-margin:0 auto 28px;
-border-radius:22px;
-overflow:hidden;
-background:#000;
-border:1px solid var(--line);
-box-shadow:0 16px 34px rgba(13,37,69,0.18);
-}
-
-.hero-video{
-width:100%;
-aspect-ratio:16/9;
-object-fit:cover;
-display:block;
-}
-
-.hero p{
-font-size:1.05rem;
-color:var(--ink-soft);
-max-width:560px;
-margin:0 auto 34px;
-line-height:1.6;
-}
-
-.hero-actions{
-display:flex;
-justify-content:center;
-gap:16px;
-flex-wrap:wrap;
-margin-bottom:38px;
-}
-
-.btn{
-padding:15px 28px;
-border-radius:14px;
-font-weight:600;
-font-size:0.96rem;
-cursor:pointer;
-border:none;
-transition:transform .18s ease, box-shadow .18s ease;
-display:inline-flex;
-align-items:center;
-gap:8px;
-}
-
-.btn-primary{
-background:var(--stamp);
-color:#fff;
-box-shadow:0 4px 0 var(--stamp-dark);
-}
-.btn-primary:hover{transform:translateY(-2px);}
-
-.btn-secondary{
-background:var(--paper-raised);
-color:var(--ink);
-border:1px solid var(--line);
-box-shadow:var(--shadow);
-}
-.btn-secondary:hover{transform:translateY(-2px); border-color:var(--stamp); color:var(--stamp);}
-
-.trust-row{
-display:flex;
-justify-content:center;
-flex-wrap:wrap;
-gap:10px;
-}
-
-.trust-pill{
-display:flex;
-align-items:center;
-gap:8px;
-background:var(--paper-raised);
-border:1px solid var(--line);
-padding:8px 16px;
-border-radius:100px;
-font-size:0.8rem;
-font-weight:600;
-color:var(--ink-soft);
-box-shadow:var(--shadow);
-}
-
-.trust-pill i{color:var(--stamp);}
-
-@media(max-width:600px){
-  .hero h1{font-size:36px;}
-}
-
-/* ============ SECTION HEADER ============ */
-.section{
-padding:60px 0;
-}
-
-.section-header{
-text-align:center;
-max-width:560px;
-margin:0 auto 40px;
-}
-
-.section-eyebrow{
-font-size:0.78rem;
-font-weight:700;
-letter-spacing:0.06em;
-text-transform:uppercase;
-color:var(--stamp);
-margin-bottom:10px;
-}
-
-.section-header h2{
-font-family:var(--serif);
-font-size:32px;
-font-weight:700;
-color:var(--ink);
-margin-bottom:12px;
-}
-
-.section-header p{
-color:var(--ink-soft);
-font-size:0.96rem;
-line-height:1.6;
-}
-
-/* ============ POPULAR TOOLS ============ */
-.tools-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-}
-
-.tool-card{
-background:var(--paper-raised);
-border:1px solid var(--line);
-border-radius:20px;
-padding:26px;
-box-shadow:var(--shadow);
-transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-display:flex;
-flex-direction:column;
-gap:12px;
-  min-width:0;
-}
-
-.tool-card:hover{
-transform:translateY(-4px);
-border-color:var(--stamp);
-box-shadow:0 16px 34px rgba(13,37,69,0.14);
-}
-
-.tool-icon{
-width:50px;
-height:50px;
-border-radius:14px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:1.3rem;
-color:#fff;
-box-shadow:0 6px 14px rgba(13,37,69,0.15);
-}
-
-.tool-card h3{
-font-family:var(--serif);
-font-size:1.1rem;
-font-weight:700;
-color:var(--ink);
-}
-
-.tool-card p{
-font-size:0.85rem;
-color:var(--ink-soft);
-line-height:1.5;
-flex:1;
-  word-break: break-word;
-}
-
-.tool-card-link{
-font-size:0.85rem;
-font-weight:700;
-color:var(--stamp);
-display:inline-flex;
-align-items:center;
-gap:6px;
-}
-
-.view-all-wrap{
-text-align:center;
-margin-top:36px;
-}
-
-/* ============ FEATURES ============ */
-.features-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:24px;
-}
-
-.feature-card{
-text-align:center;
-padding:30px 22px;
-}
-
-.feature-icon{
-width:60px;
-height:60px;
-border-radius:16px;
-background:var(--paper-raised);
-border:1px solid var(--line);
-box-shadow:var(--shadow);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:1.5rem;
-color:var(--stamp);
-margin:0 auto 18px;
-}
-
-.feature-card h3{
-font-family:var(--serif);
-font-size:1.1rem;
-margin-bottom:8px;
-}
-
-.feature-card p{
-font-size:0.86rem;
-color:var(--ink-soft);
-line-height:1.6;
-}
-
-/* ============ HOW IT WORKS ============ */
-.steps-row{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:24px;
-counter-reset:step;
-}
-
-.step-card{
-background:var(--paper-raised);
-border:1px solid var(--line);
-border-radius:20px;
-padding:28px 24px;
-box-shadow:var(--shadow);
-position:relative;
-}
-
-.step-number{
-width:38px;
-height:38px;
-border-radius:12px;
-background:var(--stamp);
-color:#fff;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:700;
-font-family:var(--serif);
-margin-bottom:16px;
-}
-
-.step-card h3{
-font-family:var(--serif);
-font-size:1.05rem;
-margin-bottom:8px;
-}
-
-.step-card p{
-font-size:0.85rem;
-color:var(--ink-soft);
-line-height:1.6;
-}
-
-/* ============ FAQ ============ */
-.faq-list{
-max-width:760px;
-margin:0 auto;
-display:flex;
-flex-direction:column;
-gap:14px;
-}
-
-.faq-item{
-background:var(--paper-raised);
-border:1px solid var(--line);
-border-radius:16px;
-box-shadow:var(--shadow);
-overflow:hidden;
-}
-
-.faq-question{
-width:100%;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:16px;
-padding:20px 24px;
-background:none;
-border:none;
-cursor:pointer;
-text-align:left;
-font-family:var(--serif);
-font-size:1rem;
-font-weight:700;
-color:var(--ink);
-}
-
-.faq-question .faq-icon{
-width:32px;
-height:32px;
-border-radius:10px;
-background:rgba(37,99,235,0.08);
-color:var(--stamp);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:0.8rem;
-flex-shrink:0;
-transition:transform .25s ease, background .2s ease, color .2s ease;
-}
-
-.faq-item.open .faq-question .faq-icon{
-transform:rotate(45deg);
-background:var(--stamp);
-color:#fff;
-}
-
-.faq-answer{
-max-height:0;
-overflow:hidden;
-transition:max-height .3s ease;
-}
-
-.faq-answer p{
-padding:0 24px 22px;
-font-size:0.9rem;
-color:var(--ink-soft);
-line-height:1.65;
-}
-
-.faq-item.open .faq-answer{
-max-height:300px;
-}
-
-/* ============ CTA BANNER ============ */
-.cta-banner{
-background:linear-gradient(135deg, var(--stamp), var(--stamp-dark));
-border-radius:28px;
-padding:54px 30px;
-text-align:center;
-color:#fff;
-}
-
-.cta-banner h2{
-font-family:var(--serif);
-font-size:30px;
-margin-bottom:12px;
-}
-
-.cta-banner p{
-opacity:0.9;
-max-width:480px;
-margin:0 auto 26px;
-font-size:0.95rem;
-}
-
-.cta-banner .btn-primary{
-background:#fff;
-color:var(--stamp-dark);
-box-shadow:0 4px 0 rgba(0,0,0,0.15);
-}
-
-/* ============ CONTACT STRIP ============ */
-.contact-strip{
-background:var(--paper-raised);
-border:1px solid var(--line);
-border-radius:24px;
-padding:36px 30px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-flex-wrap:wrap;
-gap:20px;
-box-shadow:var(--shadow);
-}
-
-.contact-strip-info h3{
-font-family:var(--serif);
-font-size:1.2rem;
-margin-bottom:6px;
-}
-
-.contact-strip-info p{
-font-size:0.88rem;
-color:var(--ink-soft);
-}
-
-.contact-strip-actions{
-display:flex;
-align-items:center;
-gap:14px;
-flex-wrap:wrap;
-}
-
-.contact-email{
-display:flex;
-align-items:center;
-gap:8px;
-font-size:0.88rem;
-font-weight:600;
-color:var(--ink);
-}
-
-.contact-email i{color:var(--stamp);}
-
-@media(max-width:768px){
-  .title, .hero h1{font-size:32px;}
-}
-
-/* ============ FOOTER ============ */
-.footer{
-  background:var(--ink);
-  color:#dfe6f2;
-  margin-top:60px;
-  padding:56px 20px 26px;
-}
-.footer-container{
-  max-width:1180px;
-  margin-inline:auto;
-}
-.footer-grid{
-  display:grid;
-  grid-template-columns:1.3fr 1fr 1fr;
-  gap:36px;
-  padding-bottom:32px;
-  border-bottom:1px solid rgba(255,255,255,0.12);
-}
-@media (max-width:760px){
-  .footer-grid{grid-template-columns:1fr;}
-}
-.footer-brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:14px;
-}
-.footer-brand img{
-  width:44px; height:44px;
-  border-radius:12px;
-  object-fit:cover;
-  flex-shrink:0;
-}
-.footer-title{
-  font-family:var(--serif);
-  font-weight:700;
-  font-size:1.1rem;
-  color:#fff;
-}
-.footer-subtitle{
-  font-size:0.78rem;
-  color:#9fb0cc;
-}
-.footer-text{
-  font-size:0.88rem;
-  color:#9fb0cc;
-  max-width:34ch;
-}
-.footer-links h3,
-.footer-right h3{
-  font-size:0.8rem;
-  letter-spacing:0.06em;
-  text-transform:uppercase;
-  color:#8494b5;
-  margin-bottom:16px;
-  font-weight:600;
-}
-.footer-links{
-  display:flex;
-  flex-direction:column;
-  gap:11px;
-}
-.footer-links a{
-  font-size:0.92rem;
-  color:#c8d2e6;
-  width:fit-content;
-  transition:color .2s ease;
-}
-.footer-links a:hover{color:#fff;}
-.footer-right .developer{
-  font-size:0.9rem;
-  color:#c8d2e6;
-  margin-bottom:16px;
-}
-.footer-social{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-}
-.footer-social a{
-  width:38px; height:38px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,0.18);
-  display:flex; align-items:center; justify-content:center;
-  color:#fff;
-  transition:background .2s ease, border-color .2s ease, transform .2s ease;
-}
-.footer-social a:hover{
-  background:var(--stamp);
-  border-color:var(--stamp);
-  transform:translateY(-3px);
-}
-.copyright{
-  font-size:0.8rem;
-  color:#8494b5;
-  line-height:1.6;
-}
-
-
-
-
-</style>
+  <meta name="theme-color" content="#2563eb">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Inter', sans-serif;
+      background: #edf2f9;
+      color: #0d2545;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+    :root{
+      --ink:#0d2545;
+      --ink-soft:#3d5578;
+      --paper:#edf2f9;
+      --paper-raised:#f8fafc;
+      --stamp:#2563eb;
+      --stamp-dark:#1d4ed8;
+      --teal:#0891b2;
+      --success:#10b981;
+      --success-dark:#0e9c6f;
+      --danger:#ef4444;
+      --warn:#f59e0b;
+      --violet:#7c3aed;
+      --line:#d6e0ee;
+      --shadow: 0 10px 30px rgba(13,37,69,0.10);
+      --serif:'Fraunces', serif;
+      --sans:'Inter', sans-serif;
+    }
+    a{ text-decoration:none; color:inherit; }
+    ul{list-style:none;}
+    img{max-width:100%;}
+    .container{ max-width:1280px; margin:auto; padding:0 24px; }
+    @media (max-width:640px){ .container{ padding:0 16px; } }
+
+    /* navbar */
+    .navbar{
+      position:sticky; top:0; z-index:100;
+      background:rgba(237,242,249,0.88);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav-container{
+      max-width:1280px; margin:0 auto; padding:12px 24px;
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    .logo-wrapper{ display:flex; align-items:center; gap:12px; }
+    .logo-box{ width:44px; height:44px; border-radius:12px; overflow:hidden; background:#fff; border:1px solid var(--line); flex-shrink:0; }
+    .logo-image{ width:100%; height:100%; object-fit:cover; }
+    .logo-title{ font-family:var(--serif); font-weight:700; font-size:1.2rem; color:var(--ink); line-height:1.2; }
+    .logo-subtitle{ font-size:0.7rem; color:var(--ink-soft); }
+    .nav-links{ display:flex; align-items:center; gap:28px; }
+    .nav-link{ font-size:0.9rem; font-weight:500; color:var(--ink-soft); padding:4px 0; position:relative; }
+    .nav-link::after{ content:''; position:absolute; left:0; bottom:-2px; width:0; height:2px; background:var(--stamp); transition:width .25s; }
+    .nav-link:hover::after{ width:100%; }
+    .nav-link.active-link{ color:var(--ink); }
+    .nav-link.active-link::after{ width:100%; }
+    .nav-tools-btn{
+      display:flex; align-items:center; gap:8px;
+      background:var(--stamp); color:#fff; padding:8px 16px; border-radius:30px;
+      font-size:0.9rem; font-weight:600; border:none; cursor:pointer;
+      box-shadow:0 4px 0 var(--stamp-dark); transition:transform .15s;
+      font-family:var(--sans);
+    }
+    .nav-tools-btn:hover{ transform:translateY(-2px); }
+    .nav-tools-btn:active{ transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark); }
+    .dropdown-arrow{ font-size:0.65rem; transition:transform .2s; }
+    .nav-item.open .dropdown-arrow{ transform:rotate(180deg); }
+    .mobile-menu{ display:none; width:40px; height:40px; align-items:center; justify-content:center; border-radius:8px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--ink); }
+    .mobile-menu:hover{ background:rgba(37,99,235,0.08); }
+
+    /* dropdown */
+    .nav-item{ position:relative; }
+    .dropdown-menu{
+      position:absolute; top:calc(100% + 12px); left:50%; transform:translateX(-50%);
+      min-width:260px; background:var(--paper-raised); border:1px solid var(--line);
+      border-radius:20px; box-shadow:var(--shadow); padding:10px 8px;
+      display:none; flex-direction:column; gap:2px; z-index:999;
+    }
+    .nav-item.open .dropdown-menu{ display:flex; }
+    .dropdown-category{ font-size:0.65rem; font-weight:700; text-transform:uppercase; color:var(--ink-soft); padding:8px 12px 2px; letter-spacing:0.05em; }
+    .dropdown-link{
+      display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px;
+      font-size:0.85rem; font-weight:500; color:var(--ink-soft); transition:background .15s, color .15s;
+    }
+    .dropdown-link i{ width:18px; text-align:center; color:var(--stamp); }
+    .dropdown-link:hover{ background:rgba(37,99,235,0.08); color:var(--ink); }
+    .dropdown-link.view-all{ margin-top:4px; border-top:1px solid var(--line); font-weight:600; color:var(--stamp); }
+
+    @media (max-width:920px){
+      .nav-links{
+        position:fixed; inset:68px 0 auto 0; flex-direction:column; align-items:stretch;
+        background:var(--paper-raised); padding:20px; gap:12px;
+        border-bottom:1px solid var(--line); box-shadow:var(--shadow);
+        transform:translateY(-140%); opacity:0; transition:transform .3s, opacity .3s;
+      }
+      .nav-links.active{ transform:translateY(0); opacity:1; }
+      .mobile-menu{ display:flex; }
+      .logo-subtitle{ display:none; }
+      .nav-tools-btn{ width:100%; justify-content:space-between; }
+      .nav-item{ width:100%; }
+      .dropdown-menu{
+        position:static; transform:none; width:100%; box-shadow:none; border:none;
+        background:rgba(37,99,235,0.04); margin-top:8px; padding:6px;
+        display:none; flex-direction:column;
+      }
+      .nav-item.open .dropdown-menu{ display:flex; }
+    }
+
+    /* hero */
+    .hero{ padding:50px 0 30px; text-align:center; }
+    .hero-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--paper-raised); border:1px solid var(--line); padding:6px 18px;
+      border-radius:100px; font-size:0.75rem; font-weight:600; color:var(--stamp-dark);
+      box-shadow:var(--shadow); margin-bottom:20px;
+    }
+    .hero h1{
+      font-family:var(--serif); font-size:clamp(2rem, 8vw, 3.8rem);
+      font-weight:700; color:var(--ink); line-height:1.15; max-width:760px; margin:0 auto 16px;
+    }
+    .hero h1 span{ color:var(--stamp); }
+    .hero p{
+      font-size:1rem; color:var(--ink-soft); max-width:560px; margin:0 auto 28px; line-height:1.6;
+    }
+    .hero-actions{ display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom:28px; }
+    .btn{
+      padding:14px 28px; border-radius:14px; font-weight:600; font-size:0.95rem;
+      border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+      transition:transform .18s, box-shadow .18s;
+    }
+    .btn-primary{ background:var(--stamp); color:#fff; box-shadow:0 4px 0 var(--stamp-dark); }
+    .btn-primary:hover{ transform:translateY(-2px); }
+    .btn-secondary{ background:var(--paper-raised); color:var(--ink); border:1px solid var(--line); box-shadow:var(--shadow); }
+    .btn-secondary:hover{ transform:translateY(-2px); border-color:var(--stamp); color:var(--stamp); }
+    .trust-row{ display:flex; justify-content:center; flex-wrap:wrap; gap:10px; }
+    .trust-pill{
+      display:flex; align-items:center; gap:8px; background:var(--paper-raised);
+      border:1px solid var(--line); padding:6px 16px; border-radius:100px;
+      font-size:0.75rem; font-weight:600; color:var(--ink-soft); box-shadow:var(--shadow);
+    }
+    .trust-pill i{ color:var(--stamp); }
+
+    /* section */
+    .section{ padding:50px 0; }
+    .section-header{ text-align:center; max-width:560px; margin:0 auto 32px; }
+    .section-eyebrow{ font-size:0.7rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--stamp); margin-bottom:6px; }
+    .section-header h2{ font-family:var(--serif); font-size:clamp(1.6rem, 4vw, 2.4rem); font-weight:700; color:var(--ink); margin-bottom:8px; }
+    .section-header p{ color:var(--ink-soft); font-size:0.95rem; line-height:1.6; }
+
+    /* tools grid: 1 col mobile, 2 col tablet, 3 col desktop */
+    .tools-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:20px;
+    }
+    @media (min-width:640px){
+      .tools-grid{ grid-template-columns: repeat(2,1fr); }
+    }
+    @media (min-width:1024px){
+      .tools-grid{ grid-template-columns: repeat(3,1fr); }
+    }
+
+    .tool-card{
+      background:var(--paper-raised); border:1px solid var(--line); border-radius:24px;
+      padding:24px; box-shadow:var(--shadow); transition:transform .2s, box-shadow .2s, border-color .2s;
+      display:flex; flex-direction:column; gap:12px; min-width:0;
+    }
+    .tool-card:hover{ transform:translateY(-4px); border-color:var(--stamp); box-shadow:0 16px 34px rgba(13,37,69,0.14); }
+    .tool-icon{
+      width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+      font-size:1.3rem; color:#fff; box-shadow:0 6px 14px rgba(13,37,69,0.15); flex-shrink:0;
+    }
+    .tool-card h3{ font-family:var(--serif); font-size:1.1rem; font-weight:700; }
+    .tool-card p{ font-size:0.85rem; color:var(--ink-soft); line-height:1.5; flex:1; word-break:break-word; }
+    .tool-card-link{ font-size:0.85rem; font-weight:700; color:var(--stamp); display:inline-flex; align-items:center; gap:6px; margin-top:4px; }
+
+    /* animation stages inside cards */
+    .anim-stage{
+      width:100%; height:130px; display:flex; align-items:center; justify-content:center;
+      position:relative; background:transparent; margin:0 0 4px; perspective:800px;
+    }
+    .anim-wrap{ position:relative; width:110px; height:90px; display:flex; align-items:center; justify-content:center; }
+
+    /* compress */
+    .press-plate-top, .press-plate-bottom {
+      width:70px; height:4px; background:var(--stamp); border-radius:2px; position:absolute; left:50%; transform:translateX(-50%);
+      box-shadow:0 2px 8px rgba(37,99,235,0.3); z-index:2;
+    }
+    .press-plate-top{ top:14px; animation:pressDown 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .press-plate-bottom{ bottom:30px; animation:pressUp 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .blend-pdf-doc{
+      width:56px; height:72px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--line);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 8px 20px rgba(13,37,69,0.08); position:relative; z-index:1;
+      animation:hydraulicCompress 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .blend-pdf-doc i{ font-size:24px; color:#ef4444; animation:iconColorShift 4s infinite; }
+    .blend-pdf-doc .doc-tag{ font-size:8px; font-weight:800; color:var(--ink-soft); margin-top:2px; }
+    .compress-ring{
+      position:absolute; top:40%; left:50%; width:70px; height:70px; border:2px dashed var(--teal);
+      border-radius:50%; transform:translate(-50%,-50%) scale(0); opacity:0;
+      animation:ringBurst 4s infinite; pointer-events:none;
+    }
+    .status-area{ position:relative; height:20px; width:100%; text-align:center; margin-top:-2px; }
+    .status-text{ font-size:0.75rem; font-weight:700; display:inline-flex; align-items:center; gap:6px; }
+    .status-text.action{ color:var(--stamp); animation:textOut 4s infinite; }
+    .status-text.done{ color:var(--success); position:absolute; left:50%; transform:translateX(-50%); opacity:0; white-space:nowrap; animation:textIn 4s infinite; }
+
+    @keyframes pressDown {
+      0%,20%{ top:14px; }
+      45%,55%{ top:38px; }
+      75%,100%{ top:14px; }
+    }
+    @keyframes pressUp {
+      0%,20%{ bottom:30px; }
+      45%,55%{ bottom:54px; }
+      75%,100%{ bottom:30px; }
+    }
+    @keyframes hydraulicCompress {
+      0%,20%{ transform:scale(1,1) rotateX(0); }
+      45%,55%{ transform:scale(1.1,0.4) rotateX(20deg); border-color:var(--success); }
+      75%,100%{ transform:scale(0.95,0.95) rotateX(0); border-color:var(--success); }
+    }
+    @keyframes iconColorShift { 0%,35%{ color:#ef4444; } 45%,100%{ color:var(--success); } }
+    @keyframes ringBurst { 0%,40%{ transform:translate(-50%,-50%) scale(0.3); opacity:0; } 50%{ opacity:0.7; } 65%,100%{ transform:translate(-50%,-50%) scale(1.4); opacity:0; } }
+    @keyframes textOut { 0%,40%{ opacity:1; } 48%,100%{ opacity:0; } }
+    @keyframes textIn { 0%,45%{ opacity:0; transform:translate(-50%,4px); } 55%,85%{ opacity:1; transform:translate(-50%,0); } 100%{ opacity:0; } }
+
+    /* merge */
+    .merge-doc{
+      width:48px; height:64px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--line);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 6px 16px rgba(13,37,69,0.08); position:absolute;
+    }
+    .merge-doc i{ font-size:20px; color:#ef4444; }
+    .merge-doc .doc-num{ font-size:7px; font-weight:800; color:var(--ink-soft); margin-top:2px; }
+    .merge-doc-left{ animation:mergeLeft 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .merge-doc-right{ animation:mergeRight 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .merged-doc-final{
+      width:52px; height:70px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--stamp);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 10px 22px rgba(37,99,235,0.2); position:absolute; opacity:0;
+      transform:scale(0.6) rotateY(180deg); animation:mergeFinal 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .merged-doc-final i{ font-size:22px; color:var(--stamp); }
+    .merged-doc-final .final-badge{ font-size:7px; font-weight:800; color:var(--success); margin-top:2px; }
+    .merge-sparkle{
+      position:absolute; width:70px; height:70px; border-radius:50%;
+      background:radial-gradient(circle,rgba(37,99,235,0.2),transparent 70%); opacity:0;
+      animation:mergeGlow 4s infinite; pointer-events:none;
+    }
+    @keyframes mergeLeft {
+      0%,15%{ transform:translateX(-28px) rotate(-8deg); opacity:1; }
+      40%{ transform:translateX(0) rotate(0) scale(0.9); opacity:0.8; }
+      50%,100%{ transform:translateX(0) scale(0.5); opacity:0; }
+    }
+    @keyframes mergeRight {
+      0%,15%{ transform:translateX(28px) rotate(8deg); opacity:1; }
+      40%{ transform:translateX(0) rotate(0) scale(0.9); opacity:0.8; }
+      50%,100%{ transform:translateX(0) scale(0.5); opacity:0; }
+    }
+    @keyframes mergeFinal {
+      0%,40%{ opacity:0; transform:scale(0.5) rotateY(90deg); }
+      52%{ opacity:1; transform:scale(1.08) rotateY(0); }
+      65%,90%{ opacity:1; transform:scale(1) rotateY(0); border-color:var(--success); }
+      100%{ opacity:0; transform:scale(0.8); }
+    }
+    @keyframes mergeGlow { 0%,35%{ transform:scale(0.3); opacity:0; } 45%{ transform:scale(1.3); opacity:0.8; } 65%,100%{ transform:scale(1.6); opacity:0; } }
+
+    /* split */
+    .split-doc-original{
+      width:54px; height:70px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--line);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 8px 20px rgba(13,37,69,0.08); position:absolute; z-index:2;
+      animation:origFade 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .split-doc-original i{ font-size:22px; color:#ef4444; }
+    .split-doc-original .doc-tag{ font-size:7px; font-weight:800; color:var(--ink-soft); margin-top:2px; }
+    .cut-line{
+      position:absolute; width:2px; height:0; background:var(--stamp); box-shadow:0 0 10px var(--stamp); z-index:4;
+      animation:laserCut 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .scissors-icon{
+      position:absolute; font-size:16px; color:var(--stamp-dark); z-index:5; opacity:0;
+      animation:scissorsMove 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .split-piece{
+      width:44px; height:64px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--stamp);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 6px 16px rgba(13,37,69,0.08); position:absolute; opacity:0;
+    }
+    .split-piece i{ font-size:18px; }
+    .split-piece-left{ border-color:var(--stamp); animation:splitLeft 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .split-piece-right{ border-color:var(--success); animation:splitRight 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .piece-num{ font-size:6px; font-weight:800; margin-top:2px; color:var(--ink-soft); }
+    @keyframes origFade { 0%,20%{ opacity:1; } 40%{ opacity:1; } 45%,100%{ opacity:0; transform:scale(0.95); } }
+    @keyframes laserCut { 0%,15%{ height:0; top:8px; opacity:0; } 20%{ opacity:1; } 40%{ height:68px; top:8px; opacity:1; } 48%,100%{ height:68px; opacity:0; } }
+    @keyframes scissorsMove { 0%,15%{ top:0; opacity:0; transform:rotate(-90deg) scale(0.8); } 20%{ opacity:1; } 40%{ top:66px; opacity:1; transform:rotate(-90deg) scale(1.1); } 45%,100%{ top:66px; opacity:0; } }
+    @keyframes splitLeft { 0%,40%{ opacity:0; transform:translateX(0); } 50%{ opacity:1; transform:translateX(-24px) rotateY(-10deg); } 75%,90%{ opacity:1; transform:translateX(-24px); } 100%{ opacity:0; } }
+    @keyframes splitRight { 0%,40%{ opacity:0; transform:translateX(0); } 50%{ opacity:1; transform:translateX(24px) rotateY(10deg); } 75%,90%{ opacity:1; transform:translateX(24px); } 100%{ opacity:0; } }
+
+    /* img to pdf */
+    .source-img-card{
+      width:46px; height:46px; background:#fff; border:1.5px solid var(--line); border-radius:10px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 6px 16px rgba(13,37,69,0.08); position:absolute; z-index:2;
+    }
+    .source-img-card i{ font-size:18px; color:#3b82f6; }
+    .source-img-card .img-ext{ font-size:6px; font-weight:800; color:var(--ink-soft); margin-top:2px; }
+    .source-img-1{ animation:imgOne 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .source-img-2{ animation:imgTwo 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .scan-beam{
+      position:absolute; width:60px; height:2px; background:linear-gradient(90deg,transparent,var(--stamp),transparent);
+      box-shadow:0 0 8px var(--stamp); z-index:3; opacity:0;
+      animation:scannerLight 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .converted-pdf-card{
+      width:52px; height:68px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--stamp);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 10px 22px rgba(37,99,235,0.2); position:absolute; z-index:1; opacity:0;
+      animation:convertedPdfPop 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .converted-pdf-card i{ font-size:22px; color:#ef4444; }
+    .converted-pdf-card .pdf-badge{ font-size:7px; font-weight:800; color:var(--success); margin-top:2px; }
+    @keyframes imgOne {
+      0%{ opacity:0; transform:translate(-20px,-10px) rotate(-10deg) scale(0.8); }
+      15%{ opacity:1; transform:translate(-16px,-6px) rotate(-8deg); }
+      38%{ opacity:1; transform:translate(0,0) rotate(0) scale(0.85); }
+      48%,100%{ opacity:0; transform:scale(0.5); }
+    }
+    @keyframes imgTwo {
+      0%{ opacity:0; transform:translate(20px,10px) rotate(10deg) scale(0.8); }
+      15%{ opacity:1; transform:translate(16px,6px) rotate(8deg); }
+      38%{ opacity:1; transform:translate(0,0) rotate(0) scale(0.85); }
+      48%,100%{ opacity:0; transform:scale(0.5); }
+    }
+    @keyframes scannerLight { 0%,20%{ opacity:0; transform:translateY(-24px); } 25%{ opacity:1; } 40%{ opacity:1; transform:translateY(24px); } 45%,100%{ opacity:0; } }
+    @keyframes convertedPdfPop { 0%,42%{ opacity:0; transform:scale(0.6) rotateY(90deg); } 52%{ opacity:1; transform:scale(1.08) rotateY(0); } 65%,90%{ opacity:1; transform:scale(1); border-color:var(--success); } 100%{ opacity:0; } }
+
+    /* edit */
+    .edit-pdf-card{
+      width:54px; height:70px; background:linear-gradient(135deg,#fff,#f8fafc); border:1.5px solid var(--line);
+      border-radius:8px; padding:6px; display:flex; flex-direction:column; gap:4px; align-items:flex-start;
+      box-shadow:0 8px 20px rgba(13,37,69,0.08); position:absolute; z-index:1;
+      animation:docFloat 4s infinite ease-in-out;
+    }
+    .doc-line{ height:4px; border-radius:2px; background:var(--line); width:100%; }
+    .doc-line.short{ width:60%; }
+    .doc-line.active-edit{ background:var(--stamp); width:0%; animation:lineWriting 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .doc-line.active-edit-2{ background:var(--success); width:0%; animation:lineWritingTwo 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .edit-pen-icon{
+      position:absolute; font-size:20px; color:var(--stamp-dark); z-index:3; filter:drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+      animation:penWritingPath 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .edit-sparkle{
+      position:absolute; top:10px; right:10px; font-size:14px; color:#f59e0b; opacity:0;
+      animation:editSparklePop 4s infinite; z-index:4;
+    }
+    @keyframes docFloat { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-3px); } 70%{ border-color:var(--success); } }
+    @keyframes lineWriting { 0%,15%{ width:0%; } 30%,85%{ width:80%; } 100%{ width:0%; } }
+    @keyframes lineWritingTwo { 0%,32%{ width:0%; } 50%,85%{ width:60%; } 100%{ width:0%; } }
+    @keyframes penWritingPath {
+      0%{ opacity:0; transform:translate(-16px,-16px) rotate(-45deg); }
+      12%{ opacity:1; transform:translate(-8px,-6px) rotate(-20deg); }
+      30%{ transform:translate(12px,-6px) rotate(-10deg); }
+      35%{ transform:translate(-10px,2px) rotate(-20deg); }
+      50%{ transform:translate(6px,2px) rotate(-10deg); }
+      60%,85%{ opacity:1; transform:translate(20px,-14px) rotate(15deg); }
+      100%{ opacity:0; }
+    }
+    @keyframes editSparklePop { 0%,55%{ opacity:0; transform:scale(0.4); } 65%{ opacity:1; transform:scale(1.3) rotate(45deg); } 80%,100%{ opacity:0; } }
+
+    /* lock */
+    .lock-pdf-card{
+      width:54px; height:70px; background:linear-gradient(135deg,#fff,#f8fafc); border:1.5px solid var(--line);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 8px 20px rgba(13,37,69,0.08); position:absolute; z-index:1;
+      animation:docSecurityPulse 4s infinite ease-in-out;
+    }
+    .lock-pdf-card i.doc-pdf-icon{ font-size:22px; color:#ef4444; animation:iconShieldFade 4s infinite; }
+    .lock-pdf-card .doc-tag{ font-size:7px; font-weight:800; color:var(--ink-soft); margin-top:2px; }
+    .lock-padlock-icon{
+      position:absolute; font-size:28px; color:#f59e0b; z-index:3; filter:drop-shadow(0 6px 12px rgba(245,158,11,0.35));
+      animation:padlockSnap 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .security-shield-glow{
+      position:absolute; width:70px; height:70px; border-radius:50%;
+      background:radial-gradient(circle,rgba(245,158,11,0.2),transparent 70%); opacity:0;
+      animation:securityGlowBurst 4s infinite; pointer-events:none; z-index:2;
+    }
+    @keyframes docSecurityPulse { 0%,35%{ border-color:var(--line); } 50%,90%{ border-color:#f59e0b; } 100%{ border-color:var(--line); } }
+    @keyframes iconShieldFade { 0%,35%{ opacity:1; } 45%,85%{ opacity:0.3; transform:scale(0.85); } 100%{ opacity:1; } }
+    @keyframes padlockSnap {
+      0%{ opacity:0; transform:translateY(-30px) scale(0.6) rotate(-15deg); }
+      20%{ opacity:1; transform:translateY(-16px) scale(1); }
+      42%{ transform:translateY(0) scale(1.15); }
+      48%{ transform:translateY(-2px) scale(1); }
+      75%,90%{ opacity:1; transform:translateY(-2px); }
+      100%{ opacity:0; transform:translateY(12px) scale(0.7); }
+    }
+    @keyframes securityGlowBurst { 0%,38%{ opacity:0; transform:scale(0.3); } 48%{ opacity:1; transform:scale(1.3); } 68%,100%{ opacity:0; } }
+
+    /* unlock */
+    .unlock-pdf-card{
+      width:54px; height:70px; background:linear-gradient(135deg,#fff,#f8fafc); border:1.5px solid var(--line);
+      border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 8px 20px rgba(13,37,69,0.08); position:absolute; z-index:1;
+      animation:docUnlockPulse 4s infinite ease-in-out;
+    }
+    .unlock-pdf-card i.doc-pdf-icon{ font-size:22px; color:#ef4444; animation:iconUnlockShift 4s infinite; }
+    .unlock-pdf-card .doc-tag{ font-size:7px; font-weight:800; color:var(--ink-soft); margin-top:2px; }
+    .unlock-padlock-icon{
+      position:absolute; font-size:26px; color:#f59e0b; z-index:3; filter:drop-shadow(0 6px 12px rgba(245,158,11,0.3));
+      animation:padlockUnlockAction 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .unlock-key-icon{
+      position:absolute; font-size:20px; color:var(--stamp-dark); z-index:4; filter:drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+      animation:keyInsertTurn 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .unlock-burst-glow{
+      position:absolute; width:70px; height:70px; border-radius:50%;
+      background:radial-gradient(circle,rgba(16,185,129,0.25),transparent 70%); opacity:0;
+      animation:unlockGlowBurst 4s infinite; pointer-events:none; z-index:2;
+    }
+    @keyframes docUnlockPulse { 0%,40%{ border-color:var(--line); } 55%,90%{ border-color:var(--success); } 100%{ border-color:var(--line); } }
+    @keyframes iconUnlockShift { 0%,45%{ color:#ef4444; } 55%,90%{ color:var(--success); } 100%{ color:#ef4444; } }
+    @keyframes keyInsertTurn {
+      0%{ opacity:0; transform:translate(30px,16px) rotate(-45deg) scale(0.7); }
+      15%{ opacity:1; transform:translate(10px,6px) rotate(-20deg); }
+      30%,42%{ transform:translate(4px,2px) rotate(90deg); }
+      50%,100%{ opacity:0; transform:translate(-8px,-8px) rotate(120deg) scale(0.6); }
+    }
+    @keyframes padlockUnlockAction {
+      0%,30%{ opacity:1; transform:scale(1); color:#f59e0b; }
+      48%{ opacity:1; transform:scale(1.15) translateY(-4px); color:var(--success); }
+      60%,88%{ opacity:0.8; transform:scale(1) translateY(-4px); color:var(--success); }
+      100%{ opacity:0; transform:scale(0.7) translateY(8px); }
+    }
+    @keyframes unlockGlowBurst { 0%,42%{ opacity:0; transform:scale(0.3); } 52%{ opacity:1; transform:scale(1.3); } 70%,100%{ opacity:0; } }
+
+    /* scan */
+    .scan-doc-card{
+      width:56px; height:72px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--line);
+      border-radius:8px; padding:6px; display:flex; flex-direction:column; gap:4px;
+      box-shadow:0 8px 20px rgba(13,37,69,0.08); position:absolute; z-index:1;
+      animation:docScanGlow 4s infinite ease-in-out; overflow:hidden;
+    }
+    .scan-line-item{ height:4px; border-radius:2px; background:#cbd5e1; width:100%; }
+    .scan-line-item.short{ width:55%; }
+    .scan-line-item.photo-box{ height:16px; background:#e2e8f0; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+    .scan-line-item.photo-box i{ font-size:10px; color:#94a3b8; }
+    .laser-scanner-beam{
+      position:absolute; left:0; width:100%; height:3px; background:#10b981; box-shadow:0 0 10px #10b981,0 0 20px #10b981;
+      z-index:3; opacity:0; animation:laserSweep 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    .scanner-lens-icon{
+      position:absolute; top:-4px; right:8px; font-size:16px; color:#059669; z-index:4; filter:drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+      animation:lensPulse 4s infinite ease-in-out;
+    }
+    .scan-pdf-badge{
+      position:absolute; bottom:4px; right:4px; background:#ef4444; color:#fff; font-size:6px; font-weight:800;
+      padding:2px 5px; border-radius:4px; z-index:5; opacity:0; transform:scale(0.5);
+      animation:badgePopUp 4s infinite cubic-bezier(0.4,0,0.2,1);
+    }
+    @keyframes docScanGlow { 0%,20%{ border-color:var(--line); } 50%,85%{ border-color:var(--success); } 100%{ border-color:var(--line); } }
+    @keyframes laserSweep { 0%,15%{ opacity:0; top:0%; } 22%{ opacity:1; top:0%; } 50%{ opacity:1; top:88%; } 58%,100%{ opacity:0; top:88%; } }
+    @keyframes lensPulse { 0%,15%{ opacity:0.6; transform:scale(0.9); } 25%,50%{ opacity:1; transform:scale(1.1); } 60%,100%{ opacity:0.6; } }
+    @keyframes badgePopUp { 0%,50%{ opacity:0; transform:scale(0.5); } 60%,88%{ opacity:1; transform:scale(1); } 100%{ opacity:0; } }
+
+    /* all tools */
+    .alltools-core-card{
+      width:46px; height:60px; background:linear-gradient(135deg,#fff,#f1f5f9); border:1.5px solid var(--stamp);
+      border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow:0 8px 22px rgba(37,99,235,0.18); z-index:2; animation:corePulse 4s infinite ease-in-out;
+    }
+    .alltools-core-card i{ font-size:20px; color:#ef4444; }
+    .alltools-core-card .core-tag{ font-size:6px; font-weight:800; color:var(--stamp); margin-top:2px; }
+    .orbit-icon{
+      position:absolute; width:26px; height:26px; border-radius:8px; background:#fff; border:1px solid var(--line);
+      display:flex; align-items:center; justify-content:center; font-size:12px; box-shadow:0 4px 10px rgba(13,37,69,0.1); z-index:3;
+    }
+    .orbit-1{ color:#2563eb; animation:orbitPos1 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .orbit-2{ color:#059669; animation:orbitPos2 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .orbit-3{ color:#d97706; animation:orbitPos3 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .orbit-4{ color:#7c3aed; animation:orbitPos4 4s infinite cubic-bezier(0.4,0,0.2,1); }
+    .alltools-ring{
+      position:absolute; width:84px; height:84px; border:1.5px dashed var(--line); border-radius:50%; z-index:1;
+      animation:ringRotate 12s linear infinite;
+    }
+    @keyframes ringRotate { 0%{ transform:rotate(0); } 100%{ transform:rotate(360deg); } }
+    @keyframes corePulse { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.06); border-color:var(--success); } }
+    @keyframes orbitPos1 { 0%,100%{ transform:translate(-34px,-20px) scale(0.9); } 50%{ transform:translate(-24px,-14px) scale(1.1); } 75%{ transform:translate(0,0) scale(0.4); opacity:0; } 85%{ opacity:1; } }
+    @keyframes orbitPos2 { 0%,100%{ transform:translate(34px,-20px) scale(0.9); } 50%{ transform:translate(24px,-14px) scale(1.1); } 75%{ transform:translate(0,0) scale(0.4); opacity:0; } 85%{ opacity:1; } }
+    @keyframes orbitPos3 { 0%,100%{ transform:translate(-34px,20px) scale(0.9); } 50%{ transform:translate(-24px,14px) scale(1.1); } 75%{ transform:translate(0,0) scale(0.4); opacity:0; } 85%{ opacity:1; } }
+    @keyframes orbitPos4 { 0%,100%{ transform:translate(34px,20px) scale(0.9); } 50%{ transform:translate(24px,14px) scale(1.1); } 75%{ transform:translate(0,0) scale(0.4); opacity:0; } 85%{ opacity:1; } }
+
+    /* features, steps, faq, footer etc */
+    .features-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:24px; }
+    .feature-card{ text-align:center; padding:24px 16px; background:var(--paper-raised); border-radius:20px; border:1px solid var(--line); }
+    .feature-icon{ width:56px; height:56px; border-radius:16px; background:var(--paper-raised); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--stamp); margin:0 auto 14px; }
+    .steps-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px; }
+    .step-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:20px; padding:24px; position:relative; }
+    .step-number{ width:36px; height:36px; border-radius:12px; background:var(--stamp); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; margin-bottom:12px; }
+    .faq-list{ max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
+    .faq-item{ background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+    .faq-question{ width:100%; display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:none; border:none; cursor:pointer; font-family:var(--serif); font-size:1rem; font-weight:700; color:var(--ink); text-align:left; }
+    .faq-question .faq-icon{ width:28px; height:28px; border-radius:10px; background:rgba(37,99,235,0.08); color:var(--stamp); display:flex; align-items:center; justify-content:center; font-size:0.7rem; flex-shrink:0; transition:transform .25s, background .2s; }
+    .faq-item.open .faq-question .faq-icon{ transform:rotate(45deg); background:var(--stamp); color:#fff; }
+    .faq-answer{ max-height:0; overflow:hidden; transition:max-height .3s; }
+    .faq-answer p{ padding:0 20px 18px; font-size:0.9rem; color:var(--ink-soft); line-height:1.6; }
+    .faq-item.open .faq-answer{ max-height:300px; }
+    .cta-banner{ background:linear-gradient(135deg,var(--stamp),var(--stamp-dark)); border-radius:28px; padding:48px 24px; text-align:center; color:#fff; }
+    .cta-banner h2{ font-family:var(--serif); font-size:clamp(1.6rem,4vw,2.4rem); margin-bottom:8px; }
+    .cta-banner p{ opacity:0.9; max-width:480px; margin:0 auto 20px; font-size:0.95rem; }
+    .cta-banner .btn-primary{ background:#fff; color:var(--stamp-dark); box-shadow:0 4px 0 rgba(0,0,0,0.15); }
+    .contact-strip{ background:var(--paper-raised); border:1px solid var(--line); border-radius:24px; padding:28px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .contact-email{ display:flex; align-items:center; gap:8px; font-weight:600; color:var(--ink); }
+    .contact-email i{ color:var(--stamp); }
+
+    /* footer */
+    .footer{ background:var(--ink); color:#dfe6f2; margin-top:48px; padding:48px 20px 24px; }
+    .footer-container{ max-width:1180px; margin:0 auto; }
+    .footer-grid{ display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:32px; padding-bottom:28px; border-bottom:1px solid rgba(255,255,255,0.12); }
+    @media (max-width:760px){ .footer-grid{ grid-template-columns:1fr; } }
+    .footer-brand{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .footer-brand img{ width:44px; height:44px; border-radius:12px; object-fit:cover; }
+    .footer-title{ font-family:var(--serif); font-weight:700; font-size:1.1rem; color:#fff; }
+    .footer-subtitle{ font-size:0.7rem; color:#9fb0cc; }
+    .footer-text{ font-size:0.85rem; color:#9fb0cc; max-width:34ch; }
+    .footer-links h3, .footer-right h3{ font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase; color:#8494b5; margin-bottom:12px; font-weight:600; }
+    .footer-links{ display:flex; flex-direction:column; gap:10px; }
+    .footer-links a{ font-size:0.85rem; color:#c8d2e6; width:fit-content; transition:color .2s; }
+    .footer-links a:hover{ color:#fff; }
+    .footer-right .developer{ font-size:0.85rem; color:#c8d2e6; margin-bottom:12px; }
+    .footer-social{ display:flex; gap:10px; margin-bottom:16px; }
+    .footer-social a{ width:36px; height:36px; border-radius:50%; border:1px solid rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; color:#fff; transition:background .2s, border-color .2s, transform .2s; }
+    .footer-social a:hover{ background:var(--stamp); border-color:var(--stamp); transform:translateY(-3px); }
+    .copyright{ font-size:0.75rem; color:#8494b5; line-height:1.6; }
+  </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
-    <div class="nav-container">
-
-        <div class="logo-wrapper">
-            <div class="logo-box">
-                <img src="images/logo.png" class="logo-image">
-            </div>
-
-            <div>
-                <h2 class="logo-title">PDFBoon</h2>
-                <p class="logo-subtitle">Fast PDF Toolkit</p>
-            </div>
-        </div>
-
-        <div class="nav-links" id="navLinks">
-            <a href="index.html" class="nav-link active-link">Home</a>
-
-            <div class="nav-item" id="toolsDropdown">
-                <button class="nav-tools-btn" id="toolsToggle" type="button">
-                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
-                </button>
-                <div class="dropdown-menu">
-
-                    <div class="dropdown-category">Organize PDF</div>
-                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
-                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
-
-                    <div class="dropdown-category">Optimize PDF</div>
-                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
-<a href="edit.html" class="dropdown-link"><i class="fa-solid fa-file-edit"></i> Edit PDF</a>
-                    <div class="dropdown-category">Convert PDF</div>
-                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
-                    
-<a href="scan.html" class="dropdown-link"><i class="fa-solid fa-camera"></i> Scan Documents to PDF</a>
-                    
-                  
-                    <div class="dropdown-category">Security</div>
-                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
-                   <a href="unlock.html" class="dropdown-link"><i class="fa-solid fa-unlock"></i> Unlock PDF</a>
-                  
-
-                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
-                </div>
-            </div>
-
-            <a href="about.html" class="nav-link">About</a>
-            <a href="contact.html" class="nav-link">Contact</a>
-        </div>
-
-        <button class="mobile-menu" id="mobileMenuBtn">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-
+  <div class="nav-container">
+    <div class="logo-wrapper">
+      <div class="logo-box"><img src="images/logo.png" class="logo-image"></div>
+      <div><h2 class="logo-title">PDFBoon</h2><p class="logo-subtitle">Fast PDF Toolkit</p></div>
     </div>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-link active-link">Home</a>
+      <div class="nav-item" id="toolsDropdown">
+        <button class="nav-tools-btn" id="toolsToggle" type="button">
+          <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+        </button>
+        <div class="dropdown-menu">
+          <div class="dropdown-category">Organize PDF</div>
+          <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+          <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+          <div class="dropdown-category">Optimize PDF</div>
+          <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+          <a href="edit.html" class="dropdown-link"><i class="fa-solid fa-file-edit"></i> Edit PDF</a>
+          <div class="dropdown-category">Convert PDF</div>
+          <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+          <a href="scan.html" class="dropdown-link"><i class="fa-solid fa-camera"></i> Scan to PDF</a>
+          <div class="dropdown-category">Security</div>
+          <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+          <a href="unlock.html" class="dropdown-link"><i class="fa-solid fa-unlock"></i> Unlock PDF</a>
+          <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+        </div>
+      </div>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <button class="mobile-menu" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-<div class="container">
-
-<div class="hero-badge"><i class="fa-solid fa-circle-check"></i> 100% Free — No Sign-up Needed</div>
-
-<h1>Every PDF Tool You Need, <span>All in One Place</span></h1>
-
-<!-- 5s looping demo video, right under the heading -->
-<!-- PDFBoon Animation Section - START -->
-
-     <!-- ============ PDFBOON HERO ANIMATION SECTION ============ -->
-<section id="pdfboon-hero-3d">
-  <style>
-    #pdfboon-hero-3d {
-      position: relative;
-      width: 100%;
-      min-height: 480px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.04) 0%, transparent 70%);
-      overflow: hidden;
-      padding: 40px 20px;
-    }
-
-    .hero-container {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      z-index: 2;
-      perspective: 1000px;
-    }
-
-    /* 3D Glassmorphism Logo Stage */
-    .hero-logo-stage {
-      position: relative;
-      width: 170px;
-      height: 170px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      transform-style: preserve-3d;
-      animation: heroFloat 4.5s ease-in-out infinite;
-    }
-
-    /* Interactive Soft Ambient Ring */
-    .hero-ambient-glow {
-      position: absolute;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 70%);
-      filter: blur(20px);
-      animation: ambientPulse 4s ease-in-out infinite alternate;
-      z-index: 0;
-    }
-
-    /* Orbiting Nodes (SVG Laser Arc) */
-    .hero-orbit-svg {
-      position: absolute;
-      width: 230px;
-      height: 230px;
-      pointer-events: none;
-      z-index: 1;
-      animation: orbitSpin 14s linear infinite;
-    }
-
-    .hero-orbit-svg circle {
-      stroke-dasharray: 80, 180;
-      stroke-dashoffset: 0;
-      transform-origin: center;
-      animation: dashGlow 3s ease-in-out infinite alternate;
-    }
-
-    /* Glass Card Base for Logo */
-    .hero-logo-card {
-      position: relative;
-      width: 128px;
-      height: 128px;
-      border-radius: 36px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 
-        0 20px 40px rgba(13, 37, 69, 0.08),
-        0 2px 6px rgba(13, 37, 69, 0.04),
-        inset 0 1px 1px rgba(255, 255, 255, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-      overflow: hidden;
-      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
-    }
-
-    .hero-logo-card img {
-      width: 82px;
-      height: 82px;
-      object-fit: contain;
-      filter: drop-shadow(0 8px 16px rgba(13, 37, 69, 0.12));
-      transition: transform 0.3s ease;
-      z-index: 2;
-    }
-
-    /* Holographic Light Sweep Edge */
-    .hero-logo-card::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        45deg,
-        transparent 40%,
-        rgba(255, 255, 255, 0.6) 50%,
-        transparent 60%
-      );
-      transform: rotate(25deg) translateY(-100%);
-      animation: lightSweep 4.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 3;
-    }
-
-    /* Typography & Branding */
-    .hero-title {
-      font-family: 'Fraunces', serif;
-      font-size: 52px;
-      font-weight: 800;
-      color: var(--ink, #0d2545);
-      margin: 0 0 10px 0;
-      letter-spacing: -1px;
-      line-height: 1.1;
-      background: linear-gradient(135deg, var(--ink, #0d2545) 30%, var(--stamp, #2563eb));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: heroTextFadeUp 1s ease-out forwards;
-    }
-
-    .hero-subtitle-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 30px;
-      background: var(--paper-raised, #ffffff);
-      border: 1px solid var(--line, rgba(13, 37, 69, 0.1));
-      box-shadow: 0 4px 14px rgba(13, 37, 69, 0.05);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--ink-soft, #475569);
-      animation: heroTextFadeUp 1s ease-out 0.2s forwards;
-      opacity: 0;
-    }
-
-    .hero-subtitle-badge .badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success, #10b981);
-      box-shadow: 0 0 8px var(--success, #10b981);
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Smooth Floating Animation */
-    @keyframes heroFloat {
-      0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
-      50% { transform: translateY(-12px) rotateX(4deg) rotateY(-4deg); }
-    }
-
-    /* Background Pulse */
-    @keyframes ambientPulse {
-      0% { transform: scale(0.9); opacity: 0.6; }
-      100% { transform: scale(1.2); opacity: 0.9; }
-    }
-
-    /* Orbit Rotation */
-    @keyframes orbitSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Laser Arc Dash Effect */
-    @keyframes dashGlow {
-      0% { stroke-dasharray: 40, 200; stroke: #2563eb; }
-      100% { stroke-dasharray: 120, 120; stroke: #10b981; }
-    }
-
-    /* Light Sweep across Glass Card */
-    @keyframes lightSweep {
-      0%, 20% { transform: rotate(25deg) translateY(-120%); }
-      50%, 100% { transform: rotate(25deg) translateY(120%); }
-    }
-
-    /* Text Fade Up */
-    @keyframes heroTextFadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Mobile Responsive Fine-tuning */
-    @media (max-width: 768px) {
-      #pdfboon-hero-3d { min-height: 380px; }
-      .hero-logo-stage { width: 140px; height: 140px; }
-      .hero-logo-card { width: 104px; height: 104px; border-radius: 28px; }
-      .hero-logo-card img { width: 64px; height: 64px; }
-      .hero-orbit-svg { width: 180px; height: 180px; }
-      .hero-title { font-size: 38px; }
-      .hero-subtitle-badge { font-size: 12px; padding: 5px 12px; }
-    }
-  </style>
-
-  <div class="hero-container">
-    
-<!-- ============ PDFBOON REAL 3D ROUND REACTOR HERO ANIMATION ============ -->
-<section id="pdfboon-reactor-hero">
-  <style>
-    #pdfboon-reactor-hero {
-      position: relative;
-      width: 100%;
-      min-height: 500px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 50% 45%, rgba(37, 99, 235, 0.08) 0%, transparent 65%);
-      overflow: hidden;
-      padding: 40px 20px;
-    }
-
-    .reactor-container {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 2;
-    }
-
-    /* Primary 3D Round Stage */
-    .round-reactor-stage {
-      position: relative;
-      width: 260px;
-      height: 260px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 25px;
-      perspective: 800px;
-    }
-
-    /* 1. Outer Fast Orbital Ring */
-    .reactor-ring-outer {
-      position: absolute;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-      border: 3px dashed var(--stamp, #2563eb);
-      box-shadow: 0 0 20px rgba(37, 99, 235, 0.35);
-      animation: spinOuterRing 6s linear infinite;
-    }
-
-    /* 2. Middle Counter-Rotating Ring with Nodes */
-    .reactor-ring-mid {
-      position: absolute;
-      width: 210px;
-      height: 210px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      border-top: 3px solid #10b981; /* Green glow */
-      border-bottom: 3px solid #3b82f6; /* Blue glow */
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-      animation: spinMidRing 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    }
-
-    /* 3. Inner Pulsing Core Ring */
-    .reactor-ring-inner {
-      position: absolute;
-      width: 170px;
-      height: 170px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
-      border: 1px solid rgba(37, 99, 235, 0.3);
-      animation: corePulseGlow 2.5s ease-in-out infinite alternate;
-    }
-
-    /* Center Round Logo Box */
-    .round-logo-core {
-      position: relative;
-      width: 135px;
-      height: 135px;
-      border-radius: 50%;
-      background: #ffffff;
-      border: 3px solid #ffffff;
-      box-shadow: 
-        0 0 30px rgba(37, 99, 235, 0.3),
-        0 12px 28px rgba(13, 37, 69, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 5;
-      overflow: hidden;
-      animation: logoFloatPulse 3.5s ease-in-out infinite;
-    }
-
-    .round-logo-core img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      z-index: 2;
-    }
-
-    /* 4. Scanning Radar Light Effect inside Logo */
-    .round-logo-core::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, transparent 0%, transparent 75%, rgba(37, 99, 235, 0.4) 100%);
-      animation: radarScan 2.5s linear infinite;
-      z-index: 1;
-    }
-
-    /* Orbiting Particles/Satellites */
-    .satellite-dot {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 10px #10b981;
-      z-index: 6;
-    }
-
-    .dot-1 { animation: orbitDot1 4s linear infinite; }
-    .dot-2 { animation: orbitDot2 6s linear infinite; }
-
-    /* Typography & Text Section */
-    .reactor-title {
-      font-family: 'Fraunces', serif;
-      font-size: 48px;
-      font-weight: 800;
-      color: var(--ink, #0d2545);
-      margin: 0 0 8px 0;
-      text-align: center;
-      letter-spacing: -0.5px;
-    }
-
-    .reactor-subtitle {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--ink-soft, #475569);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--paper-raised, #ffffff);
-      padding: 6px 18px;
-      border-radius: 20px;
-      border: 1px solid var(--line, rgba(13, 37, 69, 0.1));
-      box-shadow: 0 4px 12px rgba(13, 37, 69, 0.05);
-    }
-
-    .reactor-subtitle i {
-      color: var(--stamp, #2563eb);
-      animation: sparkSpin 3s linear infinite;
-    }
-
-    /* --- KEYFRAME ANIMATIONS (HIGHLY VISIBLE) --- */
-
-    /* Outer Ring Fast Spin */
-    @keyframes spinOuterRing {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Middle Ring Counter-Spin with Tilt */
-    @keyframes spinMidRing {
-      0% { transform: rotate(360deg) rotateX(20deg); }
-      100% { transform: rotate(0deg) rotateX(20deg); }
-    }
-
-    /* Radar Conic Sweep */
-    @keyframes radarScan {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Core Pulsing Glow & Scale */
-    @keyframes corePulseGlow {
-      0% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 15px rgba(37, 99, 235, 0.2); }
-      100% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 35px rgba(16, 185, 129, 0.5); }
-    }
-
-    /* Center Logo Floating & Bouncing */
-    @keyframes logoFloatPulse {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(-10px) scale(1.05); }
-    }
-
-    /* Orbit Dot 1 Path */
-    @keyframes orbitDot1 {
-      0% { transform: rotate(0deg) translateX(105px) rotate(0deg); }
-      100% { transform: rotate(360deg) translateX(105px) rotate(-360deg); }
-    }
-
-    /* Orbit Dot 2 Path */
-    @keyframes orbitDot2 {
-      0% { transform: rotate(360deg) translateX(125px) rotate(-360deg); }
-      100% { transform: rotate(0deg) translateX(125px) rotate(0deg); }
-    }
-
-    /* Sparkle Icon Rotation */
-    @keyframes sparkSpin {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.2); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-      .round-reactor-stage { width: 210px; height: 210px; }
-      .reactor-ring-outer { width: 200px; height: 200px; }
-      .reactor-ring-mid { width: 170px; height: 170px; }
-      .reactor-ring-inner { width: 130px; height: 130px; }
-      .round-logo-core { width: 105px; height: 105px; }
-      .round-logo-core img { width: 70px; height: 70px; }
-      @keyframes orbitDot1 {
-        0% { transform: rotate(0deg) translateX(85px) rotate(0deg); }
-        100% { transform: rotate(360deg) translateX(85px) rotate(-360deg); }
-      }
-      @keyframes orbitDot2 {
-        0% { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
-        100% { transform: rotate(0deg) translateX(100px) rotate(0deg); }
-      }
-      .reactor-title { font-size: 36px; }
-      .reactor-subtitle { font-size: 13px; }
-    }
-  </style>
-
-  <div class="reactor-container">
-    
-    <!-- 3D Circular Reactor Visual Animation -->
-    <div class="round-reactor-stage">
-      
-      <!-- Outer Rotating Ring -->
-      <div class="reactor-ring-outer"></div>
-
-      <!-- Middle Counter-Rotating Ring -->
-      <div class="reactor-ring-mid"></div>
-
-      <!-- Inner Pulsing Glow Ring -->
-      <div class="reactor-ring-inner"></div>
-
-      <!-- Orbiting Glowing Dots -->
-      <div class="satellite-dot dot-1"></div>
-      <div class="satellite-dot dot-2" style="background:#2563eb; box-shadow:0 0 10px #2563eb;"></div>
-
-      <!-- Center Round Logo with Conic Radar Scan -->
-      <div class="round-logo-core">
-        <img src="images/logo.png" alt="PDFBoon Logo">
+  <div class="container">
+    <div class="hero-badge"><i class="fa-solid fa-circle-check"></i> 100% Free — No Sign-up</div>
+    <h1>Every PDF Tool You Need, <span>All in One Place</span></h1>
+    <!-- Reactor hero animation (simplified) -->
+    <div style="width:100%; max-width:600px; margin:0 auto 24px; border-radius:30px; background:radial-gradient(circle at 50% 40%, rgba(37,99,235,0.08), transparent 70%); padding:20px 0;">
+      <div style="display:flex; justify-content:center; align-items:center; gap:20px; flex-wrap:wrap;">
+        <div style="position:relative; width:140px; height:140px;">
+          <div style="position:absolute; inset:0; border-radius:50%; border:2px dashed var(--stamp); animation:spinOuterRing 6s linear infinite;"></div>
+          <div style="position:absolute; inset:10px; border-radius:50%; border-top:3px solid #10b981; border-bottom:3px solid #3b82f6; animation:spinMidRing 4s infinite;"></div>
+          <div style="position:absolute; inset:20px; border-radius:50%; background:radial-gradient(circle,rgba(37,99,235,0.12),transparent 70%); border:1px solid rgba(37,99,235,0.2); animation:corePulseGlow 2.5s infinite alternate;"></div>
+          <div style="position:absolute; inset:30px; border-radius:50%; background:#fff; border:3px solid #fff; box-shadow:0 0 30px rgba(37,99,235,0.2); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <img src="images/logo.png" style="width:70px; height:70px; object-fit:contain;">
+          </div>
+          <div style="position:absolute; width:12px; height:12px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981; top:0; left:50%; transform:translateX(-50%); animation:orbitDot1 4s linear infinite;"></div>
+          <div style="position:absolute; width:10px; height:10px; border-radius:50%; background:#2563eb; box-shadow:0 0 10px #2563eb; bottom:0; left:50%; transform:translateX(-50%); animation:orbitDot2 6s linear infinite;"></div>
+        </div>
+        <div style="text-align:left;">
+          <h2 style="font-family:var(--serif); font-size:2rem; font-weight:800; color:var(--ink);">PDFBoon</h2>
+          <p style="display:flex; align-items:center; gap:8px; background:var(--paper-raised); padding:4px 16px; border-radius:20px; border:1px solid var(--line); font-weight:600; font-size:0.8rem;"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--stamp);"></i> Easy, Secure & Fast</p>
+        </div>
       </div>
-
     </div>
-
-    <!-- Title & Tagline -->
-    <h1 class="reactor-title">PDFBoon</h1>
-    <div class="reactor-subtitle">
-      <i class="fa-solid fa-wand-magic-sparkles"></i> Easy, Secure & Fast PDF Tools
+    <p>Compress, merge, split, edit, unlock, scan, convert and lock your PDF files in seconds. Everything runs right inside your browser — fast, private, and completely free.</p>
+    <div class="hero-actions">
+      <a href="tools.html" class="btn btn-primary"><i class="fa-solid fa-grip"></i> Explore All Tools</a>
+      <a href="compress.html" class="btn btn-secondary"><i class="fa-solid fa-file-zipper"></i> Compress a PDF</a>
     </div>
-
+    <div class="trust-row">
+      <div class="trust-pill"><i class="fa-solid fa-shield-halved"></i> 100% Browser-side</div>
+      <div class="trust-pill"><i class="fa-solid fa-cloud-arrow-up"></i> No Upload to Server</div>
+      <div class="trust-pill"><i class="fa-solid fa-bolt"></i> Instant Results</div>
+    </div>
   </div>
-</section>
-<!-- ============ END PDFBOON REACTOR HERO ANIMATION ============ -->
-
-<!-- ============ END PDFBOON HERO ANIMATION SECTION ============ -->
- 
-
-
-
-<!-- PDFBoon Round Logo Animation Section - END -->
-<!-- PDFBoon Animation Section - END -->
-
-<p>Compress, merge, split, edit, unlock, scan documents, convert and lock your PDF files in seconds. Everything runs right inside your browser — fast, private, and completely free.</p>
-
-<div class="hero-actions">
-<a href="tools.html" class="btn btn-primary"><i class="fa-solid fa-grip"></i> Explore All Tools</a>
-<a href="compress.html" class="btn btn-secondary"><i class="fa-solid fa-file-zipper"></i> Compress a PDF</a>
-</div>
-
-<div class="trust-row">
-<div class="trust-pill"><i class="fa-solid fa-shield-halved"></i> 100% Browser-side</div>
-<div class="trust-pill"><i class="fa-solid fa-cloud-arrow-up"></i> No File Upload to Server</div>
-<div class="trust-pill"><i class="fa-solid fa-bolt"></i> Instant Results</div>
-</div>
-
-</div>
 </section>
 
 <!-- POPULAR TOOLS -->
 <section class="section">
-<div class="container">
-
-<div class="section-header">
-<div class="section-eyebrow">Popular Tools</div>
-<h2>Start With What You Need</h2>
-<p>Our most used tools, ready to go — pick one and get started in seconds.</p>
-</div>
-
-
-
-<div class="tool-card">
-  
-<!-- ============ COMPRESS PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-compress-blend">
-  <style>
-    /* Card Override & Seamless Blend Styling */
-    .tool-card-compress-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-compress-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Seamless Animation Stage */
-    .blend-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent; /* Background me bilkul merge */
-      margin: 4px 0 8px;
-    }
-
-    /* Hydraulic Compression Plates */
-    .press-plate-top, .press-plate-bottom {
-      width: 80px;
-      height: 4px;
-      background: var(--stamp);
-      border-radius: 2px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-      z-index: 2;
-    }
-
-    .press-plate-top {
-      top: 15px;
-      animation: pressDown 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .press-plate-bottom {
-      bottom: 35px;
-      animation: pressUp 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* 3D PDF Document Sheet */
-    .blend-pdf-doc {
-      width: 64px;
-      height: 84px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      position: relative;
-      z-index: 1;
-      animation: hydraulicCompress 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .blend-pdf-doc i {
-      font-size: 26px;
-      color: #ef4444; /* PDF Red */
-      transition: color 0.3s ease;
-      animation: iconColorShift 3.8s infinite;
-    }
-
-    .blend-pdf-doc .doc-tag {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--ink-soft);
-      margin-top: 4px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Floating Compression Ring Particles */
-    .compress-ring {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      width: 70px;
-      height: 70px;
-      border: 2px dashed var(--teal);
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      opacity: 0;
-      animation: ringBurst 3.8s infinite;
-      pointer-events: none;
-    }
-
-    /* Live Status Messaging */
-    .blend-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .blend-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .blend-status-text.compressing {
-      color: var(--stamp);
-      animation: blendTextOut 3.8s infinite;
-    }
-
-    .blend-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: blendTextIn 3.8s infinite;
-    }
-
-    /* --- Animations --- */
-    @keyframes pressDown {
-      0%, 20% { top: 12px; }
-      45%, 55% { top: 38px; } /* Squeezing state */
-      75%, 100% { top: 12px; }
-    }
-
-    @keyframes pressUp {
-      0%, 20% { bottom: 32px; }
-      45%, 55% { bottom: 58px; } /* Squeezing state */
-      75%, 100% { bottom: 32px; }
-    }
-
-    @keyframes hydraulicCompress {
-      0%, 20% {
-        transform: scale(1, 1) rotateX(0deg);
-        background: linear-gradient(135deg, #ffffff, #f1f5f9);
-        border-color: var(--line);
-      }
-      45%, 55% {
-        /* Flat compressed state */
-        transform: scale(1.15, 0.45) rotateX(25deg);
-        background: rgba(16, 185, 129, 0.08);
-        border-color: var(--success);
-        box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
-      }
-      75%, 100% {
-        transform: scale(0.95, 0.95) rotateX(0deg);
-        background: linear-gradient(135deg, #ffffff, #f1f5f9);
-        border-color: var(--success);
-      }
-    }
-
-    @keyframes iconColorShift {
-      0%, 35% { color: #ef4444; }
-      45%, 100% { color: var(--success); }
-    }
-
-    @keyframes ringBurst {
-      0%, 40% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-      50% { opacity: 0.8; }
-      65%, 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
-    }
-
-    @keyframes blendTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes blendTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);">
-    <i class="fa-solid fa-file-zipper"></i>
-  </div>
-  
-  <h3>Compress PDF</h3>
-  <p>Set a target size and shrink your PDF without losing quality.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="blend-anim-stage">
-    <div class="press-plate-top"></div>
-    <div class="compress-ring"></div>
-    
-    <div class="blend-pdf-doc">
-      <i class="fa-solid fa-file-pdf"></i>
-      <span class="doc-tag">PDF</span>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Popular Tools</div>
+      <h2>Start With What You Need</h2>
+      <p>Our most used tools, ready to go — pick one and get started in seconds.</p>
     </div>
-
-    <div class="press-plate-bottom"></div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="blend-status-area">
-    <span class="blend-status-text compressing">
-      <i class="fa-solid fa-arrows-to-line"></i> Compressing...
-    </span>
-    <span class="blend-status-text success">
-      <i class="fa-solid fa-circle-check"></i> 78% Smaller!
-    </span>
-  </div>
-
-  <a href="compress.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END COMPRESS TOOL CARD ============ -->
-
-      <!-- ============ MERGE PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-merge-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-merge-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-merge-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for Merge Animation */
-    .merge-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    /* Container holding merging documents */
-    .merge-docs-wrap {
-      position: relative;
-      width: 100px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Base PDF Document Styles */
-    .merge-doc {
-      width: 52px;
-      height: 68px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      transition: all 0.3s ease;
-    }
-
-    .merge-doc i {
-      font-size: 22px;
-      color: #ef4444; /* PDF Red */
-    }
-
-    .merge-doc .doc-num {
-      font-size: 8px;
-      font-weight: 800;
-      color: var(--ink-soft);
-      margin-top: 3px;
-    }
-
-    /* Left PDF Document Animation */
-    .merge-doc-left {
-      animation: mergeDocLeft 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Right PDF Document Animation */
-    .merge-doc-right {
-      animation: mergeDocRight 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Merged Result Document */
-    .merged-doc-final {
-      width: 58px;
-      height: 76px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--stamp);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
-      position: absolute;
-      opacity: 0;
-      transform: scale(0.6) rotateY(180deg);
-      animation: mergeDocFinal 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .merged-doc-final i {
-      font-size: 26px;
-      color: var(--stamp);
-    }
-
-    .merged-doc-final .final-badge {
-      font-size: 8px;
-      font-weight: 800;
-      color: var(--success);
-      margin-top: 2px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Combining Sparkle / Burst Effect */
-    .merge-sparkle {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
-      opacity: 0;
-      animation: mergeGlow 3.8s infinite;
-      pointer-events: none;
-    }
-
-    /* Live Status Messaging */
-    .merge-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .merge-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .merge-status-text.merging {
-      color: var(--stamp);
-      animation: mergeTextOut 3.8s infinite;
-    }
-
-    .merge-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: mergeTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Left Document Movement */
-    @keyframes mergeDocLeft {
-      0%, 15% { transform: translateX(-32px) rotate(-8deg) scale(1); opacity: 1; }
-      40% { transform: translateX(0px) rotate(0deg) scale(0.9); opacity: 0.8; }
-      50%, 100% { transform: translateX(0px) rotate(0deg) scale(0.5); opacity: 0; }
-    }
-
-    /* Right Document Movement */
-    @keyframes mergeDocRight {
-      0%, 15% { transform: translateX(32px) rotate(8deg) scale(1); opacity: 1; }
-      40% { transform: translateX(0px) rotate(0deg) scale(0.9); opacity: 0.8; }
-      50%, 100% { transform: translateX(0px) rotate(0deg) scale(0.5); opacity: 0; }
-    }
-
-    /* Final Combined Document Pop */
-    @keyframes mergeDocFinal {
-      0%, 40% { opacity: 0; transform: scale(0.5) rotateY(90deg); }
-      52% { opacity: 1; transform: scale(1.1) rotateY(0deg); }
-      65%, 90% { opacity: 1; transform: scale(1) rotateY(0deg); border-color: var(--success); }
-      100% { opacity: 0; transform: scale(0.8) rotateY(0deg); }
-    }
-
-    /* Fusion Glow */
-    @keyframes mergeGlow {
-      0%, 35% { transform: scale(0.3); opacity: 0; }
-      45% { transform: scale(1.3); opacity: 0.9; }
-      65%, 100% { transform: scale(1.6); opacity: 0; }
-    }
-
-    /* Status Text Fade Animations */
-    @keyframes mergeTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes mergeTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-    <i class="fa-solid fa-object-group"></i>
-  </div>
-  
-  <h3>Merge PDF</h3>
-  <p>Combine multiple PDF files into a single organized document.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="merge-anim-stage">
-    <div class="merge-sparkle"></div>
-    <div class="merge-docs-wrap">
-      
-      <!-- Left PDF -->
-      <div class="merge-doc merge-doc-left">
-        <i class="fa-solid fa-file-pdf"></i>
-        <span class="doc-num">DOC 1</span>
-      </div>
-
-      <!-- Right PDF -->
-      <div class="merge-doc merge-doc-right">
-        <i class="fa-solid fa-file-pdf"></i>
-        <span class="doc-num">DOC 2</span>
-      </div>
-
-      <!-- Merged Result PDF -->
-      <div class="merged-doc-final">
-        <i class="fa-solid fa-file-circle-check"></i>
-        <span class="final-badge">MERGED</span>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="merge-status-area">
-    <span class="merge-status-text merging">
-      <i class="fa-solid fa-object-group"></i> Combining Files...
-    </span>
-    <span class="merge-status-text success">
-      <i class="fa-solid fa-circle-check"></i> Merged Successfully!
-    </span>
-  </div>
-
-  <a href="merge.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-
-<!-- ============ SPLIT PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-split-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-split-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-split-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for Split Animation */
-    .split-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    .split-docs-wrap {
-      position: relative;
-      width: 110px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Original PDF Document */
-    .split-doc-original {
-      width: 60px;
-      height: 78px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      z-index: 2;
-      animation: originalDocFade 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .split-doc-original i {
-      font-size: 26px;
-      color: #ef4444;
-    }
-
-    .split-doc-original .doc-tag {
-      font-size: 8px;
-      font-weight: 800;
-      color: var(--ink-soft);
-      margin-top: 3px;
-    }
-
-    /* Laser Cut Line Effect */
-    .cut-line {
-      position: absolute;
-      width: 2px;
-      height: 0px;
-      background: var(--stamp);
-      box-shadow: 0 0 10px var(--stamp);
-      z-index: 4;
-      animation: laserCut 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Scissors Icon Moving Down */
-    .scissors-icon {
-      position: absolute;
-      font-size: 16px;
-      color: var(--stamp-dark);
-      z-index: 5;
-      opacity: 0;
-      animation: scissorsMove 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Split Document Left Piece */
-    .split-piece-left {
-      width: 50px;
-      height: 72px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--stamp);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      opacity: 0;
-      z-index: 1;
-      animation: splitPieceLeft 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Split Document Right Piece */
-    .split-piece-right {
-      width: 50px;
-      height: 72px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--success);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      opacity: 0;
-      z-index: 1;
-      animation: splitPieceRight 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .split-piece-left i { font-size: 20px; color: var(--stamp); }
-    .split-piece-right i { font-size: 20px; color: var(--success); }
-
-    .piece-num {
-      font-size: 7px;
-      font-weight: 800;
-      margin-top: 2px;
-      color: var(--ink-soft);
-    }
-
-    /* Live Status Messaging */
-    .split-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .split-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .split-status-text.splitting {
-      color: var(--stamp);
-      animation: splitTextOut 3.8s infinite;
-    }
-
-    .split-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: splitTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Original PDF disappear during cut */
-    @keyframes originalDocFade {
-      0%, 20% { opacity: 1; transform: scale(1); }
-      40% { opacity: 1; transform: scale(1.02); }
-      45%, 100% { opacity: 0; transform: scale(0.95); }
-    }
-
-    /* Laser Cut Line Animation */
-    @keyframes laserCut {
-      0%, 15% { height: 0px; top: 8px; opacity: 0; }
-      20% { opacity: 1; }
-      40% { height: 75px; top: 8px; opacity: 1; }
-      48%, 100% { height: 75px; top: 8px; opacity: 0; }
-    }
-
-    /* Scissors Cutting Path */
-    @keyframes scissorsMove {
-      0%, 15% { top: 0px; opacity: 0; transform: rotate(-90deg) scale(0.8); }
-      20% { opacity: 1; }
-      40% { top: 72px; opacity: 1; transform: rotate(-90deg) scale(1.1); }
-      45%, 100% { top: 72px; opacity: 0; }
-    }
-
-    /* Left Split Piece Moves Away */
-    @keyframes splitPieceLeft {
-      0%, 40% { opacity: 0; transform: translateX(0px) rotateY(0deg); }
-      50% { opacity: 1; transform: translateX(-28px) rotateY(-12deg) scale(1); }
-      75%, 90% { opacity: 1; transform: translateX(-28px) rotateY(0deg) scale(1); }
-      100% { opacity: 0; transform: translateX(0px); }
-    }
-
-    /* Right Split Piece Moves Away */
-    @keyframes splitPieceRight {
-      0%, 40% { opacity: 0; transform: translateX(0px) rotateY(0deg); }
-      50% { opacity: 1; transform: translateX(28px) rotateY(12deg) scale(1); }
-      75%, 90% { opacity: 1; transform: translateX(28px) rotateY(0deg) scale(1); }
-      100% { opacity: 0; transform: translateX(0px); }
-    }
-
-    /* Text Animations */
-    @keyframes splitTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes splitTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-    <i class="fa-solid fa-scissors"></i>
-  </div>
-  
-  <h3>Split PDF</h3>
-  <p>Break a PDF into multiple files by range, interval, or page.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="split-anim-stage">
-    <div class="split-docs-wrap">
-      
-      <!-- Original PDF -->
-      <div class="split-doc-original">
-        <i class="fa-solid fa-file-pdf"></i>
-        <span class="doc-tag">PDF</span>
-      </div>
-
-      <!-- Cutting Laser & Scissors -->
-      <div class="cut-line"></div>
-      <i class="fa-solid fa-scissors scissors-icon"></i>
-
-      <!-- Result Split Files -->
-      <div class="split-piece-left">
-        <i class="fa-solid fa-file-lines"></i>
-        <span class="piece-num">PART 1</span>
-      </div>
-
-      <div class="split-piece-right">
-        <i class="fa-solid fa-file-lines"></i>
-        <span class="piece-num">PART 2</span>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="split-status-area">
-    <span class="split-status-text splitting">
-      <i class="fa-solid fa-scissors"></i> Cutting Pages...
-    </span>
-    <span class="split-status-text success">
-      <i class="fa-solid fa-circle-check"></i> Split Successfully!
-    </span>
-  </div>
-
-  <a href="split.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END SPLIT TOOL CARD ============ -->
-
-<!-- ============ IMAGE TO PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-img2pdf-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-img2pdf-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-img2pdf-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for Image to PDF Animation */
-    .img2pdf-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    .img2pdf-wrap {
-      position: relative;
-      width: 110px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Floating Source Images (JPG & PNG) */
-    .source-img-card {
-      width: 52px;
-      height: 52px;
-      background: #ffffff;
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      z-index: 2;
-    }
-
-    .source-img-1 {
-      animation: imgCardOne 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .source-img-2 {
-      animation: imgCardTwo 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .source-img-card i {
-      font-size: 20px;
-      color: #3b82f6; /* Image Blue */
-    }
-
-    .source-img-card .img-ext {
-      font-size: 7px;
-      font-weight: 800;
-      color: var(--ink-soft);
-      margin-top: 2px;
-    }
-
-    /* Laser Scanner Beam */
-    .scan-beam {
-      position: absolute;
-      width: 70px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--stamp), transparent);
-      box-shadow: 0 0 8px var(--stamp);
-      z-index: 3;
-      opacity: 0;
-      animation: scannerLight 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Final Converted PDF Card */
-    .converted-pdf-card {
-      width: 58px;
-      height: 76px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--stamp);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
-      position: absolute;
-      z-index: 1;
-      opacity: 0;
-      animation: convertedPdfPop 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .converted-pdf-card i {
-      font-size: 26px;
-      color: #ef4444; /* PDF Red */
-    }
-
-    .converted-pdf-card .pdf-badge {
-      font-size: 8px;
-      font-weight: 800;
-      color: var(--success);
-      margin-top: 3px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Live Status Messaging */
-    .img2pdf-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .img2pdf-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .img2pdf-status-text.converting {
-      color: var(--stamp);
-      animation: img2pdfTextOut 3.8s infinite;
-    }
-
-    .img2pdf-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: img2pdfTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* First Image Movement */
-    @keyframes imgCardOne {
-      0% { opacity: 0; transform: translate(-24px, -10px) rotate(-10deg) scale(0.8); }
-      15% { opacity: 1; transform: translate(-20px, -6px) rotate(-8deg) scale(1); }
-      38% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(0.85); }
-      48%, 100% { opacity: 0; transform: translate(0px, 0px) scale(0.5); }
-    }
-
-    /* Second Image Movement */
-    @keyframes imgCardTwo {
-      0% { opacity: 0; transform: translate(24px, 10px) rotate(10deg) scale(0.8); }
-      15% { opacity: 1; transform: translate(20px, 6px) rotate(8deg) scale(1); }
-      38% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(0.85); }
-      48%, 100% { opacity: 0; transform: translate(0px, 0px) scale(0.5); }
-    }
-
-    /* Scanning Light Effect */
-    @keyframes scannerLight {
-      0%, 20% { opacity: 0; transform: translateY(-30px); }
-      25% { opacity: 1; }
-      40% { opacity: 1; transform: translateY(30px); }
-      45%, 100% { opacity: 0; transform: translateY(30px); }
-    }
-
-    /* Output PDF Document Fade In */
-    @keyframes convertedPdfPop {
-      0%, 42% { opacity: 0; transform: scale(0.6) rotateY(90deg); }
-      52% { opacity: 1; transform: scale(1.08) rotateY(0deg); }
-      65%, 90% { opacity: 1; transform: scale(1) rotateY(0deg); border-color: var(--success); }
-      100% { opacity: 0; transform: scale(0.8) rotateY(0deg); }
-    }
-
-    /* Status Text Animations */
-    @keyframes img2pdfTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes img2pdfTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#0284c7,#0369a1);">
-    <i class="fa-solid fa-file-image"></i>
-  </div>
-  
-  <h3>Image to PDF</h3>
-  <p>Convert JPG, PNG, WEBP and other images into a PDF document.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="img2pdf-anim-stage">
-    <div class="img2pdf-wrap">
-      
-      <!-- Source Images -->
-      <div class="source-img-card source-img-1">
-        <i class="fa-solid fa-image"></i>
-        <span class="img-ext">JPG</span>
-      </div>
-
-      <div class="source-img-card source-img-2">
-        <i class="fa-solid fa-file-image"></i>
-        <span class="img-ext">PNG</span>
-      </div>
-
-      <!-- Scanner Beam -->
-      <div class="scan-beam"></div>
-
-      <!-- Final Converted PDF -->
-      <div class="converted-pdf-card">
-        <i class="fa-solid fa-file-pdf"></i>
-        <span class="pdf-badge">READY</span>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="img2pdf-status-area">
-    <span class="img2pdf-status-text converting">
-      <i class="fa-solid fa-wand-magic-sparkles"></i> Converting Images...
-    </span>
-    <span class="img2pdf-status-text success">
-      <i class="fa-solid fa-circle-check"></i> PDF Created!
-    </span>
-  </div>
-
-  <a href="create.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END IMAGE TO PDF TOOL CARD ============ -->
-
-
-
-<!-- ============ EDIT PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-edit-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-edit-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-edit-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for Edit PDF Animation */
-    .edit-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    .edit-wrap {
-      position: relative;
-      width: 110px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* PDF Document Canvas */
-    .edit-pdf-card {
-      width: 60px;
-      height: 78px;
-      background: linear-gradient(135deg, #ffffff, #f8fafc);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      padding: 8px 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: 5px;
-      box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      z-index: 1;
-      animation: docFloat 3.8s infinite ease-in-out;
-    }
-
-    /* Fake Text Lines */
-    .doc-line {
-      height: 4px;
-      border-radius: 2px;
-      background: var(--line);
-      width: 100%;
-    }
-
-    .doc-line.short { width: 60%; }
-
-    /* Animated Written Line (Appears as pen writes) */
-    .doc-line.active-edit {
-      background: var(--stamp);
-      width: 0%;
-      animation: lineWriting 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .doc-line.active-edit-2 {
-      background: var(--success);
-      width: 0%;
-      animation: lineWritingTwo 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Floating Pen / Edit Brush */
-    .edit-pen-icon {
-      position: absolute;
-      font-size: 22px;
-      color: var(--stamp-dark);
-      z-index: 3;
-      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
-      animation: penWritingPath 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Sparkle Burst when edit completes */
-    .edit-sparkle {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 14px;
-      color: #f59e0b; /* Golden Yellow */
-      opacity: 0;
-      animation: editSparklePop 3.8s infinite;
-      z-index: 4;
-    }
-
-    /* Live Status Messaging */
-    .edit-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .edit-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .edit-status-text.editing {
-      color: var(--stamp);
-      animation: editTextOut 3.8s infinite;
-    }
-
-    .edit-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: editTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Document Floating Motion */
-    @keyframes docFloat {
-      0%, 100% { transform: translateY(0px) rotate(0deg); border-color: var(--line); }
-      50% { transform: translateY(-3px) rotate(1deg); }
-      70% { border-color: var(--success); box-shadow: 0 10px 22px rgba(16, 185, 129, 0.2); }
-    }
-
-    /* First Line Fill */
-    @keyframes lineWriting {
-      0%, 15% { width: 0%; }
-      30%, 85% { width: 85%; }
-      100% { width: 0%; }
-    }
-
-    /* Second Line Fill */
-    @keyframes lineWritingTwo {
-      0%, 32% { width: 0%; }
-      50%, 85% { width: 65%; }
-      100% { width: 0%; }
-    }
-
-    /* Pen Movement Path across lines */
-    @keyframes penWritingPath {
-      0% { opacity: 0; transform: translate(-20px, -20px) rotate(-45deg); }
-      12% { opacity: 1; transform: translate(-12px, -8px) rotate(-20deg); }
-      /* Writing Line 1 */
-      30% { transform: translate(14px, -8px) rotate(-10deg); }
-      /* Move to Line 2 */
-      35% { transform: translate(-12px, 2px) rotate(-20deg); }
-      /* Writing Line 2 */
-      50% { transform: translate(6px, 2px) rotate(-10deg); }
-      /* Finish Edit & Fly Away */
-      60%, 85% { opacity: 1; transform: translate(22px, -18px) rotate(15deg) scale(1.1); }
-      100% { opacity: 0; transform: translate(30px, -30px) rotate(30deg) scale(0.8); }
-    }
-
-    /* Sparkle Burst */
-    @keyframes editSparklePop {
-      0%, 55% { opacity: 0; transform: scale(0.4) rotate(0deg); }
-      65% { opacity: 1; transform: scale(1.3) rotate(45deg); }
-      80%, 100% { opacity: 0; transform: scale(1.6) rotate(90deg); }
-    }
-
-    /* Text Fade Animations */
-    @keyframes editTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes editTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-    <i class="fa-solid fa-pen-to-square"></i>
-  </div>
-  
-  <h3>Edit PDF</h3>
-  <p>Add text, images, shapes, or drawings to your PDF document easily.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="edit-anim-stage">
-    <div class="edit-wrap">
-      
-      <!-- Target PDF Document -->
-      <div class="edit-pdf-card">
-        <div class="doc-line"></div>
-        <div class="doc-line active-edit"></div>
-        <div class="doc-line active-edit-2"></div>
-        <div class="doc-line short"></div>
-      </div>
-
-      <!-- Pen / Editor Brush Tool -->
-      <i class="fa-solid fa-pen-nib edit-pen-icon"></i>
-
-      <!-- Success Sparkle -->
-      <i class="fa-solid fa-sparkles edit-sparkle"></i>
-
-    </div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="edit-status-area">
-    <span class="edit-status-text editing">
-      <i class="fa-solid fa-pen"></i> Editing Document...
-    </span>
-    <span class="edit-status-text success">
-      <i class="fa-solid fa-circle-check"></i> Changes Saved!
-    </span>
-  </div>
-
-  <a href="edit.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END EDIT PDF TOOL CARD ============ -->
-
-
-
-
-<!-- ============ LOCK PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-lock-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-lock-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-lock-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for Lock PDF Animation */
-    .lock-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    .lock-wrap {
-      position: relative;
-      width: 110px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Target PDF Document */
-    .lock-pdf-card {
-      width: 60px;
-      height: 78px;
-      background: linear-gradient(135deg, #ffffff, #f8fafc);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      z-index: 1;
-      animation: docSecurityPulse 3.8s infinite ease-in-out;
-    }
-
-    .lock-pdf-card i.doc-pdf-icon {
-      font-size: 26px;
-      color: #ef4444; /* PDF Red */
-      transition: all 0.3s ease;
-      animation: iconShieldFade 3.8s infinite;
-    }
-
-    .lock-pdf-card .doc-tag {
-      font-size: 8px;
-      font-weight: 800;
-      color: var(--ink-soft);
-      margin-top: 3px;
-    }
-
-    /* 3D Padlock Overlay */
-    .lock-padlock-icon {
-      position: absolute;
-      font-size: 32px;
-      color: #f59e0b; /* Amber / Gold */
-      z-index: 3;
-      filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.35));
-      animation: padlockSnap 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Shield Security Aura */
-    .security-shield-glow {
-      position: absolute;
-      width: 75px;
-      height: 75px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
-      opacity: 0;
-      animation: securityGlowBurst 3.8s infinite;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    /* Live Status Messaging */
-    .lock-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .lock-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .lock-status-text.locking {
-      color: var(--stamp);
-      animation: lockTextOut 3.8s infinite;
-    }
-
-    .lock-status-text.success {
-      color: #d97706; /* Golden Dark */
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: lockTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Document Security State Transition */
-    @keyframes docSecurityPulse {
-      0%, 35% {
-        border-color: var(--line);
-        box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      }
-      50%, 90% {
-        border-color: #f59e0b;
-        box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
-      }
-      100% {
-        border-color: var(--line);
-      }
-    }
-
-    /* PDF Icon to Shield Icon Switch effect */
-    @keyframes iconShieldFade {
-      0%, 35% { opacity: 1; transform: scale(1); }
-      45%, 85% { opacity: 0.3; transform: scale(0.85); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    /* Padlock Snapping Down Animation */
-    @keyframes padlockSnap {
-      0% { opacity: 0; transform: translateY(-35px) scale(0.6) rotate(-15deg); }
-      20% { opacity: 1; transform: translateY(-20px) scale(1) rotate(0deg); }
-      /* Lock Snap Click */
-      42% { transform: translateY(0px) scale(1.15); }
-      48% { transform: translateY(-2px) scale(1); }
-      75%, 90% { opacity: 1; transform: translateY(-2px) scale(1); }
-      100% { opacity: 0; transform: translateY(15px) scale(0.7); }
-    }
-
-    /* Golden Aura Burst */
-    @keyframes securityGlowBurst {
-      0%, 38% { opacity: 0; transform: scale(0.3); }
-      48% { opacity: 1; transform: scale(1.3); }
-      68%, 100% { opacity: 0; transform: scale(1.6); }
-    }
-
-    /* Text Fade Animations */
-    @keyframes lockTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes lockTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#d97706,#b45309);">
-    <i class="fa-solid fa-lock"></i>
-  </div>
-  
-  <h3>Protect PDF</h3>
-  <p>Encrypt your PDF file with a strong password to prevent unauthorized access.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="lock-anim-stage">
-    <div class="lock-wrap">
-      
-      <!-- Aura Pulse -->
-      <div class="security-shield-glow"></div>
-
-      <!-- PDF Document -->
-      <div class="lock-pdf-card">
-        <i class="fa-solid fa-file-pdf doc-pdf-icon"></i>
-        <span class="doc-tag">PDF</span>
-      </div>
-
-      <!-- Padlock -->
-      <i class="fa-solid fa-lock lock-padlock-icon"></i>
-
-    </div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="lock-status-area">
-    <span class="lock-status-text locking">
-      <i class="fa-solid fa-key"></i> Encrypting PDF...
-    </span>
-    <span class="lock-status-text success">
-      <i class="fa-solid fa-shield-halved"></i> Password Protected!
-    </span>
-  </div>
-
-  <a href="lock.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END LOCK PDF TOOL CARD ============ -->
-
-
-<!-- ============ UNLOCK PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-unlock-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-unlock-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-unlock-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for Unlock PDF Animation */
-    .unlock-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    .unlock-wrap {
-      position: relative;
-      width: 110px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Target PDF Document Card */
-    .unlock-pdf-card {
-      width: 60px;
-      height: 78px;
-      background: linear-gradient(135deg, #ffffff, #f8fafc);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      z-index: 1;
-      animation: docUnlockPulse 3.8s infinite ease-in-out;
-    }
-
-    .unlock-pdf-card i.doc-pdf-icon {
-      font-size: 26px;
-      color: #ef4444; /* PDF Red */
-      animation: iconUnlockShift 3.8s infinite;
-    }
-
-    .unlock-pdf-card .doc-tag {
-      font-size: 8px;
-      font-weight: 800;
-      color: var(--ink-soft);
-      margin-top: 3px;
-    }
-
-    /* Padlock Icon (Locked -> Unlocks) */
-    .unlock-padlock-icon {
-      position: absolute;
-      font-size: 28px;
-      color: #f59e0b; /* Golden Amber */
-      z-index: 3;
-      filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.3));
-      animation: padlockUnlockAction 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Golden Key Icon */
-    .unlock-key-icon {
-      position: absolute;
-      font-size: 22px;
-      color: var(--stamp-dark);
-      z-index: 4;
-      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
-      animation: keyInsertTurn 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Unlock Glow Pulse */
-    .unlock-burst-glow {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
-      opacity: 0;
-      animation: unlockGlowBurst 3.8s infinite;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    /* Live Status Messaging */
-    .unlock-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .unlock-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .unlock-status-text.unlocking {
-      color: var(--stamp);
-      animation: unlockTextOut 3.8s infinite;
-    }
-
-    .unlock-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: unlockTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Card Border Shift to Green */
-    @keyframes docUnlockPulse {
-      0%, 40% {
-        border-color: var(--line);
-        box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      }
-      55%, 90% {
-        border-color: var(--success);
-        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
-      }
-      100% {
-        border-color: var(--line);
-      }
-    }
-
-    /* PDF Icon Color Shift on Unlock */
-    @keyframes iconUnlockShift {
-      0%, 45% { color: #ef4444; }
-      55%, 90% { color: var(--success); }
-      100% { color: #ef4444; }
-    }
-
-    /* Key Insertion & Rotation Path */
-    @keyframes keyInsertTurn {
-      0% { opacity: 0; transform: translate(35px, 20px) rotate(-45deg) scale(0.7); }
-      15% { opacity: 1; transform: translate(12px, 8px) rotate(-20deg) scale(1); }
-      /* Key enters lock & rotates */
-      30%, 42% { transform: translate(4px, 2px) rotate(90deg) scale(1); }
-      /* Key disappears after unlocking */
-      50%, 100% { opacity: 0; transform: translate(-10px, -10px) rotate(120deg) scale(0.6); }
-    }
-
-    /* Padlock Opening Animation */
-    @keyframes padlockUnlockAction {
-      0%, 30% { opacity: 1; transform: scale(1) translateY(0px); color: #f59e0b; }
-      /* Lock opens & turns green */
-      48% { opacity: 1; transform: scale(1.15) translateY(-6px); color: var(--success); }
-      60%, 88% { opacity: 0.8; transform: scale(1) translateY(-6px); color: var(--success); }
-      100% { opacity: 0; transform: scale(0.7) translateY(10px); }
-    }
-
-    /* Green Burst Effect */
-    @keyframes unlockGlowBurst {
-      0%, 42% { opacity: 0; transform: scale(0.3); }
-      52% { opacity: 1; transform: scale(1.3); }
-      70%, 100% { opacity: 0; transform: scale(1.6); }
-    }
-
-    /* Text Fade Animations */
-    @keyframes unlockTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes unlockTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#16a34a,#15803d);">
-    <i class="fa-solid fa-lock-open"></i>
-  </div>
-  
-  <h3>Unlock PDF</h3>
-  <p>Remove passwords and restrictions from your protected PDF files easily.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="unlock-anim-stage">
-    <div class="unlock-wrap">
-      
-      <!-- Green Aura Burst -->
-      <div class="unlock-burst-glow"></div>
-
-      <!-- PDF Document -->
-      <div class="unlock-pdf-card">
-        <i class="fa-solid fa-file-pdf doc-pdf-icon"></i>
-        <span class="doc-tag">PDF</span>
-      </div>
-
-      <!-- Padlock Icon -->
-      <i class="fa-solid fa-unlock-keyhole unlock-padlock-icon"></i>
-
-      <!-- Key Icon -->
-      <i class="fa-solid fa-key unlock-key-icon"></i>
-
-    </div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="unlock-status-area">
-    <span class="unlock-status-text unlocking">
-      <i class="fa-solid fa-key"></i> Removing Password...
-    </span>
-    <span class="unlock-status-text success">
-      <i class="fa-solid fa-circle-check"></i> Unlocked & Ready!
-    </span>
-  </div>
-
-  <a href="unlock.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END UNLOCK PDF TOOL CARD ============ -->
-
-  <!-- ============ SCAN TO PDF TOOL CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-scan-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-scan-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-scan-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for Scan Animation */
-    .scan-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    .scan-wrap {
-      position: relative;
-      width: 110px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Target Document Base */
-    .scan-doc-card {
-      width: 62px;
-      height: 80px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      padding: 8px 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
-      position: absolute;
-      z-index: 1;
-      overflow: hidden;
-      animation: docScanGlow 3.8s infinite ease-in-out;
-    }
-
-    /* Document Lines (Original vs Scanned) */
-    .scan-line-item {
-      height: 4px;
-      border-radius: 2px;
-      background: #cbd5e1;
-      width: 100%;
-      transition: background 0.3s;
-    }
-
-    .scan-line-item.short { width: 55%; }
-
-    .scan-line-item.photo-box {
-      height: 18px;
-      width: 100%;
-      background: #e2e8f0;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .scan-line-item.photo-box i {
-      font-size: 10px;
-      color: #94a3b8;
-    }
-
-    /* Scanning Glowing Beam Laser */
-    .laser-scanner-beam {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: #10b981; /* Scan Green */
-      box-shadow: 0 0 10px #10b981, 0 0 20px #10b981;
-      z-index: 3;
-      opacity: 0;
-      animation: laserSweep 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Floating Camera / Scanner Lens Icon */
-    .scanner-lens-icon {
-      position: absolute;
-      top: -6px;
-      right: 12px;
-      font-size: 18px;
-      color: #059669;
-      z-index: 4;
-      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
-      animation: lensPulse 3.8s infinite ease-in-out;
-    }
-
-    /* PDF Badge Overlay on Scan Complete */
-    .scan-pdf-badge {
-      position: absolute;
-      bottom: 6px;
-      right: 6px;
-      background: #ef4444;
-      color: #ffffff;
-      font-size: 7px;
-      font-weight: 800;
-      padding: 2px 5px;
-      border-radius: 4px;
-      z-index: 5;
-      opacity: 0;
-      transform: scale(0.5);
-      animation: badgePopUp 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Live Status Messaging */
-    .scan-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .scan-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .scan-status-text.scanning {
-      color: var(--stamp);
-      animation: scanTextOut 3.8s infinite;
-    }
-
-    .scan-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: scanTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Document Glow Transition */
-    @keyframes docScanGlow {
-      0%, 20% { border-color: var(--line); box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08); }
-      50%, 85% { border-color: var(--success); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25); }
-      100% { border-color: var(--line); }
-    }
-
-    /* Laser Sweep Motion */
-    @keyframes laserSweep {
-      0%, 15% { opacity: 0; top: 0%; }
-      22% { opacity: 1; top: 0%; }
-      50% { opacity: 1; top: 92%; }
-      58%, 100% { opacity: 0; top: 92%; }
-    }
-
-    /* Lens Pulse / Shutter Effect */
-    @keyframes lensPulse {
-      0%, 15% { opacity: 0.6; transform: scale(0.9); }
-      25%, 50% { opacity: 1; transform: scale(1.1); color: var(--success); }
-      60%, 100% { opacity: 0.6; transform: scale(0.9); }
-    }
-
-    /* Success Badge Reveal */
-    @keyframes badgePopUp {
-      0%, 50% { opacity: 0; transform: scale(0.5); }
-      60%, 88% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.5); }
-    }
-
-    /* Status Text Animations */
-    @keyframes scanTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes scanTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#059669,#047857);">
-    <i class="fa-solid fa-camera"></i>
-  </div>
-  
-  <h3>Scan to PDF</h3>
-  <p>Capture physical documents via camera or image scanner and turn them into clear PDFs.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="scan-anim-stage">
-    <div class="scan-wrap">
-      
-      <!-- Camera Lens Floating Indicator -->
-      <i class="fa-solid fa-expand scanner-lens-icon"></i>
-
-      <!-- Target Physical Document -->
-      <div class="scan-doc-card">
-        <!-- Laser Beam inside document canvas -->
-        <div class="laser-scanner-beam"></div>
-
-        <div class="scan-line-item photo-box">
-          <i class="fa-solid fa-image"></i>
+    <div class="tools-grid">
+
+      <!-- Compress -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);"><i class="fa-solid fa-file-zipper"></i></div>
+        <h3>Compress PDF</h3>
+        <p>Set a target size and shrink your PDF without losing quality.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="press-plate-top"></div>
+            <div class="compress-ring"></div>
+            <div class="blend-pdf-doc"><i class="fa-solid fa-file-pdf"></i><span class="doc-tag">PDF</span></div>
+            <div class="press-plate-bottom"></div>
+          </div>
         </div>
-        <div class="scan-line-item"></div>
-        <div class="scan-line-item"></div>
-        <div class="scan-line-item short"></div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-arrows-to-line"></i> Compressing...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> 78% Smaller!</span></div>
+        <a href="compress.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
 
-        <!-- Converted PDF Badge -->
-        <div class="scan-pdf-badge">PDF</div>
+      <!-- Merge -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-object-group"></i></div>
+        <h3>Merge PDF</h3>
+        <p>Combine multiple PDF files into a single organized document.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="merge-sparkle"></div>
+            <div class="merge-doc merge-doc-left"><i class="fa-solid fa-file-pdf"></i><span class="doc-num">DOC 1</span></div>
+            <div class="merge-doc merge-doc-right"><i class="fa-solid fa-file-pdf"></i><span class="doc-num">DOC 2</span></div>
+            <div class="merged-doc-final"><i class="fa-solid fa-file-circle-check"></i><span class="final-badge">MERGED</span></div>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-object-group"></i> Combining...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Merged!</span></div>
+        <a href="merge.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Split -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-scissors"></i></div>
+        <h3>Split PDF</h3>
+        <p>Break a PDF into multiple files by range, interval, or page.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="split-doc-original"><i class="fa-solid fa-file-pdf"></i><span class="doc-tag">PDF</span></div>
+            <div class="cut-line"></div>
+            <i class="fa-solid fa-scissors scissors-icon"></i>
+            <div class="split-piece split-piece-left"><i class="fa-solid fa-file-lines"></i><span class="piece-num">PART 1</span></div>
+            <div class="split-piece split-piece-right"><i class="fa-solid fa-file-lines"></i><span class="piece-num">PART 2</span></div>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-scissors"></i> Cutting...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Split!</span></div>
+        <a href="split.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Image to PDF -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#0284c7,#0369a1);"><i class="fa-solid fa-file-image"></i></div>
+        <h3>Image to PDF</h3>
+        <p>Convert JPG, PNG, WEBP and other images into a PDF document.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="source-img-card source-img-1"><i class="fa-solid fa-image"></i><span class="img-ext">JPG</span></div>
+            <div class="source-img-card source-img-2"><i class="fa-solid fa-file-image"></i><span class="img-ext">PNG</span></div>
+            <div class="scan-beam"></div>
+            <div class="converted-pdf-card"><i class="fa-solid fa-file-pdf"></i><span class="pdf-badge">READY</span></div>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-wand-magic-sparkles"></i> Converting...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> PDF Created!</span></div>
+        <a href="create.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Edit -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"><i class="fa-solid fa-pen-to-square"></i></div>
+        <h3>Edit PDF</h3>
+        <p>Add text, images, shapes, or drawings to your PDF document easily.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="edit-pdf-card">
+              <div class="doc-line"></div>
+              <div class="doc-line active-edit"></div>
+              <div class="doc-line active-edit-2"></div>
+              <div class="doc-line short"></div>
+            </div>
+            <i class="fa-solid fa-pen-nib edit-pen-icon"></i>
+            <i class="fa-solid fa-sparkles edit-sparkle"></i>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-pen"></i> Editing...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Saved!</span></div>
+        <a href="edit.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Lock -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#d97706,#b45309);"><i class="fa-solid fa-lock"></i></div>
+        <h3>Protect PDF</h3>
+        <p>Encrypt your PDF file with a strong password to prevent unauthorized access.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="security-shield-glow"></div>
+            <div class="lock-pdf-card"><i class="fa-solid fa-file-pdf doc-pdf-icon"></i><span class="doc-tag">PDF</span></div>
+            <i class="fa-solid fa-lock lock-padlock-icon"></i>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-key"></i> Encrypting...</span><span class="status-text done"><i class="fa-solid fa-shield-halved"></i> Protected!</span></div>
+        <a href="lock.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Unlock -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#16a34a,#15803d);"><i class="fa-solid fa-lock-open"></i></div>
+        <h3>Unlock PDF</h3>
+        <p>Remove passwords and restrictions from your protected PDF files easily.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="unlock-burst-glow"></div>
+            <div class="unlock-pdf-card"><i class="fa-solid fa-file-pdf doc-pdf-icon"></i><span class="doc-tag">PDF</span></div>
+            <i class="fa-solid fa-unlock-keyhole unlock-padlock-icon"></i>
+            <i class="fa-solid fa-key unlock-key-icon"></i>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-key"></i> Removing...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Unlocked!</span></div>
+        <a href="unlock.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Scan -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#059669,#047857);"><i class="fa-solid fa-camera"></i></div>
+        <h3>Scan to PDF</h3>
+        <p>Capture physical documents via camera or image scanner and turn them into clear PDFs.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <i class="fa-solid fa-expand scanner-lens-icon"></i>
+            <div class="scan-doc-card">
+              <div class="laser-scanner-beam"></div>
+              <div class="scan-line-item photo-box"><i class="fa-solid fa-image"></i></div>
+              <div class="scan-line-item"></div>
+              <div class="scan-line-item"></div>
+              <div class="scan-line-item short"></div>
+              <div class="scan-pdf-badge">PDF</div>
+            </div>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-expand"></i> Scanning...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Scanned!</span></div>
+        <a href="scan.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- All Tools -->
+      <div class="tool-card">
+        <div class="tool-icon" style="background:linear-gradient(135deg,#4f46e5,#3730a3);"><i class="fa-solid fa-layer-group"></i></div>
+        <h3>All PDF Tools</h3>
+        <p>Explore our complete suite of 20+ powerful online PDF conversion and editing tools.</p>
+        <div class="anim-stage">
+          <div class="anim-wrap">
+            <div class="alltools-ring"></div>
+            <div class="alltools-core-card"><i class="fa-solid fa-file-pdf"></i><span class="core-tag">SUITE</span></div>
+            <div class="orbit-icon orbit-1"><i class="fa-solid fa-pen"></i></div>
+            <div class="orbit-icon orbit-2"><i class="fa-solid fa-code-merge"></i></div>
+            <div class="orbit-icon orbit-3"><i class="fa-solid fa-lock"></i></div>
+            <div class="orbit-icon orbit-4"><i class="fa-solid fa-file-zipper"></i></div>
+          </div>
+        </div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-boxes-stacked"></i> 8+ Tools...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Full Suite!</span></div>
+        <a href="tools.html" class="tool-card-link">View All <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
     </div>
   </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="scan-status-area">
-    <span class="scan-status-text scanning">
-      <i class="fa-solid fa-expand"></i> Scanning Document...
-    </span>
-    <span class="scan-status-text success">
-      <i class="fa-solid fa-circle-check"></i> Scanned & Saved!
-    </span>
-  </div>
-
-  <a href="scan.html" class="tool-card-link" style="margin-top: 8px;">
-    Open Tool <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END SCAN TO PDF TOOL CARD ============ -->
-
-
-
-  
-  
-  <!-- ============ ALL TOOLS CARD WITH BLENDED ANIMATION ============ -->
-<div class="tool-card tool-card-alltools-blend">
-  <style>
-    /* Card Styling & Seamless Blend */
-    .tool-card-alltools-blend {
-      position: relative;
-      overflow: hidden;
-      background: var(--paper-raised);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .tool-card-alltools-blend:hover {
-      transform: translateY(-4px);
-      border-color: var(--stamp);
-      box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
-    }
-
-    /* Seamless Stage for All Tools Animation */
-    .alltools-anim-stage {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      background: transparent;
-      margin: 4px 0 8px;
-      perspective: 800px;
-    }
-
-    .alltools-wrap {
-      position: relative;
-      width: 120px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Center PDF Toolkit Core */
-    .alltools-core-card {
-      width: 50px;
-      height: 64px;
-      background: linear-gradient(135deg, #ffffff, #f1f5f9);
-      border: 1.5px solid var(--stamp);
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
-      z-index: 2;
-      animation: corePulse 3.8s infinite ease-in-out;
-    }
-
-    .alltools-core-card i {
-      font-size: 22px;
-      color: #ef4444; /* PDF Red */
-    }
-
-    .alltools-core-card .core-tag {
-      font-size: 7px;
-      font-weight: 800;
-      color: var(--stamp);
-      margin-top: 3px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Orbiting Tool Micro-Icons */
-    .orbit-icon {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: #ffffff;
-      border: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      box-shadow: 0 4px 10px rgba(13, 37, 69, 0.1);
-      z-index: 3;
-    }
-
-    .orbit-1 { color: #2563eb; animation: orbitPos1 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1); } /* Edit */
-    .orbit-2 { color: #059669; animation: orbitPos2 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1); } /* Merge */
-    .orbit-3 { color: #d97706; animation: orbitPos3 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1); } /* Lock */
-    .orbit-4 { color: #7c3aed; animation: orbitPos4 3.8s infinite cubic-bezier(0.4, 0, 0.2, 1); } /* Compress */
-
-    /* Energy Ring Background */
-    .alltools-ring {
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      border: 1.5px dashed var(--line);
-      border-radius: 50%;
-      z-index: 1;
-      animation: ringRotate 12s linear infinite;
-    }
-
-    /* Live Status Messaging */
-    .alltools-status-area {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      text-align: center;
-      margin-top: -5px;
-    }
-
-    .alltools-status-text {
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .alltools-status-text.exploring {
-      color: var(--stamp);
-      animation: alltoolsTextOut 3.8s infinite;
-    }
-
-    .alltools-status-text.success {
-      color: var(--success);
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      white-space: nowrap;
-      animation: alltoolsTextIn 3.8s infinite;
-    }
-
-    /* --- Keyframe Animations --- */
-
-    /* Ring Rotation */
-    @keyframes ringRotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Core Toolkit Pulse */
-    @keyframes corePulse {
-      0%, 100% { transform: scale(1); border-color: var(--stamp); }
-      50% { transform: scale(1.05); border-color: var(--success); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.25); }
-    }
-
-    /* Orbiting Tool 1 (Top-Left) */
-    @keyframes orbitPos1 {
-      0%, 100% { transform: translate(-38px, -24px) scale(0.9); }
-      50% { transform: translate(-28px, -18px) scale(1.1); }
-      75% { transform: translate(0px, 0px) scale(0.4); opacity: 0; }
-      85% { opacity: 1; }
-    }
-
-    /* Orbiting Tool 2 (Top-Right) */
-    @keyframes orbitPos2 {
-      0%, 100% { transform: translate(38px, -24px) scale(0.9); }
-      50% { transform: translate(28px, -18px) scale(1.1); }
-      75% { transform: translate(0px, 0px) scale(0.4); opacity: 0; }
-      85% { opacity: 1; }
-    }
-
-    /* Orbiting Tool 3 (Bottom-Left) */
-    @keyframes orbitPos3 {
-      0%, 100% { transform: translate(-38px, 24px) scale(0.9); }
-      50% { transform: translate(-28px, 18px) scale(1.1); }
-      75% { transform: translate(0px, 0px) scale(0.4); opacity: 0; }
-      85% { opacity: 1; }
-    }
-
-    /* Orbiting Tool 4 (Bottom-Right) */
-    @keyframes orbitPos4 {
-      0%, 100% { transform: translate(38px, 24px) scale(0.9); }
-      50% { transform: translate(28px, 18px) scale(1.1); }
-      75% { transform: translate(0px, 0px) scale(0.4); opacity: 0; }
-      85% { opacity: 1; }
-    }
-
-    /* Status Text Animations */
-    @keyframes alltoolsTextOut {
-      0%, 40% { opacity: 1; transform: scale(1); }
-      48%, 100% { opacity: 0; transform: scale(0.9); }
-    }
-
-    @keyframes alltoolsTextIn {
-      0%, 45% { opacity: 0; transform: translate(-50%, 4px); }
-      55%, 85% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; }
-    }
-  </style>
-
-  <!-- Tool Icon Header -->
-  <div class="tool-icon" style="background:linear-gradient(135deg,#4f46e5,#3730a3);">
-    <i class="fa-solid fa-layer-group"></i>
-  </div>
-  
-  <h3>All PDF Tools</h3>
-  <p>Explore our complete suite of 20+ powerful online PDF conversion and editing tools.</p>
-
-  <!-- Seamless Embedded Animation -->
-  <div class="alltools-anim-stage">
-    <div class="alltools-wrap">
-      
-      <!-- Background Dashed Ring -->
-      <div class="alltools-ring"></div>
-
-      <!-- Core PDF Center Card -->
-      <div class="alltools-core-card">
-        <i class="fa-solid fa-file-pdf"></i>
-        <span class="core-tag">SUITE</span>
-      </div>
-
-      <!-- Floating Orbiting Tool Icons -->
-      <div class="orbit-icon orbit-1"><i class="fa-solid fa-pen"></i></div>
-      <div class="orbit-icon orbit-2"><i class="fa-solid fa-code-merge"></i></div>
-      <div class="orbit-icon orbit-3"><i class="fa-solid fa-lock"></i></div>
-      <div class="orbit-icon orbit-4"><i class="fa-solid fa-file-zipper"></i></div>
-
-    </div>
-  </div>
-
-  <!-- Dynamic Status Indicator -->
-  <div class="alltools-status-area">
-    <span class="alltools-status-text exploring">
-      <i class="fa-solid fa-boxes-stacked"></i> 8+ Tools Available...
-    </span>
-    <span class="alltools-status-text success">
-      <i class="fa-solid fa-circle-check"></i> Complete PDF Toolkit!
-    </span>
-  </div>
-
-  <a href="tools.html" class="tool-card-link" style="margin-top: 8px;">
-    View All Tools <i class="fa-solid fa-arrow-right"></i>
-  </a>
-</div>
-<!-- ============ END ALL TOOLS TOOL CARD ============ -->
-
-
-
-
-
-</div>
-
 </section>
 
 <!-- WHY PDFBOON -->
 <section class="section">
-<div class="container">
-
-<div class="section-header">
-<div class="section-eyebrow">Why PDFBoon</div>
-<h2>Built to Be Simple & Trustworthy</h2>
-<p>No clutter, no confusing options — just tools that work exactly the way you'd expect.</p>
-</div>
-
-<div class="features-grid">
-
-<div class="feature-card">
-<div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
-<h3>Private by Design</h3>
-<p>Your files are processed entirely in your browser — nothing is ever uploaded to a server.</p>
-</div>
-
-<div class="feature-card">
-<div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
-<h3>Fast & Lightweight</h3>
-<p>No waiting on uploads or downloads from the cloud. Everything happens instantly.</p>
-</div>
-
-<div class="feature-card">
-<div class="feature-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-<h3>Always Free</h3>
-<p>Every tool on PDFBoon is completely free to use, with no hidden limits or paywalls.</p>
-</div>
-
-<div class="feature-card">
-<div class="feature-icon"><i class="fa-solid fa-user-check"></i></div>
-<h3>No Sign-up Needed</h3>
-<p>Just open a tool and get to work — no accounts, no email, no friction.</p>
-</div>
-
-</div>
-
-</div>
+  <div class="container">
+    <div class="section-header"><div class="section-eyebrow">Why PDFBoon</div><h2>Built to Be Simple & Trustworthy</h2><p>No clutter, no confusing options — just tools that work exactly the way you'd expect.</p></div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Private by Design</h3><p>Your files are processed entirely in your browser — nothing is ever uploaded to a server.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-bolt"></i></div><h3>Fast & Lightweight</h3><p>No waiting on uploads or downloads from the cloud. Everything happens instantly.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><h3>Always Free</h3><p>Every tool on PDFBoon is completely free to use, with no hidden limits or paywalls.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fa-solid fa-user-check"></i></div><h3>No Sign-up Needed</h3><p>Just open a tool and get to work — no accounts, no email, no friction.</p></div>
+    </div>
+  </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section class="section">
-<div class="container">
-
-<div class="section-header">
-<div class="section-eyebrow">How It Works</div>
-<h2>Four Simple Steps</h2>
-</div>
-
-<div class="steps-row">
-
-<div class="step-card">
-<div class="step-number">1</div>
-<h3>Choose a Tool</h3>
-<p>Pick the PDF tool you need from the menu eg.— compress, merge, split, convert, or lock.</p>
-</div>
-
-<div class="step-card">
-<div class="step-number">2</div>
-<h3>Upload Your File</h3>
-<p>Drag and drop your PDF, or click to browse. Your file never leaves your browser.</p>
-</div>
-  <div class="step-card">
-<div class="step-number">3</div>
-<h3>Set your Settings</h3>
-<p>Now, you can set your settings, as you want with spacific tool.</p>
+  <div class="container">
+    <div class="section-header"><div class="section-eyebrow">How It Works</div><h2>Four Simple Steps</h2></div>
+    <div class="steps-row">
+      <div class="step-card"><div class="step-number">1</div><h3>Choose a Tool</h3><p>Pick the PDF tool you need from the menu eg.— compress, merge, split, convert, or lock.</p></div>
+      <div class="step-card"><div class="step-number">2</div><h3>Upload Your File</h3><p>Drag and drop your PDF, or click to browse. Your file never leaves your browser.</p></div>
+      <div class="step-card"><div class="step-number">3</div><h3>Set your Settings</h3><p>Now, you can set your settings, as you want with spacific tool.</p></div>
+      <div class="step-card"><div class="step-number">4</div><h3>Download the Result</h3><p>Get your processed PDF instantly, ready to save, share, or send.</p></div>
+    </div>
   </div>
-
-<div class="step-card">
-<div class="step-number">4</div>
-<h3>Download the Result</h3>
-<p>Get your processed PDF instantly, ready to save, share, or send.</p>
-</div>
-
-</div>
-
-</div>
 </section>
 
 <!-- FAQ -->
 <section class="section">
-<div class="container">
-
-<div class="section-header">
-<div class="section-eyebrow">FAQ</div>
-<h2>Frequently Asked Questions</h2>
-<p>Everything you might want to know before you get started.</p>
-</div>
-
-<div class="faq-list" id="faqList">
-
-<div class="faq-item">
-<button class="faq-question" type="button">
-Is PDFBoon really free to use?
-<span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
-</button>
-<div class="faq-answer">
-<p>Yes. Every tool on PDFBoon — compress, merge, split, convert and lock — is 100% free, with no hidden charges, watermarks, or usage limits.</p>
-</div>
-</div>
-
-<div class="faq-item">
-<button class="faq-question" type="button">
-Are my files uploaded to a server?
-<span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
-</button>
-<div class="faq-answer">
-<p>No. All processing happens directly inside your browser using JavaScript. Your PDF never leaves your device, which means your files stay completely private.</p>
-</div>
-</div>
-
-<div class="faq-item">
-<button class="faq-question" type="button">
-Do I need to create an account or sign up?
-<span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
-</button>
-<div class="faq-answer">
-<p>Not at all. Just open the tool you need and start working — no email, no password, no account required.</p>
-</div>
-</div>
-
-<div class="faq-item">
-<button class="faq-question" type="button">
-Will compressing my PDF reduce its quality?
-<span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
-</button>
-<div class="faq-answer">
-<p>Our Compress tool lets you set a target size and quality mode, so you stay in control of the balance between file size and visual quality.</p>
-</div>
-</div>
-
-<div class="faq-item">
-<button class="faq-question" type="button">
-Is there a limit on file size or number of files?
-<span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
-</button>
-<div class="faq-answer">
-<p>Since everything runs in your browser, the only real limit is your device's memory. Most PDFs, even fairly large ones, work smoothly.</p>
-</div>
-</div>
-
-<div class="faq-item">
-<button class="faq-question" type="button">
-Which devices and browsers are supported?
-<span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
-</button>
-<div class="faq-answer">
-<p>PDFBoon works on any modern browser — Chrome, Edge, Firefox, or Safari — on desktop, laptop, tablet, or mobile.</p>
-</div>
-</div>
-
-</div>
-
-</div>
+  <div class="container">
+    <div class="section-header"><div class="section-eyebrow">FAQ</div><h2>Frequently Asked Questions</h2><p>Everything you might want to know before you get started.</p></div>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item"><button class="faq-question" type="button">Is PDFBoon really free to use?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button><div class="faq-answer"><p>Yes. Every tool on PDFBoon — compress, merge, split, convert and lock — is 100% free, with no hidden charges, watermarks, or usage limits.</p></div></div>
+      <div class="faq-item"><button class="faq-question" type="button">Are my files uploaded to a server?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button><div class="faq-answer"><p>No. All processing happens directly inside your browser using JavaScript. Your PDF never leaves your device, which means your files stay completely private.</p></div></div>
+      <div class="faq-item"><button class="faq-question" type="button">Do I need to create an account or sign up?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button><div class="faq-answer"><p>Not at all. Just open the tool you need and start working — no email, no password, no account required.</p></div></div>
+      <div class="faq-item"><button class="faq-question" type="button">Will compressing my PDF reduce its quality?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button><div class="faq-answer"><p>Our Compress tool lets you set a target size and quality mode, so you stay in control of the balance between file size and visual quality.</p></div></div>
+      <div class="faq-item"><button class="faq-question" type="button">Is there a limit on file size or number of files?<span class="faq-icon"><i class="fa-solid fa-plus"></i></span></button><div class="faq-answer"><p>Since everything runs in your browser, the only real limit is your device's memory. Most PDFs, even fairly large ones, work smoothly.</p></div></div>
+    </div>
+  </div>
 </section>
 
-<!-- CTA BANNER -->
+<!-- CTA -->
 <section class="section">
-<div class="container">
-
-
-<div class="cta-banner">
-<h2>Ready to get started?</h2>
-<p>Jump into any tool and see how simple working with PDFs can be.</p>
-<a href="tools.html" class="btn btn-primary"><i class="fa-solid fa-grip"></i> Explore All Tools</a>
-</div>
-
-</div>
+  <div class="container">
+    <div class="cta-banner"><h2>Ready to get started?</h2><p>Jump into any tool and see how simple working with PDFs can be.</p><a href="tools.html" class="btn btn-primary"><i class="fa-solid fa-grip"></i> Explore All Tools</a></div>
+  </div>
 </section>
 
 <!-- CONTACT STRIP -->
 <section class="section" style="padding-top:0;">
-<div class="container">
-
-<div class="contact-strip">
-
-<div class="contact-strip-info">
-<h3>Have a question or found a bug?</h3>
-<p>We'd love to hear from you — reach out anytime.</p>
-</div>
-
-<div class="contact-strip-actions">
-<div class="contact-email"><i class="fa-solid fa-envelope"></i> support@pdfboon.com</div>
-<a href="contact.html" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Contact Us</a>
-</div>
-
-</div>
-
-</div>
+  <div class="container">
+    <div class="contact-strip">
+      <div class="contact-strip-info"><h3>Have a question or found a bug?</h3><p>We'd love to hear from you — reach out anytime.</p></div>
+      <div class="contact-strip-actions" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <div class="contact-email"><i class="fa-solid fa-envelope"></i> support@pdfboon.com</div>
+        <a href="contact.html" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Contact Us</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <footer class="footer">
-
-    <div class="footer-container">
-
-        <div class="footer-grid">
-
-            <!-- LEFT -->
-            <div class="footer-left">
-
-                <div class="footer-brand">
-                    <img src="images/logo.png">
-                    <div>
-                        <h2 class="footer-title">PDFBoon</h2>
-                        <p class="footer-subtitle">Fast PDF Toolkit</p>
-                    </div>
-                </div>
-
-                <p class="footer-text">
-                    Fast, secure and modern PDF tools that work directly in your browser.
-                </p>
-
-            </div>
-
-            <!-- LINKS -->
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <a href="index.html">Home</a>
-                <a href="tools.html">All Tools</a>
-                <a href="compress.html">Compress PDF</a>
-                <a href="merge.html">Merge PDF</a>
-                <a href="split.html">Split PDF</a>
-                <a href="create.html">Image to PDF</a>
-              <a href="edit.html">Edit PDF</a>
-              <a href="scan.html">Scan to PDF</a>
-                <a href="lock.html">Lock PDF</a>
-              <a href="unlock.html">Unlock PDF</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
-              
-            </div>
-
-            <!-- RIGHT -->
-            <div class="footer-right">
-
-                <h3>Developer</h3>
-                <p class="developer">Designed & Developed by Vikshant Kralta <style> color:  #cccc00;  </style></p>
-
-                <div class="footer-social">
-                    <a href="not.html"><i class="fab fa-facebook"></i></a>
-                    <a href="not.html"><i class="fab fa-linkedin"></i></a>
-                    <a href="not.html"><i class="fab fa-instagram"></i></a>
-                </div>
-
-                <p class="copyright">© 2026 All Rights Reserved by PDFBoon <br> Last Updated on: July 24, 2026</p>
-
-            </div>
-
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-left">
+        <div class="footer-brand"><img src="images/logo.png"><div><h2 class="footer-title">PDFBoon</h2><p class="footer-subtitle">Fast PDF Toolkit</p></div></div>
+        <p class="footer-text">Fast, secure and modern PDF tools that work directly in your browser.</p>
+      </div>
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <a href="index.html">Home</a><a href="tools.html">All Tools</a><a href="compress.html">Compress PDF</a>
+        <a href="merge.html">Merge PDF</a><a href="split.html">Split PDF</a><a href="create.html">Image to PDF</a>
+        <a href="edit.html">Edit PDF</a><a href="scan.html">Scan to PDF</a><a href="lock.html">Lock PDF</a>
+        <a href="unlock.html">Unlock PDF</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-right">
+        <h3>Developer</h3>
+        <p class="developer">Designed & Developed by Vikshant Kralta</p>
+        <div class="footer-social">
+          <a href="not.html"><i class="fab fa-facebook"></i></a>
+          <a href="not.html"><i class="fab fa-linkedin"></i></a>
+          <a href="not.html"><i class="fab fa-instagram"></i></a>
         </div>
-
+        <p class="copyright">© 2026 All Rights Reserved by PDFBoon <br> Last Updated on: July 24, 2026</p>
+      </div>
     </div>
-
+  </div>
 </footer>
 
 <script>
-
-/* Mobile navbar toggle */
-document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-  document.getElementById('navLinks').classList.toggle('active');
-});
-
-/* Tools dropdown */
-const toolsDropdown = document.getElementById('toolsDropdown');
-const toolsToggle = document.getElementById('toolsToggle');
-
-toolsToggle.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  toolsDropdown.classList.toggle('open');
-});
-
-document.addEventListener('click', (e) => {
-  if (!toolsDropdown.contains(e.target)) {
-    toolsDropdown.classList.remove('open');
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    toolsDropdown.classList.remove('open');
-  }
-});
-
-/* FAQ accordion */
-document.querySelectorAll('.faq-question').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item = btn.closest('.faq-item');
-    const isOpen = item.classList.contains('open');
-
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-
-    if (!isOpen) {
-      item.classList.add('open');
-    }
+  document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('active');
   });
-});
-
-/* Hero video: make sure the 5s clip keeps looping even if a browser
-   pauses autoplay (e.g. tab was backgrounded) */
-const heroVideo = document.querySelector('.hero-video');
-if (heroVideo) {
-  heroVideo.addEventListener('ended', () => {
-    heroVideo.currentTime = 0;
-    heroVideo.play();
+  const toolsDropdown = document.getElementById('toolsDropdown');
+  const toolsToggle = document.getElementById('toolsToggle');
+  toolsToggle.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toolsDropdown.classList.toggle('open'); });
+  document.addEventListener('click', (e) => { if (!toolsDropdown.contains(e.target)) toolsDropdown.classList.remove('open'); });
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
   });
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && heroVideo.paused) {
-      heroVideo.play().catch(() => {});
-    }
-  });
-}
-
 </script>
-  <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js")
-      .then(() => console.log("Service Worker Registered"))
-      .catch(err => console.error(err));
-  });
-}
-  </script>
-
 </body>
 </html>
