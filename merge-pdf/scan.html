@@ -42,28 +42,32 @@ body{
 /* ============ NAVBAR ============ */
 .navbar{
   position:sticky; top:0; z-index:100;
-  background:rgba(237,242,249,0.92);
-  backdrop-filter:blur(12px);
+  background:rgba(237,242,249,0.95);
+  backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line);
   padding:12px 24px;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
-.navbar .logo{ display:flex; align-items:center; gap:12px; }
-.navbar .logo img{ width:40px; height:40px; border-radius:10px; }
-.navbar .logo h2{ font-family:var(--serif); font-size:1.1rem; }
+.navbar .logo{ display:flex; align-items:center; gap:12px; cursor:pointer; }
+.navbar .logo img{ width:40px; height:40px; border-radius:10px; object-fit:cover; }
+.navbar .logo h2{ font-family:var(--serif); font-size:1.1rem; color:var(--ink); }
+.navbar .logo span{ font-size:0.7rem; color:var(--ink-muted); display:block; margin-top:-2px; }
 .navbar .nav-links{ display:flex; gap:24px; align-items:center; }
 .navbar .nav-links a{ color:var(--ink-soft); text-decoration:none; font-size:0.9rem; font-weight:500; transition:color .2s; }
 .navbar .nav-links a:hover{ color:var(--stamp); }
 .navbar .nav-links .active{ color:var(--stamp); font-weight:600; }
 .navbar .nav-links .pill{
-  background:rgba(37,99,235,0.1);
+  background:rgba(37,99,235,0.12);
   color:var(--stamp-dark);
-  padding:6px 14px;
+  padding:6px 16px;
   border-radius:20px;
   font-size:0.8rem;
   font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 
 /* ============ FULLSCREEN CAMERA ============ */
@@ -92,6 +96,7 @@ body{
 .camera-header .cam-count{
   color:#fff; font-size:14px; background:rgba(0,0,0,0.5);
   padding:6px 16px; border-radius:20px;
+  font-weight:500;
 }
 
 .camera-view{
@@ -209,12 +214,13 @@ body{
 }
 .toolbar .btn:active{ transform:scale(0.95); }
 .toolbar .btn-primary{ background:var(--stamp); color:#fff; }
+.toolbar .btn-primary:hover{ background:var(--stamp-dark); }
 .toolbar .btn-outline{ background:transparent; border:1px solid var(--line); color:var(--ink-soft); }
 .toolbar .btn-outline:hover{ border-color:var(--stamp); color:var(--stamp); }
 .toolbar .btn-success{ background:var(--success); color:#fff; }
 .toolbar .btn-danger{ background:var(--danger); color:#fff; }
 
-/* ============ GRID ============ */
+/* ============ GRID - Preview Images ============ */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
@@ -232,7 +238,7 @@ body{
   box-shadow:var(--shadow);
   transition:all .2s;
 }
-.page-card:hover{ transform:translateY(-4px); border-color:var(--stamp); }
+.page-card:hover{ transform:translateY(-4px); border-color:var(--stamp); box-shadow:0 12px 30px rgba(37,99,235,0.15); }
 .page-card .num{
   position:absolute; top:-8px; left:-8px;
   background:var(--stamp); color:#fff;
@@ -250,21 +256,22 @@ body{
 .page-card .thumb img{ width:100%; height:100%; object-fit:contain; }
 .page-card .actions{
   position:absolute; top:6px; right:6px;
-  display:flex; gap:4px; opacity:0;
-  transition:opacity .2s; z-index:3;
+  display:flex; gap:4px;
+  z-index:3;
 }
-.page-card:hover .actions{ opacity:1; }
 .page-card .actions .icon-btn{
   width:30px; height:30px; border-radius:8px;
   border:none; color:#fff; cursor:pointer;
   font-size:12px; display:flex;
   align-items:center; justify-content:center;
   transition:all .2s;
+  opacity:0.9;
 }
-.page-card .actions .edit-btn{ background:rgba(37,99,235,0.85); }
-.page-card .actions .edit-btn:hover{ background:var(--stamp); transform:scale(1.1); }
-.page-card .actions .del-btn{ background:rgba(239,68,68,0.85); }
-.page-card .actions .del-btn:hover{ background:var(--danger); transform:scale(1.1); }
+.page-card .actions .icon-btn:hover{ transform:scale(1.1); opacity:1; }
+.page-card .actions .edit-btn{ background:rgba(37,99,235,0.9); }
+.page-card .actions .edit-btn:hover{ background:var(--stamp); }
+.page-card .actions .del-btn{ background:rgba(239,68,68,0.9); }
+.page-card .actions .del-btn:hover{ background:var(--danger); }
 
 .empty-state{
   text-align:center; padding:50px 20px;
@@ -274,6 +281,7 @@ body{
   background:var(--paper-raised);
   margin-bottom:20px;
 }
+.empty-state i{ font-size:32px; display:block; margin-bottom:12px; opacity:0.5; }
 
 /* ============ EDIT MODAL ============ */
 .edit-modal{
@@ -370,10 +378,7 @@ body{
   cursor:pointer; font-size:0.75rem;
   font-weight:500; transition:all .2s;
 }
-.edit-modal .panel-body .settings-area .filter-btns button:hover{ border-color:var(--stamp); }
-.edit-modal .panel-body .settings-area .filter-btns button.active{
-  background:var(--stamp); color:#fff; border-color:var(--stamp);
-}
+.edit-modal .panel-body .settings-area .filter-btns button:hover{ border-color:var(--stamp); background:rgba(37,99,235,0.05); }
 .edit-modal .panel-body .settings-area .group .row-btns{
   display:flex; gap:6px;
 }
@@ -382,7 +387,7 @@ body{
   border:1px solid var(--line); background:#fff;
   cursor:pointer; font-size:0.8rem; transition:all .2s;
 }
-.edit-modal .panel-body .settings-area .group .row-btns button:hover{ border-color:var(--stamp); }
+.edit-modal .panel-body .settings-area .group .row-btns button:hover{ border-color:var(--stamp); background:rgba(37,99,235,0.05); }
 .edit-modal .panel-body .settings-area .apply-all-btn{
   padding:10px; border-radius:10px;
   border:none; background:var(--stamp); color:#fff;
@@ -468,7 +473,7 @@ body{
   transition:all .2s;
 }
 .summary .btn-primary{ background:var(--stamp); color:#fff; box-shadow:0 3px 0 var(--stamp-dark); }
-.summary .btn-primary:hover{ transform:translateY(-2px); }
+.summary .btn-primary:hover:not(:disabled){ transform:translateY(-2px); }
 .summary .btn-primary:disabled{ opacity:0.4; cursor:not-allowed; transform:none; }
 
 /* ============ DOWNLOAD BOX ============ */
@@ -495,11 +500,11 @@ body{
   border:none; font-weight:600; cursor:pointer;
   display:flex; align-items:center; gap:6px;
   transition:all .2s;
+  text-decoration:none;
 }
 .download-box .actions .btn:active{ transform:scale(0.95); }
 .download-box .actions .btn-success{
   background:var(--success); color:#fff;
-  text-decoration:none;
 }
 .download-box .actions .btn-success:hover{ background:var(--success-dark); }
 .download-box .actions .btn-share{
@@ -524,7 +529,7 @@ body{
   gap:20px;
 }
 .footer .footer-brand{ display:flex; align-items:center; gap:12px; }
-.footer .footer-brand img{ width:40px; height:40px; border-radius:10px; }
+.footer .footer-brand img{ width:40px; height:40px; border-radius:10px; object-fit:cover; }
 .footer .footer-brand h3{ font-family:var(--serif); color:#fff; }
 .footer .footer-brand p{ font-size:0.75rem; color:#9fb0cc; }
 .footer .footer-links{ display:flex; gap:20px; flex-wrap:wrap; }
@@ -590,11 +595,12 @@ body{
   .edit-modal .panel-body .preview-area{ min-height:200px; max-height:300px; }
   .toolbar{ gap:8px; }
   .toolbar .btn{ font-size:0.75rem; padding:6px 12px; }
-  .settings-bar{ grid-template-columns:1fr; }
+  .settings-bar{ grid-template-columns:1fr 1fr; }
   .camera-footer{ padding:12px 16px; }
   .capture-btn{ width:60px; height:60px; }
   .navbar .nav-links{ display:none; }
-  .summary .stats{ gap:16px; }
+  .summary{ flex-direction:column; align-items:stretch; }
+  .summary .stats{ justify-content:space-around; }
   .download-box{ flex-direction:column; align-items:stretch; }
   .footer .footer-inner{ flex-direction:column; text-align:center; }
   .footer .footer-bottom{ flex-direction:column; text-align:center; }
@@ -605,6 +611,7 @@ body{
   .page-card .thumb{ height:140px; }
   .scan-trigger{ padding:24px 16px; }
   .scan-trigger .icon{ width:50px; height:50px; font-size:22px; }
+  .settings-bar{ grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -612,9 +619,12 @@ body{
 
 <!-- ============ NAVBAR ============ -->
 <nav class="navbar">
-  <div class="logo">
+  <div class="logo" onclick="location.href='index.html'">
     <img src="images/logo.png" alt="PDFBoon">
-    <h2>PDFBoon Scanner</h2>
+    <div>
+      <h2>PDFBoon</h2>
+      <span>Scanner Pro</span>
+    </div>
   </div>
   <div class="nav-links">
     <a href="index.html">Home</a>
@@ -671,15 +681,15 @@ body{
     <button class="btn btn-primary" onclick="openCamera()"><i class="fa-solid fa-camera"></i> Scan</button>
     <button class="btn btn-outline" onclick="applyFilterToAll('magic')"><i class="fa-solid fa-wand-magic-sparkles"></i> Enhance</button>
     <button class="btn btn-outline" onclick="applyFilterToAll('bw')"><i class="fa-solid fa-file-lines"></i> B&W</button>
-    <button class="btn btn-outline" onclick="applyFilterToAll('grayscale')"><i class="fa-solid fa-circle"></i> Grayscale</button>
+    <button class="btn btn-outline" onclick="applyFilterToAll('grayscale')"><i class="fa-solid fa-circle"></i> Gray</button>
     <button class="btn btn-outline" onclick="rotateAll(90)"><i class="fa-solid fa-rotate-right"></i> Rotate</button>
     <button class="btn btn-danger" onclick="clearAll()"><i class="fa-solid fa-trash"></i> Clear</button>
   </div>
 
-  <!-- GRID - Preview Images -->
+  <!-- GRID - Preview Images with Edit Icons -->
   <div class="grid" id="grid"></div>
   <div class="empty-state" id="emptyState">
-    <i class="fa-solid fa-camera" style="font-size:32px; color:var(--ink-muted); display:block; margin-bottom:12px;"></i>
+    <i class="fa-regular fa-image"></i>
     No pages scanned yet. Tap "Scan Document" to capture your first page.
   </div>
 
@@ -707,11 +717,11 @@ body{
       </select>
     </div>
     <div class="card">
-      <label>Watermark Text</label>
+      <label>Watermark</label>
       <input type="text" id="watermark" placeholder="e.g., CONFIDENTIAL">
     </div>
     <div class="card">
-      <label>Watermark Opacity</label>
+      <label>Opacity</label>
       <select id="watermarkOpacity">
         <option value="0.1">Light (10%)</option>
         <option value="0.2" selected>Medium (20%)</option>
@@ -719,7 +729,7 @@ body{
       </select>
     </div>
     <div class="card">
-      <label>Image Quality</label>
+      <label>Quality</label>
       <select id="quality">
         <option value="0.92">High</option>
         <option value="0.8" selected>Medium</option>
@@ -943,7 +953,6 @@ function processImage(img, filter, brightness, contrast){
       g = Math.min(255, Math.max(0, (g - 128) * 1.6 + 128));
       bl = Math.min(255, Math.max(0, (bl - 128) * 1.6 + 128));
     } else if(filter === 'sharpen'){
-      // Simple sharpen - we'll use a basic approach
       r = Math.min(255, r * 1.1);
       g = Math.min(255, g * 1.1);
       bl = Math.min(255, bl * 1.1);
@@ -1046,7 +1055,6 @@ const captureCanvas = document.getElementById('captureCanvas');
 
 document.getElementById('scanTrigger').addEventListener('click', openCamera);
 document.getElementById('doneCamBtn').addEventListener('click', closeCamera);
-document.getElementById('cameraCloseBtn')?.addEventListener('click', closeCamera);
 
 async function openCamera(){
   const supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
