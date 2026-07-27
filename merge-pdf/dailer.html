@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM Call Dialer App</title>
+    <title>Real-World Dialer App</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,45 +12,79 @@
             font-family: Arial, sans-serif;
         }
         body {
-            background-color: #f0f2f5;
+            background-color: #f4f6f9;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
-        .dialer-container {
+        .phone-container {
             width: 100%;
-            max-width: 350px;
+            max-width: 380px;
+            height: 650px;
             background: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            text-align: center;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
+        /* Header / Tabs */
+        .tabs {
+            display: flex;
+            background: #1976d2;
+            color: white;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px 0;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 3px solid #ffeb3b;
+            background: #1565c0;
+        }
+        /* Screen Sections */
+        .section {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .section.active {
+            display: flex;
+        }
+        /* Dialer Section */
         #display {
             width: 100%;
-            height: 60px;
+            height: 55px;
             font-size: 26px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 2px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             background: #fafafa;
-            color: #333;
             outline: none;
+            letter-spacing: 2px;
         }
         .keypad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
-        .btn {
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
+        .key-btn {
+            background-color: #f1f3f4;
+            border: none;
             border-radius: 50%;
-            width: 65px;
-            height: 65px;
+            width: 60px;
+            height: 60px;
             font-size: 22px;
             font-weight: bold;
             color: #333;
@@ -59,88 +93,259 @@
             justify-content: center;
             align-items: center;
             margin: 0 auto;
-            transition: background 0.2s;
         }
-        .btn:active {
-            background-color: #e2e6ea;
+        .key-btn:active {
+            background-color: #d2d6dc;
         }
-        .call-btn {
-            background-color: #28a745;
-            color: white;
+        .dialer-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .action-btn {
+            flex: 1;
+            height: 45px;
             border: none;
-            width: 100%;
-            height: 50px;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 10px;
+            color: white;
         }
-        .call-btn:active {
-            background-color: #218838;
+        .call-btn { background-color: #2e7d32; }
+        .save-btn { background-color: #0288d1; }
+        .clear-btn { background-color: #d32f2f; }
+
+        /* Contacts & History List Style */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
         }
-        .clear-btn {
-            background-color: #dc3545;
+        .list-item info {
+            display: flex;
+            flex-direction: column;
+        }
+        .list-item .name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        .list-item .number {
+            font-size: 13px;
+            color: #666;
+        }
+        .call-icon-btn {
+            background: #2e7d32;
             color: white;
             border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        /* Form Inputs */
+        input.input-box {
             width: 100%;
-            height: 40px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #1976d2;
+            color: white;
+            border: none;
             border-radius: 8px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div class="dialer-container">
-        <h2>SIM Dialer</h2>
-        <input type="text" id="display" readonly placeholder="Number daalein...">
-        
-        <div class="keypad">
-            <button class="btn" onclick="press('1')">1</button>
-            <button class="btn" onclick="press('2')">2</button>
-            <button class="btn" onclick="press('3')">3</button>
-            <button class="btn" onclick="press('4')">4</button>
-            <button class="btn" onclick="press('5')">5</button>
-            <button class="btn" onclick="press('6')">6</button>
-            <button class="btn" onclick="press('7')">7</button>
-            <button class="btn" onclick="press('8')">8</button>
-            <button class="btn" onclick="press('9')">9</button>
-            <button class="btn" onclick="press('*')">*</button>
-            <button class="btn" onclick="press('0')">0</button>
-            <button class="btn" onclick="press('#')">#</button>
+    <div class="phone-container">
+        <!-- Top Navigation Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('dialer')">Dialer</div>
+            <div class="tab" onclick="switchTab('history')">History</div>
+            <div class="tab" onclick="switchTab('contacts')">Contacts</div>
         </div>
 
-        <button class="call-btn" onclick="makeCall()">📞 Call Lagayein</button>
-        <button class="clear-btn" onclick="clearNum()">Mitaayein (Clear)</button>
+        <!-- 1. DIALER SECTION -->
+        <div id="dialer-section" class="section active">
+            <input type="text" id="display" readonly placeholder="Number...">
+            <div class="keypad">
+                <button class="key-btn" onclick="press('1')">1</button>
+                <button class="key-btn" onclick="press('2')">2</button>
+                <button class="key-btn" onclick="press('3')">3</button>
+                <button class="key-btn" onclick="press('4')">4</button>
+                <button class="key-btn" onclick="press('5')">5</button>
+                <button class="key-btn" onclick="press('6')">6</button>
+                <button class="key-btn" onclick="press('7')">7</button>
+                <button class="key-btn" onclick="press('8')">8</button>
+                <button class="key-btn" onclick="press('9')">9</button>
+                <button class="key-btn" onclick="press('*')">*</button>
+                <button class="key-btn" onclick="press('0')">0</button>
+                <button class="key-btn" onclick="press('#')">#</button>
+            </div>
+            <div class="dialer-actions">
+                <button class="action-btn clear-btn" onclick="clearNum()">C</button>
+                <button class="action-btn save-btn" onclick="openSaveModal()">Save</button>
+                <button class="action-btn call-btn" onclick="makeCall(document.getElementById('display').value)">📞 Call</button>
+            </div>
+        </div>
+
+        <!-- 2. CALL HISTORY SECTION -->
+        <div id="history-section" class="section">
+            <h3>Call History</h3>
+            <div id="history-list" style="margin-top: 15px;">
+                <!-- History items will load here -->
+            </div>
+        </div>
+
+        <!-- 3. CONTACTS SECTION -->
+        <div id="contacts-section" class="section">
+            <h3>Saved Contacts</h3>
+            <div style="margin: 10px 0;">
+                <input type="text" id="contact-name" class="input-box" placeholder="Name (Naam)">
+                <input type="text" id="contact-num" class="input-box" placeholder="Phone Number">
+                <button class="submit-btn" onclick="saveContact()">Add Contact</button>
+            </div>
+            <hr style="margin: 15px 0; border:0; border-top:1px solid #ddd;">
+            <div id="contacts-list">
+                <!-- Contacts will load here -->
+            </div>
+        </div>
     </div>
 
     <script>
-        const display = document.getElementById('display');
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
 
-        // Keypad par click karne par number screen par aayega
-        function press(value) {
-            display.value += value;
+            if (tabName === 'dialer') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('dialer-section').classList.add('active');
+            } else if (tabName === 'history') {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('history-section').classList.add('active');
+                loadHistory();
+            } else if (tabName === 'contacts') {
+                document.querySelectorAll('.tab')[2].classList.add('active');
+                document.getElementById('contacts-section').classList.add('active');
+                loadContacts();
+            }
         }
 
-        // Clear karne ka function
+        // Dialer Logic
+        function press(val) {
+            document.getElementById('display').value += val;
+        }
         function clearNum() {
-            display.value = '';
+            document.getElementById('display').value = '';
         }
 
-        // SIM se real call lagane ka function
-        function makeCall() {
-            const number = display.value;
-            if (number === "") {
-                alert("Kripya pehle koi phone number darj karein!");
+        // Make Call & Save to History
+        function makeCall(number) {
+            if (!number) {
+                alert("Kripya number daalein!");
                 return;
             }
             
-            // Tel URI ka use karke phone ke SIM dialer ko trigger karna
+            // Save to Call History
+            let history = JSON.parse(localStorage.getItem('call_history')) || [];
+            let timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            history.unshift({ number: number, time: timeNow });
+            localStorage.setItem('call_history', JSON.stringify(history));
+
+            // Trigger SIM Call
             window.location.href = `tel:${number}`;
         }
-    </script>
 
+        // Open Save Modal (Dalta hai dialer number contact tab mein)
+        function openSaveModal() {
+            let num = document.getElementById('display').value;
+            if (!num) {
+                alert("Pehle number type karein!");
+                return;
+            }
+            switchTab('contacts');
+            document.getElementById('contact-num').value = num;
+        }
+
+        // Save Contact Logic
+        function saveContact() {
+            let name = document.getElementById('contact-name').value;
+            let number = document.getElementById('contact-num').value;
+
+            if (!name || !number) {
+                alert("Naam aur number dono bharein!");
+                return;
+            }
+
+            let contacts = JSON.parse(localStorage.getItem('saved_contacts')) || [];
+            contacts.push({ name: name, number: number });
+            localStorage.setItem('saved_contacts', JSON.stringify(contacts));
+
+            document.getElementById('contact-name').value = '';
+            document.getElementById('contact-num').value = '';
+            loadContacts();
+            alert("Contact save ho gaya!");
+        }
+
+        // Load Contacts
+        function loadContacts() {
+            let contactsList = document.getElementById('contacts-list');
+            contactsList.innerHTML = '';
+            let contacts = JSON.parse(localStorage.getItem('saved_contacts')) || [];
+
+            if (contacts.length === 0) {
+                contactsList.innerHTML = '<p style="color:#777; text-align:center;">Koi contact saved nahi hai.</p>';
+                return;
+            }
+
+            contacts.forEach(c => {
+                contactsList.innerHTML += `
+                    <div class="list-item">
+                        <div>
+                            <div class="name">${c.name}</div>
+                            <div class="number">${c.number}</div>
+                        </div>
+                        <button class="call-icon-btn" onclick="makeCall('${c.number}')">📞 Call</button>
+                    </div>
+                `;
+            });
+        }
+
+        // Load History
+        function loadHistory() {
+            let historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            let history = JSON.parse(localStorage.getItem('call_history')) || [];
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="color:#777; text-align:center;">Koi history nahi hai.</p>';
+                return;
+            }
+
+            history.forEach(h => {
+                historyList.innerHTML += `
+                    <div class="list-item">
+                        <div>
+                            <div class="name">${h.number}</div>
+                            <div class="number">Samay: ${h.time}</div>
+                        </div>
+                        <button class="call-icon-btn" onclick="makeCall('${h.number}')">📞 Call</button>
+                    </div>
+                `;
+            });
+        }
+    </script>
 </body>
 </html>
