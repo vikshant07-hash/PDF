@@ -3,424 +3,643 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truecaller Style Web Dialer</title>
+    <title>All-In-One Super Calculator</title>
     <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #1a1a1a;
+            --btn-bg: #e4e6eb;
+            --btn-text: #050505;
+            --btn-active: #d8dadf;
+            --accent-color: #007bff;
+            --accent-text: #ffffff;
+            --border-color: #cccccc;
+            --display-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #18191a;
+            --card-bg: #242526;
+            --text-color: #e4e6eb;
+            --btn-bg: #3a3b3c;
+            --btn-text: #e4e6eb;
+            --btn-active: #4e4f50;
+            --accent-color: #0d6efd;
+            --accent-text: #ffffff;
+            --border-color: #3e4042;
+            --display-bg: #18191a;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s, color 0.3s;
         }
+
         body {
-            background-color: #eef2f7;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 15px;
         }
-        .phone-frame {
+
+        .calc-wrapper {
             width: 100%;
-            max-width: 380px;
-            height: 680px;
-            background: #ffffff;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
+            max-width: 440px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             overflow: hidden;
-            position: relative;
-        }
-
-        /* App Header / Tabs */
-        .tabs {
             display: flex;
-            background: #0f4c81;
-            color: white;
-        }
-        .tab {
-            flex: 1;
-            padding: 15px 0;
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            border-bottom: 3px solid transparent;
-            transition: 0.3s;
-        }
-        .tab.active {
-            border-bottom: 3px solid #ffcc00;
-            background: #0b3960;
-        }
-
-        /* Screens Container */
-        .screen {
-            flex: 1;
-            display: none;
             flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-            position: relative;
-        }
-        .screen.active {
-            display: flex;
+            border: 1px solid var(--border-color);
         }
 
-        /* 1. Dialer Screen Styles */
-        #display {
-            width: 100%;
-            height: 55px;
-            font-size: 28px;
-            text-align: center;
-            margin-bottom: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            background: #f9f9f9;
-            outline: none;
-            letter-spacing: 2px;
-            color: #333;
+        /* Top Header & Theme Switch */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
         }
+
+        .header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .theme-btn {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--btn-bg);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            border-bottom: 3px solid var(--accent-color);
+            color: var(--accent-color);
+            background: var(--card-bg);
+        }
+
+        /* Tab Content Screens */
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Display Screen */
+        .display-container {
+            background: var(--display-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: right;
+            margin-bottom: 15px;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .history-expr {
+            font-size: 14px;
+            color: #888;
+            min-height: 18px;
+            word-wrap: break-word;
+        }
+
+        .main-display {
+            font-size: 28px;
+            font-weight: bold;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            text-align: right;
+            width: 100%;
+            outline: none;
+        }
+
+        /* Keypads */
         .keypad {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .key-btn {
-            background-color: #f1f3f5;
-            border: none;
-            border-radius: 50%;
-            width: 65px;
-            height: 65px;
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto;
-            transition: background 0.2s;
-        }
-        .key-btn:active {
-            background-color: #d1d5db;
-        }
-        .dialer-actions {
-            display: flex;
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
-        .action-btn {
-            flex: 1;
-            height: 48px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-        }
-        .call-btn { background-color: #28a745; }
-        .save-btn { background-color: #17a2b8; }
-        .clear-btn { background-color: #dc3545; }
 
-        /* List Items (History & Contacts) */
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .list-item .name {
-            font-weight: bold;
-            font-size: 16px;
-            color: #333;
-        }
-        .list-item .number {
-            font-size: 13px;
-            color: #666;
-        }
-        .mini-call-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        input.input-box {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            background: #0f4c81;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* 2. Custom In-App Call Screen (Truecaller Style Overlay) */
-        #active-call-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0f4c81, #0b3960);
-            color: white;
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 40px 20px;
-            z-index: 100;
-            text-align: center;
-        }
-        .caller-info h2 {
-            font-size: 28px;
+        .scientific-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
             margin-bottom: 10px;
         }
-        .caller-info p {
-            font-size: 18px;
-            color: #ffcc00;
-        }
-        .call-controls {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        .end-call-btn {
-            background-color: #dc3545;
-            color: white;
+
+        .btn {
+            padding: 14px 0;
             border: none;
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            font-size: 24px;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .btn:active {
+            background: var(--btn-active);
+        }
+
+        .btn-op {
+            background: #ff9500;
+            color: white;
+        }
+
+        .btn-op:active {
+            background: #e08400;
+        }
+
+        .btn-accent {
+            background: var(--accent-color);
+            color: var(--accent-text);
+        }
+
+        .btn-sci {
+            font-size: 13px;
+            padding: 10px 0;
+            background: var(--btn-bg);
+            opacity: 0.9;
+        }
+
+        /* History Side Toggle */
+        .history-list {
+            max-height: 120px;
+            overflow-y: auto;
+            border-top: 1px solid var(--border-color);
+            margin-top: 15px;
+            padding-top: 10px;
+            font-size: 13px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            color: #777;
+        }
+
+        /* Form Controls for Converters & Financial */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--display-bg);
+            color: var(--text-color);
+            font-size: 15px;
+            outline: none;
+        }
+
+        .result-box {
+            background: var(--btn-bg);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 16px;
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-    <div class="phone-frame">
-        
-        <!-- TOP TABS -->
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('dialer')">Dialer</div>
-            <div class="tab" onclick="switchTab('history')">History</div>
-            <div class="tab" onclick="switchTab('contacts')">Contacts</div>
+    <div class="calc-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <h2>Super Calculator</h2>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
         </div>
 
-        <!-- 1. DIALER SCREEN -->
-        <div id="dialer-screen" class="screen active">
-            <input type="text" id="display" readonly placeholder="Number...">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('calcTab')">Calculator</button>
+            <button class="tab-btn" onclick="switchTab('converterTab')">Converter</button>
+            <button class="tab-btn" onclick="switchTab('financialTab')">Financial</button>
+        </div>
+
+        <!-- TAB 1: STANDARD & SCIENTIFIC CALCULATOR -->
+        <div id="calcTab" class="tab-content active">
+            <div class="display-container">
+                <div class="history-expr" id="histExpr"></div>
+                <input type="text" class="main-display" id="display" readonly value="0">
+            </div>
+
+            <!-- Memory Bar -->
+            <div class="scientific-grid" style="margin-bottom:8px;">
+                <button class="btn btn-sci" onclick="memClear()">MC</button>
+                <button class="btn btn-sci" onclick="memRecall()">MR</button>
+                <button class="btn btn-sci" onclick="memAdd()">M+</button>
+                <button class="btn btn-sci" onclick="memSub()">M-</button>
+                <button class="btn btn-sci" onclick="clearHistory()">CH</button>
+            </div>
+
+            <!-- Scientific Controls -->
+            <div class="scientific-grid">
+                <button class="btn btn-sci" onclick="appendSci('sin(')">sin</button>
+                <button class="btn btn-sci" onclick="appendSci('cos(')">cos</button>
+                <button class="btn btn-sci" onclick="appendSci('tan(')">tan</button>
+                <button class="btn btn-sci" onclick="appendSci('log(')">log</button>
+                <button class="btn btn-sci" onclick="appendSci('√(')">√</button>
+                <button class="btn btn-sci" onclick="appendSci('^')">x^y</button>
+
+                <button class="btn btn-sci" onclick="appendSci('π')">π</button>
+                <button class="btn btn-sci" onclick="appendSci('e')">e</button>
+                <button class="btn btn-sci" onclick="appendChar('(')">(</button>
+                <button class="btn btn-sci" onclick="appendChar(')')">)</button>
+            </div>
+
+            <!-- Standard Keypad -->
             <div class="keypad">
-                <button class="key-btn" onclick="press('1')">1</button>
-                <button class="key-btn" onclick="press('2')">2</button>
-                <button class="key-btn" onclick="press('3')">3</button>
-                <button class="key-btn" onclick="press('4')">4</button>
-                <button class="key-btn" onclick="press('5')">5</button>
-                <button class="key-btn" onclick="press('6')">6</button>
-                <button class="key-btn" onclick="press('7')">7</button>
-                <button class="key-btn" onclick="press('8')">8</button>
-                <button class="key-btn" onclick="press('9')">9</button>
-                <button class="key-btn" onclick="press('*')">*</button>
-                <button class="key-btn" onclick="press('0')">0</button>
-                <button class="key-btn" onclick="press('#')">#</button>
+                <button class="btn" onclick="clearDisplay()">C</button>
+                <button class="btn" onclick="backspace()">⌫</button>
+                <button class="btn" onclick="appendChar('%')">%</button>
+                <button class="btn btn-op" onclick="appendChar('/')">÷</button>
+
+                <button class="btn" onclick="appendChar('7')">7</button>
+                <button class="btn" onclick="appendChar('8')">8</button>
+                <button class="btn" onclick="appendChar('9')">9</button>
+                <button class="btn btn-op" onclick="appendChar('*')">×</button>
+
+                <button class="btn" onclick="appendChar('4')">4</button>
+                <button class="btn" onclick="appendChar('5')">5</button>
+                <button class="btn" onclick="appendChar('6')">6</button>
+                <button class="btn btn-op" onclick="appendChar('-')">-</button>
+
+                <button class="btn" onclick="appendChar('1')">1</button>
+                <button class="btn" onclick="appendChar('2')">2</button>
+                <button class="btn" onclick="appendChar('3')">3</button>
+                <button class="btn btn-op" onclick="appendChar('+')">+</button>
+
+                <button class="btn" onclick="toggleSign()">±</button>
+                <button class="btn" onclick="appendChar('0')">0</button>
+                <button class="btn" onclick="appendChar('.')">.</button>
+                <button class="btn btn-accent" onclick="calculateResult()">=</button>
             </div>
-            <div class="dialer-actions">
-                <button class="action-btn clear-btn" onclick="clearNum()">C</button>
-                <button class="action-btn save-btn" onclick="goToSaveContact()">Save</button>
-                <button class="action-btn call-btn" onclick="startCall(document.getElementById('display').value)">📞 Call</button>
+
+            <!-- Calculation History -->
+            <div class="history-list" id="historyList">
+                <strong>History:</strong>
             </div>
         </div>
 
-        <!-- 2. HISTORY SCREEN -->
-        <div id="history-screen" class="screen">
-            <h3 style="margin-bottom: 15px; color: #333;">Call History</h3>
-            <div id="history-list"></div>
+        <!-- TAB 2: UNIT & CURRENCY CONVERTER -->
+        <div id="converterTab" class="tab-content">
+            <div class="form-group">
+                <label>Converter Type</label>
+                <select class="form-control" id="convType" onchange="setupConverter()">
+                    <option value="length">Length (Lambai)</option>
+                    <option value="weight">Weight (Wajan)</option>
+                    <option value="temp">Temperature</option>
+                    <option value="currency">Currency (Mudra)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Value</label>
+                <input type="number" class="form-control" id="convInput" value="1" oninput="convertUnit()">
+            </div>
+
+            <div class="form-group">
+                <label>From</label>
+                <select class="form-control" id="convFrom" onchange="convertUnit()"></select>
+            </div>
+
+            <div class="form-group">
+                <label>To</label>
+                <select class="form-control" id="convTo" onchange="convertUnit()"></select>
+            </div>
+
+            <div class="result-box" id="convResult">Result: --</div>
         </div>
 
-        <!-- 3. CONTACTS SCREEN -->
-        <div id="contacts-screen" class="screen">
-            <h3 style="margin-bottom: 10px; color: #333;">Saved Contacts</h3>
-            <div style="margin-bottom: 15px;">
-                <input type="text" id="c-name" class="input-box" placeholder="Naam (Name)">
-                <input type="text" id="c-num" class="input-box" placeholder="Phone Number">
-                <button class="submit-btn" onclick="saveContact()">Contact Save Karein</button>
+        <!-- TAB 3: FINANCIAL & SPECIALIZED -->
+        <div id="financialTab" class="tab-content">
+            <div class="form-group">
+                <label>Calculator Select</label>
+                <select class="form-control" id="finType" onchange="switchFinCalc()">
+                    <option value="emi">Loan EMI Calculator</option>
+                    <option value="gst">GST Calculator</option>
+                    <option value="age">Age Calculator</option>
+                </select>
             </div>
-            <hr style="border:0; border-top:1px solid #ddd; margin-bottom: 15px;">
-            <div id="contacts-list"></div>
-        </div>
 
-        <!-- TRUECALLER STYLE CUSTOM CALL SCREEN OVERLAY -->
-        <div id="active-call-screen">
-            <div style="margin-top: 30px;">
-                <p style="font-size: 14px; letter-spacing: 1px; color: #ddd;">TRUE-WEB CALLING...</p>
+            <!-- EMI Form -->
+            <div id="emiBox">
+                <div class="form-group">
+                    <label>Loan Amount (₹)</label>
+                    <input type="number" class="form-control" id="emiAmount" value="100000">
+                </div>
+                <div class="form-group">
+                    <label>Interest Rate (% Annual)</label>
+                    <input type="number" class="form-control" id="emiRate" value="8.5">
+                </div>
+                <div class="form-group">
+                    <label>Tenure (Months)</label>
+                    <input type="number" class="form-control" id="emiTenure" value="12">
+                </div>
+                <button class="btn btn-accent" style="width:100%" onclick="calcEMI()">Calculate EMI</button>
             </div>
-            <div class="caller-info">
-                <h2 id="calling-name-display">Unknown</h2>
-                <p id="calling-num-display">0000000000</p>
-                <span id="call-status-text" style="font-size: 15px; color: #a5d6a7; display:block; margin-top:10px;">Connecting...</span>
-            </div>
-            <div class="call-controls">
-                <button class="end-call-btn" onclick="endCall()" title="End Call">📞</button>
-            </div>
-        </div>
 
+            <!-- GST Form -->
+            <div id="gstBox" style="display:none;">
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" class="form-control" id="gstAmount" value="1000">
+                </div>
+                <div class="form-group">
+                    <label>GST Rate (%)</label>
+                    <input type="number" class="form-control" id="gstRate" value="18">
+                </div>
+                <button class="btn btn-accent" style="width:100%" onclick="calcGST()">Calculate GST</button>
+            </div>
+
+            <!-- Age Form -->
+            <div id="ageBox" style="display:none;">
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" class="form-control" id="dobInput">
+                </div>
+                <button class="btn btn-accent" style="width:100%" onclick="calcAge()">Calculate Age</button>
+            </div>
+
+            <div class="result-box" id="finResult">Result will appear here</div>
+        </div>
     </div>
 
     <script>
-        // Tab Switching
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-
-            if (tabName === 'dialer') {
-                document.querySelectorAll('.tab')[0].classList.add('active');
-                document.getElementById('dialer-screen').classList.add('active');
-            } else if (tabName === 'history') {
-                document.querySelectorAll('.tab')[1].classList.add('active');
-                document.getElementById('history-screen').classList.add('active');
-                loadHistory();
-            } else if (tabName === 'contacts') {
-                document.querySelectorAll('.tab')[2].classList.add('active');
-                document.getElementById('contacts-screen').classList.add('active');
-                loadContacts();
+        // --- Theme Toggle ---
+        function toggleTheme() {
+            const body = document.body;
+            const themeBtn = document.getElementById('themeBtn');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+                themeBtn.innerText = '☀️ Light';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                themeBtn.innerText = '🌙 Dark';
             }
         }
 
-        // Dialer Logic
-        function press(val) {
-            document.getElementById('display').value += val;
-        }
-        function clearNum() {
-            document.getElementById('display').value = '';
+        // --- Tab Switching ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
         }
 
-        // Custom In-App Call Simulation (Truecaller style UI)
-        function startCall(number) {
-            if (!number) {
-                alert("Kripya pehle number daalein!");
-                return;
+        // --- Calculator Core Logic ---
+        let display = document.getElementById('display');
+        let histExpr = document.getElementById('histExpr');
+        let memoryValue = 0;
+        let history = [];
+
+        function appendChar(char) {
+            if (display.value === '0' && char !== '.') {
+                display.value = char;
+            } else {
+                display.value += char;
             }
+        }
 
-            // Check if number matches any saved contact name
-            let contacts = JSON.parse(localStorage.getItem('web_contacts')) || [];
-            let found = contacts.find(c => c.number === number);
-            let displayName = found ? found.name : "Unknown Number";
+        function appendSci(func) {
+            if (display.value === '0') {
+                display.value = func;
+            } else {
+                display.value += func;
+            }
+        }
 
-            // Show Custom Call Screen Overlay
-            document.getElementById('calling-name-display').innerText = displayName;
-            document.getElementById('calling-num-display').innerText = number;
-            document.getElementById('call-status-text').innerText = "Ringing...";
-            document.getElementById('active-call-screen').style.display = 'flex';
+        function clearDisplay() {
+            display.value = '0';
+            histExpr.innerText = '';
+        }
 
-            // Simulate call connecting after 2 seconds
-            setTimeout(() => {
-                if (document.getElementById('active-call-screen').style.display === 'flex') {
-                    document.getElementById('call-status-text').innerText = "Call Connected (0:01)";
+        function backspace() {
+            if (display.value.length === 1) {
+                display.value = '0';
+            } else {
+                display.value = display.value.slice(0, -1);
+            }
+        }
+
+        function toggleSign() {
+            if (display.value !== '0') {
+                if (display.value.startsWith('-')) {
+                    display.value = display.value.substring(1);
+                } else {
+                    display.value = '-' + display.value;
                 }
-            }, 2000);
-
-            // Save to History
-            let history = JSON.parse(localStorage.getItem('web_history')) || [];
-            let timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            history.unshift({ name: displayName, number: number, time: timeNow });
-            localStorage.setItem('web_history', JSON.stringify(history));
-        }
-
-        function endCall() {
-            document.getElementById('active-call-screen').style.display = 'none';
-            document.getElementById('display').value = '';
-        }
-
-        // Contact Saving Logic
-        function goToSaveContact() {
-            let num = document.getElementById('display').value;
-            if (!num) {
-                alert("Pehle number type karein!");
-                return;
             }
-            switchTab('contacts');
-            document.getElementById('c-num').value = num;
         }
 
-        function saveContact() {
-            let name = document.getElementById('c-name').value;
-            let number = document.getElementById('c-num').value;
+        // Memory Operations
+        function memClear() { memoryValue = 0; alert("Memory Cleared"); }
+        function memRecall() { display.value = memoryValue; }
+        function memAdd() { memoryValue += parseFloat(display.value) || 0; }
+        function memSub() { memoryValue -= parseFloat(display.value) || 0; }
 
-            if (!name || !number) {
-                alert("Naam aur number dono bharein!");
-                return;
+        // Evaluation & Math parsing
+        function calculateResult() {
+            let expr = display.value;
+            histExpr.innerText = expr + " =";
+            
+            try {
+                let formattedExpr = expr
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/π/g, 'Math.PI')
+                    .replace(/e/g, 'Math.E')
+                    .replace(/√\(/g, 'Math.sqrt(')
+                    .replace(/sin\(/g, 'Math.sin(Math.PI/180*')
+                    .replace(/cos\(/g, 'Math.cos(Math.PI/180*')
+                    .replace(/tan\(/g, 'Math.tan(Math.PI/180*')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/\^/g, '**');
+
+                let result = eval(formattedExpr);
+                if (typeof result === 'number') {
+                    result = Math.round(result * 100000000) / 100000000; // precision fix
+                }
+                
+                display.value = result;
+                addHistory(expr, result);
+            } catch (e) {
+                display.value = 'Error';
             }
-
-            let contacts = JSON.parse(localStorage.getItem('web_contacts')) || [];
-            contacts.push({ name: name, number: number });
-            localStorage.setItem('web_contacts', JSON.stringify(contacts));
-
-            document.getElementById('c-name').value = '';
-            document.getElementById('c-num').value = '';
-            loadContacts();
-            alert("Contact Safely Save Ho Gaya!");
         }
 
-        function loadContacts() {
-            let list = document.getElementById('contacts-list');
-            list.innerHTML = '';
-            let contacts = JSON.parse(localStorage.getItem('web_contacts')) || [];
+        function addHistory(expr, res) {
+            history.unshift({ expr, res });
+            if (history.length > 5) history.pop();
+            renderHistory();
+        }
 
-            if (contacts.length === 0) {
-                list.innerHTML = '<p style="color:#777; text-align:center; margin-top:20px;">Koi contact nahi hai.</p>';
-                return;
-            }
-
-            contacts.forEach(c => {
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div>
-                            <div class="name">${c.name}</div>
-                            <div class="number">${c.number}</div>
-                        </div>
-                        <button class="mini-call-btn" onclick="startCall('${c.number}')">Call</button>
-                    </div>
-                `;
+        function renderHistory() {
+            let list = document.getElementById('historyList');
+            list.innerHTML = '<strong>History:</strong>';
+            history.forEach(item => {
+                list.innerHTML += `<div class="history-item"><span>${item.expr}</span><span>= ${item.res}</span></div>`;
             });
         }
 
-        function loadHistory() {
-            let list = document.getElementById('history-list');
-            list.innerHTML = '';
-            let history = JSON.parse(localStorage.getItem('web_history')) || [];
+        function clearHistory() {
+            history = [];
+            renderHistory();
+        }
 
-            if (history.length === 0) {
-                list.innerHTML = '<p style="color:#777; text-align:center; margin-top:20px;">Koi history nahi hai.</p>';
-                return;
+        // --- Converter Logic ---
+        const units = {
+            length: { 'Meters': 1, 'Kilometers': 0.001, 'Feet': 3.28084, 'Inches': 39.3701 },
+            weight: { 'Kilograms': 1, 'Grams': 1000, 'Pounds': 2.20462, 'Ounces': 35.274 },
+            temp: ['Celsius', 'Fahrenheit', 'Kelvin'],
+            currency: { 'INR (₹)': 1, 'USD ($)': 0.012, 'EUR (€)': 0.011, 'GBP (£)': 0.0095 }
+        };
+
+        function setupConverter() {
+            let type = document.getElementById('convType').value;
+            let fromSelect = document.getElementById('convFrom');
+            let toSelect = document.getElementById('convTo');
+            
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+
+            let keys = type === 'temp' ? units.temp : Object.keys(units[type]);
+
+            keys.forEach(k => {
+                fromSelect.innerHTML += `<option value="${k}">${k}</option>`;
+                toSelect.innerHTML += `<option value="${k}">${k}</option>`;
+            });
+
+            toSelect.selectedIndex = 1;
+            convertUnit();
+        }
+
+        function convertUnit() {
+            let type = document.getElementById('convType').value;
+            let val = parseFloat(document.getElementById('convInput').value) || 0;
+            let from = document.getElementById('convFrom').value;
+            let to = document.getElementById('convTo').value;
+            let result = 0;
+
+            if (type === 'temp') {
+                if (from === to) result = val;
+                else if (from === 'Celsius' && to === 'Fahrenheit') result = (val * 9/5) + 32;
+                else if (from === 'Celsius' && to === 'Kelvin') result = val + 273.15;
+                else if (from === 'Fahrenheit' && to === 'Celsius') result = (val - 32) * 5/9;
+                else if (from === 'Kelvin' && to === 'Celsius') result = val - 273.15;
+            } else {
+                let baseVal = val / units[type][from];
+                result = baseVal * units[type][to];
             }
 
-            history.forEach(h => {
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div>
-                            <div class="name">${h.name} (${h.number})</div>
-                            <div class="number">Samay: ${h.time}</div>
-                        </div>
-                        <button class="mini-call-btn" onclick="startCall('${h.number}')">Call</button>
-                    </div>
-                `;
-            });
+            document.getElementById('convResult').innerText = `Result: ${result.toFixed(4)} ${to}`;
         }
+
+        // --- Financial Calculator Logic ---
+        function switchFinCalc() {
+            let type = document.getElementById('finType').value;
+            document.getElementById('emiBox').style.display = type === 'emi' ? 'block' : 'none';
+            document.getElementById('gstBox').style.display = type === 'gst' ? 'block' : 'none';
+            document.getElementById('ageBox').style.display = type === 'age' ? 'block' : 'none';
+            document.getElementById('finResult').innerText = 'Result will appear here';
+        }
+
+        function calcEMI() {
+            let p = parseFloat(document.getElementById('emiAmount').value);
+            let r = parseFloat(document.getElementById('emiRate').value) / 12 / 100;
+            let n = parseFloat(document.getElementById('emiTenure').value);
+
+            let emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            let totalPay = emi * n;
+            let totalInterest = totalPay - p;
+
+            document.getElementById('finResult').innerHTML = 
+                `Monthly EMI: ₹${emi.toFixed(2)}<br><small>Total Interest: ₹${totalInterest.toFixed(2)}</small>`;
+        }
+
+        function calcGST() {
+            let amt = parseFloat(document.getElementById('gstAmount').value);
+            let rate = parseFloat(document.getElementById('gstRate').value);
+
+            let gstAmt = (amt * rate) / 100;
+            let total = amt + gstAmt;
+
+            document.getElementById('finResult').innerHTML = 
+                `GST Amount: ₹${gstAmt.toFixed(2)}<br><small>Total Amount: ₹${total.toFixed(2)}</small>`;
+        }
+
+        function calcAge() {
+            let dob = new Date(document.getElementById('dobInput').value);
+            if (isNaN(dob)) {
+                document.getElementById('finResult').innerText = "Kripya valid date chunein!";
+                return;
+            }
+            let today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            document.getElementById('finResult').innerText = `Aapki Age: ${age} Years`;
+        }
+
+        // Initialize Converter Dropdowns
+        setupConverter();
     </script>
 </body>
 </html>
