@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All-In-One Super Calculator</title>
+    <title>Pro Calculator with Settings</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-color: #1a1a1a;
-            --btn-bg: #e4e6eb;
-            --btn-text: #050505;
-            --btn-active: #d8dadf;
-            --accent-color: #007bff;
-            --accent-text: #ffffff;
-            --border-color: #cccccc;
-            --display-bg: #f8f9fa;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --btn-bg: #334155;
+            --btn-hover: #475569;
+            --btn-text: #f8fafc;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --op-color: #f59e0b;
+            --equals-color: #10b981;
+            --border-color: #334155;
+            --display-bg: #090d16;
         }
 
-        [data-theme="dark"] {
-            --bg-color: #18191a;
-            --card-bg: #242526;
-            --text-color: #e4e6eb;
-            --btn-bg: #3a3b3c;
-            --btn-text: #e4e6eb;
-            --btn-active: #4e4f50;
-            --accent-color: #0d6efd;
-            --accent-text: #ffffff;
-            --border-color: #3e4042;
-            --display-bg: #18191a;
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --btn-bg: #e2e8f0;
+            --btn-hover: #cbd5e1;
+            --btn-text: #0f172a;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --op-color: #d97706;
+            --equals-color: #059669;
+            --border-color: #cbd5e1;
+            --display-bg: #f8fafc;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background 0.3s, color 0.3s;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: background 0.2s, color 0.2s, transform 0.1s;
         }
 
         body {
@@ -49,406 +55,424 @@
             padding: 15px;
         }
 
-        .calc-wrapper {
+        .app-container {
             width: 100%;
-            max-width: 440px;
+            max-width: 400px;
             background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border-color);
         }
 
-        /* Top Header & Theme Switch */
+        /* Top Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 18px 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .header h2 {
+        .header h1 {
             font-size: 18px;
             font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        .theme-btn {
+        .icon-btn {
             background: var(--btn-bg);
             color: var(--btn-text);
             border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .icon-btn:hover {
+            background: var(--btn-hover);
         }
 
         /* Navigation Tabs */
         .nav-tabs {
             display: flex;
-            background: var(--btn-bg);
+            background: var(--display-bg);
+            padding: 6px;
+            margin: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
         .tab-btn {
             flex: 1;
-            padding: 12px 0;
+            padding: 10px 0;
             border: none;
             background: transparent;
-            color: var(--text-color);
+            color: var(--text-muted);
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            border-bottom: 3px solid transparent;
+            border-radius: 8px;
         }
 
         .tab-btn.active {
-            border-bottom: 3px solid var(--accent-color);
-            color: var(--accent-color);
             background: var(--card-bg);
+            color: var(--accent-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
-        /* Tab Content Screens */
-        .tab-content {
+        /* Screen Sections */
+        .section {
             display: none;
-            padding: 20px;
+            padding: 0 20px 20px 20px;
+            flex-direction: column;
         }
 
-        .tab-content.active {
-            display: block;
+        .section.active {
+            display: flex;
         }
 
-        /* Display Screen */
-        .display-container {
+        /* Display Box */
+        .display-box {
             background: var(--display-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 16px;
+            padding: 20px;
             text-align: right;
-            margin-bottom: 15px;
-            min-height: 90px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            min-height: 100px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-end;
         }
 
-        .history-expr {
+        .history-view {
             font-size: 14px;
-            color: #888;
-            min-height: 18px;
-            word-wrap: break-word;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            min-height: 20px;
+            word-break: break-all;
         }
 
-        .main-display {
-            font-size: 28px;
-            font-weight: bold;
-            border: none;
+        .main-input {
+            font-size: 32px;
+            font-weight: 700;
             background: transparent;
+            border: none;
             color: var(--text-color);
             text-align: right;
             width: 100%;
             outline: none;
         }
 
-        /* Keypads */
+        /* Keypad Layout */
         .keypad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .scientific-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 12px;
         }
 
         .btn {
-            padding: 14px 0;
+            padding: 16px 0;
             border: none;
             background: var(--btn-bg);
             color: var(--btn-text);
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 14px;
             cursor: pointer;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .btn:active {
-            background: var(--btn-active);
+        .btn:hover {
+            background: var(--btn-hover);
+            transform: scale(0.98);
         }
 
-        .btn-op {
-            background: #ff9500;
+        .btn.op {
+            color: var(--op-color);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .btn.op:hover {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .btn.action {
+            color: var(--accent-color);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .btn.action:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .btn.equals {
+            background: var(--equals-color);
             color: white;
         }
 
-        .btn-op:active {
-            background: #e08400;
+        .btn.equals:hover {
+            background: #047857;
         }
 
-        .btn-accent {
-            background: var(--accent-color);
-            color: var(--accent-text);
+        /* Settings Panel Styles */
+        .settings-group {
+            margin-bottom: 20px;
         }
 
-        .btn-sci {
+        .settings-group label {
+            display: block;
             font-size: 13px;
-            padding: 10px 0;
-            background: var(--btn-bg);
-            opacity: 0.9;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
         }
 
-        /* History Side Toggle */
-        .history-list {
-            max-height: 120px;
-            overflow-y: auto;
-            border-top: 1px solid var(--border-color);
-            margin-top: 15px;
-            padding-top: 10px;
-            font-size: 13px;
-        }
-
-        .history-item {
+        .settings-item {
             display: flex;
             justify-content: space-between;
-            padding: 4px 0;
-            color: #777;
+            align-items: center;
+            background: var(--display-bg);
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
         }
 
-        /* Form Controls for Converters & Financial */
-        .form-group {
-            margin-bottom: 12px;
+        .settings-item span {
+            font-size: 15px;
+            font-weight: 500;
         }
 
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 5px;
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
         }
 
-        .form-control {
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--btn-bg);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        select.settings-select {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* History List UI */
+        .history-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .clear-hist-btn {
             width: 100%;
             padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--display-bg);
-            color: var(--text-color);
-            font-size: 15px;
-            outline: none;
-        }
-
-        .result-box {
-            background: var(--btn-bg);
-            padding: 12px;
+            background: #ef4444;
+            color: white;
+            border: none;
             border-radius: 8px;
             margin-top: 15px;
-            font-weight: bold;
-            text-align: center;
-            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
         }
     </style>
 </head>
-<body data-theme="light">
+<body data-theme="dark">
 
-    <div class="calc-wrapper">
+    <div class="app-container">
         <!-- Header -->
         <div class="header">
-            <h2>Super Calculator</h2>
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+            <h1>Calculator Pro</h1>
+            <button class="icon-btn" onclick="switchTab('settings')" title="Settings">⚙️</button>
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('calcTab')">Calculator</button>
-            <button class="tab-btn" onclick="switchTab('converterTab')">Converter</button>
-            <button class="tab-btn" onclick="switchTab('financialTab')">Financial</button>
+        <div class="nav-tabs" id="mainNavTabs">
+            <button class="tab-btn active" onclick="switchTab('calc')">Calculator</button>
+            <button class="tab-btn" onclick="switchTab('history')">History</button>
+            <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
         </div>
 
-        <!-- TAB 1: STANDARD & SCIENTIFIC CALCULATOR -->
-        <div id="calcTab" class="tab-content active">
-            <div class="display-container">
-                <div class="history-expr" id="histExpr"></div>
-                <input type="text" class="main-display" id="display" readonly value="0">
+        <!-- 1. CALCULATOR SCREEN -->
+        <div id="calc-section" class="section active">
+            <div class="display-box">
+                <div class="history-view" id="histView"></div>
+                <input type="text" class="main-input" id="display" readonly value="0">
             </div>
 
-            <!-- Memory Bar -->
-            <div class="scientific-grid" style="margin-bottom:8px;">
-                <button class="btn btn-sci" onclick="memClear()">MC</button>
-                <button class="btn btn-sci" onclick="memRecall()">MR</button>
-                <button class="btn btn-sci" onclick="memAdd()">M+</button>
-                <button class="btn btn-sci" onclick="memSub()">M-</button>
-                <button class="btn btn-sci" onclick="clearHistory()">CH</button>
-            </div>
-
-            <!-- Scientific Controls -->
-            <div class="scientific-grid">
-                <button class="btn btn-sci" onclick="appendSci('sin(')">sin</button>
-                <button class="btn btn-sci" onclick="appendSci('cos(')">cos</button>
-                <button class="btn btn-sci" onclick="appendSci('tan(')">tan</button>
-                <button class="btn btn-sci" onclick="appendSci('log(')">log</button>
-                <button class="btn btn-sci" onclick="appendSci('√(')">√</button>
-                <button class="btn btn-sci" onclick="appendSci('^')">x^y</button>
-
-                <button class="btn btn-sci" onclick="appendSci('π')">π</button>
-                <button class="btn btn-sci" onclick="appendSci('e')">e</button>
-                <button class="btn btn-sci" onclick="appendChar('(')">(</button>
-                <button class="btn btn-sci" onclick="appendChar(')')">)</button>
-            </div>
-
-            <!-- Standard Keypad -->
             <div class="keypad">
-                <button class="btn" onclick="clearDisplay()">C</button>
-                <button class="btn" onclick="backspace()">⌫</button>
-                <button class="btn" onclick="appendChar('%')">%</button>
-                <button class="btn btn-op" onclick="appendChar('/')">÷</button>
+                <button class="btn action" onclick="clearAll()">AC</button>
+                <button class="btn action" onclick="backspace()">⌫</button>
+                <button class="btn action" onclick="appendChar('%')">%</button>
+                <button class="btn op" onclick="appendChar('/')">÷</button>
 
                 <button class="btn" onclick="appendChar('7')">7</button>
                 <button class="btn" onclick="appendChar('8')">8</button>
                 <button class="btn" onclick="appendChar('9')">9</button>
-                <button class="btn btn-op" onclick="appendChar('*')">×</button>
+                <button class="btn op" onclick="appendChar('*')">×</button>
 
                 <button class="btn" onclick="appendChar('4')">4</button>
                 <button class="btn" onclick="appendChar('5')">5</button>
                 <button class="btn" onclick="appendChar('6')">6</button>
-                <button class="btn btn-op" onclick="appendChar('-')">-</button>
+                <button class="btn op" onclick="appendChar('-')">-</button>
 
                 <button class="btn" onclick="appendChar('1')">1</button>
                 <button class="btn" onclick="appendChar('2')">2</button>
                 <button class="btn" onclick="appendChar('3')">3</button>
-                <button class="btn btn-op" onclick="appendChar('+')">+</button>
+                <button class="btn op" onclick="appendChar('+')">+</button>
 
                 <button class="btn" onclick="toggleSign()">±</button>
                 <button class="btn" onclick="appendChar('0')">0</button>
                 <button class="btn" onclick="appendChar('.')">.</button>
-                <button class="btn btn-accent" onclick="calculateResult()">=</button>
-            </div>
-
-            <!-- Calculation History -->
-            <div class="history-list" id="historyList">
-                <strong>History:</strong>
+                <button class="btn equals" onclick="calculate()">=</button>
             </div>
         </div>
 
-        <!-- TAB 2: UNIT & CURRENCY CONVERTER -->
-        <div id="converterTab" class="tab-content">
-            <div class="form-group">
-                <label>Converter Type</label>
-                <select class="form-control" id="convType" onchange="setupConverter()">
-                    <option value="length">Length (Lambai)</option>
-                    <option value="weight">Weight (Wajan)</option>
-                    <option value="temp">Temperature</option>
-                    <option value="currency">Currency (Mudra)</option>
-                </select>
+        <!-- 2. HISTORY SCREEN -->
+        <div id="history-section" class="section">
+            <h3 style="margin-bottom: 12px; font-size: 16px;">Calculation History</h3>
+            <div class="history-container" id="historyListContainer">
+                <p style="color: var(--text-muted); text-align: center; margin-top: 40px;">No history available.</p>
             </div>
-
-            <div class="form-group">
-                <label>Value</label>
-                <input type="number" class="form-control" id="convInput" value="1" oninput="convertUnit()">
-            </div>
-
-            <div class="form-group">
-                <label>From</label>
-                <select class="form-control" id="convFrom" onchange="convertUnit()"></select>
-            </div>
-
-            <div class="form-group">
-                <label>To</label>
-                <select class="form-control" id="convTo" onchange="convertUnit()"></select>
-            </div>
-
-            <div class="result-box" id="convResult">Result: --</div>
+            <button class="clear-hist-btn" onclick="clearHistoryData()">Clear History</button>
         </div>
 
-        <!-- TAB 3: FINANCIAL & SPECIALIZED -->
-        <div id="financialTab" class="tab-content">
-            <div class="form-group">
-                <label>Calculator Select</label>
-                <select class="form-control" id="finType" onchange="switchFinCalc()">
-                    <option value="emi">Loan EMI Calculator</option>
-                    <option value="gst">GST Calculator</option>
-                    <option value="age">Age Calculator</option>
+        <!-- 3. SETTINGS SCREEN -->
+        <div id="settings-section" class="section">
+            <h3 style="margin-bottom: 15px; font-size: 16px;">App Settings</h3>
+            
+            <div class="settings-item">
+                <span>Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="themeToggleCheckbox" checked onchange="toggleAppTheme()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="settings-item">
+                <span>Vibration Feedback</span>
+                <label class="switch">
+                    <input type="checkbox" id="vibeToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="settings-item">
+                <span>Decimal Precision</span>
+                <select class="settings-select" id="precisionSelect">
+                    <option value="2">2 Digits</option>
+                    <option value="4" selected>4 Digits</option>
+                    <option value="6">6 Digits</option>
                 </select>
             </div>
 
-            <!-- EMI Form -->
-            <div id="emiBox">
-                <div class="form-group">
-                    <label>Loan Amount (₹)</label>
-                    <input type="number" class="form-control" id="emiAmount" value="100000">
-                </div>
-                <div class="form-group">
-                    <label>Interest Rate (% Annual)</label>
-                    <input type="number" class="form-control" id="emiRate" value="8.5">
-                </div>
-                <div class="form-group">
-                    <label>Tenure (Months)</label>
-                    <input type="number" class="form-control" id="emiTenure" value="12">
-                </div>
-                <button class="btn btn-accent" style="width:100%" onclick="calcEMI()">Calculate EMI</button>
+            <div class="settings-item" style="margin-top: 15px; flex-direction: column; align-items: flex-start; gap: 8px;">
+                <span style="font-size: 14px; color: var(--text-muted);">App Info</span>
+                <p style="font-size: 13px;">Version: 2.0.0 Pro<br>Designed for smooth calculations.</p>
             </div>
-
-            <!-- GST Form -->
-            <div id="gstBox" style="display:none;">
-                <div class="form-group">
-                    <label>Amount (₹)</label>
-                    <input type="number" class="form-control" id="gstAmount" value="1000">
-                </div>
-                <div class="form-group">
-                    <label>GST Rate (%)</label>
-                    <input type="number" class="form-control" id="gstRate" value="18">
-                </div>
-                <button class="btn btn-accent" style="width:100%" onclick="calcGST()">Calculate GST</button>
-            </div>
-
-            <!-- Age Form -->
-            <div id="ageBox" style="display:none;">
-                <div class="form-group">
-                    <label>Date of Birth</label>
-                    <input type="date" class="form-control" id="dobInput">
-                </div>
-                <button class="btn btn-accent" style="width:100%" onclick="calcAge()">Calculate Age</button>
-            </div>
-
-            <div class="result-box" id="finResult">Result will appear here</div>
         </div>
     </div>
 
     <script>
-        // --- Theme Toggle ---
-        function toggleTheme() {
-            const body = document.body;
-            const themeBtn = document.getElementById('themeBtn');
-            if (body.getAttribute('data-theme') === 'light') {
-                body.setAttribute('data-theme', 'dark');
-                themeBtn.innerText = '☀️ Light';
-            } else {
-                body.setAttribute('data-theme', 'light');
-                themeBtn.innerText = '🌙 Dark';
+        // Tab Management
+        function switchTab(tabName) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+
+            if (tabName === 'calc') {
+                document.getElementById('calc-section').classList.add('active');
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            } else if (tabName === 'history') {
+                document.getElementById('history-section').classList.add('active');
+                document.querySelectorAll('.tab-btn'][1].classList.add('active');
+                renderHistoryUI();
+            } else if (tabName === 'settings') {
+                document.getElementById('settings-section').classList.add('active');
+                document.querySelectorAll('.tab-btn'][2].classList.add('active');
             }
         }
 
-        // --- Tab Switching ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+        // Theme Toggle
+        function toggleAppTheme() {
+            const body = document.body;
+            const isChecked = document.getElementById('themeToggleCheckbox').checked;
+            if (isChecked) {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+            }
         }
 
-        // --- Calculator Core Logic ---
+        // Calculator Core Functions
         let display = document.getElementById('display');
-        let histExpr = document.getElementById('histExpr');
-        let memoryValue = 0;
-        let history = [];
+        let histView = document.getElementById('histView');
+        let historyArray = JSON.parse(localStorage.getItem('calc_history')) || [];
+
+        function triggerVibe() {
+            if (document.getElementById('vibeToggle').checked && navigator.vibrate) {
+                navigator.vibrate(20);
+            }
+        }
 
         function appendChar(char) {
+            triggerVibe();
             if (display.value === '0' && char !== '.') {
                 display.value = char;
             } else {
@@ -456,21 +480,15 @@
             }
         }
 
-        function appendSci(func) {
-            if (display.value === '0') {
-                display.value = func;
-            } else {
-                display.value += func;
-            }
-        }
-
-        function clearDisplay() {
+        function clearAll() {
+            triggerVibe();
             display.value = '0';
-            histExpr.innerText = '';
+            histView.innerText = '';
         }
 
         function backspace() {
-            if (display.value.length === 1) {
+            triggerVibe();
+            if (display.value.length === 1 || display.value === 'Error') {
                 display.value = '0';
             } else {
                 display.value = display.value.slice(0, -1);
@@ -478,7 +496,8 @@
         }
 
         function toggleSign() {
-            if (display.value !== '0') {
+            triggerVibe();
+            if (display.value !== '0' && display.value !== 'Error') {
                 if (display.value.startsWith('-')) {
                     display.value = display.value.substring(1);
                 } else {
@@ -487,159 +506,55 @@
             }
         }
 
-        // Memory Operations
-        function memClear() { memoryValue = 0; alert("Memory Cleared"); }
-        function memRecall() { display.value = memoryValue; }
-        function memAdd() { memoryValue += parseFloat(display.value) || 0; }
-        function memSub() { memoryValue -= parseFloat(display.value) || 0; }
-
-        // Evaluation & Math parsing
-        function calculateResult() {
+        function calculate() {
+            triggerVibe();
             let expr = display.value;
-            histExpr.innerText = expr + " =";
-            
-            try {
-                let formattedExpr = expr
-                    .replace(/×/g, '*')
-                    .replace(/÷/g, '/')
-                    .replace(/π/g, 'Math.PI')
-                    .replace(/e/g, 'Math.E')
-                    .replace(/√\(/g, 'Math.sqrt(')
-                    .replace(/sin\(/g, 'Math.sin(Math.PI/180*')
-                    .replace(/cos\(/g, 'Math.cos(Math.PI/180*')
-                    .replace(/tan\(/g, 'Math.tan(Math.PI/180*')
-                    .replace(/log\(/g, 'Math.log10(')
-                    .replace(/\^/g, '**');
+            if (!expr) return;
 
-                let result = eval(formattedExpr);
-                if (typeof result === 'number') {
-                    result = Math.round(result * 100000000) / 100000000; // precision fix
+            histView.innerText = expr + " =";
+            try {
+                let cleanExpr = expr.replace(/×/g, '*').replace(/÷/g, '/');
+                let result = eval(cleanExpr);
+
+                let precision = parseInt(document.getElementById('precisionSelect').value) || 4;
+                if (typeof result === 'number' && !isNaN(result)) {
+                    result = parseFloat(result.toFixed(precision));
                 }
-                
+
                 display.value = result;
-                addHistory(expr, result);
+
+                // Save to History
+                historyArray.unshift({ expression: expr, result: result });
+                if (historyArray.length > 20) historyArray.pop();
+                localStorage.setItem('calc_history', JSON.stringify(historyArray));
             } catch (e) {
                 display.value = 'Error';
             }
         }
 
-        function addHistory(expr, res) {
-            history.unshift({ expr, res });
-            if (history.length > 5) history.pop();
-            renderHistory();
-        }
-
-        function renderHistory() {
-            let list = document.getElementById('historyList');
-            list.innerHTML = '<strong>History:</strong>';
-            history.forEach(item => {
-                list.innerHTML += `<div class="history-item"><span>${item.expr}</span><span>= ${item.res}</span></div>`;
-            });
-        }
-
-        function clearHistory() {
-            history = [];
-            renderHistory();
-        }
-
-        // --- Converter Logic ---
-        const units = {
-            length: { 'Meters': 1, 'Kilometers': 0.001, 'Feet': 3.28084, 'Inches': 39.3701 },
-            weight: { 'Kilograms': 1, 'Grams': 1000, 'Pounds': 2.20462, 'Ounces': 35.274 },
-            temp: ['Celsius', 'Fahrenheit', 'Kelvin'],
-            currency: { 'INR (₹)': 1, 'USD ($)': 0.012, 'EUR (€)': 0.011, 'GBP (£)': 0.0095 }
-        };
-
-        function setupConverter() {
-            let type = document.getElementById('convType').value;
-            let fromSelect = document.getElementById('convFrom');
-            let toSelect = document.getElementById('convTo');
-            
-            fromSelect.innerHTML = '';
-            toSelect.innerHTML = '';
-
-            let keys = type === 'temp' ? units.temp : Object.keys(units[type]);
-
-            keys.forEach(k => {
-                fromSelect.innerHTML += `<option value="${k}">${k}</option>`;
-                toSelect.innerHTML += `<option value="${k}">${k}</option>`;
-            });
-
-            toSelect.selectedIndex = 1;
-            convertUnit();
-        }
-
-        function convertUnit() {
-            let type = document.getElementById('convType').value;
-            let val = parseFloat(document.getElementById('convInput').value) || 0;
-            let from = document.getElementById('convFrom').value;
-            let to = document.getElementById('convTo').value;
-            let result = 0;
-
-            if (type === 'temp') {
-                if (from === to) result = val;
-                else if (from === 'Celsius' && to === 'Fahrenheit') result = (val * 9/5) + 32;
-                else if (from === 'Celsius' && to === 'Kelvin') result = val + 273.15;
-                else if (from === 'Fahrenheit' && to === 'Celsius') result = (val - 32) * 5/9;
-                else if (from === 'Kelvin' && to === 'Celsius') result = val - 273.15;
-            } else {
-                let baseVal = val / units[type][from];
-                result = baseVal * units[type][to];
-            }
-
-            document.getElementById('convResult').innerText = `Result: ${result.toFixed(4)} ${to}`;
-        }
-
-        // --- Financial Calculator Logic ---
-        function switchFinCalc() {
-            let type = document.getElementById('finType').value;
-            document.getElementById('emiBox').style.display = type === 'emi' ? 'block' : 'none';
-            document.getElementById('gstBox').style.display = type === 'gst' ? 'block' : 'none';
-            document.getElementById('ageBox').style.display = type === 'age' ? 'block' : 'none';
-            document.getElementById('finResult').innerText = 'Result will appear here';
-        }
-
-        function calcEMI() {
-            let p = parseFloat(document.getElementById('emiAmount').value);
-            let r = parseFloat(document.getElementById('emiRate').value) / 12 / 100;
-            let n = parseFloat(document.getElementById('emiTenure').value);
-
-            let emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-            let totalPay = emi * n;
-            let totalInterest = totalPay - p;
-
-            document.getElementById('finResult').innerHTML = 
-                `Monthly EMI: ₹${emi.toFixed(2)}<br><small>Total Interest: ₹${totalInterest.toFixed(2)}</small>`;
-        }
-
-        function calcGST() {
-            let amt = parseFloat(document.getElementById('gstAmount').value);
-            let rate = parseFloat(document.getElementById('gstRate').value);
-
-            let gstAmt = (amt * rate) / 100;
-            let total = amt + gstAmt;
-
-            document.getElementById('finResult').innerHTML = 
-                `GST Amount: ₹${gstAmt.toFixed(2)}<br><small>Total Amount: ₹${total.toFixed(2)}</small>`;
-        }
-
-        function calcAge() {
-            let dob = new Date(document.getElementById('dobInput').value);
-            if (isNaN(dob)) {
-                document.getElementById('finResult').innerText = "Kripya valid date chunein!";
+        function renderHistoryUI() {
+            let container = document.getElementById('historyListContainer');
+            if (historyArray.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin-top: 40px;">No history available.</p>';
                 return;
             }
-            let today = new Date();
-            let age = today.getFullYear() - dob.getFullYear();
-            let m = today.getMonth() - dob.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-                age--;
-            }
-            document.getElementById('finResult').innerText = `Aapki Age: ${age} Years`;
+
+            container.innerHTML = '';
+            historyArray.forEach(item => {
+                container.innerHTML += `
+                    <div class="history-row">
+                        <span style="color: var(--text-muted);">${item.expression}</span>
+                        <strong style="color: var(--text-color);">= ${item.result}</strong>
+                    </div>
+                `;
+            });
         }
 
-        // Initialize Converter Dropdowns
-        setupConverter();
+        function clearHistoryData() {
+            historyArray = [];
+            localStorage.removeItem('calc_history');
+            renderHistoryUI();
+        }
     </script>
 </body>
 </html>
