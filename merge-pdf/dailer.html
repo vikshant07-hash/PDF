@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM Call Dialer App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .dialer-container {
+            width: 100%;
+            max-width: 350px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #display {
+            width: 100%;
+            height: 60px;
+            font-size: 26px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+            color: #333;
+            outline: none;
+        }
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            transition: background 0.2s;
+        }
+        .btn:active {
+            background-color: #e2e6ea;
+        }
+        .call-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .call-btn:active {
+            background-color: #218838;
+        }
+        .clear-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dialer-container">
+        <h2>SIM Dialer</h2>
+        <input type="text" id="display" readonly placeholder="Number daalein...">
+        
+        <div class="keypad">
+            <button class="btn" onclick="press('1')">1</button>
+            <button class="btn" onclick="press('2')">2</button>
+            <button class="btn" onclick="press('3')">3</button>
+            <button class="btn" onclick="press('4')">4</button>
+            <button class="btn" onclick="press('5')">5</button>
+            <button class="btn" onclick="press('6')">6</button>
+            <button class="btn" onclick="press('7')">7</button>
+            <button class="btn" onclick="press('8')">8</button>
+            <button class="btn" onclick="press('9')">9</button>
+            <button class="btn" onclick="press('*')">*</button>
+            <button class="btn" onclick="press('0')">0</button>
+            <button class="btn" onclick="press('#')">#</button>
+        </div>
+
+        <button class="call-btn" onclick="makeCall()">📞 Call Lagayein</button>
+        <button class="clear-btn" onclick="clearNum()">Mitaayein (Clear)</button>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        // Keypad par click karne par number screen par aayega
+        function press(value) {
+            display.value += value;
+        }
+
+        // Clear karne ka function
+        function clearNum() {
+            display.value = '';
+        }
+
+        // SIM se real call lagane ka function
+        function makeCall() {
+            const number = display.value;
+            if (number === "") {
+                alert("Kripya pehle koi phone number darj karein!");
+                return;
+            }
+            
+            // Tel URI ka use karke phone ke SIM dialer ko trigger karna
+            window.location.href = `tel:${number}`;
+        }
+    </script>
+
+</body>
+</html>
