@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/logo.png">
-    <meta name="description" content="PDF to Word with exact layout – text boxes, tables, colours, Unicode.">
+    <meta name="description" content="PDF to Word with exact layout – accurate tables, fonts, colours, Unicode.">
     <meta name="keywords" content="Pdfboon, PDF to Word, DOCX, Vikshant Kralta">
     <meta name="author" content="Vikshant Kralta">
     <title>PDF to Word Pro · PDFBoon</title>
@@ -54,7 +54,7 @@
 
 <div class="container">
     <h1 class="title">PDF to Word · Exact Layout</h1>
-    <p class="subtitle">Text boxes, tables, colours, Unicode – fully editable DOCX</p>
+    <p class="subtitle">Accurate tables, rich text formatting, colours, and Unicode – fully editable DOCX</p>
 
     <label class="upload-box" id="uploadBox" for="pdfFileInput">
         <div class="upload-icon"><svg viewBox="0 0 64 64"><rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/><rect x="14" y="18" width="36" height="4" rx="1" fill="#fff" opacity=".9"/></svg></div>
@@ -64,9 +64,9 @@
 
     <div class="settings">
         <div class="card"><label>Layout Mode</label><select id="layoutMode"><option value="absolute">Absolute Text Boxes</option><option value="flow">Flowing Text</option></select></div>
-        <div class="card"><label>Tables</label><select id="tableMode"><option value="on">Detect & Create Tables</option><option value="off">Text only</option></select></div>
-        <div class="card"><label>Colours</label><select id="colorMode"><option value="on">Preserve</option><option value="off">Black</option></select></div>
-        <div class="card"><label>Fonts</label><select id="fontMode"><option value="preserve">Keep original</option><option value="calibri">All Calibri</option></select></div>
+        <div class="card"><label>Tables</label><select id="tableMode"><option value="on" selected>Detect & Create Word Tables</option><option value="off">Text only</option></select></div>
+        <div class="card"><label>Colours</label><select id="colorMode"><option value="on" selected>Preserve</option><option value="off">Black</option></select></div>
+        <div class="card"><label>Fonts</label><select id="fontMode"><option value="preserve" selected>Keep original</option><option value="calibri">All Calibri</option></select></div>
     </div>
     <div class="files" id="filesContainer"></div>
 </div>
@@ -114,7 +114,7 @@ async function previewPDF(file, idx) {
     await page.render({canvasContext:canvas.getContext('2d'), viewport:vp}).promise;
 }
 
-// ===================== CONVERSION =====================
+// ===================== ENHANCED CONVERSION =====================
 async function convertPDFToWord(idx) {
     const file = uploadedFiles[idx]; if(!file) return;
     const pb = document.getElementById(`pb-${idx}`), ld = document.getElementById(`ld-${idx}`),
@@ -136,17 +136,17 @@ async function convertPDFToWord(idx) {
             const vp = page.getViewport({scale:1});
             const opList = await page.getOperatorList();
             const colorMap = extractColors(opList, text);
+            const styleMap = extractFontStyles(opList, text);  // NEW: detect font weight/style
             let items = text.items.map((it,i)=>({
                 text:it.str||'', x:it.transform[4], y:vp.height-it.transform[5], w:it.width||0, h:it.height||12,
-                font:it.fontName||'', color:colorMap[i]||'#000000'
+                font:it.fontName||'', color:colorMap[i]||'#000000',
+                bold: styleMap[i]?.bold || /bold/i.test(it.fontName),
+                italic: styleMap[i]?.italic || /italic/i.test(it.fontName),
+                weight: styleMap[i]?.weight || 400
             }));
             items.sort((a,b)=>Math.abs(a.y-b.y)<0.5?a.x-b.x:a.y-b.y);
-            const merged = []; let line=[items[0]];
-            for(let i=1;i<items.length;i++){
-                if(Math.abs(items[i].y-line[0].y)<2) line.push(items[i]);
-                else{merged.push(mergeLine(line)); line=[items[i]];}
-            } if(line.length) merged.push(mergeLine(line));
-            const tables = tableMode==='on' ? detectTables(merged) : [];
+            const merged = mergeLinesAdvanced(items);
+            const tables = tableMode==='on' ? detectTablesGrid(merged, vp.width) : [];
             allPages.push({num:p, items:merged, tables, w:vp.width, h:vp.height});
             pb.style.width = ((p/pdf.numPages)*50)+'%';
         }
@@ -160,35 +160,143 @@ async function convertPDFToWord(idx) {
     finally { ld.style.display='none'; btn.style.display='inline-flex'; }
 }
 
-function mergeLine(line) {
-    line.sort((a,b)=>a.x-b.x);
-    let txt='', x0=line[0].x, x1=line[0].x+line[0].w, h=line[0].h, font=line[0].font, col=line[0].color;
-    for(let i=0;i<line.length;i++){
-        if(i>0 && line[i].x-(line[i-1].x+line[i-1].w)>3) txt+=' ';
-        txt+=line[i].text; x1=Math.max(x1,line[i].x+line[i].w); h=Math.max(h,line[i].h);
-        if(line[i].font && line[i].font.length>font.length) font=line[i].font;
-        if(line[i].color!=='#000000') col=line[i].color;
+// Advanced line merging: respect sub/superscript (Y offset > 2pt)
+function mergeLinesAdvanced(items) {
+    const merged = [];
+    let line = [items[0]], lineY = items[0].y, lineMaxH = items[0].h;
+    for (let i=1; i<items.length; i++) {
+        const it = items[i];
+        const yDiff = Math.abs(it.y - lineY);
+        const threshold = Math.max(2, lineMaxH * 0.4); // allow small Y variance but not sub/superscript
+        if (yDiff < threshold) {
+            line.push(it);
+            lineMaxH = Math.max(lineMaxH, it.h);
+        } else {
+            merged.push(mergeLineItems(line));
+            line = [it]; lineY = it.y; lineMaxH = it.h;
+        }
     }
-    return {text:txt.trim(), x:x0, y:line[0].y, w:x1-x0, h, font, color:col};
+    if (line.length) merged.push(mergeLineItems(line));
+    return merged;
 }
+
+function mergeLineItems(line) {
+    line.sort((a,b)=>a.x-b.x);
+    let txt = '', minX = line[0].x, maxX = line[0].x+line[0].w, maxH = line[0].h;
+    let bestFont = line[0].font, col = line[0].color, bold = line[0].bold, italic = line[0].italic, weight = line[0].weight;
+    for (let i=0; i<line.length; i++) {
+        if (i>0 && line[i].x - (line[i-1].x+line[i-1].w) > 3) txt += ' ';
+        txt += line[i].text;
+        maxX = Math.max(maxX, line[i].x+line[i].w);
+        maxH = Math.max(maxH, line[i].h);
+        if (line[i].font && line[i].font.length > bestFont.length) bestFont = line[i].font;
+        if (line[i].color !== '#000000') col = line[i].color;
+        if (line[i].bold) bold = true;
+        if (line[i].italic) italic = true;
+        if (line[i].weight > weight) weight = line[i].weight;
+    }
+    return { text:txt.trim(), x:minX, y:line[0].y, w:maxX-minX, h:maxH, font:bestFont, color:col, bold, italic, weight };
+}
+
+// Improved table detection using column gap analysis
+function detectTablesGrid(items, pageWidth) {
+    if (items.length < 4) return [];
+    // Group items into rows by Y proximity
+    const rows = [];
+    let cur = [items[0]], lastY = items[0].y;
+    for (let i=1; i<items.length; i++) {
+        if (Math.abs(items[i].y - lastY) < 2) cur.push(items[i]);
+        else { rows.push(cur); cur = [items[i]]; lastY = items[i].y; }
+    }
+    rows.push(cur);
+
+    // Find common X gaps across multiple rows to identify column separators
+    const gapMap = new Map(); // gapX -> count of rows that have that gap
+    rows.forEach(row => {
+        row.sort((a,b)=>a.x-b.x);
+        for (let i=1; i<row.length; i++) {
+            const gapStart = row[i-1].x + row[i-1].w;
+            const gapEnd = row[i].x;
+            if (gapEnd - gapStart > 5) { // significant gap
+                const gapCenter = Math.round((gapStart+gapEnd)/2);
+                gapMap.set(gapCenter, (gapMap.get(gapCenter)||0)+1);
+            }
+        }
+    });
+
+    // Select gaps that appear in at least 40% of rows (minimum 2 rows)
+    const threshold = Math.max(2, Math.floor(rows.length * 0.4));
+    const columnGaps = [...gapMap.entries()].filter(([_,cnt])=>cnt>=threshold).map(([x])=>x).sort((a,b)=>a-b);
+    if (columnGaps.length === 0) return [];
+
+    // Define column boundaries: start at 0, add gap positions, end at pageWidth
+    const colEdges = [0, ...columnGaps, pageWidth];
+    const tables = [];
+    let tableStart = -1;
+    for (let r=0; r<rows.length; r++) {
+        const row = rows[r];
+        // Check if this row aligns with the columns: at least 2 items in different columns
+        const cols = new Set();
+        row.forEach(it => {
+            for (let c=0; c<colEdges.length-1; c++) {
+                if (it.x >= colEdges[c]-2 && it.x+it.w <= colEdges[c+1]+2) {
+                    cols.add(c);
+                    break;
+                }
+            }
+        });
+        if (cols.size >= 2) {
+            if (tableStart === -1) tableStart = r;
+        } else {
+            if (tableStart !== -1 && r - tableStart >= 2) {
+                tables.push({ rows: rows.slice(tableStart, r), colEdges });
+            }
+            tableStart = -1;
+        }
+    }
+    if (tableStart !== -1 && rows.length - tableStart >= 2) {
+        tables.push({ rows: rows.slice(tableStart), colEdges });
+    }
+    return tables;
+}
+
+// Extract font styles from operator list (detect bold/italic/weight)
+function extractFontStyles(opList, textContent) {
+    const styles = [];
+    let textIdx = 0;
+    let currentFont = { bold: false, italic: false, weight: 400 };
+    for (let i=0; i<opList.fnArray.length; i++) {
+        const fn = opList.fnArray[i], args = opList.argsArray[i];
+        if (fn === pdfjsLib.OPS.setFont) {
+            const fontName = args[0] || '';
+            const fontSize = args[1] || 12;
+            currentFont.bold = /bold/i.test(fontName) || /black/i.test(fontName) || /heavy/i.test(fontName);
+            currentFont.italic = /italic/i.test(fontName) || /oblique/i.test(fontName);
+            // Guess weight from name: light=300, medium=500, bold=700, black=900
+            if (/light/i.test(fontName)) currentFont.weight = 300;
+            else if (/medium/i.test(fontName)) currentFont.weight = 500;
+            else if (/bold/i.test(fontName)) currentFont.weight = 700;
+            else if (/black|heavy/i.test(fontName)) currentFont.weight = 900;
+            else currentFont.weight = 400;
+        }
+        if (fn === pdfjsLib.OPS.showText || fn === pdfjsLib.OPS.showSpacedText) {
+            if (textIdx < textContent.items.length) {
+                styles[textIdx] = { ...currentFont };
+            }
+            textIdx++;
+        }
+    }
+    return styles;
+}
+
 function extractColors(ops,text){ const map={}; let idx=0, col='#000000';
     for(let i=0;i<ops.fnArray.length;i++){
         if(ops.fnArray[i]===pdfjsLib.OPS.setFillRGBColor){ const a=ops.argsArray[i]; col='#'+[Math.round(a[0]*255),Math.round(a[1]*255),Math.round(a[2]*255)].map(c=>c.toString(16).padStart(2,'0')).join(''); }
         if(ops.fnArray[i]===pdfjsLib.OPS.showText||ops.fnArray[i]===pdfjsLib.OPS.showSpacedText){ if(idx<text.items.length) map[idx]=col; idx++; }
     } return map;
 }
-function detectTables(items) {
-    if(items.length<4) return [];
-    const lines=[]; let cur=[items[0]], lastY=items[0].y;
-    for(let i=1;i<items.length;i++){ if(Math.abs(items[i].y-lastY)<1) cur.push(items[i]); else{ if(cur.length>=2)lines.push(cur); cur=[items[i]]; } lastY=items[i].y; }
-    if(cur.length>=2)lines.push(cur);
-    const tables=[]; let start=-1;
-    for(let i=0;i<lines.length;i++){ if(lines[i].length>=2&&lines[i].length<=20){ if(start===-1)start=i; } else{ if(start!==-1&&i-start>=2)tables.push({start,end:i,lines:lines.slice(start,i)}); start=-1; } }
-    if(start!==-1&&lines.length-start>=2)tables.push({start,end:lines.length,lines:lines.slice(start)});
-    return tables;
-}
 
-// ===================== DOCX BUILDER =====================
+// ===================== DOCX BUILDER (improved) =====================
 const EMU = 12700;
 async function buildDocx(pages, opt) {
     const zip = new JSZip();
@@ -201,39 +309,47 @@ async function buildDocx(pages, opt) {
     for (let pi=0; pi<pages.length; pi++) {
         const page = pages[pi];
         if(pi>0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
-        const tableSet = new Set();
+        const tableItemSet = new Set();
 
         if (opt.tableMode==='on' && page.tables.length) {
-            for (const t of page.tables) {
-                const rows = t.lines, cols = Math.max(...rows.map(r=>r.length));
-                const firstRow = rows[0].sort((a,b)=>a.x-b.x);
-                const colX = firstRow.map(it=>it.x);
-                const colW = colX.map((x,i)=> i<cols-1 ? colX[i+1]-x : page.w-x);
-                const tableW = colW.reduce((a,b)=>a+b,0);
-                const top = rows[0][0].y, left = colX[0];
-                let xml = `<w:tbl><w:tblPr><w:tblW w:w="${Math.round(tableW*20)}" w:type="dxa"/></w:tblPr><w:tblGrid>${colW.map(w=>`<w:gridCol w:w="${Math.round(w*20)}"/>`).join('')}</w:tblGrid>`;
-                for (const row of rows) {
+            for (const table of page.tables) {
+                const colEdges = table.colEdges;
+                const colWidths = [];
+                for (let c=0; c<colEdges.length-1; c++) colWidths.push(colEdges[c+1]-colEdges[c]);
+                const tableW = colWidths.reduce((a,b)=>a+b,0);
+                const top = table.rows[0][0].y, left = 0;
+                let xml = `<w:tbl><w:tblPr><w:tblW w:w="${Math.round(tableW*20)}" w:type="dxa"/></w:tblPr><w:tblGrid>${colWidths.map(w=>`<w:gridCol w:w="${Math.round(w*20)}"/>`).join('')}</w:tblGrid>`;
+                for (const row of table.rows) {
                     xml += '<w:tr>';
-                    const sorted = [...row].sort((a,b)=>a.x-b.x);
-                    for (let c=0; c<cols; c++) {
-                        const it = sorted.find(t=>Math.abs(t.x-colX[c])<5) || {text:'',font:'',h:10,color:'#000000'};
+                    // Assign items to columns
+                    const cellItems = Array(colWidths.length).fill(null);
+                    row.forEach(it => {
+                        for (let c=0; c<colEdges.length-1; c++) {
+                            if (it.x >= colEdges[c]-2 && it.x+it.w <= colEdges[c+1]+2) {
+                                cellItems[c] = it;
+                                break;
+                            }
+                        }
+                    });
+                    for (let c=0; c<colWidths.length; c++) {
+                        const it = cellItems[c] || {text:'',font:'',h:10,color:'#000000',bold:false,italic:false};
                         const ff = getFont(it.font,opt.fontMode), fs = Math.round(Math.max(it.h*1.5,16));
-                        const b = /bold/i.test(it.font), i = /italic/i.test(it.font);
+                        const b = it.bold || /bold/i.test(it.font), i = it.italic || /italic/i.test(it.font);
                         const clr = opt.colorMode==='on'&&it.color!=='#000000'? it.color.replace('#',''):'';
-                        xml += `<w:tc><w:tcPr><w:tcW w:w="${Math.round(colW[c]*20)}" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r></w:p></w:tc>`;
+                        xml += `<w:tc><w:tcPr><w:tcW w:w="${Math.round(colWidths[c]*20)}" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r></w:p></w:tc>`;
                     }
                     xml += '</w:tr>';
-                    row.forEach(it=>tableSet.add(it));
+                    row.forEach(it=>tableItemSet.add(it));
                 }
                 xml += '</w:tbl>';
-                body += opt.layout==='absolute' ? shapeWrap(xml, left, top, tableW, rows.length*20) : xml;
+                body += opt.layout==='absolute' ? shapeWrap(xml, left, top, tableW, 20) : xml;
             }
         }
 
         for (const it of page.items) {
-            if(tableSet.has(it) || !it.text.trim()) continue;
+            if (tableItemSet.has(it) || !it.text.trim()) continue;
             const ff = getFont(it.font,opt.fontMode), fs = Math.round(Math.max(it.h*1.5,16));
-            const b = /bold/i.test(it.font), i = /italic/i.test(it.font);
+            const b = it.bold, i = it.italic;
             const clr = opt.colorMode==='on'&&it.color!=='#000000'? it.color.replace('#',''):'';
             const run = `<w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r>`;
             if (opt.layout==='absolute') {
@@ -250,7 +366,7 @@ xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
 xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
 xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
-<w:body>${body}<w:sectPr><w:pgSz w:w="${pw}" w:h="${ph}"/><w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0" w:header="0" w:footer="0"/></w:sectPr></w:body></w:document>`);
+<w:body>${body}<w:sectPr><w:pgSz w:w="${pw}" w:h="${ph}"/><w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0"/></w:sectPr></w:body></w:document>`);
     return zip.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document', compression:'DEFLATE'});
 }
 
@@ -270,9 +386,8 @@ function shapeWrap(innerXml, x, y, w, h) {
 }
 
 function framePrParagraph(innerRun, x, y, w, h) {
-    // Reliable absolute positioning using w:framePr (compatible with all Word versions)
     const left = Math.round(x*20), top = Math.round(y*20), width = Math.round(w*20), height = Math.round(h*20);
-    return `<w:p><w:pPr><w:framePr w:w="${width}" w:h="${height}" w:hRule="exact" w:wrap="notBeside" w:vAnchor="page" w:hAnchor="page" w:x="${left}" w:y="${top}" w:xAlign="absolute" w:yAlign="absolute"/></w:pPr>${innerRun}</w:p>`;
+    return `<w:p><w:pPr><w:framePr w:w="${width}" w:h="${height}" w:hRule="exact" w:wrap="notBeside" w:vAnchor="page" w:hAnchor="page" w:x="${left}" w:y="${top}"/></w:pPr>${innerRun}</w:p>`;
 }
 
 function getFont(fn, mode) {
