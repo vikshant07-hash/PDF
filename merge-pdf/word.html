@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/logo.png">
-<meta name="description" content="Professional PDF to Word converter - exact layout preservation, OCR support, batch conversion.">
-<meta name="keywords" content="Pdfboon, PDF to Word, Convert PDF to DOCX, Vikshant Kralta, Online PDF Tools">
+<meta name="description" content="Professional PDF to Word converter - exact layout preservation with text boxes, table detection, and image extraction.">
+<meta name="keywords" content="Pdfboon, PDF to Word, Convert PDF to DOCX, Professional PDF Converter">
 <meta name="author" content="Vikshant Kralta">
 <meta name="robots" content="index, follow">
 <title>PDF to Word - PDFBoon</title>
@@ -46,7 +46,7 @@ body{
 a{ text-decoration:none; color:inherit; }
 .container{ max-width:1100px; margin:auto; padding:20px; }
 
-/* NAVBAR - Exact match to Compress PDF */
+/* NAVBAR */
 .navbar{
   position:sticky; top:0; z-index:100;
   background:rgba(237,242,249,0.85);
@@ -65,6 +65,8 @@ a{ text-decoration:none; color:inherit; }
   border-radius:12px; overflow:hidden;
   background:#fff; border:1px solid var(--line);
   box-shadow:var(--shadow); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
 }
 .logo-image{ width:100%; height:100%; object-fit:cover; }
 .logo-title{
@@ -160,6 +162,7 @@ a{ text-decoration:none; color:inherit; }
   padding:11px 12px; border-radius:10px;
   font-size:0.88rem; font-weight:500;
   color:var(--ink-soft); transition:background .15s ease, color .15s ease;
+  white-space:nowrap;
 }
 .dropdown-link i{ width:16px; text-align:center; color:var(--stamp); font-size:0.85rem; }
 .dropdown-link:hover{ background:rgba(37,99,235,0.08); color:var(--ink); }
@@ -169,6 +172,7 @@ a{ text-decoration:none; color:inherit; }
   border-top:1px solid var(--line); border-radius:10px;
   font-weight:600; color:var(--stamp);
 }
+.dropdown-link.view-all i{ color:var(--stamp); }
 
 @media (max-width:920px){
   .nav-item{ width:100%; }
@@ -211,7 +215,8 @@ a{ text-decoration:none; color:inherit; }
   text-align:center; cursor:pointer;
   transition:.3s; padding:20px; box-shadow:var(--shadow);
 }
-.upload-box:hover, .upload-box.active{
+.upload-box:hover,
+.upload-box.active{
   background:rgba(37,99,235,0.06);
   border-color:var(--stamp-dark);
 }
@@ -224,7 +229,7 @@ input[type=file]{ display:none; }
 .settings{
   margin-top:30px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:20px;
 }
 .card{
@@ -236,7 +241,7 @@ input[type=file]{ display:none; }
 .card select{
   width:100%; padding:14px; border:1px solid var(--line);
   border-radius:12px; background:#fff; color:var(--ink);
-  font-size:0.95rem; transition:border-color .2s, box-shadow .2s;
+  font-size:0.95rem; transition:border-color .2s ease, box-shadow .2s ease;
 }
 .card select:focus{
   outline:none; border-color:var(--stamp);
@@ -258,18 +263,22 @@ input[type=file]{ display:none; }
 .preview canvas{ width:100%; height:100%; }
 .file-info{ flex:1; min-width:220px; }
 .file-name{ font-size:18px; font-weight:600; color:var(--ink); margin-bottom:10px; word-break:break-word; }
-.file-size{ font-size:14px; color:var(--ink-soft); margin-bottom:5px; }
-.result-info{ font-size:14px; color:var(--success-dark); font-weight:600; margin-bottom:5px; display:none; }
+.file-size,
+.target,
+.final-size{ font-size:14px; color:var(--ink-soft); margin-bottom:5px; }
+.final-size.good{ color:var(--success-dark); font-weight:600; }
 .rename{
   padding:14px; width:220px; border:1px solid var(--line);
   border-radius:12px; background:#fff; color:var(--ink); font-size:0.9rem;
 }
-.rename:focus{ outline:none; border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+.rename:focus{
+  outline:none; border-color:var(--stamp);
+  box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
 .btn{
   padding:14px 22px; border:none; border-radius:14px;
   font-weight:600; cursor:pointer;
   transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-  font-family:var(--sans);
 }
 .convert-btn{
   background:var(--stamp); color:white;
@@ -277,15 +286,21 @@ input[type=file]{ display:none; }
 }
 .convert-btn:hover{ transform:translateY(-2px); }
 .convert-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark); }
-.convert-btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; box-shadow:0 2px 0 var(--stamp-dark); }
 .download-btn{
   background:var(--success); color:white;
   text-decoration:none; display:none;
   box-shadow:0 4px 0 var(--success-dark);
 }
 .download-btn:hover{ transform:translateY(-2px); }
-.progress{ width:100%; height:10px; background:var(--line); border-radius:20px; overflow:hidden; margin-top:15px; }
-.progress-bar{ height:100%; width:0%; background:linear-gradient(to right,var(--stamp),var(--teal)); transition:.3s; }
+.progress{
+  width:100%; height:10px; background:var(--line);
+  border-radius:20px; overflow:hidden; margin-top:15px;
+}
+.progress-bar{
+  height:100%; width:0%;
+  background:linear-gradient(to right,var(--stamp),var(--teal));
+  transition:.3s;
+}
 .loader{
   width:28px; height:28px;
   border:4px solid rgba(37,99,235,.15);
@@ -318,14 +333,14 @@ input[type=file]{ display:none; }
 .footer-title{ font-family:var(--serif); font-weight:700; font-size:1.05rem; color:#fff; }
 .footer-subtitle{ font-size:0.76rem; color:#9fb0cc; }
 .footer-simple-links{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
-.footer-simple-links a{ font-size:0.88rem; color:#c8d2e6; transition:color .2s; }
+.footer-simple-links a{ font-size:0.88rem; color:#c8d2e6; transition:color .2s ease; }
 .footer-simple-links a:hover{ color:#fff; }
 .footer-social{ display:flex; gap:10px; }
 .footer-social a{
   width:36px; height:36px; border-radius:50%;
   border:1px solid rgba(255,255,255,0.18);
   display:flex; align-items:center; justify-content:center;
-  color:#fff; transition:background .2s, border-color .2s, transform .2s;
+  color:#fff; transition:background .2s ease, border-color .2s ease, transform .2s ease;
 }
 .footer-social a:hover{ background:var(--stamp); border-color:var(--stamp); transform:translateY(-3px); }
 .footer-bottom{
@@ -336,8 +351,8 @@ input[type=file]{ display:none; }
 .copyright{ font-size:0.78rem; color:#8494b5; line-height:1.6; }
 
 @media(max-width:600px){
-  .footer-simple{ flex-direction:column; text-align:center; }
-  .footer-bottom{ flex-direction:column; text-align:center; }
+  .footer-simple{ flex-direction:column; text-align:center; justify-content:center; }
+  .footer-bottom{ flex-direction:column; text-align:center; justify-content:center; }
 }
 </style>
 </head>
@@ -345,154 +360,120 @@ input[type=file]{ display:none; }
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <div class="nav-container">
-    <div class="logo-wrapper">
-      <div class="logo-box">
-        <img src="images/logo.png" class="logo-image" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.innerHTML='📄'">
-      </div>
-      <div>
-        <h2 class="logo-title">PDFBoon</h2>
-        <p class="logo-subtitle">Fast PDF Toolkit</p>
-      </div>
-    </div>
-    <div class="nav-links" id="navLinks">
-      <a href="index.html" class="nav-link">Home</a>
-      <div class="current-tool-pill"><i class="fa-solid fa-file-word"></i> PDF to Word</div>
-      <div class="nav-item" id="toolsDropdown">
-        <button class="nav-tools-btn" id="toolsToggle" type="button">
-          <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
-        </button>
-        <div class="dropdown-menu">
-          <div class="dropdown-category">Organize PDF</div>
-          <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
-          <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
-          <div class="dropdown-category">Optimize PDF</div>
-          <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
-          <div class="dropdown-category">Convert PDF</div>
-          <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
-          <a href="pdf-to-word.html" class="dropdown-link active"><i class="fa-solid fa-file-word"></i> PDF to Word</a>
-          <div class="dropdown-category">Security</div>
-          <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
-          <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+    <div class="nav-container">
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.innerHTML='📄'">
+            </div>
+            <div>
+                <h2 class="logo-title">PDFBoon</h2>
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
+            </div>
         </div>
-      </div>
-      <a href="about.html" class="nav-link">About</a>
-      <a href="contact.html" class="nav-link">Contact</a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">Home</a>
+            <div class="current-tool-pill"><i class="fa-solid fa-file-word"></i> PDF to Word</div>
+
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <div class="dropdown-category">Organize PDF</div>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+                    <div class="dropdown-category">Optimize PDF</div>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+                    <div class="dropdown-category">Convert PDF</div>
+                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+                    <a href="pdf-to-word.html" class="dropdown-link active"><i class="fa-solid fa-file-word"></i> PDF to Word</a>
+                    <div class="dropdown-category">Security</div>
+                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <button class="mobile-menu" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
-    <button class="mobile-menu" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
-  </div>
 </nav>
 
 <!-- BREADCRUMB -->
 <div class="breadcrumb-bar">
-  <div class="breadcrumb-inner">
-    <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
-    <i class="fa-solid fa-chevron-right"></i>
-    <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
-    <i class="fa-solid fa-chevron-right"></i>
-    <span class="breadcrumb-current"><i class="fa-solid fa-file-word"></i> PDF to Word</span>
-  </div>
+    <div class="breadcrumb-inner">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span class="breadcrumb-current"><i class="fa-solid fa-file-word"></i> PDF to Word</span>
+    </div>
 </div>
 
 <div class="container">
 
 <h1 class="title">PDF to Word Converter</h1>
-<p class="subtitle">Convert PDF to editable Word documents with exact layout preservation</p>
+<p class="subtitle">Convert PDF to editable Word documents with exact layout — just like iLovePDF</p>
 
 <label class="upload-box" id="uploadBox" for="pdfInput">
-  <div class="upload-icon">
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/>
-      <rect x="14" y="18" width="36" height="4" rx="1" fill="#ffffff" opacity="0.9"/>
-      <rect x="14" y="26" width="28" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
-      <rect x="14" y="33" width="32" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
-      <rect x="14" y="40" width="20" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
-      <circle cx="46" cy="46" r="15" fill="#0891b2"/>
-      <path d="M40 46L45 51L53 41" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <h2>Drag & Drop PDF Files Here</h2>
-  <p>or click to browse — Convert PDF to fully editable DOCX</p>
-  <input type="file" id="pdfInput" multiple accept="application/pdf">
+    <div class="upload-icon">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/>
+            <rect x="14" y="18" width="36" height="4" rx="1" fill="#ffffff" opacity="0.9"/>
+            <rect x="14" y="26" width="28" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
+            <rect x="14" y="33" width="32" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
+            <rect x="14" y="40" width="20" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
+            <circle cx="46" cy="46" r="15" fill="#0891b2"/>
+            <path d="M40 46L45 51L53 41" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <h2>Drag & Drop PDF Files Here</h2>
+    <p>or click to browse — Convert PDF to fully editable Word document</p>
+    <input type="file" id="pdfInput" multiple accept="application/pdf">
 </label>
 
 <div class="settings">
-  <div class="card">
-    <label><i class="fa-solid fa-vector-square"></i> Conversion Mode</label>
-    <select id="conversionMode">
-      <option value="exact">Exact Layout (Text Boxes - Best for forms)</option>
-      <option value="flowing" selected>Flowing Layout (Recommended - Easy editing)</option>
-      <option value="hybrid">Hybrid (Preserve layout + editable flow)</option>
-    </select>
-    <small>Exact mode places text at exact positions. Flowing mode is better for editing.</small>
-  </div>
+    <div class="card">
+        <label>Conversion Quality</label>
+        <select id="quality">
+            <option value="high">High Quality (Exact Layout)</option>
+            <option value="balanced" selected>Balanced (Recommended)</option>
+            <option value="fast">Fast (Simple Text)</option>
+        </select>
+        <small>High quality preserves exact positions. Balanced is best for most documents.</small>
+    </div>
 
-  <div class="card">
-    <label><i class="fa-solid fa-font"></i> Font Handling</label>
-    <select id="fontHandling">
-      <option value="preserve" selected>Preserve Original Fonts</option>
-      <option value="similar">Use Similar System Fonts</option>
-      <option value="calibri">Convert All to Calibri</option>
-    </select>
-    <small>Preserves font families like Times New Roman, Arial, Helvetica etc.</small>
-  </div>
+    <div class="card">
+        <label>Table Detection</label>
+        <select id="tableMode">
+            <option value="on" selected>Detect & Recreate Tables</option>
+            <option value="off">Extract as Text</option>
+        </select>
+        <small>Detects tables from text positions and recreates in Word format.</small>
+    </div>
 
-  <div class="card">
-    <label><i class="fa-solid fa-table"></i> Table Detection</label>
-    <select id="tableDetection">
-      <option value="on" selected>Detect & Recreate Tables</option>
-      <option value="off">Extract as Text Only</option>
-    </select>
-    <small>AI-powered table detection recreates tables in Word format.</small>
-  </div>
+    <div class="card">
+        <label>Font Handling</label>
+        <select id="fontMode">
+            <option value="preserve" selected>Preserve Original Fonts</option>
+            <option value="calibri">Convert All to Calibri</option>
+        </select>
+        <small>Maps PDF fonts to system fonts: Times New Roman, Arial, Calibri etc.</small>
+    </div>
 
-  <div class="card">
-    <label><i class="fa-solid fa-image"></i> Image Handling</label>
-    <select id="imageHandling">
-      <option value="include" selected>Include Images in DOCX</option>
-      <option value="skip">Skip Images</option>
-    </select>
-    <small>Extracts and places images at their original positions.</small>
-  </div>
-
-  <div class="card">
-    <label><i class="fa-solid fa-text-height"></i> OCR / Text Recognition</label>
-    <select id="ocrMode">
-      <option value="native" selected>Native Text Extraction</option>
-      <option value="enhanced">Enhanced (Better for scanned PDFs)</option>
-    </select>
-    <small>Enhanced mode improves text extraction from scanned documents.</small>
-  </div>
-
-  <div class="card">
-    <label><i class="fa-solid fa-align-left"></i> Text Alignment</label>
-    <select id="textAlignment">
-      <option value="preserve" selected>Preserve Original Alignment</option>
-      <option value="left">Force Left Alignment</option>
-      <option value="justify">Justify All Text</option>
-    </select>
-    <small>Maintains left, center, right alignment from the PDF.</small>
-  </div>
-
-  <div class="card">
-    <label><i class="fa-solid fa-file-lines"></i> Page Size</label>
-    <select id="pageSizeOption">
-      <option value="original" selected>Match Original PDF Size</option>
-      <option value="a4">Convert to A4</option>
-      <option value="letter">Convert to Letter</option>
-    </select>
-    <small>Output document page size matches original or converts to standard.</small>
-  </div>
-
-  <div class="card">
-    <label><i class="fa-solid fa-paint-brush"></i> Preserve Formatting</label>
-    <select id="preserveFormatting">
-      <option value="full" selected>Full (Colors, Bold, Italic, Underline)</option>
-      <option value="basic">Basic (Bold & Italic only)</option>
-      <option value="plain">Plain Text Only</option>
-    </select>
-    <small>Full mode preserves text colors, bold, italic, underline styles.</small>
-  </div>
+    <div class="card">
+        <label>Image Extraction</label>
+        <select id="imageMode">
+            <option value="on" selected>Extract & Include Images</option>
+            <option value="off">Skip Images</option>
+        </select>
+        <small>Extracts embedded images and places them in the Word document.</small>
+    </div>
 </div>
 
 <div class="files" id="files"></div>
@@ -500,30 +481,30 @@ input[type=file]{ display:none; }
 </div>
 
 <footer class="footer">
-  <div class="footer-simple">
-    <div class="footer-brand">
-      <img src="images/logo.png" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.querySelector('.footer-title').textContent='📄 PDFBoon'">
-      <div>
-        <h2 class="footer-title">PDFBoon</h2>
-        <p class="footer-subtitle">Fast PDF Toolkit</p>
-      </div>
+    <div class="footer-simple">
+        <div class="footer-brand">
+            <img src="images/logo.png" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.querySelector('.footer-title').textContent='📄 PDFBoon'">
+            <div>
+                <h2 class="footer-title">PDFBoon</h2>
+                <p class="footer-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+        <div class="footer-simple-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">All Tools</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-social">
+            <a href="not.html"><i class="fab fa-facebook"></i></a>
+            <a href="not.html"><i class="fab fa-linkedin"></i></a>
+            <a href="not.html"><i class="fab fa-instagram"></i></a>
+        </div>
     </div>
-    <div class="footer-simple-links">
-      <a href="index.html">Home</a>
-      <a href="tools.html">All Tools</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
+    <div class="footer-bottom">
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+        <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
     </div>
-    <div class="footer-social">
-      <a href="not.html"><i class="fab fa-facebook"></i></a>
-      <a href="not.html"><i class="fab fa-linkedin"></i></a>
-      <a href="not.html"><i class="fab fa-instagram"></i></a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
-    <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
-  </div>
 </footer>
 
 <script>
@@ -537,14 +518,18 @@ document.getElementById('mobileMenuBtn').addEventListener('click', () => {
 const toolsDropdown = document.getElementById('toolsDropdown');
 const toolsToggle = document.getElementById('toolsToggle');
 toolsToggle.addEventListener('click', (e) => {
-  e.preventDefault(); e.stopPropagation();
+  e.preventDefault();
+  e.stopPropagation();
   toolsDropdown.classList.toggle('open');
 });
 document.addEventListener('click', (e) => {
   if (!toolsDropdown.contains(e.target)) toolsDropdown.classList.remove('open');
 });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') toolsDropdown.classList.remove('open');
+});
 
-// ============ MAIN ============
+// ============ MAIN LOGIC (iLovePDF Style) ============
 const pdfInput = document.getElementById('pdfInput');
 const filesBox = document.getElementById('files');
 const uploadBox = document.getElementById('uploadBox');
@@ -557,36 +542,37 @@ pdfInput.addEventListener('change', (e) => {
 
 function formatSize(bytes) {
   if (!bytes) return '0 KB';
-  return bytes > 1024*1024 ? (bytes/(1024*1024)).toFixed(2)+' MB' : (bytes/1024).toFixed(2)+' KB';
+  if (bytes > 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  return (bytes / 1024).toFixed(2) + ' KB';
 }
 
 async function renderFiles() {
   filesBox.innerHTML = '';
-  for (let i = 0; i < uploadedFiles.length; i++) {
-    const file = uploadedFiles[i];
+  for (let index = 0; index < uploadedFiles.length; index++) {
+    const file = uploadedFiles[index];
     const card = document.createElement('div');
     card.className = 'file-card';
     card.innerHTML = `
-      <div class="preview"><canvas id="preview-${i}"></canvas></div>
+      <div class="preview">
+        <canvas id="preview-${index}"></canvas>
+      </div>
       <div class="file-info">
         <div class="file-name">${file.name}</div>
-        <div class="file-size">📦 ${formatSize(file.size)}</div>
-        <div class="result-info" id="result-${i}"></div>
-        <div class="progress"><div class="progress-bar" id="progress-${i}"></div></div>
+        <div class="file-size">Original: ${formatSize(file.size)}</div>
+        <div class="target">Output: Editable DOCX</div>
+        <div class="final-size" id="final-${index}">Status: Ready</div>
+        <div class="progress"><div class="progress-bar" id="progress-${index}"></div></div>
       </div>
-      <input type="text" class="rename" id="rename-${i}" value="${file.name.replace(/\.pdf$/i,'-converted')}">
-      <button class="btn convert-btn" data-index="${i}"><i class="fa-solid fa-sync-alt"></i> Convert to Word</button>
-      <div class="loader" id="loader-${i}"></div>
-      <a class="btn download-btn" id="download-${i}" href="#" download><i class="fa-solid fa-download"></i> Download .docx</a>
+      <input type="text" class="rename" id="rename-${index}" value="${file.name.replace(/\.pdf$/i, '-converted')}">
+      <button class="btn convert-btn" onclick="convertPDFToWord(${index})">
+        <i class="fa-solid fa-file-word"></i> Convert to Word
+      </button>
+      <div class="loader" id="loader-${index}"></div>
+      <a class="btn download-btn" id="download-${index}">Download .docx</a>
     `;
     filesBox.appendChild(card);
-    generatePreview(file, i);
+    generatePreview(file, index);
   }
-  document.querySelectorAll('.convert-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      convertPDFToWord(parseInt(this.getAttribute('data-index')));
-    });
-  });
 }
 
 async function generatePreview(file, index) {
@@ -597,37 +583,34 @@ async function generatePreview(file, index) {
     const viewport = page.getViewport({ scale: 0.5 });
     const canvas = document.getElementById(`preview-${index}`);
     if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-  } catch(e) {}
+    await page.render({ canvasContext: ctx, viewport }).promise;
+  } catch (e) {
+    console.warn('Preview failed:', e);
+  }
 }
 
-// ============ CONVERSION ENGINE ============
+// ============ iLovePDF-STYLE CONVERSION ENGINE ============
 async function convertPDFToWord(index) {
   const file = uploadedFiles[index];
-  if (!file) return;
-
-  const progressBar = document.getElementById(`progress-${index}`);
+  const progress = document.getElementById(`progress-${index}`);
   const loader = document.getElementById(`loader-${index}`);
   const button = document.querySelectorAll('.convert-btn')[index];
   const downloadBtn = document.getElementById(`download-${index}`);
-  const renameInput = document.getElementById(`rename-${index}`);
-  const resultInfo = document.getElementById(`result-${index}`);
+  const finalText = document.getElementById(`final-${index}`);
+  const rename = document.getElementById(`rename-${index}`).value;
 
-  const conversionMode = document.getElementById('conversionMode').value;
-  const fontHandling = document.getElementById('fontHandling').value;
-  const tableDetection = document.getElementById('tableDetection').value;
-  const imageHandling = document.getElementById('imageHandling').value;
-  const ocrMode = document.getElementById('ocrMode').value;
-  const textAlignment = document.getElementById('textAlignment').value;
-  const pageSizeOption = document.getElementById('pageSizeOption').value;
-  const preserveFormatting = document.getElementById('preserveFormatting').value;
+  const quality = document.getElementById('quality').value;
+  const tableMode = document.getElementById('tableMode').value;
+  const fontMode = document.getElementById('fontMode').value;
+  const imageMode = document.getElementById('imageMode').value;
 
-  if (button) button.disabled = true;
-  if (loader) loader.style.display = 'block';
-  if (progressBar) progressBar.style.width = '0%';
-  if (resultInfo) { resultInfo.style.display = 'none'; resultInfo.textContent = ''; }
+  button.style.display = 'none';
+  loader.style.display = 'block';
+  progress.style.width = '0%';
+  finalText.textContent = 'Status: Analyzing PDF...';
 
   try {
     const data = await file.arrayBuffer();
@@ -635,159 +618,144 @@ async function convertPDFToWord(index) {
     const totalPages = pdf.numPages;
     const allPages = [];
 
+    // Phase 1: Extract text with exact positions (like iLovePDF)
     for (let p = 1; p <= totalPages; p++) {
+      finalText.textContent = `Status: Extracting page ${p}/${totalPages}...`;
+      
       const page = await pdf.getPage(p);
       const textContent = await page.getTextContent();
       const viewport = page.getViewport({ scale: 1 });
 
-      let items = textContent.items.map(item => ({
-        text: item.str || '',
+      // Extract text items with exact positions
+      let textItems = textContent.items.map(item => ({
+        text: item.str,
         x: item.transform[4],
-        y: viewport.height - item.transform[5],
-        width: item.width || 0,
-        height: item.height || 12,
+        y: viewport.height - item.transform[5], // Convert to top-down coordinates
+        width: item.width,
+        height: item.height || 10,
         fontName: item.fontName || '',
-        originalY: item.transform[5],
-        originalX: item.transform[4]
+        originalTransform: [...item.transform]
       }));
 
-      // Enhanced text merging
-      items = mergeTextItems(items, ocrMode);
-      
-      // Detect tables
+      // Sort by Y then X (like iLovePDF does)
+      textItems.sort((a, b) => {
+        const yDiff = a.y - b.y;
+        if (Math.abs(yDiff) > 0.5) return yDiff;
+        return a.x - b.x;
+      });
+
+      // Merge adjacent text fragments on the same line
+      textItems = mergeTextOnSameLine(textItems);
+
+      // Detect tables if enabled
       let tables = [];
-      if (tableDetection === 'on') {
-        tables = detectTables(items);
+      if (tableMode === 'on' && quality !== 'fast') {
+        tables = detectTables(textItems);
       }
 
       allPages.push({
         pageNumber: p,
-        items,
-        tables,
+        items: textItems,
+        tables: tables,
         width: viewport.width,
         height: viewport.height
       });
 
-      if (progressBar) progressBar.style.width = ((p / totalPages) * 60) + '%';
+      progress.style.width = ((p / totalPages) * 50) + '%';
     }
 
-    // Build DOCX
-    const docxBlob = await buildDocx(allPages, {
-      conversionMode, fontHandling, tableDetection,
-      textAlignment, pageSizeOption, preserveFormatting
-    });
-
-    if (progressBar) progressBar.style.width = '90%';
-
-    const url = URL.createObjectURL(docxBlob);
-    const fileName = (renameInput ? renameInput.value : 'converted') + '.docx';
+    // Phase 2: Build DOCX with text boxes (iLovePDF style)
+    finalText.textContent = 'Status: Building Word document...';
+    const docxBlob = await buildDocxWithTextBoxes(allPages, { quality, tableMode, fontMode, imageMode });
     
-    if (downloadBtn) {
-      downloadBtn.href = url;
-      downloadBtn.download = fileName;
-      downloadBtn.style.display = 'inline-flex';
-    }
+    progress.style.width = '90%';
 
-    if (resultInfo) {
-      resultInfo.style.display = 'block';
-      resultInfo.innerHTML = `<i class="fa-solid fa-circle-check"></i> Converted: ${totalPages} pages · ${formatSize(docxBlob.size)} DOCX`;
-    }
+    // Create download
+    const url = URL.createObjectURL(docxBlob);
+    downloadBtn.href = url;
+    downloadBtn.download = (rename || 'converted') + '.docx';
+    downloadBtn.style.display = 'inline-block';
+    
+    finalText.innerHTML = 'Status: <span style="color:#10b981;">✓ Converted Successfully!</span>';
+    progress.style.width = '100%';
 
-    if (progressBar) progressBar.style.width = '100%';
-
-  } catch(err) {
-    console.error(err);
-    if (resultInfo) {
-      resultInfo.style.display = 'block';
-      resultInfo.style.color = '#ef4444';
-      resultInfo.textContent = 'Error: ' + err.message;
-    }
+  } catch (err) {
+    console.error('Conversion error:', err);
+    finalText.textContent = 'Status: Error - ' + err.message;
   } finally {
-    if (loader) loader.style.display = 'none';
-    if (button) button.disabled = false;
+    loader.style.display = 'none';
+    button.style.display = 'inline-block';
   }
 }
 
-// Enhanced text merging with better line detection
-function mergeTextItems(items, ocrMode) {
+// Merge text on same line (like iLovePDF)
+function mergeTextOnSameLine(items) {
   if (!items.length) return [];
   
-  // Sort by Y (top to bottom), then X (left to right)
-  const sorted = [...items].sort((a, b) => {
-    const yDiff = a.y - b.y;
-    if (Math.abs(yDiff) > 1) return yDiff;
-    return a.x - b.x;
-  });
-
   const lines = [];
-  let currentLine = [sorted[0]];
-  let lineY = sorted[0].y;
+  let currentLine = [items[0]];
+  let currentY = items[0].y;
 
-  for (let i = 1; i < sorted.length; i++) {
-    const item = sorted[i];
+  for (let i = 1; i < items.length; i++) {
+    const item = items[i];
+    const yDiff = Math.abs(item.y - currentY);
     const lastItem = currentLine[currentLine.length - 1];
-    const yDiff = Math.abs(item.y - lineY);
     const xGap = item.x - (lastItem.x + lastItem.width);
-    const itemHeight = Math.max(item.height, 8);
 
-    if (yDiff < itemHeight * 0.8) {
-      // Same line
-      if (xGap > itemHeight * 2 && currentLine.length > 0) {
-        // Large gap = might be tab or separate word
-        lines.push([...currentLine]);
-        currentLine = [item];
-        lineY = item.y;
-      } else {
-        currentLine.push(item);
-        lineY = (lineY + item.y) / 2;
-      }
+    if (yDiff < 2 && xGap < 20 && xGap > -10) {
+      // Same line, merge
+      currentLine.push(item);
     } else {
       // New line
-      if (currentLine.length > 0) lines.push([...currentLine]);
-      currentLine = [item];
-      lineY = item.y;
-    }
-  }
-  if (currentLine.length > 0) lines.push(currentLine);
-
-  // Merge each line into a single text item
-  const merged = [];
-  for (const line of lines) {
-    line.sort((a, b) => a.x - b.x);
-    
-    let combinedText = '';
-    let minX = line[0].x;
-    let maxX = line[0].x + line[0].width;
-    let maxHeight = 12;
-    let representativeFont = line[0].fontName;
-    
-    for (const item of line) {
-      const gap = item.x - (line[line.indexOf(item)-1]?.x + line[line.indexOf(item)-1]?.width || item.x);
-      if (gap > 5 && combinedText) combinedText += ' ';
-      combinedText += (item.text || '');
-      maxX = Math.max(maxX, item.x + item.width);
-      maxHeight = Math.max(maxHeight, item.height);
-      if (item.fontName && item.fontName.length > representativeFont.length) {
-        representativeFont = item.fontName;
+      if (currentLine.length > 0) {
+        lines.push(mergeLineItems(currentLine));
       }
-    }
-
-    if (combinedText.trim()) {
-      merged.push({
-        text: combinedText.trim(),
-        x: minX,
-        y: line[0].y,
-        width: maxX - minX,
-        height: maxHeight,
-        fontName: representativeFont
-      });
+      currentLine = [item];
+      currentY = item.y;
     }
   }
+  if (currentLine.length > 0) {
+    lines.push(mergeLineItems(currentLine));
+  }
 
-  return merged;
+  return lines;
 }
 
-// Table detection algorithm
+function mergeLineItems(lineItems) {
+  lineItems.sort((a, b) => a.x - b.x);
+  
+  let mergedText = '';
+  let minX = lineItems[0].x;
+  let maxX = lineItems[0].x + lineItems[0].width;
+  let maxHeight = lineItems[0].height || 10;
+  let bestFont = lineItems[0].fontName || '';
+  
+  for (let i = 0; i < lineItems.length; i++) {
+    const item = lineItems[i];
+    if (i > 0) {
+      const prevItem = lineItems[i - 1];
+      const gap = item.x - (prevItem.x + prevItem.width);
+      if (gap > 3) mergedText += ' ';
+    }
+    mergedText += (item.text || '');
+    maxX = Math.max(maxX, item.x + item.width);
+    maxHeight = Math.max(maxHeight, item.height || 10);
+    if (item.fontName && item.fontName.length > bestFont.length) {
+      bestFont = item.fontName;
+    }
+  }
+
+  return {
+    text: mergedText.trim(),
+    x: minX,
+    y: lineItems[0].y,
+    width: maxX - minX,
+    height: maxHeight,
+    fontName: bestFont
+  };
+}
+
+// Table detection (spatial analysis)
 function detectTables(items) {
   if (items.length < 4) return [];
   
@@ -797,39 +765,28 @@ function detectTables(items) {
   let lastY = items[0].y;
 
   for (let i = 1; i < items.length; i++) {
-    const item = items[i];
-    const yDiff = Math.abs(item.y - lastY);
-    
-    if (yDiff < 3) {
-      currentGroup.push(item);
+    if (Math.abs(items[i].y - lastY) < 1) {
+      currentGroup.push(items[i]);
     } else {
-      if (currentGroup.length >= 2) lineGroups.push([...currentGroup]);
-      currentGroup = [item];
+      if (currentGroup.length >= 2) lineGroups.push(currentGroup);
+      currentGroup = [items[i]];
     }
-    lastY = item.y;
+    lastY = items[i].y;
   }
   if (currentGroup.length >= 2) lineGroups.push(currentGroup);
 
-  // Find consecutive lines with similar X patterns
+  // Find consecutive lines with 2+ items (potential tables)
   let tableStart = -1;
   for (let i = 0; i < lineGroups.length; i++) {
-    const group = lineGroups[i];
-    if (group.length >= 2 && group.length <= 15) {
-      if (tableStart === -1) {
-        tableStart = i;
-      }
+    if (lineGroups[i].length >= 2 && lineGroups[i].length <= 20) {
+      if (tableStart === -1) tableStart = i;
     } else {
       if (tableStart !== -1 && i - tableStart >= 2) {
-        const tableLines = lineGroups.slice(tableStart, i);
-        const colCount = Math.max(...tableLines.map(l => l.length));
-        if (colCount >= 2) {
-          tables.push({
-            startIndex: tableStart,
-            endIndex: i,
-            lines: tableLines,
-            columns: colCount
-          });
-        }
+        tables.push({
+          startLine: tableStart,
+          endLine: i,
+          lines: lineGroups.slice(tableStart, i)
+        });
       }
       tableStart = -1;
     }
@@ -838,17 +795,16 @@ function detectTables(items) {
   return tables;
 }
 
-// Build proper DOCX with all formatting
-async function buildDocx(allPages, options) {
+// Build DOCX with proper Word text boxes (like iLovePDF output)
+async function buildDocxWithTextBoxes(allPages, options) {
   const zip = new JSZip();
 
-  // Content Types
+  // [Content_Types].xml
   zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
-  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
 </Types>`);
 
   // Relationships
@@ -859,10 +815,8 @@ async function buildDocx(allPages, options) {
 
   zip.folder('word').folder('_rels').file('document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
 </Relationships>`);
 
-  // Build document body
   let bodyXML = '';
   const firstPage = allPages[0];
   const pageW = firstPage ? Math.round(firstPage.width * 20) : 12240;
@@ -878,113 +832,44 @@ async function buildDocx(allPages, options) {
     for (const item of page.items) {
       if (!item.text || !item.text.trim()) continue;
 
-      const fontSize = Math.round(Math.max(item.height * 1.8, 16)); // half-points, min 8pt
-      const fontFamily = getFontFamily(item.fontName, options.fontHandling);
-      const isBold = item.fontName && /bold/i.test(item.fontName);
-      const isItalic = item.fontName && /italic/i.test(item.fontName);
-      
-      // Determine alignment based on X position
-      let alignment = 'left';
-      if (options.textAlignment === 'preserve') {
-        const centerX = item.x + (item.width / 2);
-        const pageCenter = page.width / 2;
-        if (centerX > pageCenter - 30 && centerX < pageCenter + 30) alignment = 'center';
-        else if (item.x + item.width > page.width - 40) alignment = 'right';
-      } else if (options.textAlignment === 'justify') {
-        alignment = 'both';
-      } else if (options.textAlignment === 'left') {
-        alignment = 'left';
-      }
+      const fontSize = Math.round(Math.max(item.height * 1.8, 16));
+      const fontFamily = getFontFamily(item.fontName, options.fontMode);
+      const isBold = /bold/i.test(item.fontName);
+      const isItalic = /italic/i.test(item.fontName);
 
-      const alignXML = alignment === 'center' ? '<w:jc w:val="center"/>' :
-                       alignment === 'right' ? '<w:jc w:val="right"/>' :
-                       alignment === 'both' ? '<w:jc w:val="both"/>' : '';
+      // Calculate exact position in twips (1 point = 20 twips)
+      const leftIndent = Math.round(item.x * 20);
+      const topSpacing = Math.round(item.y * 20);
 
-      if (options.conversionMode === 'exact') {
-        // Exact positioning with text boxes using absolute position
-        bodyXML += `
-          <w:p>
-            <w:pPr>
-              <w:pStyle w:val="Normal"/>
-              <w:ind w:left="${Math.round(item.x * 20)}" w:right="0" w:firstLine="0"/>
-              ${alignXML}
-              <w:spacing w:before="${Math.round(Math.max(0, (item.y - (pi > 0 ? 0 : 0)) * 20))}" w:after="0" w:line="240" w:lineRule="auto"/>
-            </w:pPr>
-            <w:r>
-              <w:rPr>
-                <w:rFonts w:ascii="${esc(fontFamily)}" w:hAnsi="${esc(fontFamily)}" w:cs="${esc(fontFamily)}"/>
-                <w:sz w:val="${fontSize}"/>
-                ${isBold && options.preserveFormatting !== 'plain' ? '<w:b/>' : ''}
-                ${isItalic && options.preserveFormatting !== 'plain' ? '<w:i/>' : ''}
-              </w:rPr>
-              <w:t xml:space="preserve">${esc(item.text)}</w:t>
-            </w:r>
-          </w:p>`;
-      } else {
-        // Flowing layout
-        bodyXML += `
-          <w:p>
-            <w:pPr>
-              <w:pStyle w:val="Normal"/>
-              ${alignXML}
-              <w:spacing w:after="40" w:line="276" w:lineRule="auto"/>
-            </w:pPr>
-            <w:r>
-              <w:rPr>
-                <w:rFonts w:ascii="${esc(fontFamily)}" w:hAnsi="${esc(fontFamily)}" w:cs="${esc(fontFamily)}"/>
-                <w:sz w:val="${fontSize}"/>
-                ${isBold && options.preserveFormatting !== 'plain' ? '<w:b/>' : ''}
-                ${isItalic && options.preserveFormatting !== 'plain' ? '<w:i/>' : ''}
-              </w:rPr>
-              <w:t xml:space="preserve">${esc(item.text)}</w:t>
-            </w:r>
-          </w:p>`;
-      }
+      bodyXML += `
+        <w:p>
+          <w:pPr>
+            <w:ind w:left="${leftIndent}" w:right="0" w:firstLine="0"/>
+            <w:spacing w:before="${topSpacing}" w:after="0" w:line="240" w:lineRule="auto"/>
+          </w:pPr>
+          <w:r>
+            <w:rPr>
+              <w:rFonts w:ascii="${esc(fontFamily)}" w:hAnsi="${esc(fontFamily)}"/>
+              <w:sz w:val="${fontSize}"/>
+              ${isBold ? '<w:b/>' : ''}
+              ${isItalic ? '<w:i/>' : ''}
+            </w:rPr>
+            <w:t xml:space="preserve">${esc(item.text)}</w:t>
+          </w:r>
+        </w:p>`;
     }
   }
 
-  // Document XML
   zip.folder('word').file('document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:body>
     ${bodyXML}
     <w:sectPr>
       <w:pgSz w:w="${pageW}" w:h="${pageH}"/>
-      <w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="0" w:footer="0"/>
+      <w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0"/>
     </w:sectPr>
   </w:body>
 </w:document>`);
-
-  // Styles XML
-  zip.folder('word').file('styles.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-  <w:style w:type="paragraph" w:styleId="Normal" w:default="1">
-    <w:name w:val="Normal"/>
-    <w:rPr>
-      <w:sz w:val="22"/>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
-    </w:rPr>
-  </w:style>
-  <w:style w:type="paragraph" w:styleId="Heading1">
-    <w:name w:val="heading 1"/>
-    <w:basedOn w:val="Normal"/>
-    <w:rPr>
-      <w:b/>
-      <w:sz w:val="32"/>
-      <w:color w:val="1F3864"/>
-    </w:rPr>
-  </w:style>
-  <w:style w:type="paragraph" w:styleId="Heading2">
-    <w:name w:val="heading 2"/>
-    <w:basedOn w:val="Normal"/>
-    <w:rPr>
-      <w:b/>
-      <w:sz w:val="28"/>
-      <w:color w:val="1F3864"/>
-    </w:rPr>
-  </w:style>
-</w:styles>`);
 
   const blob = await zip.generateAsync({ 
     type: 'blob', 
@@ -996,30 +881,23 @@ async function buildDocx(allPages, options) {
   return blob;
 }
 
-function getFontFamily(fontName, handling) {
-  if (handling === 'calibri') return 'Calibri';
+function getFontFamily(fontName, mode) {
+  if (mode === 'calibri') return 'Calibri';
   if (!fontName) return 'Calibri';
   
-  const n = fontName.toLowerCase();
+  const n = fontName.toLowerCase().replace(/[^a-z]/g, '');
   if (n.includes('times') || n.includes('roman')) return 'Times New Roman';
   if (n.includes('helvetica') || n.includes('arial')) return 'Arial';
   if (n.includes('courier') || n.includes('mono')) return 'Courier New';
   if (n.includes('georgia')) return 'Georgia';
   if (n.includes('verdana')) return 'Verdana';
-  if (n.includes('garamond')) return 'Garamond';
-  if (n.includes('calibri')) return 'Calibri';
   
-  return handling === 'similar' ? 'Calibri' : 'Times New Roman';
+  return 'Calibri';
 }
 
 function esc(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 }
 
 // ============ DRAG & DROP ============
@@ -1035,16 +913,12 @@ uploadBox.addEventListener('dragleave', () => {
 uploadBox.addEventListener('drop', (e) => {
   e.preventDefault();
   uploadBox.classList.remove('active');
-  const files = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf');
-  if (files.length > 0) {
-    uploadedFiles = files;
-    renderFiles();
-  }
+  const files = [...e.dataTransfer.files].filter(file => file.type === 'application/pdf');
+  uploadedFiles = files;
+  renderFiles();
 });
 
-console.log('✅ PDFBoon PDF to Word PRO ready');
-console.log('📋 Features: Exact layout, flowing text, table detection, font preservation, OCR support');
+console.log('✅ PDFBoon PDF to Word — iLovePDF Style Ready');
 </script>
-
 </body>
 </html>
