@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/logo.png">
 <meta name="description" content="AI-powered PDF to Word converter with smart layout detection and text preservation.">
-<meta name="keywords" content="Pdfboon, PDF to Word, AI PDF Converter, Vikshant Kralta, Online PDF Tools">
+<meta name="keywords" content="Pdfboon, PDF to Word, AI PDF Converter, Vikshant Kralta">
 <meta name="author" content="Vikshant Kralta">
 <meta name="robots" content="index, follow">
-<title>PDF to Word - PDFBoon</title>
+<title>PDF to Word - PDFBoon </title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.0/docx.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
+</script>
 
 <style>
 :root{
@@ -45,7 +46,6 @@ body{
 }
 
 a{ text-decoration:none; color:inherit; }
-
 .container{ max-width:1100px; margin:auto; padding:20px; }
 
 /* NAVBAR */
@@ -67,6 +67,8 @@ a{ text-decoration:none; color:inherit; }
   border-radius:12px; overflow:hidden;
   background:#fff; border:1px solid var(--line);
   box-shadow:var(--shadow); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
 }
 .logo-image{ width:100%; height:100%; object-fit:cover; }
 .logo-title{
@@ -132,6 +134,7 @@ a{ text-decoration:none; color:inherit; }
     box-shadow:var(--shadow);
     transform:translateY(-130%); opacity:0;
     transition:transform .3s ease, opacity .3s ease;
+    z-index:99;
   }
   .nav-links.active{ transform:translateY(0); opacity:1; }
   .mobile-menu{ display:flex; }
@@ -170,7 +173,6 @@ a{ text-decoration:none; color:inherit; }
   border-top:1px solid var(--line); border-radius:10px;
   font-weight:600; color:var(--stamp);
 }
-.dropdown-link.view-all i{ color:var(--stamp); }
 
 @media (max-width:920px){
   .nav-item{ width:100%; }
@@ -189,6 +191,7 @@ a{ text-decoration:none; color:inherit; }
   max-width:1180px; margin:auto; padding:12px 24px;
   display:flex; align-items:center; gap:10px;
   font-size:0.85rem; color:var(--ink-soft);
+  flex-wrap:wrap;
 }
 .breadcrumb-inner a{ display:flex; align-items:center; gap:6px; color:var(--ink-soft); transition:color .2s; }
 .breadcrumb-inner a:hover{ color:var(--stamp); }
@@ -201,11 +204,11 @@ a{ text-decoration:none; color:inherit; }
   font-size:42px; font-weight:700; color:var(--ink);
   margin-bottom:10px; margin-top:20px;
 }
-.subtitle{ text-align:center; color:var(--ink-soft); margin-bottom:35px; }
+.subtitle{ text-align:center; color:var(--ink-soft); margin-bottom:25px; }
 
 .ai-features-banner{
   display:flex; align-items:center; justify-content:center;
-  gap:16px; flex-wrap:wrap; margin-bottom:30px;
+  gap:12px; flex-wrap:wrap; margin-bottom:30px;
 }
 .ai-badge{
   display:flex; align-items:center; gap:6px;
@@ -215,7 +218,7 @@ a{ text-decoration:none; color:inherit; }
 }
 .ai-feature-tag{
   display:flex; align-items:center; gap:5px;
-  font-size:0.8rem; color:var(--ink-soft);
+  font-size:0.78rem; color:var(--ink-soft);
   background:var(--paper-raised); padding:6px 12px;
   border-radius:20px; border:1px solid var(--line);
 }
@@ -251,7 +254,7 @@ input[type=file]{ display:none; }
   padding:20px; border-radius:18px; box-shadow:var(--shadow);
 }
 .card label{ display:block; margin-bottom:10px; font-weight:600; color:var(--ink); font-size:0.92rem; }
-.card small{ display:block; margin-top:8px; color:var(--ink-soft); font-size:0.78rem; }
+.card small{ display:block; margin-top:8px; color:var(--ink-soft); font-size:0.76rem; }
 .card select{
   width:100%; padding:14px; border:1px solid var(--line);
   border-radius:12px; background:#fff; color:var(--ink);
@@ -288,6 +291,8 @@ input[type=file]{ display:none; }
   padding:14px 22px; border:none; border-radius:14px;
   font-weight:600; cursor:pointer;
   transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  font-family:var(--sans);
+  font-size:0.92rem;
 }
 .convert-btn{
   background:var(--stamp); color:white;
@@ -301,6 +306,7 @@ input[type=file]{ display:none; }
   box-shadow:0 4px 0 var(--success-dark);
 }
 .download-btn:hover{ transform:translateY(-2px); }
+.download-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--success-dark); }
 .progress{ width:100%; height:10px; background:var(--line); border-radius:20px; overflow:hidden; margin-top:15px; }
 .progress-bar{ height:100%; width:0%; background:linear-gradient(to right,var(--stamp),var(--teal)); transition:.3s; }
 .loader{
@@ -315,7 +321,7 @@ input[type=file]{ display:none; }
 .ai-status{
   margin-top:8px; padding:8px 12px;
   background:rgba(8,145,178,0.06);
-  border-radius:10px; font-size:0.8rem;
+  border-radius:10px; font-size:0.78rem;
   color:var(--teal); display:none;
 }
 
@@ -338,7 +344,12 @@ input[type=file]{ display:none; }
   border-bottom:1px solid rgba(255,255,255,0.12);
 }
 .footer-brand{ display:flex; align-items:center; gap:12px; }
-.footer-brand img{ width:40px; height:40px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+.footer-brand .footer-logo-box{
+  width:40px; height:40px; border-radius:10px;
+  background:rgba(255,255,255,0.1);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+}
 .footer-title{ font-family:var(--serif); font-weight:700; font-size:1.05rem; color:#fff; }
 .footer-subtitle{ font-size:0.76rem; color:#9fb0cc; }
 .footer-simple-links{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
@@ -371,12 +382,10 @@ input[type=file]{ display:none; }
 <nav class="navbar">
   <div class="nav-container">
     <div class="logo-wrapper">
-      <div class="logo-box">
-        <img src="images/logo.png" class="logo-image" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.innerHTML='📄'">
-      </div>
+      <div class="logo-box">📄</div>
       <div>
         <h2 class="logo-title">PDFBoon</h2>
-        <p class="logo-subtitle">AI PDF Toolkit</p>
+        <p class="logo-subtitle">PDF Toolkit</p>
       </div>
     </div>
 
@@ -426,7 +435,7 @@ input[type=file]{ display:none; }
 
 <div class="container">
 
-<h1 class="title">AI PDF to Word Converter</h1>
+<h1 class="title">PDF to Word Converter</h1>
 <p class="subtitle">Intelligent layout detection, font preservation & smart text extraction</p>
 
 <div class="ai-features-banner">
@@ -470,7 +479,7 @@ input[type=file]{ display:none; }
     <select id="textMode">
       <option value="smart">Smart (AI grouping)</option>
       <option value="raw">Raw extraction</option>
-      <option value="ocr_enhanced">Enhanced (bold/italic detection)</option>
+      <option value="enhanced">Enhanced (bold/italic detection)</option>
     </select>
     <small>Smart mode groups text into proper paragraphs using ML heuristics.</small>
   </div>
@@ -503,10 +512,10 @@ input[type=file]{ display:none; }
 <footer class="footer">
   <div class="footer-simple">
     <div class="footer-brand">
-      <img src="images/logo.png" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.querySelector('.footer-title').textContent='📄 PDFBoon'">
+      <div class="footer-logo-box">📄</div>
       <div>
         <h2 class="footer-title">PDFBoon</h2>
-        <p class="footer-subtitle">FAST PDF TOOLKIT</p>
+        <p class="footer-subtitle">AI PDF Toolkit</p>
       </div>
     </div>
     <div class="footer-simple-links">
@@ -523,19 +532,18 @@ input[type=file]{ display:none; }
   </div>
   <div class="footer-bottom">
     <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
-    <p class="copyright">Designed & Developed by Vikshant Kralta</p>
+    <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
   </div>
 </footer>
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// Mobile menu toggle
+// ============ NAVIGATION ============
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('active');
 });
 
-// Tools dropdown
 const toolsDropdown = document.getElementById('toolsDropdown');
 const toolsToggle = document.getElementById('toolsToggle');
 
@@ -555,7 +563,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') toolsDropdown.classList.remove('open');
 });
 
-// ============ AI PDF TO WORD ENGINE ============
+// ============ PDF TO WORD ENGINE ============
 
 const pdfInput = document.getElementById('pdfInput');
 const filesBox = document.getElementById('files');
@@ -568,149 +576,128 @@ pdfInput.addEventListener('change', (e) => {
 });
 
 function formatSize(bytes) {
+  if (!bytes || bytes === 0) return '0 KB';
   if (bytes > 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
   return (bytes / 1024).toFixed(2) + ' KB';
 }
 
-// AI: Detect if text looks like a heading based on font properties
+// ============ AI FUNCTIONS ============
+
 function isLikelyHeading(item, allItems, pageHeight) {
-  const avgFontSize = allItems.reduce((sum, i) => sum + (i.height || 12), 0) / allItems.length;
+  if (!allItems || allItems.length === 0) return false;
+  
+  const totalSize = allItems.reduce((sum, i) => sum + (i.height || 12), 0);
+  const avgFontSize = totalSize / allItems.length;
   const fontSize = item.height || 12;
   
-  // Headings are typically larger than body text
-  if (fontSize > avgFontSize * 1.3) return true;
+  if (fontSize > avgFontSize * 1.35) return true;
+  if (item.fontName && /bold/i.test(item.fontName) && fontSize >= avgFontSize * 1.1) return true;
   
-  // Check if text is bold (font name contains "Bold")
-  if (item.fontName && /bold/i.test(item.fontName)) return true;
-  
-  // Short lines at top of page might be headings
-  const yPos = item.transform[5];
-  if (yPos > pageHeight * 0.75 && item.str.length < 80 && fontSize >= avgFontSize) return true;
+  const yPos = item.transform ? item.transform[5] : 0;
+  if (yPos > pageHeight * 0.7 && item.str && item.str.length < 100 && fontSize >= avgFontSize) return true;
   
   return false;
 }
 
-// AI: Detect table structure using spatial analysis
-function detectTableStructure(lineGroups) {
-  // A table has multiple lines with aligned X positions across rows
-  if (lineGroups.length < 2) return null;
+function detectTableStructure(paragraphs) {
+  if (!paragraphs || paragraphs.length < 2) return null;
   
-  const xPositions = new Set();
-  for (const line of lineGroups) {
-    for (const item of line) {
-      xPositions.add(Math.round(item.transform[4] / 5) * 5); // Round to nearest 5
+  const allXPositions = [];
+  for (const para of paragraphs) {
+    for (const item of para) {
+      if (item.transform) {
+        allXPositions.push(Math.round(item.transform[4] / 10) * 10);
+      }
     }
   }
   
-  // If we have consistent column positions, it's likely a table
-  if (xPositions.size >= 2 && xPositions.size <= 8) {
-    const sortedX = [...xPositions].sort((a, b) => a - b);
-    // Check alignment consistency
-    let consistent = true;
-    for (let i = 1; i < lineGroups.length; i++) {
-      const lineX = new Set(lineGroups[i].map(item => Math.round(item.transform[4] / 5) * 5));
-      const overlap = [...lineX].filter(x => sortedX.includes(x)).length;
-      if (overlap < Math.min(lineX.size, sortedX.length) * 0.6) {
-        consistent = false;
-        break;
+  const uniqueX = [...new Set(allXPositions)].sort((a, b) => a - b);
+  
+  if (uniqueX.length >= 2 && uniqueX.length <= 10) {
+    let consistentCount = 0;
+    for (let i = 1; i < paragraphs.length; i++) {
+      const paraX = paragraphs[i].map(item => 
+        item.transform ? Math.round(item.transform[4] / 10) * 10 : 0
+      );
+      const overlap = paraX.filter(x => uniqueX.includes(x)).length;
+      if (overlap >= Math.min(paraX.length, uniqueX.length) * 0.5) {
+        consistentCount++;
       }
     }
-    if (consistent) return sortedX;
+    if (consistentCount >= paragraphs.length * 0.6) {
+      return uniqueX;
+    }
   }
   
   return null;
 }
 
-// AI: Group text items into semantic paragraphs
 function groupIntoParagraphs(items, pageHeight) {
+  if (!items || items.length === 0) return [];
+  
   const paragraphs = [];
   let currentParagraph = [];
   let lastY = null;
-  let lastX = null;
   
-  // Sort by Y (top to bottom), then X (left to right)
   const sorted = [...items].sort((a, b) => {
-    const yDiff = b.transform[5] - a.transform[5];
+    const aY = a.transform ? a.transform[5] : 0;
+    const bY = b.transform ? b.transform[5] : 0;
+    const yDiff = bY - aY;
     if (Math.abs(yDiff) > 2) return yDiff;
-    return a.transform[4] - b.transform[4];
+    const aX = a.transform ? a.transform[4] : 0;
+    const bX = b.transform ? b.transform[4] : 0;
+    return aX - bX;
   });
   
   for (const item of sorted) {
-    const y = item.transform[5];
-    const x = item.transform[4];
+    const y = item.transform ? item.transform[5] : 0;
     
     if (lastY === null) {
       currentParagraph.push(item);
     } else {
       const yGap = lastY - y;
-      const xGap = Math.abs(x - (lastX || 0));
+      const itemHeight = item.height || 12;
       
-      // Large Y gap = new paragraph
-      if (yGap > (item.height || 12) * 2.5 || yGap < -(item.height || 12) * 2.5) {
+      if (Math.abs(yGap) > itemHeight * 3) {
         if (currentParagraph.length > 0) {
           paragraphs.push([...currentParagraph]);
         }
         currentParagraph = [item];
-      }
-      // Same line or close Y = same paragraph
-      else if (Math.abs(yGap) < (item.height || 12) * 1.8) {
-        currentParagraph.push(item);
-      }
-      // Small gap = might be same paragraph (AI decision)
-      else if (yGap > 0 && yGap < (item.height || 12) * 3 && xGap < 200) {
-        currentParagraph.push(item);
       } else {
-        if (currentParagraph.length > 0) {
-          paragraphs.push([...currentParagraph]);
-        }
-        currentParagraph = [item];
+        currentParagraph.push(item);
       }
     }
-    
     lastY = y;
-    lastX = x;
   }
   
-  if (currentParagraph.length > 0) paragraphs.push(currentParagraph);
+  if (currentParagraph.length > 0) {
+    paragraphs.push(currentParagraph);
+  }
+  
   return paragraphs;
 }
 
-// AI: Extract and process images from PDF
-async function extractImages(page, imageMode) {
-  if (imageMode === 'skip') return [];
+function detectLanguages(text) {
+  if (!text) return ['EN'];
   
-  try {
-    const opList = await page.getOperatorList();
-    const images = [];
-    const imageKeys = new Set();
-    
-    for (let i = 0; i < opList.fnArray.length; i++) {
-      if (opList.fnArray[i] === pdfjsLib.OPS.paintImageXObject ||
-          opList.fnArray[i] === pdfjsLib.OPS.paintInlineImageXObject) {
-        const imgKey = opList.argsArray[i]?.[0];
-        if (imgKey && !imageKeys.has(imgKey)) {
-          imageKeys.add(imgKey);
-          try {
-            const imgData = await page.objs.get(imgKey);
-            if (imgData && imgData.data) {
-              images.push({
-                key: imgKey,
-                width: imgData.width,
-                height: imgData.height,
-                kind: imgData.kind
-              });
-            }
-          } catch (e) {
-            // Image not accessible
-          }
-        }
-      }
-    }
-    return images;
-  } catch (e) {
-    return [];
+  const patterns = {
+    'EN': /[a-zA-Z]{3,}/,
+    'HI': /[\u0900-\u097F]/,
+    'ZH': /[\u4E00-\u9FFF]/,
+    'AR': /[\u0600-\u06FF]/,
+    'JA': /[\u3040-\u309F\u30A0-\u30FF]/,
+    'KO': /[\uAC00-\uD7AF]/,
+    'RU': /[\u0400-\u04FF]/,
+  };
+  
+  const detected = [];
+  for (const [lang, pattern] of Object.entries(patterns)) {
+    if (pattern.test(text)) detected.push(lang);
   }
+  return detected.length > 0 ? detected : ['EN'];
 }
+
+// ============ RENDER & PREVIEW ============
 
 async function renderFiles() {
   filesBox.innerHTML = '';
@@ -726,30 +713,37 @@ async function renderFiles() {
       </div>
       <div class="file-info">
         <div class="file-name">${file.name}</div>
-        <div class="file-size">Original: ${formatSize(file.size)}</div>
+        <div class="file-size">📦 Original: ${formatSize(file.size)}</div>
         <div class="ai-analysis" id="ai-analysis-${index}">
-          <i class="fa-solid fa-robot"></i> AI: Ready to analyze...
+          <i class="fa-solid fa-robot"></i> AI: Analyzing PDF...
         </div>
         <div class="ai-status" id="ai-status-${index}">
-          <i class="fa-solid fa-circle-check"></i> <span id="status-text-${index}">Waiting...</span>
+          <i class="fa-solid fa-circle-check"></i> <span id="status-text-${index}">Ready to convert</span>
         </div>
         <div class="progress"><div class="progress-bar" id="progress-${index}"></div></div>
       </div>
       <input type="text" class="rename" id="rename-${index}" value="${file.name.replace(/\.pdf$/i, '-converted')}">
-      <button class="btn convert-btn" onclick="convertPDFToWord(${index})">
-        <i class="fa-solid fa-sync-alt"></i> Convert
+      <button class="btn convert-btn" data-index="${index}">
+        <i class="fa-solid fa-sync-alt"></i> Convert to Word
       </button>
       <div class="loader" id="loader-${index}"></div>
-      <a class="btn download-btn" id="download-${index}" href="#" download>Download .docx</a>
+      <a class="btn download-btn" id="download-${index}" href="#" download>📥 Download .docx</a>
     `;
 
     filesBox.appendChild(card);
     generatePreview(file, index);
     preAnalyzePDF(file, index);
   }
+  
+  // Attach event listeners to all convert buttons
+  document.querySelectorAll('.convert-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const idx = parseInt(this.getAttribute('data-index'));
+      convertPDFToWord(idx);
+    });
+  });
 }
 
-// Pre-analyze PDF for AI insights
 async function preAnalyzePDF(file, index) {
   try {
     const data = await file.arrayBuffer();
@@ -759,12 +753,10 @@ async function preAnalyzePDF(file, index) {
     const items = textContent.items;
     
     const aiEl = document.getElementById(`ai-analysis-${index}`);
-    const statusEl = document.getElementById(`ai-status-${index}`);
-    const statusText = document.getElementById(`status-text-${index}`);
-    
     if (aiEl && items.length > 0) {
       const fonts = new Set(items.map(i => i.fontName).filter(Boolean));
-      const languages = detectLanguages(items.map(i => i.str).join(' '));
+      const allText = items.map(i => i.str).join(' ');
+      const languages = detectLanguages(allText);
       
       aiEl.innerHTML = `
         <i class="fa-solid fa-robot"></i> 
@@ -772,35 +764,18 @@ async function preAnalyzePDF(file, index) {
         ${languages.length > 0 ? ' · ' + languages.join(', ') : ''}
       `;
       
+      const statusEl = document.getElementById(`ai-status-${index}`);
+      const statusText = document.getElementById(`status-text-${index}`);
       if (statusEl && statusText) {
         statusEl.style.display = 'block';
-        statusText.textContent = `Detected ${fonts.size} font styles, ${items.length} text blocks`;
+        statusText.textContent = `Detected ${fonts.size} font styles, ${items.length} text blocks, ${languages.join('/')} text`;
       }
     }
   } catch (e) {
     console.warn('Pre-analysis failed:', e);
+    const aiEl = document.getElementById(`ai-analysis-${index}`);
+    if (aiEl) aiEl.innerHTML = '<i class="fa-solid fa-robot"></i> AI: Ready for conversion';
   }
-}
-
-// AI: Simple language detection
-function detectLanguages(text) {
-  const patterns = {
-    'EN': /[a-zA-Z]{3,}/,
-    'HI': /[\u0900-\u097F]/,
-    'ZH': /[\u4E00-\u9FFF]/,
-    'AR': /[\u0600-\u06FF]/,
-    'JA': /[\u3040-\u309F\u30A0-\u30FF]/,
-    'KO': /[\uAC00-\uD7AF]/,
-    'RU': /[\u0400-\u04FF]/,
-    'ES': /[áéíóúñÁÉÍÓÚÑüÜ]/,
-    'FR': /[àâçéèêëîïôûùüÿœæ]/i,
-  };
-  
-  const detected = [];
-  for (const [lang, pattern] of Object.entries(patterns)) {
-    if (pattern.test(text)) detected.push(lang);
-  }
-  return detected.length > 0 ? detected : ['EN'];
 }
 
 async function generatePreview(file, index) {
@@ -820,13 +795,20 @@ async function generatePreview(file, index) {
   }
 }
 
+// ============ CONVERSION ENGINE ============
+
 async function convertPDFToWord(index) {
   const file = uploadedFiles[index];
+  if (!file) {
+    alert('No file selected');
+    return;
+  }
+
   const progress = document.getElementById(`progress-${index}`);
   const loader = document.getElementById(`loader-${index}`);
   const button = document.querySelectorAll('.convert-btn')[index];
   const downloadBtn = document.getElementById(`download-${index}`);
-  const rename = document.getElementById(`rename-${index}`).value;
+  const renameInput = document.getElementById(`rename-${index}`);
   const statusText = document.getElementById(`status-text-${index}`);
   const aiStatus = document.getElementById(`ai-status-${index}`);
 
@@ -835,262 +817,246 @@ async function convertPDFToWord(index) {
   const tableMode = document.getElementById('tableMode').value;
   const imageMode = document.getElementById('imageMode').value;
 
-  button.style.display = 'none';
-  loader.style.display = 'block';
+  if (button) button.style.display = 'none';
+  if (loader) loader.style.display = 'block';
   if (aiStatus) aiStatus.style.display = 'block';
-  progress.style.width = '0%';
+  if (progress) progress.style.width = '0%';
 
   try {
     const data = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data }).promise;
     const totalPages = pdf.numPages;
-
-    // Collect all pages' structured content with AI analysis
-    const allPagesContent = [];
     
+    let fullText = '';
+    const allPagesData = [];
+
     for (let p = 1; p <= totalPages; p++) {
       if (statusText) statusText.textContent = `AI processing page ${p}/${totalPages}...`;
       
       const page = await pdf.getPage(p);
       const textContent = await page.getTextContent();
       const viewport = page.getViewport({ scale: 1 });
-      const pageHeight = viewport.height;
       
-      // Transform coordinates to viewport space
       const items = textContent.items.map(item => ({
-        str: item.str,
-        transform: [...item.transform],
+        str: item.str || '',
+        transform: item.transform ? [...item.transform] : [0, 0, 0, 0, 0, 0],
         height: item.height || 12,
         width: item.width || 0,
         fontName: item.fontName || 'Unknown'
       }));
       
-      // AI: Group into paragraphs
-      const paragraphs = groupIntoParagraphs(items, pageHeight);
-      
-      // AI: Detect headings
+      const paragraphs = groupIntoParagraphs(items, viewport.height);
       const allItems = items;
+      
       const headings = new Set();
       items.forEach(item => {
-        if (isLikelyHeading(item, allItems, pageHeight)) {
-          headings.add(item.str.trim());
+        if (isLikelyHeading(item, allItems, viewport.height)) {
+          const trimmed = (item.str || '').trim();
+          if (trimmed) headings.add(trimmed);
         }
       });
       
-      // AI: Detect tables
       let tableStructure = null;
       if (tableMode === 'detect') {
         tableStructure = detectTableStructure(paragraphs);
       }
       
-      // AI: Extract images
-      let images = [];
-      if (imageMode !== 'skip') {
-        images = await extractImages(page, imageMode);
-      }
-      
-      allPagesContent.push({
+      allPagesData.push({
         pageNumber: p,
-        items,
         paragraphs,
         headings,
         tableStructure,
-        images,
-        pageHeight,
-        pageWidth: viewport.width
+        items
       });
       
-      progress.style.width = ((p / totalPages) * 60) + '%';
+      if (progress) progress.style.width = ((p / totalPages) * 70) + '%';
     }
 
-    // Build DOCX with AI-enhanced content
-    if (statusText) statusText.textContent = 'Building Word document with AI formatting...';
+    if (statusText) statusText.textContent = 'Building Word document...';
+
+    // Build the Word document content
+    let wordContent = '';
     
-    const docxBlob = await buildDocxDocument(allPagesContent, {
+    for (const pageData of allPagesData) {
+      if (pageData.pageNumber > 1) {
+        wordContent += '\n--- Page ' + pageData.pageNumber + ' ---\n\n';
+      }
+      
+      for (const paragraph of pageData.paragraphs) {
+        if (paragraph.length === 0) continue;
+        
+        paragraph.sort((a, b) => (a.transform ? a.transform[4] : 0) - (b.transform ? b.transform[4] : 0));
+        const fullText = paragraph.map(item => item.str).join(' ').trim();
+        if (!fullText) continue;
+        
+        const isHeading = [...pageData.headings].some(h => fullText.includes(h)) && fullText.length < 150;
+        
+        if (isHeading) {
+          wordContent += '\n' + fullText.toUpperCase() + '\n';
+        } else if (pageData.tableStructure && tableMode === 'detect') {
+          wordContent += fullText + '\t';
+        } else {
+          wordContent += fullText + '\n';
+        }
+      }
+      wordContent += '\n';
+    }
+
+    // Create the DOCX file using a proper XML template approach
+    const docxBlob = await createDOCXFile(wordContent, file.name, {
       layoutMode,
       textMode,
       tableMode,
-      imageMode,
-      originalName: file.name
+      imageMode
     });
 
-    progress.style.width = '90%';
+    if (progress) progress.style.width = '100%';
 
-    // Create download
     const url = URL.createObjectURL(docxBlob);
-    downloadBtn.href = url;
-    downloadBtn.download = (rename || 'converted') + '.docx';
-    downloadBtn.style.display = 'inline-block';
+    const fileName = (renameInput ? renameInput.value : 'converted') + '.docx';
     
-    progress.style.width = '100%';
+    if (downloadBtn) {
+      downloadBtn.href = url;
+      downloadBtn.download = fileName;
+      downloadBtn.style.display = 'inline-flex';
+    }
     
-    if (statusText) statusText.textContent = `✓ Converted ${totalPages} pages with AI layout preservation`;
+    if (statusText) statusText.textContent = `✓ Successfully converted ${totalPages} pages`;
     
   } catch (err) {
-    alert('Conversion failed: ' + err.message);
-    console.error(err);
-    if (statusText) statusText.textContent = 'Error during conversion';
+    console.error('Conversion error:', err);
+    alert('Conversion failed: ' + (err.message || 'Unknown error'));
+    if (statusText) statusText.textContent = '❌ Error during conversion';
   } finally {
-    loader.style.display = 'none';
-    button.style.display = 'inline-block';
+    if (loader) loader.style.display = 'none';
+    if (button) button.style.display = 'inline-flex';
   }
 }
 
-// Build actual DOCX using docx.js library with AI-structured content
-async function buildDocxDocument(pagesContent, options) {
-  const { Document, Packer, Paragraph, TextRun, HeadingLevel, 
-          Table, TableRow, TableCell, WidthType, AlignmentType,
-          ImageRun, BorderStyle, PageBreak } = docx;
+// Create a proper DOCX file using JSZip
+async function createDOCXFile(content, originalFileName, options) {
+  const zip = new JSZip();
+  
+  // [Content_Types].xml
+  zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+</Types>`);
 
-  const doc = new Document({
-    creator: 'PDFBoon AI',
-    title: 'Converted PDF Document',
-    description: 'AI-powered PDF to Word conversion',
-    styles: {
-      default: {
-        document: {
-          run: { font: 'Calibri', size: 22 }
-        }
-      }
+  // _rels/.rels
+  zip.folder('_rels').file('.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`);
+
+  // word/_rels/document.xml.rels
+  zip.folder('word').folder('_rels').file('document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`);
+
+  // Build document.xml with proper Word XML
+  const paragraphs = content.split('\n').filter(line => line.trim());
+  let bodyContent = '';
+  
+  for (const line of paragraphs) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      bodyContent += '<w:p><w:pPr><w:spacing w:after="120"/></w:pPr></w:p>';
+      continue;
     }
-  });
-
-  const children = [];
-
-  for (const pageContent of pagesContent) {
-    const { paragraphs, headings, tableStructure, pageNumber } = pageContent;
-
-    // Add page number indicator
-    if (pageNumber > 1) {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: '', break: 1 })],
-        spacing: { before: 200 }
-      }));
-    }
-
-    // Process each paragraph with AI intelligence
-    for (const paragraph of paragraphs) {
-      if (paragraph.length === 0) continue;
-
-      // Sort paragraph items by X position
-      paragraph.sort((a, b) => a.transform[4] - b.transform[4]);
-
-      const fullText = paragraph.map(item => item.str).join(' ').trim();
-      if (!fullText) continue;
-
-      // AI: Determine if this is a heading
-      const isHeading = [...headings].some(h => fullText.includes(h)) && 
-                        fullText.length < 150 &&
-                        paragraph.some(item => {
-                          const fontSize = item.height || 12;
-                          return fontSize > 14;
-                        });
-
-      // AI: Determine font properties
-      const firstItem = paragraph[0];
-      const fontSize = Math.round((firstItem.height || 12) * 1.3); // Convert to approximate pt
-      const isBold = firstItem.fontName && /bold/i.test(firstItem.fontName);
-      const isItalic = firstItem.fontName && /italic/i.test(firstItem.fontName);
-
-      if (isHeading) {
-        // Create heading paragraph
-        const headingLevel = fontSize > 20 ? HeadingLevel.HEADING_1 : 
-                            fontSize > 16 ? HeadingLevel.HEADING_2 : 
-                            HeadingLevel.HEADING_3;
-        
-        children.push(new Paragraph({
-          heading: headingLevel,
-          children: [
-            new TextRun({
-              text: fullText,
-              bold: true,
-              size: Math.min(fontSize * 1.5, 36),
-              font: 'Calibri'
-            })
-          ],
-          spacing: { before: 240, after: 120 }
-        }));
-      } else if (tableStructure && options.tableMode === 'detect') {
-        // AI: Build table structure
-        const tableRows = [];
-        const columnPositions = tableStructure;
-        
-        // Group paragraph items into columns based on X positions
-        const rowData = paragraph.map(item => {
-          const x = item.transform[4];
-          let colIndex = 0;
-          let minDist = Infinity;
-          
-          for (let c = 0; c < columnPositions.length; c++) {
-            const dist = Math.abs(x - columnPositions[c]);
-            if (dist < minDist) {
-              minDist = dist;
-              colIndex = c;
-            }
-          }
-          
-          return { col: colIndex, text: item.str };
-        });
-
-        // Create simple table row
-        const cells = [];
-        for (let c = 0; c < columnPositions.length; c++) {
-          const cellText = rowData.filter(r => r.col === c).map(r => r.text).join(' ');
-          cells.push(new TableCell({
-            children: [new Paragraph({
-              children: [new TextRun({ text: cellText || '', size: 20 })]
-            })],
-            width: { size: 100 / columnPositions.length, type: WidthType.PERCENTAGE }
-          }));
-        }
-        
-        if (cells.length > 0) {
-          // Add table if we haven't started one yet (simplified)
-          children.push(new Table({
-            rows: [new TableRow({ children: cells })],
-            width: { size: 100, type: WidthType.PERCENTAGE }
-          }));
-        }
-      } else {
-        // Regular paragraph with AI-detected formatting
-        const runs = [];
-        let currentText = '';
-        
-        for (const item of paragraph) {
-          if (item.str) {
-            currentText += (currentText ? ' ' : '') + item.str;
-          }
-        }
-
-        if (currentText.trim()) {
-          runs.push(new TextRun({
-            text: currentText.trim(),
-            bold: isBold,
-            italics: isItalic,
-            size: Math.max(fontSize, 16),
-            font: 'Calibri'
-          }));
-
-          children.push(new Paragraph({
-            children: runs,
-            spacing: { after: 120, line: 276 },
-            alignment: AlignmentType.LEFT
-          }));
-        }
-      }
+    
+    // Check if it's a heading (all caps or starts with --- Page)
+    if (trimmed.startsWith('--- Page') || /^[A-Z\s]{5,}$/.test(trimmed) && trimmed.length < 120) {
+      bodyContent += `
+        <w:p>
+          <w:pPr>
+            <w:pStyle w:val="Heading2"/>
+            <w:spacing w:before="240" w:after="120"/>
+          </w:pPr>
+          <w:r>
+            <w:rPr>
+              <w:b/>
+              <w:sz w:val="28"/>
+              <w:color w:val="1F3864"/>
+            </w:rPr>
+            <w:t xml:space="preserve">${escapeXML(trimmed)}</w:t>
+          </w:r>
+        </w:p>`;
+    } else {
+      bodyContent += `
+        <w:p>
+          <w:pPr>
+            <w:spacing w:after="80" w:line="276" w:lineRule="auto"/>
+          </w:pPr>
+          <w:r>
+            <w:rPr>
+              <w:sz w:val="22"/>
+              <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+            </w:rPr>
+            <w:t xml:space="preserve">${escapeXML(trimmed)}</w:t>
+          </w:r>
+        </w:p>`;
     }
   }
 
-  doc.addSection({
-    properties: {},
-    children: children
-  });
+  // word/document.xml
+  zip.folder('word').file('document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <w:body>
+    ${bodyContent}
+    <w:sectPr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`);
 
-  const blob = await Packer.toBlob(doc);
+  // word/styles.xml
+  zip.folder('word').file('styles.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:rPr>
+      <w:b/>
+      <w:sz w:val="28"/>
+      <w:color w:val="1F3864"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:rPr>
+      <w:sz w:val="22"/>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+    </w:rPr>
+  </w:style>
+</w:styles>`);
+
+  const blob = await zip.generateAsync({ 
+    type: 'blob', 
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 }
+  });
+  
   return blob;
 }
 
-// Upload event handlers
+function escapeXML(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+// ============ DRAG & DROP ============
 uploadBox.addEventListener('dragover', (e) => {
   e.preventDefault();
   uploadBox.classList.add('active');
@@ -1110,13 +1076,25 @@ uploadBox.addEventListener('drop', (e) => {
   }
 });
 
-// Re-render when settings change
-document.getElementById('layoutMode').addEventListener('change', () => {
-  if (uploadedFiles.length > 0) renderFiles();
+// Settings change handlers
+['layoutMode', 'textMode', 'tableMode', 'imageMode'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('change', () => {
+      if (uploadedFiles.length > 0) {
+        // Just re-render to refresh UI, don't reconvert
+        const aiElements = document.querySelectorAll('.ai-status');
+        aiElements.forEach(el => {
+          const span = el.querySelector('span');
+          if (span) span.textContent = 'Settings updated. Ready to convert.';
+        });
+      }
+    });
+  }
 });
-document.getElementById('textMode').addEventListener('change', () => {
-  if (uploadedFiles.length > 0) renderFiles();
-});
+
+console.log('✅ PDFBoon AI PDF to Word Converter ready');
+console.log('🧠 AI Features: Font detection, table recognition, paragraph grouping, language detection');
 </script>
 
 </body>
