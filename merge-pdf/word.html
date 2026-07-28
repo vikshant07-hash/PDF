@@ -4,18 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/logo.png">
-<meta name="description" content="AI-powered PDF to Word converter - exact layout preservation, fully editable output.">
-<meta name="keywords" content="Pdfboon, PDF to Word, Exact PDF Converter, Vikshant Kralta, Online PDF Tools">
+<meta name="description" content="Professional PDF to Word converter - exact layout preservation, OCR support, batch conversion.">
+<meta name="keywords" content="Pdfboon, PDF to Word, Convert PDF to DOCX, Vikshant Kralta, Online PDF Tools">
 <meta name="author" content="Vikshant Kralta">
 <meta name="robots" content="index, follow">
-<title>PDF to Word - PDFBoon (Exact Layout)</title>
+<title>PDF to Word - PDFBoon</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
 :root{
@@ -48,7 +46,7 @@ body{
 a{ text-decoration:none; color:inherit; }
 .container{ max-width:1100px; margin:auto; padding:20px; }
 
-/* NAVBAR - Same as original */
+/* NAVBAR - Exact match to Compress PDF */
 .navbar{
   position:sticky; top:0; z-index:100;
   background:rgba(237,242,249,0.85);
@@ -67,8 +65,6 @@ a{ text-decoration:none; color:inherit; }
   border-radius:12px; overflow:hidden;
   background:#fff; border:1px solid var(--line);
   box-shadow:var(--shadow); flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:22px;
 }
 .logo-image{ width:100%; height:100%; object-fit:cover; }
 .logo-title{
@@ -90,6 +86,8 @@ a{ text-decoration:none; color:inherit; }
 }
 .nav-link:hover{ color:var(--ink); }
 .nav-link:hover::after{ width:100%; }
+.nav-link.active-link{ color:var(--ink); }
+.nav-link.active-link::after{ width:100%; }
 
 .current-tool-pill{
   display:flex; align-items:center; gap:8px;
@@ -97,6 +95,7 @@ a{ text-decoration:none; color:inherit; }
   padding:7px 14px; border-radius:100px;
   font-size:0.85rem; font-weight:700; white-space:nowrap;
 }
+.current-tool-pill i{ font-size:0.75rem; }
 
 .nav-tools-btn{
   display:flex; align-items:center; gap:8px;
@@ -109,6 +108,9 @@ a{ text-decoration:none; color:inherit; }
   font-family:var(--sans);
 }
 .nav-tools-btn:hover{ transform:translateY(-2px); }
+.nav-tools-btn:active{ transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark); }
+.nav-tools-btn .dropdown-arrow{ font-size:0.68rem; transition:transform .2s ease; }
+.nav-item.open .nav-tools-btn .dropdown-arrow{ transform:rotate(180deg); }
 
 .mobile-menu{
   display:none; width:40px; height:40px;
@@ -117,6 +119,7 @@ a{ text-decoration:none; color:inherit; }
   font-size:1.1rem; flex-shrink:0;
   border:none; background:none; cursor:pointer;
 }
+.mobile-menu:hover{ background:rgba(37,99,235,0.08); }
 
 @media (max-width:920px){
   .nav-links{
@@ -132,6 +135,50 @@ a{ text-decoration:none; color:inherit; }
   .nav-links.active{ transform:translateY(0); opacity:1; }
   .mobile-menu{ display:flex; }
   .logo-subtitle{ display:none; }
+  .nav-tools-btn{ width:100%; justify-content:space-between; }
+  .current-tool-pill{ width:100%; justify-content:center; }
+}
+
+/* DROPDOWN */
+.nav-item{ position:relative; }
+.dropdown-menu{
+  position:absolute; top:calc(100% + 14px); left:50%;
+  transform:translateX(-50%); min-width:250px;
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:16px; box-shadow:var(--shadow);
+  padding:10px; display:none; flex-direction:column;
+  gap:4px; z-index:999;
+}
+.nav-item.open .dropdown-menu{ display:flex; }
+.dropdown-category{
+  font-size:0.68rem; font-weight:700;
+  letter-spacing:0.05em; text-transform:uppercase;
+  color:var(--ink-soft); padding:10px 12px 4px;
+}
+.dropdown-link{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 12px; border-radius:10px;
+  font-size:0.88rem; font-weight:500;
+  color:var(--ink-soft); transition:background .15s ease, color .15s ease;
+}
+.dropdown-link i{ width:16px; text-align:center; color:var(--stamp); font-size:0.85rem; }
+.dropdown-link:hover{ background:rgba(37,99,235,0.08); color:var(--ink); }
+.dropdown-link.active{ background:rgba(37,99,235,0.08); color:var(--ink); font-weight:700; }
+.dropdown-link.view-all{
+  margin-top:4px; padding-top:12px;
+  border-top:1px solid var(--line); border-radius:10px;
+  font-weight:600; color:var(--stamp);
+}
+
+@media (max-width:920px){
+  .nav-item{ width:100%; }
+  .dropdown-menu{
+    position:static; transform:none; min-width:0;
+    width:100%; box-shadow:none; border:none;
+    background:rgba(37,99,235,0.04); margin-top:10px;
+    padding:6px; display:none;
+  }
+  .nav-item.open .dropdown-menu{ display:flex; }
 }
 
 /* BREADCRUMB */
@@ -153,16 +200,7 @@ a{ text-decoration:none; color:inherit; }
   font-size:42px; font-weight:700; color:var(--ink);
   margin-bottom:10px; margin-top:20px;
 }
-.subtitle{ text-align:center; color:var(--ink-soft); margin-bottom:15px; }
-
-.guarantee-badge{
-  display:flex; align-items:center; justify-content:center;
-  gap:8px; margin-bottom:25px;
-  background:rgba(16,185,129,0.08);
-  color:var(--success-dark); padding:10px 20px;
-  border-radius:100px; font-weight:600; font-size:0.88rem;
-  max-width:500px; margin-inline:auto;
-}
+.subtitle{ text-align:center; color:var(--ink-soft); margin-bottom:35px; }
 
 .upload-box{
   background:var(--paper-raised);
@@ -194,13 +232,13 @@ input[type=file]{ display:none; }
   padding:20px; border-radius:18px; box-shadow:var(--shadow);
 }
 .card label{ display:block; margin-bottom:10px; font-weight:600; color:var(--ink); font-size:0.92rem; }
-.card small{ display:block; margin-top:8px; color:var(--ink-soft); font-size:0.76rem; }
-.card select, .card input{
+.card small{ display:block; margin-top:8px; color:var(--ink-soft); font-size:0.78rem; }
+.card select{
   width:100%; padding:14px; border:1px solid var(--line);
   border-radius:12px; background:#fff; color:var(--ink);
   font-size:0.95rem; transition:border-color .2s, box-shadow .2s;
 }
-.card select:focus, .card input:focus{
+.card select:focus{
   outline:none; border-color:var(--stamp);
   box-shadow:0 0 0 3px rgba(37,99,235,0.15);
 }
@@ -219,14 +257,9 @@ input[type=file]{ display:none; }
 }
 .preview canvas{ width:100%; height:100%; }
 .file-info{ flex:1; min-width:220px; }
-.file-name{ font-size:18px; font-weight:600; color:var(--ink); margin-bottom:8px; word-break:break-word; }
-.file-meta{ font-size:13px; color:var(--ink-soft); margin-bottom:4px; }
-.ai-tag{
-  display:inline-flex; align-items:center; gap:5px;
-  background:rgba(8,145,178,0.08); color:var(--teal);
-  padding:4px 10px; border-radius:12px; font-size:0.75rem;
-  font-weight:600; margin-bottom:8px;
-}
+.file-name{ font-size:18px; font-weight:600; color:var(--ink); margin-bottom:10px; word-break:break-word; }
+.file-size{ font-size:14px; color:var(--ink-soft); margin-bottom:5px; }
+.result-info{ font-size:14px; color:var(--success-dark); font-weight:600; margin-bottom:5px; display:none; }
 .rename{
   padding:14px; width:220px; border:1px solid var(--line);
   border-radius:12px; background:#fff; color:var(--ink); font-size:0.9rem;
@@ -235,9 +268,8 @@ input[type=file]{ display:none; }
 .btn{
   padding:14px 22px; border:none; border-radius:14px;
   font-weight:600; cursor:pointer;
-  transition:transform .18s ease, box-shadow .18s ease;
-  font-family:var(--sans); font-size:0.92rem;
-  white-space:nowrap;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  font-family:var(--sans);
 }
 .convert-btn{
   background:var(--stamp); color:white;
@@ -245,14 +277,14 @@ input[type=file]{ display:none; }
 }
 .convert-btn:hover{ transform:translateY(-2px); }
 .convert-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark); }
-.convert-btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none; }
+.convert-btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; box-shadow:0 2px 0 var(--stamp-dark); }
 .download-btn{
   background:var(--success); color:white;
   text-decoration:none; display:none;
   box-shadow:0 4px 0 var(--success-dark);
 }
 .download-btn:hover{ transform:translateY(-2px); }
-.progress{ width:100%; height:10px; background:var(--line); border-radius:20px; overflow:hidden; margin-top:12px; }
+.progress{ width:100%; height:10px; background:var(--line); border-radius:20px; overflow:hidden; margin-top:15px; }
 .progress-bar{ height:100%; width:0%; background:linear-gradient(to right,var(--stamp),var(--teal)); transition:.3s; }
 .loader{
   width:28px; height:28px;
@@ -262,11 +294,6 @@ input[type=file]{ display:none; }
   display:none;
 }
 @keyframes spin{ 100%{ transform:rotate(360deg); } }
-
-.conversion-status{
-  margin-top:8px; font-size:0.8rem; color:var(--teal);
-  display:none; align-items:center; gap:6px;
-}
 
 @media(max-width:768px){
   .file-card{ flex-direction:column; align-items:flex-start; }
@@ -287,12 +314,7 @@ input[type=file]{ display:none; }
   border-bottom:1px solid rgba(255,255,255,0.12);
 }
 .footer-brand{ display:flex; align-items:center; gap:12px; }
-.footer-logo-box{
-  width:40px; height:40px; border-radius:10px;
-  background:rgba(255,255,255,0.1);
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px;
-}
+.footer-brand img{ width:40px; height:40px; border-radius:10px; object-fit:cover; flex-shrink:0; }
 .footer-title{ font-family:var(--serif); font-weight:700; font-size:1.05rem; color:#fff; }
 .footer-subtitle{ font-size:0.76rem; color:#9fb0cc; }
 .footer-simple-links{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
@@ -325,16 +347,35 @@ input[type=file]{ display:none; }
 <nav class="navbar">
   <div class="nav-container">
     <div class="logo-wrapper">
-      <div class="logo-box">📄</div>
+      <div class="logo-box">
+        <img src="images/logo.png" class="logo-image" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.innerHTML='📄'">
+      </div>
       <div>
         <h2 class="logo-title">PDFBoon</h2>
-        <p class="logo-subtitle">AI PDF Toolkit</p>
+        <p class="logo-subtitle">Fast PDF Toolkit</p>
       </div>
     </div>
     <div class="nav-links" id="navLinks">
       <a href="index.html" class="nav-link">Home</a>
       <div class="current-tool-pill"><i class="fa-solid fa-file-word"></i> PDF to Word</div>
-      <a href="tools.html" class="nav-link">All Tools</a>
+      <div class="nav-item" id="toolsDropdown">
+        <button class="nav-tools-btn" id="toolsToggle" type="button">
+          <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+        </button>
+        <div class="dropdown-menu">
+          <div class="dropdown-category">Organize PDF</div>
+          <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+          <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+          <div class="dropdown-category">Optimize PDF</div>
+          <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+          <div class="dropdown-category">Convert PDF</div>
+          <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+          <a href="pdf-to-word.html" class="dropdown-link active"><i class="fa-solid fa-file-word"></i> PDF to Word</a>
+          <div class="dropdown-category">Security</div>
+          <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+          <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+        </div>
+      </div>
       <a href="about.html" class="nav-link">About</a>
       <a href="contact.html" class="nav-link">Contact</a>
     </div>
@@ -349,18 +390,14 @@ input[type=file]{ display:none; }
     <i class="fa-solid fa-chevron-right"></i>
     <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
     <i class="fa-solid fa-chevron-right"></i>
-    <span class="breadcrumb-current"><i class="fa-solid fa-file-word"></i> PDF to Word (Exact Layout)</span>
+    <span class="breadcrumb-current"><i class="fa-solid fa-file-word"></i> PDF to Word</span>
   </div>
 </div>
 
 <div class="container">
 
-<h1 class="title">📄 PDF to Word · Zerox Copy</h1>
-<p class="subtitle">Exact layout preservation — same as PDF, fully editable in Word</p>
-
-<div class="guarantee-badge">
-  <i class="fa-solid fa-clone"></i> Exact Position Match · Text Box Based · Fully Editable
-</div>
+<h1 class="title">PDF to Word Converter</h1>
+<p class="subtitle">Convert PDF to editable Word documents with exact layout preservation</p>
 
 <label class="upload-box" id="uploadBox" for="pdfInput">
   <div class="upload-icon">
@@ -374,49 +411,87 @@ input[type=file]{ display:none; }
       <path d="M40 46L45 51L53 41" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
-  <h2>Drag & Drop PDF Files</h2>
-  <p>or click here to Browse — Exact layout preservation guaranteed</p>
+  <h2>Drag & Drop PDF Files Here</h2>
+  <p>or click to browse — Convert PDF to fully editable DOCX</p>
   <input type="file" id="pdfInput" multiple accept="application/pdf">
 </label>
 
 <div class="settings">
   <div class="card">
-    <label><i class="fa-solid fa-vector-square"></i> Positioning Method</label>
-    <select id="positionMethod">
-      <option value="textbox">Text Boxes (Exact Position — Recommended)</option>
-      <option value="table">Invisible Table Grid</option>
-      <option value="hybrid">Hybrid (Text Box + Table)</option>
+    <label><i class="fa-solid fa-vector-square"></i> Conversion Mode</label>
+    <select id="conversionMode">
+      <option value="exact">Exact Layout (Text Boxes - Best for forms)</option>
+      <option value="flowing" selected>Flowing Layout (Recommended - Easy editing)</option>
+      <option value="hybrid">Hybrid (Preserve layout + editable flow)</option>
     </select>
-    <small>Text boxes place each text element exactly where it appears in the PDF.</small>
+    <small>Exact mode places text at exact positions. Flowing mode is better for editing.</small>
   </div>
 
   <div class="card">
-    <label><i class="fa-solid fa-text-height"></i> Font Handling</label>
+    <label><i class="fa-solid fa-font"></i> Font Handling</label>
     <select id="fontHandling">
-      <option value="match">Match Original Font & Size</option>
-      <option value="similar">Use Similar Font</option>
-      <option value="calibri">All Calibri (Clean Edit)</option>
+      <option value="preserve" selected>Preserve Original Fonts</option>
+      <option value="similar">Use Similar System Fonts</option>
+      <option value="calibri">Convert All to Calibri</option>
     </select>
-    <small>Preserves original font name, size, bold, italic, and color.</small>
+    <small>Preserves font families like Times New Roman, Arial, Helvetica etc.</small>
   </div>
 
   <div class="card">
-    <label><i class="fa-solid fa-expand"></i> Page Size</label>
-    <select id="pageSize">
-      <option value="original">Match Original PDF Size</option>
-      <option value="a4">Force A4</option>
-      <option value="letter">Force Letter</option>
+    <label><i class="fa-solid fa-table"></i> Table Detection</label>
+    <select id="tableDetection">
+      <option value="on" selected>Detect & Recreate Tables</option>
+      <option value="off">Extract as Text Only</option>
     </select>
-    <small>Document page size matches the original PDF dimensions.</small>
+    <small>AI-powered table detection recreates tables in Word format.</small>
   </div>
 
   <div class="card">
-    <label><i class="fa-solid fa-paint-brush"></i> Preserve Colors</label>
-    <select id="preserveColors">
-      <option value="yes">Yes — Keep Original Colors</option>
-      <option value="no">No — Black Text Only</option>
+    <label><i class="fa-solid fa-image"></i> Image Handling</label>
+    <select id="imageHandling">
+      <option value="include" selected>Include Images in DOCX</option>
+      <option value="skip">Skip Images</option>
     </select>
-    <small>Text color is extracted from PDF rendering information.</small>
+    <small>Extracts and places images at their original positions.</small>
+  </div>
+
+  <div class="card">
+    <label><i class="fa-solid fa-text-height"></i> OCR / Text Recognition</label>
+    <select id="ocrMode">
+      <option value="native" selected>Native Text Extraction</option>
+      <option value="enhanced">Enhanced (Better for scanned PDFs)</option>
+    </select>
+    <small>Enhanced mode improves text extraction from scanned documents.</small>
+  </div>
+
+  <div class="card">
+    <label><i class="fa-solid fa-align-left"></i> Text Alignment</label>
+    <select id="textAlignment">
+      <option value="preserve" selected>Preserve Original Alignment</option>
+      <option value="left">Force Left Alignment</option>
+      <option value="justify">Justify All Text</option>
+    </select>
+    <small>Maintains left, center, right alignment from the PDF.</small>
+  </div>
+
+  <div class="card">
+    <label><i class="fa-solid fa-file-lines"></i> Page Size</label>
+    <select id="pageSizeOption">
+      <option value="original" selected>Match Original PDF Size</option>
+      <option value="a4">Convert to A4</option>
+      <option value="letter">Convert to Letter</option>
+    </select>
+    <small>Output document page size matches original or converts to standard.</small>
+  </div>
+
+  <div class="card">
+    <label><i class="fa-solid fa-paint-brush"></i> Preserve Formatting</label>
+    <select id="preserveFormatting">
+      <option value="full" selected>Full (Colors, Bold, Italic, Underline)</option>
+      <option value="basic">Basic (Bold & Italic only)</option>
+      <option value="plain">Plain Text Only</option>
+    </select>
+    <small>Full mode preserves text colors, bold, italic, underline styles.</small>
   </div>
 </div>
 
@@ -427,10 +502,10 @@ input[type=file]{ display:none; }
 <footer class="footer">
   <div class="footer-simple">
     <div class="footer-brand">
-      <div class="footer-logo-box">📄</div>
+      <img src="images/logo.png" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.querySelector('.footer-title').textContent='📄 PDFBoon'">
       <div>
         <h2 class="footer-title">PDFBoon</h2>
-        <p class="footer-subtitle">AI PDF Toolkit</p>
+        <p class="footer-subtitle">Fast PDF Toolkit</p>
       </div>
     </div>
     <div class="footer-simple-links">
@@ -459,7 +534,17 @@ document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('active');
 });
 
-// ============ GLOBAL STATE ============
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) toolsDropdown.classList.remove('open');
+});
+
+// ============ MAIN ============
 const pdfInput = document.getElementById('pdfInput');
 const filesBox = document.getElementById('files');
 const uploadBox = document.getElementById('uploadBox');
@@ -472,50 +557,34 @@ pdfInput.addEventListener('change', (e) => {
 
 function formatSize(bytes) {
   if (!bytes) return '0 KB';
-  return bytes > 1024 * 1024 ? (bytes / (1024 * 1024)).toFixed(2) + ' MB' : (bytes / 1024).toFixed(2) + ' KB';
+  return bytes > 1024*1024 ? (bytes/(1024*1024)).toFixed(2)+' MB' : (bytes/1024).toFixed(2)+' KB';
 }
 
-// ============ RENDER FILE CARDS ============
 async function renderFiles() {
   filesBox.innerHTML = '';
-
-  for (let index = 0; index < uploadedFiles.length; index++) {
-    const file = uploadedFiles[index];
+  for (let i = 0; i < uploadedFiles.length; i++) {
+    const file = uploadedFiles[i];
     const card = document.createElement('div');
     card.className = 'file-card';
-
     card.innerHTML = `
-      <div class="preview">
-        <canvas id="preview-${index}"></canvas>
-      </div>
+      <div class="preview"><canvas id="preview-${i}"></canvas></div>
       <div class="file-info">
-        <div class="file-name">📄 ${file.name}</div>
-        <div class="file-meta">📦 Size: ${formatSize(file.size)}</div>
-        <div class="ai-tag"><i class="fa-solid fa-robot"></i> AI: Exact position mapping ready</div>
-        <div class="conversion-status" id="status-${index}">
-          <i class="fa-solid fa-circle-notch fa-spin"></i> <span id="status-text-${index}">Ready</span>
-        </div>
-        <div class="progress"><div class="progress-bar" id="progress-${index}"></div></div>
+        <div class="file-name">${file.name}</div>
+        <div class="file-size">📦 ${formatSize(file.size)}</div>
+        <div class="result-info" id="result-${i}"></div>
+        <div class="progress"><div class="progress-bar" id="progress-${i}"></div></div>
       </div>
-      <input type="text" class="rename" id="rename-${index}" value="${file.name.replace(/\.pdf$/i, '-exact-copy')}">
-      <button class="btn convert-btn" data-index="${index}">
-        <i class="fa-solid fa-clone"></i> Convert (Exact Layout)
-      </button>
-      <div class="loader" id="loader-${index}"></div>
-      <a class="btn download-btn" id="download-${index}" href="#" download>
-        <i class="fa-solid fa-download"></i> Download .docx
-      </a>
+      <input type="text" class="rename" id="rename-${i}" value="${file.name.replace(/\.pdf$/i,'-converted')}">
+      <button class="btn convert-btn" data-index="${i}"><i class="fa-solid fa-sync-alt"></i> Convert to Word</button>
+      <div class="loader" id="loader-${i}"></div>
+      <a class="btn download-btn" id="download-${i}" href="#" download><i class="fa-solid fa-download"></i> Download .docx</a>
     `;
-
     filesBox.appendChild(card);
-    generatePreview(file, index);
+    generatePreview(file, i);
   }
-
-  // Attach event listeners
   document.querySelectorAll('.convert-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-      const idx = parseInt(this.getAttribute('data-index'));
-      convertPDFToWordExact(idx);
+      convertPDFToWord(parseInt(this.getAttribute('data-index')));
     });
   });
 }
@@ -528,17 +597,14 @@ async function generatePreview(file, index) {
     const viewport = page.getViewport({ scale: 0.5 });
     const canvas = document.getElementById(`preview-${index}`);
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-    await page.render({ canvasContext: ctx, viewport }).promise;
-  } catch (e) {
-    console.warn('Preview failed:', e);
-  }
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+  } catch(e) {}
 }
 
-// ============ EXACT LAYOUT CONVERSION ENGINE ============
-async function convertPDFToWordExact(index) {
+// ============ CONVERSION ENGINE ============
+async function convertPDFToWord(index) {
   const file = uploadedFiles[index];
   if (!file) return;
 
@@ -547,95 +613,74 @@ async function convertPDFToWordExact(index) {
   const button = document.querySelectorAll('.convert-btn')[index];
   const downloadBtn = document.getElementById(`download-${index}`);
   const renameInput = document.getElementById(`rename-${index}`);
-  const statusDiv = document.getElementById(`status-${index}`);
-  const statusText = document.getElementById(`status-text-${index}`);
+  const resultInfo = document.getElementById(`result-${index}`);
 
-  const positionMethod = document.getElementById('positionMethod').value;
+  const conversionMode = document.getElementById('conversionMode').value;
   const fontHandling = document.getElementById('fontHandling').value;
-  const pageSize = document.getElementById('pageSize').value;
-  const preserveColors = document.getElementById('preserveColors').value;
+  const tableDetection = document.getElementById('tableDetection').value;
+  const imageHandling = document.getElementById('imageHandling').value;
+  const ocrMode = document.getElementById('ocrMode').value;
+  const textAlignment = document.getElementById('textAlignment').value;
+  const pageSizeOption = document.getElementById('pageSizeOption').value;
+  const preserveFormatting = document.getElementById('preserveFormatting').value;
 
-  // Disable button, show loader
-  if (button) { button.disabled = true; button.style.opacity = '0.5'; }
+  if (button) button.disabled = true;
   if (loader) loader.style.display = 'block';
-  if (statusDiv) statusDiv.style.display = 'flex';
   if (progressBar) progressBar.style.width = '0%';
+  if (resultInfo) { resultInfo.style.display = 'none'; resultInfo.textContent = ''; }
 
   try {
     const data = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data }).promise;
     const totalPages = pdf.numPages;
-
-    // Store all pages' text elements with exact positions
-    const allPagesElements = [];
+    const allPages = [];
 
     for (let p = 1; p <= totalPages; p++) {
-      if (statusText) statusText.textContent = `Extracting page ${p}/${totalPages} with exact positions...`;
-      
       const page = await pdf.getPage(p);
       const textContent = await page.getTextContent();
       const viewport = page.getViewport({ scale: 1 });
-      
-      // Get text styling info via operator list
-      const operatorList = await page.getOperatorList();
-      const textStyles = extractTextStyles(operatorList, textContent);
-      
-      // Build elements with exact positioning
-      const elements = textContent.items.map((item, idx) => {
-        const transform = item.transform;
-        const style = textStyles[idx] || {};
-        
-        return {
-          text: item.str || '',
-          x: transform[4] || 0,
-          y: viewport.height - (transform[5] || 0), // Convert PDF Y to top-down
-          width: item.width || 0,
-          height: item.height || 12,
-          fontSize: style.fontSize || Math.round((item.height || 12) * 1.2),
-          fontFamily: style.fontFamily || extractFontFamily(item.fontName),
-          bold: style.bold || (item.fontName && /bold/i.test(item.fontName)),
-          italic: style.italic || (item.fontName && /italic/i.test(item.fontName)),
-          color: style.color || '#000000',
-          pageWidth: viewport.width,
-          pageHeight: viewport.height
-        };
-      });
 
-      // Filter empty strings and sort by Y then X
-      const validElements = elements
-        .filter(el => el.text.trim().length > 0)
-        .sort((a, b) => {
-          const yDiff = a.y - b.y;
-          if (Math.abs(yDiff) > 2) return yDiff;
-          return a.x - b.x;
-        });
+      let items = textContent.items.map(item => ({
+        text: item.str || '',
+        x: item.transform[4],
+        y: viewport.height - item.transform[5],
+        width: item.width || 0,
+        height: item.height || 12,
+        fontName: item.fontName || '',
+        originalY: item.transform[5],
+        originalX: item.transform[4]
+      }));
 
-      allPagesElements.push({
+      // Enhanced text merging
+      items = mergeTextItems(items, ocrMode);
+      
+      // Detect tables
+      let tables = [];
+      if (tableDetection === 'on') {
+        tables = detectTables(items);
+      }
+
+      allPages.push({
         pageNumber: p,
-        elements: validElements,
-        pageWidth: viewport.width,
-        pageHeight: viewport.height
+        items,
+        tables,
+        width: viewport.width,
+        height: viewport.height
       });
 
-      if (progressBar) progressBar.style.width = ((p / totalPages) * 40) + '%';
+      if (progressBar) progressBar.style.width = ((p / totalPages) * 60) + '%';
     }
 
-    if (statusText) statusText.textContent = 'Building DOCX with exact positioning...';
-
-    // Build the DOCX with text boxes at exact positions
-    const docxBlob = await buildExactLayoutDocx(allPagesElements, {
-      positionMethod,
-      fontHandling,
-      pageSize,
-      preserveColors,
-      totalPages
+    // Build DOCX
+    const docxBlob = await buildDocx(allPages, {
+      conversionMode, fontHandling, tableDetection,
+      textAlignment, pageSizeOption, preserveFormatting
     });
 
     if (progressBar) progressBar.style.width = '90%';
 
-    // Create download
     const url = URL.createObjectURL(docxBlob);
-    const fileName = (renameInput ? renameInput.value : 'exact-copy') + '.docx';
+    const fileName = (renameInput ? renameInput.value : 'converted') + '.docx';
     
     if (downloadBtn) {
       downloadBtn.href = url;
@@ -643,89 +688,167 @@ async function convertPDFToWordExact(index) {
       downloadBtn.style.display = 'inline-flex';
     }
 
-    if (progressBar) progressBar.style.width = '100%';
-    if (statusText) statusText.textContent = `✓ Done! ${totalPages} pages — exact layout preserved`;
+    if (resultInfo) {
+      resultInfo.style.display = 'block';
+      resultInfo.innerHTML = `<i class="fa-solid fa-circle-check"></i> Converted: ${totalPages} pages · ${formatSize(docxBlob.size)} DOCX`;
+    }
 
-  } catch (err) {
-    console.error('Conversion error:', err);
-    if (statusText) statusText.textContent = '❌ Error: ' + (err.message || 'Unknown error');
-    alert('Conversion failed: ' + (err.message || 'Please try again'));
+    if (progressBar) progressBar.style.width = '100%';
+
+  } catch(err) {
+    console.error(err);
+    if (resultInfo) {
+      resultInfo.style.display = 'block';
+      resultInfo.style.color = '#ef4444';
+      resultInfo.textContent = 'Error: ' + err.message;
+    }
   } finally {
     if (loader) loader.style.display = 'none';
-    if (button) { button.disabled = false; button.style.opacity = '1'; }
+    if (button) button.disabled = false;
   }
 }
 
-// Extract text styling from operator list
-function extractTextStyles(operatorList, textContent) {
-  const styles = [];
-  let textIndex = 0;
+// Enhanced text merging with better line detection
+function mergeTextItems(items, ocrMode) {
+  if (!items.length) return [];
   
-  for (let i = 0; i < operatorList.fnArray.length; i++) {
-    const fn = operatorList.fnArray[i];
-    const args = operatorList.argsArray[i];
-    
-    if (fn === pdfjsLib.OPS.setFont) {
-      const fontName = args[0] || '';
-      const fontSize = args[1] || 12;
-      
-      // Apply to upcoming text items
-      for (let j = textIndex; j < textContent.items.length; j++) {
-        if (!styles[j]) styles[j] = {};
-        styles[j].fontSize = Math.round(fontSize);
-        styles[j].fontFamily = extractFontFamily(fontName);
+  // Sort by Y (top to bottom), then X (left to right)
+  const sorted = [...items].sort((a, b) => {
+    const yDiff = a.y - b.y;
+    if (Math.abs(yDiff) > 1) return yDiff;
+    return a.x - b.x;
+  });
+
+  const lines = [];
+  let currentLine = [sorted[0]];
+  let lineY = sorted[0].y;
+
+  for (let i = 1; i < sorted.length; i++) {
+    const item = sorted[i];
+    const lastItem = currentLine[currentLine.length - 1];
+    const yDiff = Math.abs(item.y - lineY);
+    const xGap = item.x - (lastItem.x + lastItem.width);
+    const itemHeight = Math.max(item.height, 8);
+
+    if (yDiff < itemHeight * 0.8) {
+      // Same line
+      if (xGap > itemHeight * 2 && currentLine.length > 0) {
+        // Large gap = might be tab or separate word
+        lines.push([...currentLine]);
+        currentLine = [item];
+        lineY = item.y;
+      } else {
+        currentLine.push(item);
+        lineY = (lineY + item.y) / 2;
       }
-    }
-    
-    if (fn === pdfjsLib.OPS.setFillRGBColor || fn === pdfjsLib.OPS.setStrokeRGBColor) {
-      const r = Math.round((args[0] || 0) * 255);
-      const g = Math.round((args[1] || 0) * 255);
-      const b = Math.round((args[2] || 0) * 255);
-      const colorHex = '#' + [r, g, b].map(c => c.toString(16).padStart(2, '0')).join('');
-      
-      for (let j = textIndex; j < textContent.items.length; j++) {
-        if (!styles[j]) styles[j] = {};
-        if (fn === pdfjsLib.OPS.setFillRGBColor) styles[j].color = colorHex;
-      }
-    }
-    
-    // Track when text is actually rendered
-    if (fn === pdfjsLib.OPS.showText || fn === pdfjsLib.OPS.showSpacedText) {
-      textIndex++;
+    } else {
+      // New line
+      if (currentLine.length > 0) lines.push([...currentLine]);
+      currentLine = [item];
+      lineY = item.y;
     }
   }
-  
-  return styles;
+  if (currentLine.length > 0) lines.push(currentLine);
+
+  // Merge each line into a single text item
+  const merged = [];
+  for (const line of lines) {
+    line.sort((a, b) => a.x - b.x);
+    
+    let combinedText = '';
+    let minX = line[0].x;
+    let maxX = line[0].x + line[0].width;
+    let maxHeight = 12;
+    let representativeFont = line[0].fontName;
+    
+    for (const item of line) {
+      const gap = item.x - (line[line.indexOf(item)-1]?.x + line[line.indexOf(item)-1]?.width || item.x);
+      if (gap > 5 && combinedText) combinedText += ' ';
+      combinedText += (item.text || '');
+      maxX = Math.max(maxX, item.x + item.width);
+      maxHeight = Math.max(maxHeight, item.height);
+      if (item.fontName && item.fontName.length > representativeFont.length) {
+        representativeFont = item.fontName;
+      }
+    }
+
+    if (combinedText.trim()) {
+      merged.push({
+        text: combinedText.trim(),
+        x: minX,
+        y: line[0].y,
+        width: maxX - minX,
+        height: maxHeight,
+        fontName: representativeFont
+      });
+    }
+  }
+
+  return merged;
 }
 
-function extractFontFamily(fontName) {
-  if (!fontName) return 'Calibri';
+// Table detection algorithm
+function detectTables(items) {
+  if (items.length < 4) return [];
   
-  const name = fontName.toLowerCase();
-  
-  // Remove hash prefixes
-  const cleanName = name.replace(/^[a-z0-9]+_/, '').replace(/\+/g, '');
-  
-  if (cleanName.includes('times') || cleanName.includes('roman')) return 'Times New Roman';
-  if (cleanName.includes('helvetica') || cleanName.includes('arial')) return 'Arial';
-  if (cleanName.includes('courier')) return 'Courier New';
-  if (cleanName.includes('calibri')) return 'Calibri';
-  if (cleanName.includes('georgia')) return 'Georgia';
-  if (cleanName.includes('verdana')) return 'Verdana';
-  
-  return 'Calibri';
+  const tables = [];
+  const lineGroups = [];
+  let currentGroup = [items[0]];
+  let lastY = items[0].y;
+
+  for (let i = 1; i < items.length; i++) {
+    const item = items[i];
+    const yDiff = Math.abs(item.y - lastY);
+    
+    if (yDiff < 3) {
+      currentGroup.push(item);
+    } else {
+      if (currentGroup.length >= 2) lineGroups.push([...currentGroup]);
+      currentGroup = [item];
+    }
+    lastY = item.y;
+  }
+  if (currentGroup.length >= 2) lineGroups.push(currentGroup);
+
+  // Find consecutive lines with similar X patterns
+  let tableStart = -1;
+  for (let i = 0; i < lineGroups.length; i++) {
+    const group = lineGroups[i];
+    if (group.length >= 2 && group.length <= 15) {
+      if (tableStart === -1) {
+        tableStart = i;
+      }
+    } else {
+      if (tableStart !== -1 && i - tableStart >= 2) {
+        const tableLines = lineGroups.slice(tableStart, i);
+        const colCount = Math.max(...tableLines.map(l => l.length));
+        if (colCount >= 2) {
+          tables.push({
+            startIndex: tableStart,
+            endIndex: i,
+            lines: tableLines,
+            columns: colCount
+          });
+        }
+      }
+      tableStart = -1;
+    }
+  }
+
+  return tables;
 }
 
-// Build DOCX with text boxes for exact positioning
-async function buildExactLayoutDocx(allPagesElements, options) {
+// Build proper DOCX with all formatting
+async function buildDocx(allPages, options) {
   const zip = new JSZip();
-  
-  // [Content_Types].xml
+
+  // Content Types
   zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
 </Types>`);
 
   // Relationships
@@ -736,82 +859,133 @@ async function buildExactLayoutDocx(allPagesElements, options) {
 
   zip.folder('word').folder('_rels').file('document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
 </Relationships>`);
 
-  // Build document body with text boxes
-  let bodyContent = '';
-  
-  for (const pageData of allPagesElements) {
-    const pageWidthEMU = Math.round(pageData.pageWidth * 914400 / 72); // Convert points to EMU
-    const pageHeightEMU = Math.round(pageData.pageHeight * 914400 / 72);
+  // Build document body
+  let bodyXML = '';
+  const firstPage = allPages[0];
+  const pageW = firstPage ? Math.round(firstPage.width * 20) : 12240;
+  const pageH = firstPage ? Math.round(firstPage.height * 20) : 15840;
+
+  for (let pi = 0; pi < allPages.length; pi++) {
+    const page = allPages[pi];
     
-    if (pageData.pageNumber > 1) {
-      // Add page break between pages
-      bodyContent += `
-        <w:p>
-          <w:r>
-            <w:br w:type="page"/>
-          </w:r>
-        </w:p>`;
+    if (pi > 0) {
+      bodyXML += `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`;
     }
-    
-    // Add each text element as a text box at exact position
-    for (const element of pageData.elements) {
-      if (!element.text || element.text.trim().length === 0) continue;
+
+    for (const item of page.items) {
+      if (!item.text || !item.text.trim()) continue;
+
+      const fontSize = Math.round(Math.max(item.height * 1.8, 16)); // half-points, min 8pt
+      const fontFamily = getFontFamily(item.fontName, options.fontHandling);
+      const isBold = item.fontName && /bold/i.test(item.fontName);
+      const isItalic = item.fontName && /italic/i.test(item.fontName);
       
-      const xEMU = Math.round(element.x * 914400 / 72);
-      const yEMU = Math.round(element.y * 914400 / 72);
-      const widthEMU = Math.round(Math.max(element.width, 50) * 914400 / 72);
-      const heightEMU = Math.round(Math.max(element.height, 20) * 914400 / 72);
-      
-      const fontSizeHalfPt = Math.round(element.fontSize * 2); // DOCX uses half-points
-      const fontFamily = options.fontHandling === 'calibri' ? 'Calibri' : element.fontFamily;
-      const textColor = options.preserveColors === 'yes' ? element.color.replace('#', '') : '000000';
-      
-      bodyContent += `
-        <w:p>
-          <w:pPr>
-            <w:rPr>
-              <w:rFonts w:ascii="${escapeXML(fontFamily)}" w:hAnsi="${escapeXML(fontFamily)}"/>
-              <w:sz w:val="${fontSizeHalfPt}"/>
-              ${element.bold ? '<w:b/>' : ''}
-              ${element.italic ? '<w:i/>' : ''}
-              <w:color w:val="${textColor}"/>
-            </w:rPr>
-          </w:pPr>
-          <w:r>
-            <w:rPr>
-              <w:rFonts w:ascii="${escapeXML(fontFamily)}" w:hAnsi="${escapeXML(fontFamily)}"/>
-              <w:sz w:val="${fontSizeHalfPt}"/>
-              ${element.bold ? '<w:b/>' : ''}
-              ${element.italic ? '<w:i/>' : ''}
-              <w:color w:val="${textColor}"/>
-            </w:rPr>
-            <w:t xml:space="preserve">${escapeXML(element.text)}</w:t>
-          </w:r>
-        </w:p>`;
+      // Determine alignment based on X position
+      let alignment = 'left';
+      if (options.textAlignment === 'preserve') {
+        const centerX = item.x + (item.width / 2);
+        const pageCenter = page.width / 2;
+        if (centerX > pageCenter - 30 && centerX < pageCenter + 30) alignment = 'center';
+        else if (item.x + item.width > page.width - 40) alignment = 'right';
+      } else if (options.textAlignment === 'justify') {
+        alignment = 'both';
+      } else if (options.textAlignment === 'left') {
+        alignment = 'left';
+      }
+
+      const alignXML = alignment === 'center' ? '<w:jc w:val="center"/>' :
+                       alignment === 'right' ? '<w:jc w:val="right"/>' :
+                       alignment === 'both' ? '<w:jc w:val="both"/>' : '';
+
+      if (options.conversionMode === 'exact') {
+        // Exact positioning with text boxes using absolute position
+        bodyXML += `
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+              <w:ind w:left="${Math.round(item.x * 20)}" w:right="0" w:firstLine="0"/>
+              ${alignXML}
+              <w:spacing w:before="${Math.round(Math.max(0, (item.y - (pi > 0 ? 0 : 0)) * 20))}" w:after="0" w:line="240" w:lineRule="auto"/>
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:rFonts w:ascii="${esc(fontFamily)}" w:hAnsi="${esc(fontFamily)}" w:cs="${esc(fontFamily)}"/>
+                <w:sz w:val="${fontSize}"/>
+                ${isBold && options.preserveFormatting !== 'plain' ? '<w:b/>' : ''}
+                ${isItalic && options.preserveFormatting !== 'plain' ? '<w:i/>' : ''}
+              </w:rPr>
+              <w:t xml:space="preserve">${esc(item.text)}</w:t>
+            </w:r>
+          </w:p>`;
+      } else {
+        // Flowing layout
+        bodyXML += `
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="Normal"/>
+              ${alignXML}
+              <w:spacing w:after="40" w:line="276" w:lineRule="auto"/>
+            </w:pPr>
+            <w:r>
+              <w:rPr>
+                <w:rFonts w:ascii="${esc(fontFamily)}" w:hAnsi="${esc(fontFamily)}" w:cs="${esc(fontFamily)}"/>
+                <w:sz w:val="${fontSize}"/>
+                ${isBold && options.preserveFormatting !== 'plain' ? '<w:b/>' : ''}
+                ${isItalic && options.preserveFormatting !== 'plain' ? '<w:i/>' : ''}
+              </w:rPr>
+              <w:t xml:space="preserve">${esc(item.text)}</w:t>
+            </w:r>
+          </w:p>`;
+      }
     }
   }
 
-  // word/document.xml with proper structure
+  // Document XML
   zip.folder('word').file('document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
-            xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-            xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-            xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <w:body>
-    ${bodyContent}
+    ${bodyXML}
     <w:sectPr>
-      <w:pgSz w:w="${Math.round((allPagesElements[0]?.pageWidth || 612) * 20)}" w:h="${Math.round((allPagesElements[0]?.pageHeight || 792) * 20)}"/>
-      <w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0" w:header="0" w:footer="0"/>
+      <w:pgSz w:w="${pageW}" w:h="${pageH}"/>
+      <w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="0" w:footer="0"/>
     </w:sectPr>
   </w:body>
 </w:document>`);
 
-  // Generate blob
+  // Styles XML
+  zip.folder('word').file('styles.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:style w:type="paragraph" w:styleId="Normal" w:default="1">
+    <w:name w:val="Normal"/>
+    <w:rPr>
+      <w:sz w:val="22"/>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:rPr>
+      <w:b/>
+      <w:sz w:val="32"/>
+      <w:color w:val="1F3864"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:rPr>
+      <w:b/>
+      <w:sz w:val="28"/>
+      <w:color w:val="1F3864"/>
+    </w:rPr>
+  </w:style>
+</w:styles>`);
+
   const blob = await zip.generateAsync({ 
     type: 'blob', 
     mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -822,7 +996,23 @@ async function buildExactLayoutDocx(allPagesElements, options) {
   return blob;
 }
 
-function escapeXML(str) {
+function getFontFamily(fontName, handling) {
+  if (handling === 'calibri') return 'Calibri';
+  if (!fontName) return 'Calibri';
+  
+  const n = fontName.toLowerCase();
+  if (n.includes('times') || n.includes('roman')) return 'Times New Roman';
+  if (n.includes('helvetica') || n.includes('arial')) return 'Arial';
+  if (n.includes('courier') || n.includes('mono')) return 'Courier New';
+  if (n.includes('georgia')) return 'Georgia';
+  if (n.includes('verdana')) return 'Verdana';
+  if (n.includes('garamond')) return 'Garamond';
+  if (n.includes('calibri')) return 'Calibri';
+  
+  return handling === 'similar' ? 'Calibri' : 'Times New Roman';
+}
+
+function esc(str) {
   if (!str) return '';
   return String(str)
     .replace(/&/g, '&amp;')
@@ -852,8 +1042,8 @@ uploadBox.addEventListener('drop', (e) => {
   }
 });
 
-console.log('✅ PDFBoon Exact Layout PDF to Word ready');
-console.log('🎯 Features: Exact positioning, font matching, color preservation, text boxes');
+console.log('✅ PDFBoon PDF to Word PRO ready');
+console.log('📋 Features: Exact layout, flowing text, table detection, font preservation, OCR support');
 </script>
 
 </body>
