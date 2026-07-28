@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/logo.png">
-    <meta name="description" content="PDF to Word with exact layout – accurate tables, fonts, colours, Unicode.">
+    <meta name="description" content="PDF to Word with exact layout – tables, images, fonts, colours, Unicode.">
     <meta name="keywords" content="Pdfboon, PDF to Word, DOCX, Vikshant Kralta">
     <meta name="author" content="Vikshant Kralta">
-    <title>PDF to Word Pro · PDFBoon</title>
+    <title>PDF to Word · PDFBoon</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300..700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -28,7 +28,7 @@
         .nav-tools-btn:hover{transform:translateY(-2px)} .mobile-menu{display:none;width:40px;height:40px;align-items:center;justify-content:center;border-radius:8px;color:var(--ink);border:none;background:none;cursor:pointer}
         @media(max-width:920px){.nav-links{position:fixed;top:70px;left:0;right:0;background:var(--paper-raised);flex-direction:column;padding:20px;gap:16px;border-bottom:1px solid var(--line);transform:translateY(-150%);opacity:0;transition:.3s;z-index:99}.nav-links.active{transform:translateY(0);opacity:1}.mobile-menu{display:flex}}
         .dropdown-menu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:250px;background:var(--paper-raised);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:10px;display:none;flex-direction:column;gap:4px;z-index:999}
-        .nav-item.open .dropdown-menu{display:flex} .dropdown-category{font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-soft);padding:10px 12px 4px}
+        .nav-item.open .dropdown-menu{display:flex} .dropdown-category{font-size:0.68rem;font-weight:700;text-transform:uppercase;color:var(--ink-soft);padding:10px 12px 4px}
         .dropdown-link{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;font-size:0.88rem;font-weight:500;color:var(--ink-soft);transition:background .15s}
         .dropdown-link:hover{background:rgba(37,99,235,0.08);color:var(--ink)} .dropdown-link.active{background:rgba(37,99,235,0.08);color:var(--ink);font-weight:700}
         .breadcrumb-bar{background:var(--paper-raised);border-bottom:1px solid var(--line)} .breadcrumb-inner{max-width:1180px;margin:auto;padding:12px 24px;display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--ink-soft)}
@@ -54,7 +54,7 @@
 
 <div class="container">
     <h1 class="title">PDF to Word · Exact Layout</h1>
-    <p class="subtitle">Accurate tables, rich text formatting, colours, and Unicode – fully editable DOCX</p>
+    <p class="subtitle">Real tables, images, colours, rich formatting – fully editable DOCX</p>
 
     <label class="upload-box" id="uploadBox" for="pdfFileInput">
         <div class="upload-icon"><svg viewBox="0 0 64 64"><rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/><rect x="14" y="18" width="36" height="4" rx="1" fill="#fff" opacity=".9"/></svg></div>
@@ -65,8 +65,8 @@
     <div class="settings">
         <div class="card"><label>Layout Mode</label><select id="layoutMode"><option value="absolute">Absolute Text Boxes</option><option value="flow">Flowing Text</option></select></div>
         <div class="card"><label>Tables</label><select id="tableMode"><option value="on" selected>Detect & Create Word Tables</option><option value="off">Text only</option></select></div>
-        <div class="card"><label>Colours</label><select id="colorMode"><option value="on" selected>Preserve</option><option value="off">Black</option></select></div>
-        <div class="card"><label>Fonts</label><select id="fontMode"><option value="preserve" selected>Keep original</option><option value="calibri">All Calibri</option></select></div>
+        <div class="card"><label>Images</label><select id="imageMode"><option value="on" selected>Extract & Embed Images</option><option value="off">Skip Images</option></select></div>
+        <div class="card"><label>Colours & Fonts</label><select id="styleMode"><option value="on" selected>Preserve</option><option value="off">Plain</option></select></div>
     </div>
     <div class="files" id="filesContainer"></div>
 </div>
@@ -74,14 +74,16 @@
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-// UI
-document.getElementById('mobileMenuBtn').addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('active'));
-document.getElementById('toolsDropdown').querySelector('button').addEventListener('click',function(e){e.preventDefault();this.parentElement.classList.toggle('open')});
+
+// ---------- UI ----------
+document.getElementById('mobileMenuBtn').addEventListener('click', ()=> document.getElementById('navLinks').classList.toggle('active'));
+document.getElementById('toolsDropdown').querySelector('button').addEventListener('click', function(e){ e.preventDefault(); this.parentElement.classList.toggle('open'); });
 
 const pdfFileInput = document.getElementById('pdfFileInput');
 const filesContainer = document.getElementById('filesContainer');
 const uploadBox = document.getElementById('uploadBox');
 let uploadedFiles = [];
+
 pdfFileInput.addEventListener('change', e => { uploadedFiles = [...e.target.files]; renderFiles(); });
 uploadBox.addEventListener('click', () => pdfFileInput.click());
 uploadBox.addEventListener('dragover', e => e.preventDefault());
@@ -92,6 +94,7 @@ uploadBox.addEventListener('drop', e => {
 });
 
 function formatSize(b) { return b > 1024*1024 ? (b/(1024*1024)).toFixed(2)+' MB' : (b/1024).toFixed(2)+' KB'; }
+
 async function renderFiles() {
     filesContainer.innerHTML = '';
     for (let i=0; i<uploadedFiles.length; i++) {
@@ -104,6 +107,7 @@ async function renderFiles() {
     }
     document.querySelectorAll('.convert-btn').forEach(b => b.addEventListener('click', () => convertPDFToWord(parseInt(b.dataset.idx))));
 }
+
 async function previewPDF(file, idx) {
     const data = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({data}).promise;
@@ -114,7 +118,7 @@ async function previewPDF(file, idx) {
     await page.render({canvasContext:canvas.getContext('2d'), viewport:vp}).promise;
 }
 
-// ===================== ENHANCED CONVERSION =====================
+// ---------- CONVERSION ENGINE ----------
 async function convertPDFToWord(idx) {
     const file = uploadedFiles[idx]; if(!file) return;
     const pb = document.getElementById(`pb-${idx}`), ld = document.getElementById(`ld-${idx}`),
@@ -122,8 +126,8 @@ async function convertPDFToWord(idx) {
           ft = document.getElementById(`fs-${idx}`), rn = document.getElementById(`rn-${idx}`).value;
     const layout = document.getElementById('layoutMode').value,
           tableMode = document.getElementById('tableMode').value,
-          colorMode = document.getElementById('colorMode').value,
-          fontMode = document.getElementById('fontMode').value;
+          imageMode = document.getElementById('imageMode').value,
+          styleMode = document.getElementById('styleMode').value;
     btn.style.display='none'; ld.style.display='block'; pb.style.width='0%'; ft.textContent='Extracting...';
     try {
         const data = await file.arrayBuffer();
@@ -132,27 +136,48 @@ async function convertPDFToWord(idx) {
         for (let p=1; p<=pdf.numPages; p++) {
             ft.textContent = `Page ${p}/${pdf.numPages}`;
             const page = await pdf.getPage(p);
-            const text = await page.getTextContent();
             const vp = page.getViewport({scale:1});
+            const textContent = await page.getTextContent();
             const opList = await page.getOperatorList();
-            const colorMap = extractColors(opList, text);
-            const styleMap = extractFontStyles(opList, text);  // NEW: detect font weight/style
-            let items = text.items.map((it,i)=>({
-                text:it.str||'', x:it.transform[4], y:vp.height-it.transform[5], w:it.width||0, h:it.height||12,
-                font:it.fontName||'', color:colorMap[i]||'#000000',
+            const colorMap = extractColors(opList, textContent);
+            const styleMap = extractFontStyles(opList, textContent);
+
+            let items = textContent.items.map((it,i) => ({
+                text: it.str||'', x: it.transform[4], y: vp.height - it.transform[5],
+                w: it.width||0, h: it.height||12, font: it.fontName||'',
+                color: colorMap[i]||'#000000',
                 bold: styleMap[i]?.bold || /bold/i.test(it.fontName),
-                italic: styleMap[i]?.italic || /italic/i.test(it.fontName),
-                weight: styleMap[i]?.weight || 400
+                italic: styleMap[i]?.italic || /italic/i.test(it.fontName)
             }));
-            items.sort((a,b)=>Math.abs(a.y-b.y)<0.5?a.x-b.x:a.y-b.y);
-            const merged = mergeLinesAdvanced(items);
-            const tables = tableMode==='on' ? detectTablesGrid(merged, vp.width) : [];
-            allPages.push({num:p, items:merged, tables, w:vp.width, h:vp.height});
+            items.sort((a,b)=> Math.abs(a.y-b.y)<0.5 ? a.x-b.x : a.y-b.y);
+
+            // Merge text lines
+            const merged = [];
+            let line = [items[0]], lineY = items[0].y, lineMaxH = items[0].h;
+            for (let i=1; i<items.length; i++) {
+                if (Math.abs(items[i].y - lineY) < Math.max(2, lineMaxH*0.4)) {
+                    line.push(items[i]);
+                    lineMaxH = Math.max(lineMaxH, items[i].h);
+                } else {
+                    merged.push(mergeLine(line)); line = [items[i]]; lineY = items[i].y; lineMaxH = items[i].h;
+                }
+            }
+            if (line.length) merged.push(mergeLine(line));
+
+            // Detect tables
+            let tables = [];
+            if (tableMode === 'on') tables = detectTablesGrid(merged, vp.width);
+
+            // Extract images
+            let images = [];
+            if (imageMode === 'on') images = await extractPageImages(page, vp);
+
+            allPages.push({ num:p, items:merged, tables, images, w:vp.width, h:vp.height });
             pb.style.width = ((p/pdf.numPages)*50)+'%';
         }
-        ft.textContent='Building DOCX...';
-        const blob = await buildDocx(allPages, {layout,tableMode,colorMode,fontMode});
-        pb.style.width='90%';
+        ft.textContent = 'Building DOCX...';
+        const blob = await buildDocx(allPages, { layout, tableMode, imageMode, styleMode });
+        pb.style.width = '90%';
         const url = URL.createObjectURL(blob);
         dbtn.href=url; dbtn.download=(rn||'converted')+'.docx'; dbtn.style.display='inline-flex';
         ft.innerHTML='<span style="color:#10b981">✓ Converted!</span>'; pb.style.width='100%';
@@ -160,157 +185,172 @@ async function convertPDFToWord(idx) {
     finally { ld.style.display='none'; btn.style.display='inline-flex'; }
 }
 
-// Advanced line merging: respect sub/superscript (Y offset > 2pt)
-function mergeLinesAdvanced(items) {
-    const merged = [];
-    let line = [items[0]], lineY = items[0].y, lineMaxH = items[0].h;
-    for (let i=1; i<items.length; i++) {
-        const it = items[i];
-        const yDiff = Math.abs(it.y - lineY);
-        const threshold = Math.max(2, lineMaxH * 0.4); // allow small Y variance but not sub/superscript
-        if (yDiff < threshold) {
-            line.push(it);
-            lineMaxH = Math.max(lineMaxH, it.h);
-        } else {
-            merged.push(mergeLineItems(line));
-            line = [it]; lineY = it.y; lineMaxH = it.h;
-        }
+function mergeLine(line) {
+    line.sort((a,b)=> a.x-b.x);
+    let txt='', x0=line[0].x, x1=line[0].x+line[0].w, h=line[0].h, font=line[0].font, col=line[0].color;
+    let bold=line[0].bold, italic=line[0].italic;
+    for (let i=0;i<line.length;i++) {
+        if (i>0 && line[i].x-(line[i-1].x+line[i-1].w)>3) txt+=' ';
+        txt+=line[i].text; x1=Math.max(x1,line[i].x+line[i].w); h=Math.max(h,line[i].h);
+        if (line[i].font && line[i].font.length>font.length) font=line[i].font;
+        if (line[i].color!=='#000000') col=line[i].color;
+        if (line[i].bold) bold=true;
+        if (line[i].italic) italic=true;
     }
-    if (line.length) merged.push(mergeLineItems(line));
-    return merged;
+    return {text:txt.trim(), x:x0, y:line[0].y, w:x1-x0, h, font, color:col, bold, italic};
 }
 
-function mergeLineItems(line) {
-    line.sort((a,b)=>a.x-b.x);
-    let txt = '', minX = line[0].x, maxX = line[0].x+line[0].w, maxH = line[0].h;
-    let bestFont = line[0].font, col = line[0].color, bold = line[0].bold, italic = line[0].italic, weight = line[0].weight;
-    for (let i=0; i<line.length; i++) {
-        if (i>0 && line[i].x - (line[i-1].x+line[i-1].w) > 3) txt += ' ';
-        txt += line[i].text;
-        maxX = Math.max(maxX, line[i].x+line[i].w);
-        maxH = Math.max(maxH, line[i].h);
-        if (line[i].font && line[i].font.length > bestFont.length) bestFont = line[i].font;
-        if (line[i].color !== '#000000') col = line[i].color;
-        if (line[i].bold) bold = true;
-        if (line[i].italic) italic = true;
-        if (line[i].weight > weight) weight = line[i].weight;
+function extractColors(ops, text) {
+    const map={}; let idx=0, col='#000000';
+    for (let i=0;i<ops.fnArray.length;i++) {
+        if (ops.fnArray[i]===pdfjsLib.OPS.setFillRGBColor) {
+            const a=ops.argsArray[i]; col='#'+[Math.round(a[0]*255),Math.round(a[1]*255),Math.round(a[2]*255)].map(c=>c.toString(16).padStart(2,'0')).join('');
+        }
+        if (ops.fnArray[i]===pdfjsLib.OPS.showText || ops.fnArray[i]===pdfjsLib.OPS.showSpacedText) {
+            if (idx<text.items.length) map[idx]=col; idx++;
+        }
     }
-    return { text:txt.trim(), x:minX, y:line[0].y, w:maxX-minX, h:maxH, font:bestFont, color:col, bold, italic, weight };
+    return map;
 }
 
-// Improved table detection using column gap analysis
-function detectTablesGrid(items, pageWidth) {
-    if (items.length < 4) return [];
-    // Group items into rows by Y proximity
-    const rows = [];
-    let cur = [items[0]], lastY = items[0].y;
-    for (let i=1; i<items.length; i++) {
-        if (Math.abs(items[i].y - lastY) < 2) cur.push(items[i]);
-        else { rows.push(cur); cur = [items[i]]; lastY = items[i].y; }
-    }
-    rows.push(cur);
-
-    // Find common X gaps across multiple rows to identify column separators
-    const gapMap = new Map(); // gapX -> count of rows that have that gap
-    rows.forEach(row => {
-        row.sort((a,b)=>a.x-b.x);
-        for (let i=1; i<row.length; i++) {
-            const gapStart = row[i-1].x + row[i-1].w;
-            const gapEnd = row[i].x;
-            if (gapEnd - gapStart > 5) { // significant gap
-                const gapCenter = Math.round((gapStart+gapEnd)/2);
-                gapMap.set(gapCenter, (gapMap.get(gapCenter)||0)+1);
-            }
+function extractFontStyles(ops, text) {
+    const styles=[]; let idx=0;
+    let current = { bold:false, italic:false };
+    for (let i=0;i<ops.fnArray.length;i++) {
+        if (ops.fnArray[i]===pdfjsLib.OPS.setFont) {
+            const name = (ops.argsArray[i]?.[0]||'').toLowerCase();
+            current.bold = /bold|black|heavy/i.test(name);
+            current.italic = /italic|oblique/i.test(name);
         }
-    });
-
-    // Select gaps that appear in at least 40% of rows (minimum 2 rows)
-    const threshold = Math.max(2, Math.floor(rows.length * 0.4));
-    const columnGaps = [...gapMap.entries()].filter(([_,cnt])=>cnt>=threshold).map(([x])=>x).sort((a,b)=>a-b);
-    if (columnGaps.length === 0) return [];
-
-    // Define column boundaries: start at 0, add gap positions, end at pageWidth
-    const colEdges = [0, ...columnGaps, pageWidth];
-    const tables = [];
-    let tableStart = -1;
-    for (let r=0; r<rows.length; r++) {
-        const row = rows[r];
-        // Check if this row aligns with the columns: at least 2 items in different columns
-        const cols = new Set();
-        row.forEach(it => {
-            for (let c=0; c<colEdges.length-1; c++) {
-                if (it.x >= colEdges[c]-2 && it.x+it.w <= colEdges[c+1]+2) {
-                    cols.add(c);
-                    break;
-                }
-            }
-        });
-        if (cols.size >= 2) {
-            if (tableStart === -1) tableStart = r;
-        } else {
-            if (tableStart !== -1 && r - tableStart >= 2) {
-                tables.push({ rows: rows.slice(tableStart, r), colEdges });
-            }
-            tableStart = -1;
-        }
-    }
-    if (tableStart !== -1 && rows.length - tableStart >= 2) {
-        tables.push({ rows: rows.slice(tableStart), colEdges });
-    }
-    return tables;
-}
-
-// Extract font styles from operator list (detect bold/italic/weight)
-function extractFontStyles(opList, textContent) {
-    const styles = [];
-    let textIdx = 0;
-    let currentFont = { bold: false, italic: false, weight: 400 };
-    for (let i=0; i<opList.fnArray.length; i++) {
-        const fn = opList.fnArray[i], args = opList.argsArray[i];
-        if (fn === pdfjsLib.OPS.setFont) {
-            const fontName = args[0] || '';
-            const fontSize = args[1] || 12;
-            currentFont.bold = /bold/i.test(fontName) || /black/i.test(fontName) || /heavy/i.test(fontName);
-            currentFont.italic = /italic/i.test(fontName) || /oblique/i.test(fontName);
-            // Guess weight from name: light=300, medium=500, bold=700, black=900
-            if (/light/i.test(fontName)) currentFont.weight = 300;
-            else if (/medium/i.test(fontName)) currentFont.weight = 500;
-            else if (/bold/i.test(fontName)) currentFont.weight = 700;
-            else if (/black|heavy/i.test(fontName)) currentFont.weight = 900;
-            else currentFont.weight = 400;
-        }
-        if (fn === pdfjsLib.OPS.showText || fn === pdfjsLib.OPS.showSpacedText) {
-            if (textIdx < textContent.items.length) {
-                styles[textIdx] = { ...currentFont };
-            }
-            textIdx++;
+        if (ops.fnArray[i]===pdfjsLib.OPS.showText || ops.fnArray[i]===pdfjsLib.OPS.showSpacedText) {
+            if (idx<text.items.length) styles[idx] = {...current}; idx++;
         }
     }
     return styles;
 }
 
-function extractColors(ops,text){ const map={}; let idx=0, col='#000000';
-    for(let i=0;i<ops.fnArray.length;i++){
-        if(ops.fnArray[i]===pdfjsLib.OPS.setFillRGBColor){ const a=ops.argsArray[i]; col='#'+[Math.round(a[0]*255),Math.round(a[1]*255),Math.round(a[2]*255)].map(c=>c.toString(16).padStart(2,'0')).join(''); }
-        if(ops.fnArray[i]===pdfjsLib.OPS.showText||ops.fnArray[i]===pdfjsLib.OPS.showSpacedText){ if(idx<text.items.length) map[idx]=col; idx++; }
-    } return map;
+// Improved table detection using column gaps
+function detectTablesGrid(items, pageWidth) {
+    if (items.length<4) return [];
+    const rows=[], cur=[items[0]], lastY=items[0].y;
+    for (let i=1;i<items.length;i++) {
+        if (Math.abs(items[i].y-lastY)<2) cur.push(items[i]);
+        else { rows.push(cur); cur=[items[i]]; lastY=items[i].y; }
+    }
+    rows.push(cur);
+    // Find column gaps
+    const gapMap=new Map();
+    rows.forEach(row=>{
+        row.sort((a,b)=>a.x-b.x);
+        for (let i=1;i<row.length;i++) {
+            const gs=row[i-1].x+row[i-1].w, ge=row[i].x;
+            if (ge-gs>5) { const g=Math.round((gs+ge)/2); gapMap.set(g,(gapMap.get(g)||0)+1); }
+        }
+    });
+    const thresh=Math.max(2,Math.floor(rows.length*0.4));
+    const colEdges=[0,...[...gapMap.entries()].filter(([_,c])=>c>=thresh).map(([x])=>x).sort((a,b)=>a-b), pageWidth];
+    const tables=[]; let start=-1;
+    for (let r=0;r<rows.length;r++) {
+        const row=rows[r]; const cols=new Set();
+        row.forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2 && it.x+it.w<=colEdges[c+1]+2) { cols.add(c); break; } });
+        if (cols.size>=2) { if (start===-1) start=r; }
+        else { if (start!==-1 && r-start>=2) tables.push({rows:rows.slice(start,r), colEdges}); start=-1; }
+    }
+    if (start!==-1 && rows.length-start>=2) tables.push({rows:rows.slice(start), colEdges});
+    return tables;
 }
 
-// ===================== DOCX BUILDER (improved) =====================
+// Image extraction using page resources
+async function extractPageImages(page, viewport) {
+    const images = [];
+    try {
+        const opList = await page.getOperatorList();
+        const imageKeys = new Set();
+        for (let i=0; i<opList.fnArray.length; i++) {
+            const fn = opList.fnArray[i];
+            if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintInlineImageXObject) {
+                const key = opList.argsArray[i]?.[0];
+                if (key && !imageKeys.has(key)) {
+                    imageKeys.add(key);
+                    try {
+                        const imgData = await page.objs.get(key);
+                        if (imgData) {
+                            // Determine position from transform (approximate: use the first occurrence)
+                            // For simplicity we extract the image data and later place at (0,0) full page
+                            const canvas = document.createElement('canvas');
+                            canvas.width = imgData.width;
+                            canvas.height = imgData.height;
+                            const ctx = canvas.getContext('2d');
+                            if (imgData.data instanceof Uint8ClampedArray) {
+                                // RGBA data
+                                const img = new ImageData(imgData.data, imgData.width, imgData.height);
+                                ctx.putImageData(img,0,0);
+                            } else if (imgData instanceof ImageBitmap) {
+                                ctx.drawImage(imgData,0,0);
+                            } else {
+                                // try as Image
+                                const blob = new Blob([imgData.data], {type:'image/png'});
+                                const bmp = await createImageBitmap(blob);
+                                ctx.drawImage(bmp,0,0);
+                            }
+                            const jpeg = canvas.toDataURL('image/jpeg', 0.9);
+                            // For now place image at top-left with its dimensions scaled to PDF coordinates
+                            // Note: we don't have exact position, so we place at 0,0 with full page width
+                            images.push({
+                                data: jpeg,
+                                x: 0, y: 0,
+                                w: viewport.width, h: viewport.height,
+                                id: key
+                            });
+                        }
+                    } catch(e) {}
+                }
+            }
+        }
+    } catch(e) {}
+    return images;
+}
+
+// ---------- DOCX BUILDER ----------
 const EMU = 12700;
 async function buildDocx(pages, opt) {
     const zip = new JSZip();
-    zip.file('[Content_Types].xml','<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
-    zip.folder('_rels').file('.rels','<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
-    zip.folder('word').folder('_rels').file('document.xml.rels','<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>');
+    zip.file('[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
 
     const fp = pages[0], pw = Math.round(fp.w*20), ph = Math.round(fp.h*20);
     let body = '';
+    let imageRelId = 1;
+    let docRels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+
     for (let pi=0; pi<pages.length; pi++) {
         const page = pages[pi];
-        if(pi>0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
-        const tableItemSet = new Set();
+        if (pi>0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
 
+        // Images first (behind text)
+        if (opt.imageMode==='on') {
+            for (const img of page.images) {
+                const jpegData = img.data.split(',')[1];
+                const bytes = Uint8Array.from(atob(jpegData), c=>c.charCodeAt(0));
+                const imgName = `image${imageRelId}.jpg`;
+                zip.folder('word').folder('media').file(imgName, bytes);
+                const relId = `rIdImg${imageRelId}`;
+                docRels += `<Relationship Id="${relId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${imgName}"/>`;
+                // Place image at full page using absolute anchor
+                const cx = Math.round(img.w * EMU), cy = Math.round(img.h * EMU);
+                const offX = Math.round(img.x * EMU), offY = Math.round(img.y * EMU);
+                const id = Math.floor(Math.random()*1000000);
+                body += `<w:p><w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251657216" behindDoc="1" locked="0" layoutInCell="1" allowOverlap="1">
+<wp:simplePos x="${offX}" y="${offY}"/><wp:positionH relativeFrom="page"><wp:posOffset>${offX}</wp:posOffset></wp:positionH>
+<wp:positionV relativeFrom="page"><wp:posOffset>${offY}</wp:posOffset></wp:positionV>
+<wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/>
+<wp:docPr id="${id}" name="Picture${id}"/><wp:cNvGraphicFramePr/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+<pic:pic><pic:nvPicPr><pic:cNvPr id="${id}" name="Picture${id}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:anchor></w:drawing></w:r></w:p>`;
+                imageRelId++;
+            }
+        }
+
+        // Tables
+        const tableSet = new Set();
         if (opt.tableMode==='on' && page.tables.length) {
             for (const table of page.tables) {
                 const colEdges = table.colEdges;
@@ -321,59 +361,56 @@ async function buildDocx(pages, opt) {
                 let xml = `<w:tbl><w:tblPr><w:tblW w:w="${Math.round(tableW*20)}" w:type="dxa"/></w:tblPr><w:tblGrid>${colWidths.map(w=>`<w:gridCol w:w="${Math.round(w*20)}"/>`).join('')}</w:tblGrid>`;
                 for (const row of table.rows) {
                     xml += '<w:tr>';
-                    // Assign items to columns
                     const cellItems = Array(colWidths.length).fill(null);
-                    row.forEach(it => {
-                        for (let c=0; c<colEdges.length-1; c++) {
-                            if (it.x >= colEdges[c]-2 && it.x+it.w <= colEdges[c+1]+2) {
-                                cellItems[c] = it;
-                                break;
-                            }
-                        }
-                    });
-                    for (let c=0; c<colWidths.length; c++) {
-                        const it = cellItems[c] || {text:'',font:'',h:10,color:'#000000',bold:false,italic:false};
-                        const ff = getFont(it.font,opt.fontMode), fs = Math.round(Math.max(it.h*1.5,16));
-                        const b = it.bold || /bold/i.test(it.font), i = it.italic || /italic/i.test(it.font);
-                        const clr = opt.colorMode==='on'&&it.color!=='#000000'? it.color.replace('#',''):'';
+                    row.forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2 && it.x+it.w<=colEdges[c+1]+2) { cellItems[c]=it; break; } });
+                    for (let c=0;c<colWidths.length;c++) {
+                        const it = cellItems[c]||{text:'',font:'',h:10,color:'#000000',bold:false,italic:false};
+                        const ff = getFont(it.font, opt.styleMode!=='off'?'preserve':'calibri');
+                        const fs = Math.round(Math.max(it.h*1.5,16));
+                        const b = it.bold, i = it.italic;
+                        const clr = opt.styleMode!=='off'&&it.color!=='#000000'?it.color.replace('#',''):'';
                         xml += `<w:tc><w:tcPr><w:tcW w:w="${Math.round(colWidths[c]*20)}" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r></w:p></w:tc>`;
                     }
                     xml += '</w:tr>';
-                    row.forEach(it=>tableItemSet.add(it));
+                    row.forEach(it=>tableSet.add(it));
                 }
                 xml += '</w:tbl>';
                 body += opt.layout==='absolute' ? shapeWrap(xml, left, top, tableW, 20) : xml;
             }
         }
 
+        // Text items
         for (const it of page.items) {
-            if (tableItemSet.has(it) || !it.text.trim()) continue;
-            const ff = getFont(it.font,opt.fontMode), fs = Math.round(Math.max(it.h*1.5,16));
+            if (tableSet.has(it) || !it.text.trim()) continue;
+            const ff = getFont(it.font, opt.styleMode!=='off'?'preserve':'calibri');
+            const fs = Math.round(Math.max(it.h*1.5,16));
             const b = it.bold, i = it.italic;
-            const clr = opt.colorMode==='on'&&it.color!=='#000000'? it.color.replace('#',''):'';
+            const clr = opt.styleMode!=='off'&&it.color!=='#000000'?it.color.replace('#',''):'';
             const run = `<w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r>`;
-            if (opt.layout==='absolute') {
-                body += framePrParagraph(run, it.x, it.y, Math.max(it.w,50), it.h);
-            } else {
-                body += `<w:p>${run}</w:p>`;
-            }
+            body += opt.layout==='absolute' ? framePrParagraph(run, it.x, it.y, Math.max(it.w,50), it.h) : `<w:p>${run}</w:p>`;
         }
     }
+
+    docRels += '</Relationships>';
+    zip.folder('_rels').file('.rels',`<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+    zip.folder('word').folder('_rels').file('document.xml.rels', docRels);
 
     zip.folder('word').file('document.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
 xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
+xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
 <w:body>${body}<w:sectPr><w:pgSz w:w="${pw}" w:h="${ph}"/><w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0"/></w:sectPr></w:body></w:document>`);
+
     return zip.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document', compression:'DEFLATE'});
 }
 
 function shapeWrap(innerXml, x, y, w, h) {
-    const cx = Math.round(w*EMU), cy = Math.round(h*EMU), offX = Math.round(x*EMU), offY = Math.round(y*EMU);
-    const id = Math.floor(Math.random()*1000000);
-    return `<w:p><w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251658240" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1">
+    const cx=Math.round(w*EMU), cy=Math.round(h*EMU), offX=Math.round(x*EMU), offY=Math.round(y*EMU);
+    const id=Math.floor(Math.random()*1000000);
+    return `<w:p><w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251659264" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1">
 <wp:simplePos x="${offX}" y="${offY}"/><wp:positionH relativeFrom="page"><wp:posOffset>${offX}</wp:posOffset></wp:positionH>
 <wp:positionV relativeFrom="page"><wp:posOffset>${offY}</wp:posOffset></wp:positionV>
 <wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/>
@@ -386,13 +423,13 @@ function shapeWrap(innerXml, x, y, w, h) {
 }
 
 function framePrParagraph(innerRun, x, y, w, h) {
-    const left = Math.round(x*20), top = Math.round(y*20), width = Math.round(w*20), height = Math.round(h*20);
+    const left=Math.round(x*20), top=Math.round(y*20), width=Math.round(w*20), height=Math.round(h*20);
     return `<w:p><w:pPr><w:framePr w:w="${width}" w:h="${height}" w:hRule="exact" w:wrap="notBeside" w:vAnchor="page" w:hAnchor="page" w:x="${left}" w:y="${top}"/></w:pPr>${innerRun}</w:p>`;
 }
 
 function getFont(fn, mode) {
     if (mode==='calibri') return 'Calibri';
-    const n = (fn||'').toLowerCase();
+    const n=(fn||'').toLowerCase();
     if (n.includes('times')||n.includes('roman')) return 'Times New Roman';
     if (n.includes('helvetica')||n.includes('arial')) return 'Arial';
     if (n.includes('courier')) return 'Courier New';
