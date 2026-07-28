@@ -43,6 +43,7 @@
         .progress{width:100%;height:10px;background:var(--line);border-radius:20px;margin-top:12px} .progress-bar{height:100%;width:0%;background:linear-gradient(to right,var(--stamp),var(--teal))}
         .loader{width:28px;height:28px;border:4px solid rgba(37,99,235,.15);border-top-color:var(--stamp);border-radius:50%;animation:spin 1s linear infinite;display:none} @keyframes spin{to{transform:rotate(360deg)}}
         .footer{background:var(--ink);color:#dfe6f2;margin-top:60px;padding:40px 20px;text-align:center}
+        .info-box{background:rgba(8,145,178,0.08);border:1px solid var(--teal);border-radius:16px;padding:16px;margin-bottom:20px;font-size:0.9rem;color:var(--teal);text-align:center}
     </style>
 </head>
 <body>
@@ -54,7 +55,11 @@
 
 <div class="container">
     <h1 class="title">PDF to Word · Exact Layout</h1>
-    <p class="subtitle">Real tables, images, colours, rich formatting – fully editable DOCX</p>
+    <p class="subtitle">Real tables, images, colours, and rich formatting – fully editable DOCX</p>
+    <div class="info-box">
+        <i class="fa-solid fa-circle-info"></i> <strong>100% browser‑based</strong> – no upload to any server.<br>
+        For extremely complex PDFs (scanned documents, heavy vector graphics), a server‑side engine like LibreOffice gives perfect results.
+    </div>
 
     <label class="upload-box" id="uploadBox" for="pdfFileInput">
         <div class="upload-icon"><svg viewBox="0 0 64 64"><rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/><rect x="14" y="18" width="36" height="4" rx="1" fill="#fff" opacity=".9"/></svg></div>
@@ -170,9 +175,11 @@ async function convertPDFToWord(idx) {
             let tables = [];
             if (tableMode === 'on') tables = detectTablesGrid(merged, vp.width);
 
-            // Extract images
+            // Extract images (render page to JPEG – most reliable browser method)
             let images = [];
-            if (imageMode === 'on') images = await extractPageImages(page, vp);
+            if (imageMode === 'on') {
+                images = await extractPageImages(page, vp);
+            }
 
             allPages.push({ num:p, items:merged, tables, images, w:vp.width, h:vp.height });
             pb.style.width = ((p/pdf.numPages)*50)+'%';
@@ -231,128 +238,64 @@ function extractFontStyles(ops, text) {
     return styles;
 }
 
-// Improved table detection using column gaps (FIXED: use let for reassigned variables)
 function detectTablesGrid(items, pageWidth) {
     if (items.length<4) return [];
     const rows = [];
-    if (!items[0]) return []; // guard against undefined
-    let cur = [items[0]];
-    let lastY = items[0].y;
+    let cur = [items[0]], lastY = items[0].y;
     for (let i=1; i<items.length; i++) {
         if (!items[i]) continue;
-        if (Math.abs(items[i].y - lastY) < 2) {
-            cur.push(items[i]);
-        } else {
-            rows.push(cur);
-            cur = [items[i]];
-            lastY = items[i].y;
-        }
+        if (Math.abs(items[i].y - lastY) < 2) cur.push(items[i]);
+        else { rows.push(cur); cur = [items[i]]; lastY = items[i].y; }
     }
     rows.push(cur);
-    // Find column gaps
     const gapMap = new Map();
     rows.forEach(row => {
-        row.sort((a,b) => a.x - b.x);
+        row.sort((a,b)=>a.x-b.x);
         for (let i=1; i<row.length; i++) {
-            const gs = row[i-1].x + row[i-1].w;
-            const ge = row[i].x;
-            if (ge - gs > 5) {
-                const g = Math.round((gs + ge) / 2);
-                gapMap.set(g, (gapMap.get(g) || 0) + 1);
-            }
+            const gs = row[i-1].x + row[i-1].w, ge = row[i].x;
+            if (ge - gs > 5) { const g = Math.round((gs+ge)/2); gapMap.set(g, (gapMap.get(g)||0)+1); }
         }
     });
-    const thresh = Math.max(2, Math.floor(rows.length * 0.4));
-    const colEdges = [0, ...[...gapMap.entries()].filter(([_,c]) => c >= thresh).map(([x]) => x).sort((a,b) => a-b), pageWidth];
-    const tables = [];
-    let start = -1;
+    const thresh = Math.max(2, Math.floor(rows.length*0.4));
+    const colEdges = [0, ...[...gapMap.entries()].filter(([_,c])=>c>=thresh).map(([x])=>x).sort((a,b)=>a-b), pageWidth];
+    const tables = []; let start = -1;
     for (let r=0; r<rows.length; r++) {
-        const row = rows[r];
         const cols = new Set();
-        row.forEach(it => {
-            for (let c=0; c<colEdges.length-1; c++) {
-                if (it.x >= colEdges[c]-2 && it.x + it.w <= colEdges[c+1]+2) {
-                    cols.add(c);
-                    break;
-                }
-            }
-        });
-        if (cols.size >= 2) {
-            if (start === -1) start = r;
-        } else {
-            if (start !== -1 && r - start >= 2) {
-                tables.push({ rows: rows.slice(start, r), colEdges });
-            }
-            start = -1;
-        }
+        rows[r].forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2&&it.x+it.w<=colEdges[c+1]+2) { cols.add(c); break; } });
+        if (cols.size>=2) { if (start===-1) start=r; }
+        else { if (start!==-1 && r-start>=2) tables.push({rows:rows.slice(start,r), colEdges}); start=-1; }
     }
-    if (start !== -1 && rows.length - start >= 2) {
-        tables.push({ rows: rows.slice(start), colEdges });
-    }
+    if (start!==-1 && rows.length-start>=2) tables.push({rows:rows.slice(start), colEdges});
     return tables;
 }
 
-// Image extraction (improved safety)
 async function extractPageImages(page, viewport) {
-    const images = [];
-    try {
-        const opList = await page.getOperatorList();
-        const imageKeys = new Set();
-        for (let i=0; i<opList.fnArray.length; i++) {
-            const fn = opList.fnArray[i];
-            if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintInlineImageXObject) {
-                const key = opList.argsArray[i]?.[0];
-                if (key && !imageKeys.has(key)) {
-                    imageKeys.add(key);
-                    try {
-                        const imgData = await page.objs.get(key);
-                        if (imgData && imgData.data) {
-                            const canvas = document.createElement('canvas');
-                            canvas.width = imgData.width;
-                            canvas.height = imgData.height;
-                            const ctx = canvas.getContext('2d');
-                            if (imgData.data instanceof Uint8ClampedArray) {
-                                const imageData = new ImageData(imgData.data, imgData.width, imgData.height);
-                                ctx.putImageData(imageData, 0, 0);
-                            } else if (imgData instanceof ImageBitmap) {
-                                ctx.drawImage(imgData, 0, 0);
-                            } else if (imgData.data && imgData.data.buffer) {
-                                const blob = new Blob([imgData.data], {type:'image/png'});
-                                const bmp = await createImageBitmap(blob);
-                                ctx.drawImage(bmp, 0, 0);
-                            }
-                            const jpeg = canvas.toDataURL('image/jpeg', 0.9);
-                            images.push({
-                                data: jpeg,
-                                x: 0, y: 0,
-                                w: viewport.width, h: viewport.height,
-                                id: key
-                            });
-                        }
-                    } catch(e) {}
-                }
-            }
-        }
-    } catch(e) {}
-    return images;
+    // Render the whole page as a JPEG – this captures all visible content (images, vectors)
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({canvasContext:ctx, viewport}).promise;
+    const jpeg = canvas.toDataURL('image/jpeg', 0.92);
+    return [{ data:jpeg, x:0, y:0, w:viewport.width, h:viewport.height }];
 }
 
 // ---------- DOCX BUILDER ----------
 const EMU = 12700;
 async function buildDocx(pages, opt) {
     const zip = new JSZip();
-    zip.file('[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
+    zip.file('[Content_Types].xml',`<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
 
     const fp = pages[0], pw = Math.round(fp.w*20), ph = Math.round(fp.h*20);
     let body = '';
     let imageRelId = 1;
-    let docRels = '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+    let docRels = '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
 
     for (let pi=0; pi<pages.length; pi++) {
         const page = pages[pi];
         if (pi>0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
 
-        // Images (behind text)
+        // Full‑page image behind text (optional)
         if (opt.imageMode==='on') {
             for (const img of page.images) {
                 const jpegData = img.data.split(',')[1];
@@ -420,7 +363,7 @@ async function buildDocx(pages, opt) {
     zip.folder('_rels').file('.rels',`<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
     zip.folder('word').folder('_rels').file('document.xml.rels', docRels);
 
-    zip.folder('word').file('document.xml', `<?xml version="1.0" encoding="UTF-8"?>
+    zip.folder('word').file('document.xml', `<?xml version="1.0"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
