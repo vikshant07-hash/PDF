@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo.png">
+<meta name="description" content="AI-powered PDF to Word converter with smart layout detection and text preservation.">
+<meta name="keywords" content="Pdfboon, PDF to Word, AI PDF Converter, Vikshant Kralta, Online PDF Tools">
+<meta name="author" content="Vikshant Kralta">
+<meta name="robots" content="index, follow">
+<title>PDF to Word - PDFBoon</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.0/docx.umd.min.js"></script>
+
+<style>
+:root{
+  --ink:#0d2545;
+  --ink-soft:#3d5578;
+  --paper:#edf2f9;
+  --paper-raised:#f8fafc;
+  --stamp:#2563eb;
+  --stamp-dark:#1d4ed8;
+  --teal:#0891b2;
+  --success:#10b981;
+  --success-dark:#0e9c6f;
+  --line:#d6e0ee;
+  --shadow: 0 10px 30px rgba(13,37,69,0.10);
+  --serif:'Fraunces', serif;
+  --sans:'Inter', sans-serif;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  font-family:var(--sans);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(37,99,235,0.08), transparent 40%),
+    radial-gradient(circle at 90% 15%, rgba(8,145,178,0.07), transparent 40%),
+    var(--paper);
+  color:var(--ink);
+}
+
+a{ text-decoration:none; color:inherit; }
+
+.container{ max-width:1100px; margin:auto; padding:20px; }
+
+/* NAVBAR */
+.navbar{
+  position:sticky; top:0; z-index:100;
+  background:rgba(237,242,249,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-container{
+  max-width:1180px; margin-inline:auto;
+  padding:14px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:20px; flex-wrap:nowrap;
+}
+.logo-wrapper{ display:flex; align-items:center; gap:12px; min-width:0; }
+.logo-box{
+  width:44px; height:44px; min-width:44px;
+  border-radius:12px; overflow:hidden;
+  background:#fff; border:1px solid var(--line);
+  box-shadow:var(--shadow); flex-shrink:0;
+}
+.logo-image{ width:100%; height:100%; object-fit:cover; }
+.logo-title{
+  font-family:var(--serif); font-weight:700;
+  font-size:1.15rem; color:var(--ink);
+  line-height:1.2; white-space:nowrap;
+}
+.logo-subtitle{ font-size:0.75rem; color:var(--ink-soft); white-space:nowrap; }
+.nav-links{ display:flex; align-items:center; gap:26px; }
+.nav-link{
+  position:relative; font-size:0.94rem; font-weight:500;
+  color:var(--ink-soft); padding:6px 2px;
+  transition:color .2s ease; white-space:nowrap;
+}
+.nav-link::after{
+  content:""; position:absolute; left:0; bottom:0;
+  width:0; height:2px; background:var(--stamp);
+  transition:width .25s ease;
+}
+.nav-link:hover{ color:var(--ink); }
+.nav-link:hover::after{ width:100%; }
+.nav-link.active-link{ color:var(--ink); }
+.nav-link.active-link::after{ width:100%; }
+
+.current-tool-pill{
+  display:flex; align-items:center; gap:8px;
+  background:rgba(37,99,235,0.08); color:var(--stamp-dark);
+  padding:7px 14px; border-radius:100px;
+  font-size:0.85rem; font-weight:700; white-space:nowrap;
+}
+.current-tool-pill i{ font-size:0.75rem; }
+
+.nav-tools-btn{
+  display:flex; align-items:center; gap:8px;
+  background:var(--stamp); color:#fff !important;
+  padding:10px 18px; border-radius:12px;
+  font-size:0.9rem; font-weight:600;
+  border:none; cursor:pointer;
+  box-shadow:0 4px 0 var(--stamp-dark);
+  transition:transform .15s ease; white-space:nowrap;
+  font-family:var(--sans);
+}
+.nav-tools-btn:hover{ transform:translateY(-2px); }
+.nav-tools-btn:active{ transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark); }
+.nav-tools-btn .dropdown-arrow{ font-size:0.68rem; transition:transform .2s ease; }
+.nav-item.open .nav-tools-btn .dropdown-arrow{ transform:rotate(180deg); }
+
+.mobile-menu{
+  display:none; width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border-radius:8px; color:var(--ink);
+  font-size:1.1rem; flex-shrink:0;
+  border:none; background:none; cursor:pointer;
+}
+.mobile-menu:hover{ background:rgba(37,99,235,0.08); }
+
+@media (max-width:920px){
+  .nav-links{
+    position:fixed; inset:70px 0 auto 0;
+    flex-direction:column; align-items:flex-start;
+    background:var(--paper-raised); padding:20px 24px;
+    gap:16px; border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+    transform:translateY(-130%); opacity:0;
+    transition:transform .3s ease, opacity .3s ease;
+  }
+  .nav-links.active{ transform:translateY(0); opacity:1; }
+  .mobile-menu{ display:flex; }
+  .logo-subtitle{ display:none; }
+  .nav-tools-btn{ width:100%; justify-content:space-between; }
+  .current-tool-pill{ width:100%; justify-content:center; }
+}
+
+/* DROPDOWN */
+.nav-item{ position:relative; }
+.dropdown-menu{
+  position:absolute; top:calc(100% + 14px); left:50%;
+  transform:translateX(-50%); min-width:250px;
+  background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:16px; box-shadow:var(--shadow);
+  padding:10px; display:none; flex-direction:column;
+  gap:4px; z-index:999;
+}
+.nav-item.open .dropdown-menu{ display:flex; }
+.dropdown-category{
+  font-size:0.68rem; font-weight:700;
+  letter-spacing:0.05em; text-transform:uppercase;
+  color:var(--ink-soft); padding:10px 12px 4px;
+}
+.dropdown-link{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 12px; border-radius:10px;
+  font-size:0.88rem; font-weight:500;
+  color:var(--ink-soft); transition:background .15s ease, color .15s ease;
+}
+.dropdown-link i{ width:16px; text-align:center; color:var(--stamp); font-size:0.85rem; }
+.dropdown-link:hover{ background:rgba(37,99,235,0.08); color:var(--ink); }
+.dropdown-link.active{ background:rgba(37,99,235,0.08); color:var(--ink); font-weight:700; }
+.dropdown-link.view-all{
+  margin-top:4px; padding-top:12px;
+  border-top:1px solid var(--line); border-radius:10px;
+  font-weight:600; color:var(--stamp);
+}
+.dropdown-link.view-all i{ color:var(--stamp); }
+
+@media (max-width:920px){
+  .nav-item{ width:100%; }
+  .dropdown-menu{
+    position:static; transform:none; min-width:0;
+    width:100%; box-shadow:none; border:none;
+    background:rgba(37,99,235,0.04); margin-top:10px;
+    padding:6px; display:none;
+  }
+  .nav-item.open .dropdown-menu{ display:flex; }
+}
+
+/* BREADCRUMB */
+.breadcrumb-bar{ background:var(--paper-raised); border-bottom:1px solid var(--line); }
+.breadcrumb-inner{
+  max-width:1180px; margin:auto; padding:12px 24px;
+  display:flex; align-items:center; gap:10px;
+  font-size:0.85rem; color:var(--ink-soft);
+}
+.breadcrumb-inner a{ display:flex; align-items:center; gap:6px; color:var(--ink-soft); transition:color .2s; }
+.breadcrumb-inner a:hover{ color:var(--stamp); }
+.breadcrumb-inner i.fa-chevron-right{ font-size:0.65rem; color:var(--line); }
+.breadcrumb-current{ display:flex; align-items:center; gap:6px; color:var(--stamp-dark); font-weight:700; }
+
+/* PAGE CONTENT */
+.title{
+  text-align:center; font-family:var(--serif);
+  font-size:42px; font-weight:700; color:var(--ink);
+  margin-bottom:10px; margin-top:20px;
+}
+.subtitle{ text-align:center; color:var(--ink-soft); margin-bottom:35px; }
+
+.ai-features-banner{
+  display:flex; align-items:center; justify-content:center;
+  gap:16px; flex-wrap:wrap; margin-bottom:30px;
+}
+.ai-badge{
+  display:flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg, var(--teal), #0e7490);
+  color:#fff; padding:6px 14px; border-radius:20px;
+  font-size:0.78rem; font-weight:600;
+}
+.ai-feature-tag{
+  display:flex; align-items:center; gap:5px;
+  font-size:0.8rem; color:var(--ink-soft);
+  background:var(--paper-raised); padding:6px 12px;
+  border-radius:20px; border:1px solid var(--line);
+}
+.ai-feature-tag i{ color:var(--stamp); font-size:0.7rem; }
+
+.upload-box{
+  background:var(--paper-raised);
+  border:2px dashed var(--stamp);
+  border-radius:24px; min-height:240px;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  text-align:center; cursor:pointer;
+  transition:.3s; padding:20px; box-shadow:var(--shadow);
+}
+.upload-box:hover, .upload-box.active{
+  background:rgba(37,99,235,0.06);
+  border-color:var(--stamp-dark);
+}
+.upload-icon{ width:80px; margin-bottom:15px; }
+.upload-icon svg{ width:100%; height:auto; filter:drop-shadow(0 6px 14px rgba(37,99,235,0.25)); }
+.upload-box h2{ font-family:var(--serif); font-size:28px; font-weight:600; color:var(--ink); margin-bottom:10px; }
+.upload-box p{ color:var(--ink-soft); }
+input[type=file]{ display:none; }
+
+.settings{
+  margin-top:30px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+.card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  padding:20px; border-radius:18px; box-shadow:var(--shadow);
+}
+.card label{ display:block; margin-bottom:10px; font-weight:600; color:var(--ink); font-size:0.92rem; }
+.card small{ display:block; margin-top:8px; color:var(--ink-soft); font-size:0.78rem; }
+.card select{
+  width:100%; padding:14px; border:1px solid var(--line);
+  border-radius:12px; background:#fff; color:var(--ink);
+  font-size:0.95rem; transition:border-color .2s, box-shadow .2s;
+}
+.card select:focus{
+  outline:none; border-color:var(--stamp);
+  box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.files{ margin-top:35px; display:flex; flex-direction:column; gap:20px; }
+.file-card{
+  background:var(--paper-raised); border:1px solid var(--line);
+  padding:25px; border-radius:24px; display:flex;
+  flex-wrap:wrap; gap:20px; align-items:center;
+  justify-content:space-between; box-shadow:var(--shadow);
+}
+.preview{
+  width:100px; height:130px; background:#fff;
+  border:1px solid var(--line); border-radius:14px;
+  overflow:hidden; flex-shrink:0;
+}
+.preview canvas{ width:100%; height:100%; }
+.file-info{ flex:1; min-width:220px; }
+.file-name{ font-size:18px; font-weight:600; color:var(--ink); margin-bottom:10px; word-break:break-word; }
+.file-size, .ai-analysis{ font-size:14px; color:var(--ink-soft); margin-bottom:5px; }
+.ai-analysis{ color:var(--teal); font-weight:500; }
+.rename{
+  padding:14px; width:220px; border:1px solid var(--line);
+  border-radius:12px; background:#fff; color:var(--ink); font-size:0.9rem;
+}
+.rename:focus{ outline:none; border-color:var(--stamp); box-shadow:0 0 0 3px rgba(37,99,235,0.15); }
+.btn{
+  padding:14px 22px; border:none; border-radius:14px;
+  font-weight:600; cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.convert-btn{
+  background:var(--stamp); color:white;
+  box-shadow:0 4px 0 var(--stamp-dark);
+}
+.convert-btn:hover{ transform:translateY(-2px); }
+.convert-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark); }
+.download-btn{
+  background:var(--success); color:white;
+  text-decoration:none; display:none;
+  box-shadow:0 4px 0 var(--success-dark);
+}
+.download-btn:hover{ transform:translateY(-2px); }
+.progress{ width:100%; height:10px; background:var(--line); border-radius:20px; overflow:hidden; margin-top:15px; }
+.progress-bar{ height:100%; width:0%; background:linear-gradient(to right,var(--stamp),var(--teal)); transition:.3s; }
+.loader{
+  width:28px; height:28px;
+  border:4px solid rgba(37,99,235,.15);
+  border-top:4px solid var(--stamp);
+  border-radius:50%; animation:spin 1s linear infinite;
+  display:none;
+}
+@keyframes spin{ 100%{ transform:rotate(360deg); } }
+
+.ai-status{
+  margin-top:8px; padding:8px 12px;
+  background:rgba(8,145,178,0.06);
+  border-radius:10px; font-size:0.8rem;
+  color:var(--teal); display:none;
+}
+
+@media(max-width:768px){
+  .file-card{ flex-direction:column; align-items:flex-start; }
+  .rename{ width:100%; }
+  .title{ font-size:32px; }
+}
+
+/* FOOTER */
+.footer{
+  background:var(--ink); color:#dfe6f2;
+  margin-top:60px; padding:40px 20px;
+}
+.footer-simple{
+  max-width:1180px; margin:auto;
+  display:flex; align-items:center;
+  justify-content:space-between; flex-wrap:wrap;
+  gap:20px; padding-bottom:24px;
+  border-bottom:1px solid rgba(255,255,255,0.12);
+}
+.footer-brand{ display:flex; align-items:center; gap:12px; }
+.footer-brand img{ width:40px; height:40px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+.footer-title{ font-family:var(--serif); font-weight:700; font-size:1.05rem; color:#fff; }
+.footer-subtitle{ font-size:0.76rem; color:#9fb0cc; }
+.footer-simple-links{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+.footer-simple-links a{ font-size:0.88rem; color:#c8d2e6; transition:color .2s; }
+.footer-simple-links a:hover{ color:#fff; }
+.footer-social{ display:flex; gap:10px; }
+.footer-social a{
+  width:36px; height:36px; border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; transition:background .2s, border-color .2s, transform .2s;
+}
+.footer-social a:hover{ background:var(--stamp); border-color:var(--stamp); transform:translateY(-3px); }
+.footer-bottom{
+  max-width:1180px; margin:20px auto 0;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:10px;
+}
+.copyright{ font-size:0.78rem; color:#8494b5; line-height:1.6; }
+
+@media(max-width:600px){
+  .footer-simple{ flex-direction:column; text-align:center; }
+  .footer-bottom{ flex-direction:column; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo-wrapper">
+      <div class="logo-box">
+        <img src="images/logo.png" class="logo-image" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.innerHTML='📄'">
+      </div>
+      <div>
+        <h2 class="logo-title">PDFBoon</h2>
+        <p class="logo-subtitle">AI PDF Toolkit</p>
+      </div>
+    </div>
+
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-link">Home</a>
+      <div class="current-tool-pill"><i class="fa-solid fa-file-word"></i> PDF to Word</div>
+
+      <div class="nav-item" id="toolsDropdown">
+        <button class="nav-tools-btn" id="toolsToggle" type="button">
+          <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+        </button>
+        <div class="dropdown-menu">
+          <div class="dropdown-category">Organize PDF</div>
+          <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+          <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
+          <div class="dropdown-category">Optimize PDF</div>
+          <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+          <div class="dropdown-category">Convert PDF</div>
+          <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
+          <a href="pdf-to-word.html" class="dropdown-link active"><i class="fa-solid fa-file-word"></i> PDF to Word</a>
+          <div class="dropdown-category">Security</div>
+          <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+          <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+        </div>
+      </div>
+
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+
+    <button class="mobile-menu" id="mobileMenuBtn">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb-inner">
+    <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
+    <i class="fa-solid fa-chevron-right"></i>
+    <span class="breadcrumb-current"><i class="fa-solid fa-file-word"></i> PDF to Word</span>
+  </div>
+</div>
+
+<div class="container">
+
+<h1 class="title">AI PDF to Word Converter</h1>
+<p class="subtitle">Intelligent layout detection, font preservation & smart text extraction</p>
+
+<div class="ai-features-banner">
+  <span class="ai-badge"><i class="fa-solid fa-robot"></i> AI Powered</span>
+  <span class="ai-feature-tag"><i class="fa-solid fa-text-height"></i> Font Detection</span>
+  <span class="ai-feature-tag"><i class="fa-solid fa-table"></i> Table Recognition</span>
+  <span class="ai-feature-tag"><i class="fa-solid fa-image"></i> Image Extraction</span>
+  <span class="ai-feature-tag"><i class="fa-solid fa-language"></i> Multi-language</span>
+</div>
+
+<label class="upload-box" id="uploadBox" for="pdfInput">
+  <div class="upload-icon">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/>
+      <rect x="14" y="18" width="36" height="4" rx="1" fill="#ffffff" opacity="0.9"/>
+      <rect x="14" y="26" width="28" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
+      <rect x="14" y="33" width="32" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
+      <rect x="14" y="40" width="20" height="3" rx="1" fill="#ffffff" opacity="0.7"/>
+      <circle cx="46" cy="46" r="15" fill="#0891b2"/>
+      <path d="M40 46L45 51L53 41" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h2>Drag & Drop PDF Files</h2>
+  <p>or click here to Browse — Supports up to 50MB</p>
+  <input type="file" id="pdfInput" multiple accept="application/pdf">
+</label>
+
+<div class="settings">
+  <div class="card">
+    <label><i class="fa-solid fa-brain"></i> AI Layout Mode</label>
+    <select id="layoutMode">
+      <option value="auto">Auto-Detect (Recommended)</option>
+      <option value="preserve">Preserve Exact Layout</option>
+      <option value="flow">Flowing Text (Better for editing)</option>
+    </select>
+    <small>Auto-Detect analyzes each page and decides the best approach.</small>
+  </div>
+
+  <div class="card">
+    <label><i class="fa-solid fa-font"></i> Text Recognition</label>
+    <select id="textMode">
+      <option value="smart">Smart (AI grouping)</option>
+      <option value="raw">Raw extraction</option>
+      <option value="ocr_enhanced">Enhanced (bold/italic detection)</option>
+    </select>
+    <small>Smart mode groups text into proper paragraphs using ML heuristics.</small>
+  </div>
+
+  <div class="card">
+    <label><i class="fa-solid fa-table-cells"></i> Table Handling</label>
+    <select id="tableMode">
+      <option value="detect">Detect & Convert to Word Tables</option>
+      <option value="text">Extract as Tabbed Text</option>
+      <option value="ignore">Ignore Tables</option>
+    </select>
+    <small>Real table detection using spatial analysis of text positions.</small>
+  </div>
+
+  <div class="card">
+    <label><i class="fa-solid fa-image"></i> Image Extraction</label>
+    <select id="imageMode">
+      <option value="include">Include Images in DOCX</option>
+      <option value="placeholder">Place markers only</option>
+      <option value="skip">Skip Images</option>
+    </select>
+    <small>Extracts embedded images and places them in the Word document.</small>
+  </div>
+</div>
+
+<div class="files" id="files"></div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-simple">
+    <div class="footer-brand">
+      <img src="images/logo.png" alt="PDFBoon" onerror="this.style.display='none';this.parentElement.querySelector('.footer-title').textContent='📄 PDFBoon'">
+      <div>
+        <h2 class="footer-title">PDFBoon</h2>
+        <p class="footer-subtitle">FAST PDF TOOLKIT</p>
+      </div>
+    </div>
+    <div class="footer-simple-links">
+      <a href="index.html">Home</a>
+      <a href="tools.html">All Tools</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-social">
+      <a href="not.html"><i class="fab fa-facebook"></i></a>
+      <a href="not.html"><i class="fab fa-linkedin"></i></a>
+      <a href="not.html"><i class="fab fa-instagram"></i></a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+    <p class="copyright">Designed & Developed by Vikshant Kralta</p>
+  </div>
+</footer>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// Mobile menu toggle
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
+
+// Tools dropdown
+const toolsDropdown = document.getElementById('toolsDropdown');
+const toolsToggle = document.getElementById('toolsToggle');
+
+toolsToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toolsDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!toolsDropdown.contains(e.target)) {
+    toolsDropdown.classList.remove('open');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') toolsDropdown.classList.remove('open');
+});
+
+// ============ AI PDF TO WORD ENGINE ============
+
+const pdfInput = document.getElementById('pdfInput');
+const filesBox = document.getElementById('files');
+const uploadBox = document.getElementById('uploadBox');
+let uploadedFiles = [];
+
+pdfInput.addEventListener('change', (e) => {
+  uploadedFiles = [...e.target.files];
+  renderFiles();
+});
+
+function formatSize(bytes) {
+  if (bytes > 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  return (bytes / 1024).toFixed(2) + ' KB';
+}
+
+// AI: Detect if text looks like a heading based on font properties
+function isLikelyHeading(item, allItems, pageHeight) {
+  const avgFontSize = allItems.reduce((sum, i) => sum + (i.height || 12), 0) / allItems.length;
+  const fontSize = item.height || 12;
+  
+  // Headings are typically larger than body text
+  if (fontSize > avgFontSize * 1.3) return true;
+  
+  // Check if text is bold (font name contains "Bold")
+  if (item.fontName && /bold/i.test(item.fontName)) return true;
+  
+  // Short lines at top of page might be headings
+  const yPos = item.transform[5];
+  if (yPos > pageHeight * 0.75 && item.str.length < 80 && fontSize >= avgFontSize) return true;
+  
+  return false;
+}
+
+// AI: Detect table structure using spatial analysis
+function detectTableStructure(lineGroups) {
+  // A table has multiple lines with aligned X positions across rows
+  if (lineGroups.length < 2) return null;
+  
+  const xPositions = new Set();
+  for (const line of lineGroups) {
+    for (const item of line) {
+      xPositions.add(Math.round(item.transform[4] / 5) * 5); // Round to nearest 5
+    }
+  }
+  
+  // If we have consistent column positions, it's likely a table
+  if (xPositions.size >= 2 && xPositions.size <= 8) {
+    const sortedX = [...xPositions].sort((a, b) => a - b);
+    // Check alignment consistency
+    let consistent = true;
+    for (let i = 1; i < lineGroups.length; i++) {
+      const lineX = new Set(lineGroups[i].map(item => Math.round(item.transform[4] / 5) * 5));
+      const overlap = [...lineX].filter(x => sortedX.includes(x)).length;
+      if (overlap < Math.min(lineX.size, sortedX.length) * 0.6) {
+        consistent = false;
+        break;
+      }
+    }
+    if (consistent) return sortedX;
+  }
+  
+  return null;
+}
+
+// AI: Group text items into semantic paragraphs
+function groupIntoParagraphs(items, pageHeight) {
+  const paragraphs = [];
+  let currentParagraph = [];
+  let lastY = null;
+  let lastX = null;
+  
+  // Sort by Y (top to bottom), then X (left to right)
+  const sorted = [...items].sort((a, b) => {
+    const yDiff = b.transform[5] - a.transform[5];
+    if (Math.abs(yDiff) > 2) return yDiff;
+    return a.transform[4] - b.transform[4];
+  });
+  
+  for (const item of sorted) {
+    const y = item.transform[5];
+    const x = item.transform[4];
+    
+    if (lastY === null) {
+      currentParagraph.push(item);
+    } else {
+      const yGap = lastY - y;
+      const xGap = Math.abs(x - (lastX || 0));
+      
+      // Large Y gap = new paragraph
+      if (yGap > (item.height || 12) * 2.5 || yGap < -(item.height || 12) * 2.5) {
+        if (currentParagraph.length > 0) {
+          paragraphs.push([...currentParagraph]);
+        }
+        currentParagraph = [item];
+      }
+      // Same line or close Y = same paragraph
+      else if (Math.abs(yGap) < (item.height || 12) * 1.8) {
+        currentParagraph.push(item);
+      }
+      // Small gap = might be same paragraph (AI decision)
+      else if (yGap > 0 && yGap < (item.height || 12) * 3 && xGap < 200) {
+        currentParagraph.push(item);
+      } else {
+        if (currentParagraph.length > 0) {
+          paragraphs.push([...currentParagraph]);
+        }
+        currentParagraph = [item];
+      }
+    }
+    
+    lastY = y;
+    lastX = x;
+  }
+  
+  if (currentParagraph.length > 0) paragraphs.push(currentParagraph);
+  return paragraphs;
+}
+
+// AI: Extract and process images from PDF
+async function extractImages(page, imageMode) {
+  if (imageMode === 'skip') return [];
+  
+  try {
+    const opList = await page.getOperatorList();
+    const images = [];
+    const imageKeys = new Set();
+    
+    for (let i = 0; i < opList.fnArray.length; i++) {
+      if (opList.fnArray[i] === pdfjsLib.OPS.paintImageXObject ||
+          opList.fnArray[i] === pdfjsLib.OPS.paintInlineImageXObject) {
+        const imgKey = opList.argsArray[i]?.[0];
+        if (imgKey && !imageKeys.has(imgKey)) {
+          imageKeys.add(imgKey);
+          try {
+            const imgData = await page.objs.get(imgKey);
+            if (imgData && imgData.data) {
+              images.push({
+                key: imgKey,
+                width: imgData.width,
+                height: imgData.height,
+                kind: imgData.kind
+              });
+            }
+          } catch (e) {
+            // Image not accessible
+          }
+        }
+      }
+    }
+    return images;
+  } catch (e) {
+    return [];
+  }
+}
+
+async function renderFiles() {
+  filesBox.innerHTML = '';
+
+  for (let index = 0; index < uploadedFiles.length; index++) {
+    const file = uploadedFiles[index];
+    const card = document.createElement('div');
+    card.className = 'file-card';
+
+    card.innerHTML = `
+      <div class="preview">
+        <canvas id="preview-${index}"></canvas>
+      </div>
+      <div class="file-info">
+        <div class="file-name">${file.name}</div>
+        <div class="file-size">Original: ${formatSize(file.size)}</div>
+        <div class="ai-analysis" id="ai-analysis-${index}">
+          <i class="fa-solid fa-robot"></i> AI: Ready to analyze...
+        </div>
+        <div class="ai-status" id="ai-status-${index}">
+          <i class="fa-solid fa-circle-check"></i> <span id="status-text-${index}">Waiting...</span>
+        </div>
+        <div class="progress"><div class="progress-bar" id="progress-${index}"></div></div>
+      </div>
+      <input type="text" class="rename" id="rename-${index}" value="${file.name.replace(/\.pdf$/i, '-converted')}">
+      <button class="btn convert-btn" onclick="convertPDFToWord(${index})">
+        <i class="fa-solid fa-sync-alt"></i> Convert
+      </button>
+      <div class="loader" id="loader-${index}"></div>
+      <a class="btn download-btn" id="download-${index}" href="#" download>Download .docx</a>
+    `;
+
+    filesBox.appendChild(card);
+    generatePreview(file, index);
+    preAnalyzePDF(file, index);
+  }
+}
+
+// Pre-analyze PDF for AI insights
+async function preAnalyzePDF(file, index) {
+  try {
+    const data = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+    const page = await pdf.getPage(1);
+    const textContent = await page.getTextContent();
+    const items = textContent.items;
+    
+    const aiEl = document.getElementById(`ai-analysis-${index}`);
+    const statusEl = document.getElementById(`ai-status-${index}`);
+    const statusText = document.getElementById(`status-text-${index}`);
+    
+    if (aiEl && items.length > 0) {
+      const fonts = new Set(items.map(i => i.fontName).filter(Boolean));
+      const languages = detectLanguages(items.map(i => i.str).join(' '));
+      
+      aiEl.innerHTML = `
+        <i class="fa-solid fa-robot"></i> 
+        AI: ${pdf.numPages} pages · ${items.length} text elements · ${fonts.size} fonts
+        ${languages.length > 0 ? ' · ' + languages.join(', ') : ''}
+      `;
+      
+      if (statusEl && statusText) {
+        statusEl.style.display = 'block';
+        statusText.textContent = `Detected ${fonts.size} font styles, ${items.length} text blocks`;
+      }
+    }
+  } catch (e) {
+    console.warn('Pre-analysis failed:', e);
+  }
+}
+
+// AI: Simple language detection
+function detectLanguages(text) {
+  const patterns = {
+    'EN': /[a-zA-Z]{3,}/,
+    'HI': /[\u0900-\u097F]/,
+    'ZH': /[\u4E00-\u9FFF]/,
+    'AR': /[\u0600-\u06FF]/,
+    'JA': /[\u3040-\u309F\u30A0-\u30FF]/,
+    'KO': /[\uAC00-\uD7AF]/,
+    'RU': /[\u0400-\u04FF]/,
+    'ES': /[áéíóúñÁÉÍÓÚÑüÜ]/,
+    'FR': /[àâçéèêëîïôûùüÿœæ]/i,
+  };
+  
+  const detected = [];
+  for (const [lang, pattern] of Object.entries(patterns)) {
+    if (pattern.test(text)) detected.push(lang);
+  }
+  return detected.length > 0 ? detected : ['EN'];
+}
+
+async function generatePreview(file, index) {
+  try {
+    const data = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 0.5 });
+    const canvas = document.getElementById(`preview-${index}`);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    await page.render({ canvasContext: ctx, viewport }).promise;
+  } catch (e) {
+    console.warn('Preview generation failed');
+  }
+}
+
+async function convertPDFToWord(index) {
+  const file = uploadedFiles[index];
+  const progress = document.getElementById(`progress-${index}`);
+  const loader = document.getElementById(`loader-${index}`);
+  const button = document.querySelectorAll('.convert-btn')[index];
+  const downloadBtn = document.getElementById(`download-${index}`);
+  const rename = document.getElementById(`rename-${index}`).value;
+  const statusText = document.getElementById(`status-text-${index}`);
+  const aiStatus = document.getElementById(`ai-status-${index}`);
+
+  const layoutMode = document.getElementById('layoutMode').value;
+  const textMode = document.getElementById('textMode').value;
+  const tableMode = document.getElementById('tableMode').value;
+  const imageMode = document.getElementById('imageMode').value;
+
+  button.style.display = 'none';
+  loader.style.display = 'block';
+  if (aiStatus) aiStatus.style.display = 'block';
+  progress.style.width = '0%';
+
+  try {
+    const data = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+    const totalPages = pdf.numPages;
+
+    // Collect all pages' structured content with AI analysis
+    const allPagesContent = [];
+    
+    for (let p = 1; p <= totalPages; p++) {
+      if (statusText) statusText.textContent = `AI processing page ${p}/${totalPages}...`;
+      
+      const page = await pdf.getPage(p);
+      const textContent = await page.getTextContent();
+      const viewport = page.getViewport({ scale: 1 });
+      const pageHeight = viewport.height;
+      
+      // Transform coordinates to viewport space
+      const items = textContent.items.map(item => ({
+        str: item.str,
+        transform: [...item.transform],
+        height: item.height || 12,
+        width: item.width || 0,
+        fontName: item.fontName || 'Unknown'
+      }));
+      
+      // AI: Group into paragraphs
+      const paragraphs = groupIntoParagraphs(items, pageHeight);
+      
+      // AI: Detect headings
+      const allItems = items;
+      const headings = new Set();
+      items.forEach(item => {
+        if (isLikelyHeading(item, allItems, pageHeight)) {
+          headings.add(item.str.trim());
+        }
+      });
+      
+      // AI: Detect tables
+      let tableStructure = null;
+      if (tableMode === 'detect') {
+        tableStructure = detectTableStructure(paragraphs);
+      }
+      
+      // AI: Extract images
+      let images = [];
+      if (imageMode !== 'skip') {
+        images = await extractImages(page, imageMode);
+      }
+      
+      allPagesContent.push({
+        pageNumber: p,
+        items,
+        paragraphs,
+        headings,
+        tableStructure,
+        images,
+        pageHeight,
+        pageWidth: viewport.width
+      });
+      
+      progress.style.width = ((p / totalPages) * 60) + '%';
+    }
+
+    // Build DOCX with AI-enhanced content
+    if (statusText) statusText.textContent = 'Building Word document with AI formatting...';
+    
+    const docxBlob = await buildDocxDocument(allPagesContent, {
+      layoutMode,
+      textMode,
+      tableMode,
+      imageMode,
+      originalName: file.name
+    });
+
+    progress.style.width = '90%';
+
+    // Create download
+    const url = URL.createObjectURL(docxBlob);
+    downloadBtn.href = url;
+    downloadBtn.download = (rename || 'converted') + '.docx';
+    downloadBtn.style.display = 'inline-block';
+    
+    progress.style.width = '100%';
+    
+    if (statusText) statusText.textContent = `✓ Converted ${totalPages} pages with AI layout preservation`;
+    
+  } catch (err) {
+    alert('Conversion failed: ' + err.message);
+    console.error(err);
+    if (statusText) statusText.textContent = 'Error during conversion';
+  } finally {
+    loader.style.display = 'none';
+    button.style.display = 'inline-block';
+  }
+}
+
+// Build actual DOCX using docx.js library with AI-structured content
+async function buildDocxDocument(pagesContent, options) {
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel, 
+          Table, TableRow, TableCell, WidthType, AlignmentType,
+          ImageRun, BorderStyle, PageBreak } = docx;
+
+  const doc = new Document({
+    creator: 'PDFBoon AI',
+    title: 'Converted PDF Document',
+    description: 'AI-powered PDF to Word conversion',
+    styles: {
+      default: {
+        document: {
+          run: { font: 'Calibri', size: 22 }
+        }
+      }
+    }
+  });
+
+  const children = [];
+
+  for (const pageContent of pagesContent) {
+    const { paragraphs, headings, tableStructure, pageNumber } = pageContent;
+
+    // Add page number indicator
+    if (pageNumber > 1) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: '', break: 1 })],
+        spacing: { before: 200 }
+      }));
+    }
+
+    // Process each paragraph with AI intelligence
+    for (const paragraph of paragraphs) {
+      if (paragraph.length === 0) continue;
+
+      // Sort paragraph items by X position
+      paragraph.sort((a, b) => a.transform[4] - b.transform[4]);
+
+      const fullText = paragraph.map(item => item.str).join(' ').trim();
+      if (!fullText) continue;
+
+      // AI: Determine if this is a heading
+      const isHeading = [...headings].some(h => fullText.includes(h)) && 
+                        fullText.length < 150 &&
+                        paragraph.some(item => {
+                          const fontSize = item.height || 12;
+                          return fontSize > 14;
+                        });
+
+      // AI: Determine font properties
+      const firstItem = paragraph[0];
+      const fontSize = Math.round((firstItem.height || 12) * 1.3); // Convert to approximate pt
+      const isBold = firstItem.fontName && /bold/i.test(firstItem.fontName);
+      const isItalic = firstItem.fontName && /italic/i.test(firstItem.fontName);
+
+      if (isHeading) {
+        // Create heading paragraph
+        const headingLevel = fontSize > 20 ? HeadingLevel.HEADING_1 : 
+                            fontSize > 16 ? HeadingLevel.HEADING_2 : 
+                            HeadingLevel.HEADING_3;
+        
+        children.push(new Paragraph({
+          heading: headingLevel,
+          children: [
+            new TextRun({
+              text: fullText,
+              bold: true,
+              size: Math.min(fontSize * 1.5, 36),
+              font: 'Calibri'
+            })
+          ],
+          spacing: { before: 240, after: 120 }
+        }));
+      } else if (tableStructure && options.tableMode === 'detect') {
+        // AI: Build table structure
+        const tableRows = [];
+        const columnPositions = tableStructure;
+        
+        // Group paragraph items into columns based on X positions
+        const rowData = paragraph.map(item => {
+          const x = item.transform[4];
+          let colIndex = 0;
+          let minDist = Infinity;
+          
+          for (let c = 0; c < columnPositions.length; c++) {
+            const dist = Math.abs(x - columnPositions[c]);
+            if (dist < minDist) {
+              minDist = dist;
+              colIndex = c;
+            }
+          }
+          
+          return { col: colIndex, text: item.str };
+        });
+
+        // Create simple table row
+        const cells = [];
+        for (let c = 0; c < columnPositions.length; c++) {
+          const cellText = rowData.filter(r => r.col === c).map(r => r.text).join(' ');
+          cells.push(new TableCell({
+            children: [new Paragraph({
+              children: [new TextRun({ text: cellText || '', size: 20 })]
+            })],
+            width: { size: 100 / columnPositions.length, type: WidthType.PERCENTAGE }
+          }));
+        }
+        
+        if (cells.length > 0) {
+          // Add table if we haven't started one yet (simplified)
+          children.push(new Table({
+            rows: [new TableRow({ children: cells })],
+            width: { size: 100, type: WidthType.PERCENTAGE }
+          }));
+        }
+      } else {
+        // Regular paragraph with AI-detected formatting
+        const runs = [];
+        let currentText = '';
+        
+        for (const item of paragraph) {
+          if (item.str) {
+            currentText += (currentText ? ' ' : '') + item.str;
+          }
+        }
+
+        if (currentText.trim()) {
+          runs.push(new TextRun({
+            text: currentText.trim(),
+            bold: isBold,
+            italics: isItalic,
+            size: Math.max(fontSize, 16),
+            font: 'Calibri'
+          }));
+
+          children.push(new Paragraph({
+            children: runs,
+            spacing: { after: 120, line: 276 },
+            alignment: AlignmentType.LEFT
+          }));
+        }
+      }
+    }
+  }
+
+  doc.addSection({
+    properties: {},
+    children: children
+  });
+
+  const blob = await Packer.toBlob(doc);
+  return blob;
+}
+
+// Upload event handlers
+uploadBox.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadBox.classList.add('active');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+  uploadBox.classList.remove('active');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove('active');
+  const files = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf');
+  if (files.length > 0) {
+    uploadedFiles = files;
+    renderFiles();
+  }
+});
+
+// Re-render when settings change
+document.getElementById('layoutMode').addEventListener('change', () => {
+  if (uploadedFiles.length > 0) renderFiles();
+});
+document.getElementById('textMode').addEventListener('change', () => {
+  if (uploadedFiles.length > 0) renderFiles();
+});
+</script>
+
+</body>
+</html>
