@@ -153,16 +153,18 @@ async function convertPDFToWord(idx) {
 
             // Merge text lines
             const merged = [];
-            let line = [items[0]], lineY = items[0].y, lineMaxH = items[0].h;
-            for (let i=1; i<items.length; i++) {
-                if (Math.abs(items[i].y - lineY) < Math.max(2, lineMaxH*0.4)) {
-                    line.push(items[i]);
-                    lineMaxH = Math.max(lineMaxH, items[i].h);
-                } else {
-                    merged.push(mergeLine(line)); line = [items[i]]; lineY = items[i].y; lineMaxH = items[i].h;
+            if (items.length) {
+                let line = [items[0]], lineY = items[0].y, lineMaxH = items[0].h;
+                for (let i=1; i<items.length; i++) {
+                    if (Math.abs(items[i].y - lineY) < Math.max(2, lineMaxH*0.4)) {
+                        line.push(items[i]);
+                        lineMaxH = Math.max(lineMaxH, items[i].h);
+                    } else {
+                        merged.push(mergeLine(line)); line = [items[i]]; lineY = items[i].y; lineMaxH = items[i].h;
+                    }
                 }
+                if (line.length) merged.push(mergeLine(line));
             }
-            if (line.length) merged.push(mergeLine(line));
 
             // Detect tables
             let tables = [];
@@ -229,38 +231,68 @@ function extractFontStyles(ops, text) {
     return styles;
 }
 
-// Improved table detection using column gaps
+// Improved table detection using column gaps (FIXED: use let for reassigned variables)
 function detectTablesGrid(items, pageWidth) {
     if (items.length<4) return [];
-    const rows=[], cur=[items[0]], lastY=items[0].y;
-    for (let i=1;i<items.length;i++) {
-        if (Math.abs(items[i].y-lastY)<2) cur.push(items[i]);
-        else { rows.push(cur); cur=[items[i]]; lastY=items[i].y; }
+    const rows = [];
+    if (!items[0]) return []; // guard against undefined
+    let cur = [items[0]];
+    let lastY = items[0].y;
+    for (let i=1; i<items.length; i++) {
+        if (!items[i]) continue;
+        if (Math.abs(items[i].y - lastY) < 2) {
+            cur.push(items[i]);
+        } else {
+            rows.push(cur);
+            cur = [items[i]];
+            lastY = items[i].y;
+        }
     }
     rows.push(cur);
     // Find column gaps
-    const gapMap=new Map();
-    rows.forEach(row=>{
-        row.sort((a,b)=>a.x-b.x);
-        for (let i=1;i<row.length;i++) {
-            const gs=row[i-1].x+row[i-1].w, ge=row[i].x;
-            if (ge-gs>5) { const g=Math.round((gs+ge)/2); gapMap.set(g,(gapMap.get(g)||0)+1); }
+    const gapMap = new Map();
+    rows.forEach(row => {
+        row.sort((a,b) => a.x - b.x);
+        for (let i=1; i<row.length; i++) {
+            const gs = row[i-1].x + row[i-1].w;
+            const ge = row[i].x;
+            if (ge - gs > 5) {
+                const g = Math.round((gs + ge) / 2);
+                gapMap.set(g, (gapMap.get(g) || 0) + 1);
+            }
         }
     });
-    const thresh=Math.max(2,Math.floor(rows.length*0.4));
-    const colEdges=[0,...[...gapMap.entries()].filter(([_,c])=>c>=thresh).map(([x])=>x).sort((a,b)=>a-b), pageWidth];
-    const tables=[]; let start=-1;
-    for (let r=0;r<rows.length;r++) {
-        const row=rows[r]; const cols=new Set();
-        row.forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2 && it.x+it.w<=colEdges[c+1]+2) { cols.add(c); break; } });
-        if (cols.size>=2) { if (start===-1) start=r; }
-        else { if (start!==-1 && r-start>=2) tables.push({rows:rows.slice(start,r), colEdges}); start=-1; }
+    const thresh = Math.max(2, Math.floor(rows.length * 0.4));
+    const colEdges = [0, ...[...gapMap.entries()].filter(([_,c]) => c >= thresh).map(([x]) => x).sort((a,b) => a-b), pageWidth];
+    const tables = [];
+    let start = -1;
+    for (let r=0; r<rows.length; r++) {
+        const row = rows[r];
+        const cols = new Set();
+        row.forEach(it => {
+            for (let c=0; c<colEdges.length-1; c++) {
+                if (it.x >= colEdges[c]-2 && it.x + it.w <= colEdges[c+1]+2) {
+                    cols.add(c);
+                    break;
+                }
+            }
+        });
+        if (cols.size >= 2) {
+            if (start === -1) start = r;
+        } else {
+            if (start !== -1 && r - start >= 2) {
+                tables.push({ rows: rows.slice(start, r), colEdges });
+            }
+            start = -1;
+        }
     }
-    if (start!==-1 && rows.length-start>=2) tables.push({rows:rows.slice(start), colEdges});
+    if (start !== -1 && rows.length - start >= 2) {
+        tables.push({ rows: rows.slice(start), colEdges });
+    }
     return tables;
 }
 
-// Image extraction using page resources
+// Image extraction (improved safety)
 async function extractPageImages(page, viewport) {
     const images = [];
     try {
@@ -274,28 +306,22 @@ async function extractPageImages(page, viewport) {
                     imageKeys.add(key);
                     try {
                         const imgData = await page.objs.get(key);
-                        if (imgData) {
-                            // Determine position from transform (approximate: use the first occurrence)
-                            // For simplicity we extract the image data and later place at (0,0) full page
+                        if (imgData && imgData.data) {
                             const canvas = document.createElement('canvas');
                             canvas.width = imgData.width;
                             canvas.height = imgData.height;
                             const ctx = canvas.getContext('2d');
                             if (imgData.data instanceof Uint8ClampedArray) {
-                                // RGBA data
-                                const img = new ImageData(imgData.data, imgData.width, imgData.height);
-                                ctx.putImageData(img,0,0);
+                                const imageData = new ImageData(imgData.data, imgData.width, imgData.height);
+                                ctx.putImageData(imageData, 0, 0);
                             } else if (imgData instanceof ImageBitmap) {
-                                ctx.drawImage(imgData,0,0);
-                            } else {
-                                // try as Image
+                                ctx.drawImage(imgData, 0, 0);
+                            } else if (imgData.data && imgData.data.buffer) {
                                 const blob = new Blob([imgData.data], {type:'image/png'});
                                 const bmp = await createImageBitmap(blob);
-                                ctx.drawImage(bmp,0,0);
+                                ctx.drawImage(bmp, 0, 0);
                             }
                             const jpeg = canvas.toDataURL('image/jpeg', 0.9);
-                            // For now place image at top-left with its dimensions scaled to PDF coordinates
-                            // Note: we don't have exact position, so we place at 0,0 with full page width
                             images.push({
                                 data: jpeg,
                                 x: 0, y: 0,
@@ -326,7 +352,7 @@ async function buildDocx(pages, opt) {
         const page = pages[pi];
         if (pi>0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
 
-        // Images first (behind text)
+        // Images (behind text)
         if (opt.imageMode==='on') {
             for (const img of page.images) {
                 const jpegData = img.data.split(',')[1];
@@ -335,7 +361,6 @@ async function buildDocx(pages, opt) {
                 zip.folder('word').folder('media').file(imgName, bytes);
                 const relId = `rIdImg${imageRelId}`;
                 docRels += `<Relationship Id="${relId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${imgName}"/>`;
-                // Place image at full page using absolute anchor
                 const cx = Math.round(img.w * EMU), cy = Math.round(img.h * EMU);
                 const offX = Math.round(img.x * EMU), offY = Math.round(img.y * EMU);
                 const id = Math.floor(Math.random()*1000000);
