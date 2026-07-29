@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/logo.png">
+    <meta name="description" content="Add professional watermarks to PDFs – text, images, shapes, tiling, and automatic PDFBoon branding.">
+    <meta name="keywords" content="Pdfboon, Watermark PDF, Add Watermark, Vikshant Kralta">
+    <meta name="author" content="Vikshant Kralta">
+    <title>Watermark PDF · PDFBoon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <style>
+        :root{--ink:#0d2545;--ink-soft:#3d5578;--paper:#edf2f9;--paper-raised:#f8fafc;--stamp:#2563eb;--stamp-dark:#1d4ed8;--teal:#0891b2;--success:#10b981;--success-dark:#0e9c6f;--line:#d6e0ee;--shadow:0 10px 30px rgba(13,37,69,0.10);--serif:'Fraunces',serif;--sans:'Inter',sans-serif}
+        *{margin:0;padding:0;box-sizing:border-box} body{font-family:var(--sans);background:radial-gradient(circle at 10% 0%,rgba(37,99,235,0.08),transparent 40%),radial-gradient(circle at 90% 15%,rgba(8,145,178,0.07),transparent 40%),var(--paper);color:var(--ink)} a{text-decoration:none;color:inherit}
+        .container{max-width:1200px;margin:auto;padding:20px}
+        .navbar{position:sticky;top:0;z-index:100;background:rgba(237,242,249,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+        .nav-container{max-width:1300px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+        .logo-wrapper{display:flex;align-items:center;gap:12px} .logo-box{width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:22px}
+        .logo-title{font-family:var(--serif);font-weight:700;font-size:1.15rem;color:var(--ink)} .logo-subtitle{font-size:0.75rem;color:var(--ink-soft)}
+        .nav-links{display:flex;align-items:center;gap:26px} .nav-link{position:relative;font-size:0.94rem;font-weight:500;color:var(--ink-soft);padding:6px 2px;transition:color .2s}
+        .nav-link::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--stamp);transition:width .25s}
+        .nav-link:hover{color:var(--ink)} .nav-link:hover::after{width:100%}
+        .current-tool-pill{display:flex;align-items:center;gap:8px;background:rgba(37,99,235,0.08);color:var(--stamp-dark);padding:7px 14px;border-radius:100px;font-size:0.85rem;font-weight:700}
+        .nav-tools-btn{display:flex;align-items:center;gap:8px;background:var(--stamp);color:#fff!important;padding:10px 18px;border-radius:12px;font-size:0.9rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 4px 0 var(--stamp-dark);transition:transform .15s}
+        .nav-tools-btn:hover{transform:translateY(-2px)} .mobile-menu{display:none;width:40px;height:40px;align-items:center;justify-content:center;border-radius:8px;color:var(--ink);border:none;background:none;cursor:pointer}
+        @media(max-width:920px){.nav-links{position:fixed;top:70px;left:0;right:0;background:var(--paper-raised);flex-direction:column;padding:20px;gap:16px;border-bottom:1px solid var(--line);transform:translateY(-150%);opacity:0;transition:.3s;z-index:99}.nav-links.active{transform:translateY(0);opacity:1}.mobile-menu{display:flex}}
+        .dropdown-menu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:250px;background:var(--paper-raised);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:10px;display:none;flex-direction:column;gap:4px;z-index:999}
+        .nav-item.open .dropdown-menu{display:flex} .dropdown-category{font-size:0.68rem;font-weight:700;text-transform:uppercase;color:var(--ink-soft);padding:10px 12px 4px}
+        .dropdown-link{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;font-size:0.88rem;font-weight:500;color:var(--ink-soft);transition:background .15s}
+        .dropdown-link:hover{background:rgba(37,99,235,0.08);color:var(--ink)} .dropdown-link.active{background:rgba(37,99,235,0.08);color:var(--ink);font-weight:700}
+        .title{text-align:center;font-family:var(--serif);font-size:42px;font-weight:700;margin:20px 0 10px} .subtitle{text-align:center;color:var(--ink-soft);margin-bottom:35px}
+        .upload-box{background:var(--paper-raised);border:2px dashed var(--stamp);border-radius:24px;min-height:240px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;transition:.3s;padding:20px;box-shadow:var(--shadow)}
+        .upload-box:hover{background:rgba(37,99,235,0.06)} .upload-icon{width:80px;margin-bottom:15px} .upload-box h2{font-family:var(--serif);font-size:28px;font-weight:600;margin-bottom:10px}
+        .settings{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+        .card{background:var(--paper-raised);border:1px solid var(--line);padding:20px;border-radius:18px;box-shadow:var(--shadow)}
+        .card label{display:block;margin-bottom:8px;font-weight:600;color:var(--ink)} .card select,.card input,.card textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;margin-top:6px;font-family:var(--sans);font-size:0.95rem;background:#fff;color:var(--ink)}
+        .card textarea{resize:vertical;min-height:80px}
+        .card input[type="color"]{height:44px;padding:2px 4px;cursor:pointer}
+        .card input[type="range"]{padding:0;margin-top:12px}
+        .card small{display:block;margin-top:6px;color:var(--ink-soft);font-size:0.78rem}
+        .inline-group{display:flex;gap:12px;align-items:center}
+        .files{margin-top:35px} .file-card{background:var(--paper-raised);border:1px solid var(--line);padding:25px;border-radius:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;box-shadow:var(--shadow)}
+        .preview{width:120px;height:150px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden} .preview canvas{width:100%;height:100%}
+        .btn{padding:14px 22px;border:none;border-radius:14px;font-weight:600;cursor:pointer;transition:transform .18s}
+        .watermark-btn{background:var(--stamp);color:#fff;box-shadow:0 4px 0 var(--stamp-dark)} .download-btn{background:var(--success);color:#fff;display:none;box-shadow:0 4px 0 var(--success-dark)}
+        .progress{width:100%;height:10px;background:var(--line);border-radius:20px;margin-top:12px} .progress-bar{height:100%;width:0%;background:linear-gradient(to right,var(--stamp),var(--teal))}
+        .loader{width:28px;height:28px;border:4px solid rgba(37,99,235,.15);border-top-color:var(--stamp);border-radius:50%;animation:spin 1s linear infinite;display:none} @keyframes spin{to{transform:rotate(360deg)}}
+        .footer{background:var(--ink);color:#dfe6f2;margin-top:60px;padding:40px 20px;text-align:center}
+    </style>
+</head>
+<body>
+<nav class="navbar"><div class="nav-container"><div class="logo-wrapper"><div class="logo-box">📄</div><div><h2 class="logo-title">PDFBoon</h2><p class="logo-subtitle">Fast PDF Toolkit</p></div></div>
+<div class="nav-links" id="navLinks"><a href="index.html" class="nav-link">Home</a><div class="current-tool-pill"><i class="fa-solid fa-droplet"></i> Watermark PDF</div>
+<div class="nav-item" id="toolsDropdown"><button class="nav-tools-btn"><i class="fa-solid fa-grip"></i> Tools</button>
+<div class="dropdown-menu"><div class="dropdown-category">Organize</div><a href="merge.html" class="dropdown-link">Merge PDF</a><a href="split.html" class="dropdown-link">Split PDF</a>
+<div class="dropdown-category">Optimize</div><a href="compress.html" class="dropdown-link">Compress PDF</a>
+<div class="dropdown-category">Convert</div><a href="pdf-to-word.html" class="dropdown-link">PDF to Word</a><a href="create.html" class="dropdown-link">Image to PDF</a>
+<div class="dropdown-category">Mark & Protect</div><a href="watermark.html" class="dropdown-link active">Watermark PDF</a><a href="lock.html" class="dropdown-link">Lock PDF</a></div></div>
+<a href="about.html" class="nav-link">About</a></div><button class="mobile-menu" id="mobileMenuBtn">☰</button></div></nav>
+
+<div class="container">
+    <h1 class="title">Watermark PDF Pro</h1>
+    <p class="subtitle">Text & image watermarks with shapes, fonts, decorations, tiling, and auto‑branding</p>
+
+    <label class="upload-box" id="uploadBox" for="pdfInput">
+        <div class="upload-icon"><svg viewBox="0 0 64 64"><rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/><rect x="14" y="18" width="36" height="4" rx="1" fill="#fff" opacity=".9"/></svg></div>
+        <h2>Drop PDF file here</h2><p>or click to browse</p>
+        <input type="file" id="pdfInput" accept="application/pdf">
+    </label>
+
+    <div class="settings" id="settingsPanel" style="display:none;">
+        <div class="card"><label><i class="fa-solid fa-tag"></i> Watermark Type</label><select id="watermarkType"><option value="text">Text only</option><option value="image">Image only</option><option value="both" selected>Both Text & Image</option></select></div>
+
+        <!-- Text Settings -->
+        <div class="card" id="textCard">
+            <label><i class="fa-solid fa-pen-to-square"></i> Text Content</label><textarea id="watermarkText" placeholder="CONFIDENTIAL">CONFIDENTIAL</textarea>
+            <div class="inline-group" style="margin-top:10px;"><select id="fontSelect" style="flex:1;"></select><input type="number" id="fontSize" value="48" min="8" max="300" style="width:80px;"></div>
+            <div class="inline-group" style="margin-top:10px;"><label style="margin:0;"><i class="fa-solid fa-palette"></i></label><input type="color" id="textColor" value="#808080"></div>
+            <div class="inline-group" style="margin-top:8px;">
+                <label style="font-size:0.85rem;"><input type="checkbox" id="underline"> Underline</label>
+                <label style="font-size:0.85rem;"><input type="checkbox" id="strikethrough"> Strikethrough</label>
+                <label style="font-size:0.85rem;"><input type="checkbox" id="overline"> Overline</label>
+            </div>
+        </div>
+
+        <!-- Image Settings -->
+        <div class="card" id="imageCard">
+            <label><i class="fa-solid fa-image"></i> Image Watermark</label><input type="file" id="watermarkImage" accept="image/*">
+            <select id="imageShape" style="margin-top:10px;"><option value="rectangle">Rectangle</option><option value="circle">Circle</option><option value="rounded">Rounded Rectangle</option></select>
+            <small>Shape mask will be applied to the image.</small>
+        </div>
+
+        <!-- Common Settings -->
+        <div class="card"><label><i class="fa-solid fa-droplet"></i> Opacity</label><input type="range" id="opacity" min="0.05" max="1" step="0.05" value="0.3"><small>0 = invisible, 1 = solid</small></div>
+        <div class="card"><label><i class="fa-solid fa-rotate"></i> Rotation (°)</label><input type="number" id="rotation" value="45" min="-360" max="360"></div>
+        <div class="card"><label><i class="fa-solid fa-arrows-up-down-left-right"></i> Position</label><select id="position"><option value="center">Center</option><option value="top-left">Top Left</option><option value="top-center">Top Center</option><option value="top-right">Top Right</option><option value="bottom-left">Bottom Left</option><option value="bottom-center">Bottom Center</option><option value="bottom-right">Bottom Right</option></select></div>
+        <div class="card"><label><i class="fa-solid fa-margin"></i> Margin (pt)</label><input type="number" id="margin" value="40" min="0"></div>
+        <div class="card"><label><i class="fa-solid fa-repeat"></i> Tile Watermark</label><select id="tileMode"><option value="single">Single</option><option value="tile">Repeat across page</option></select><small>Repeats watermark in a grid.</small></div>
+        <div class="card"><label><i class="fa-solid fa-shield-halved"></i> PDFBoon Branding</label><select id="branding"><option value="on">Add "PDFBoon" bottom‑right</option><option value="off">No branding</option></select></div>
+        <div class="card"><label><i class="fa-solid fa-file-zipper"></i> Compress Output</label><select id="compress"><option value="yes">Reduce file size</option><option value="no">Keep original size</option></select><small>Saves with object stream compression.</small></div>
+    </div>
+
+    <div class="files" id="fileCardContainer"></div>
+</div>
+<footer class="footer">© 2026 PDFBoon · Vikshant Kralta</footer>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ---------- UI ----------
+document.getElementById('mobileMenuBtn').addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('active'));
+document.querySelector('#toolsDropdown button').addEventListener('click',function(e){e.preventDefault();this.parentElement.classList.toggle('open');});
+
+const pdfInput = document.getElementById('pdfInput');
+const uploadBox = document.getElementById('uploadBox');
+const settingsPanel = document.getElementById('settingsPanel');
+const fileCardContainer = document.getElementById('fileCardContainer');
+let selectedFile = null;
+
+// Font list (14 standard PDF fonts)
+const fontList = [
+    'TimesRoman','TimesBold','TimesItalic','TimesBoldItalic',
+    'Helvetica','HelveticaBold','HelveticaOblique','HelveticaBoldOblique',
+    'Courier','CourierBold','CourierOblique','CourierBoldOblique',
+    'Symbol','ZapfDingbats'
+];
+const fontSelect = document.getElementById('fontSelect');
+fontList.forEach(f => { const opt = document.createElement('option'); opt.value = f; opt.textContent = f; fontSelect.appendChild(opt); });
+fontSelect.value = 'HelveticaBold';
+
+// Toggle image/text cards
+document.getElementById('watermarkType').addEventListener('change', function(){
+    const type = this.value;
+    document.getElementById('textCard').style.display = (type==='text'||type==='both') ? 'block' : 'none';
+    document.getElementById('imageCard').style.display = (type==='image'||type==='both') ? 'block' : 'none';
+});
+
+pdfInput.addEventListener('change', e => { if(e.target.files[0]) { selectedFile = e.target.files[0]; showFileCard(); } });
+uploadBox.addEventListener('dragover', e => e.preventDefault());
+uploadBox.addEventListener('drop', e => { e.preventDefault(); if(e.dataTransfer.files[0]?.type==='application/pdf'){ selectedFile = e.dataTransfer.files[0]; showFileCard(); } });
+
+function formatSize(b) { return b>1024*1024 ? (b/(1024*1024)).toFixed(2)+' MB' : (b/1024).toFixed(2)+' KB'; }
+
+async function showFileCard() {
+    settingsPanel.style.display = 'grid';
+    fileCardContainer.innerHTML = '';
+    const file = selectedFile;
+    const card = document.createElement('div'); card.className = 'file-card';
+    card.innerHTML = `<div class="preview"><canvas id="previewCanvas"></canvas></div>
+    <div style="flex:1"><b>${file.name}</b><br>${formatSize(file.size)}<br><span id="status">Ready</span><div class="progress"><div class="progress-bar" id="progressBar"></div></div></div>
+    <button class="btn watermark-btn" id="applyBtn"><i class="fa-solid fa-droplet"></i> Apply Watermark</button>
+    <div class="loader" id="loader"></div><a class="btn download-btn" id="downloadBtn" download>.pdf</a>`;
+    fileCardContainer.appendChild(card);
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+    const page = await pdf.getPage(1);
+    const vp = page.getViewport({scale:0.5});
+    const canvas = document.getElementById('previewCanvas');
+    canvas.width = vp.width; canvas.height = vp.height;
+    await page.render({canvasContext:canvas.getContext('2d'), viewport:vp}).promise;
+
+    document.getElementById('applyBtn').addEventListener('click', applyWatermark);
+}
+
+async function applyWatermark() {
+    const file = selectedFile; if(!file) return;
+    const progressBar = document.getElementById('progressBar'), loader = document.getElementById('loader'),
+          btn = document.getElementById('applyBtn'), downloadBtn = document.getElementById('downloadBtn'), status = document.getElementById('status');
+    btn.style.display='none'; loader.style.display='block'; progressBar.style.width='0%'; status.textContent='Processing...';
+
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+        const pages = pdfDoc.getPages();
+        const type = document.getElementById('watermarkType').value;
+        const text = document.getElementById('watermarkText').value.trim();
+        const fontName = document.getElementById('fontSelect').value;
+        const fontSize = parseInt(document.getElementById('fontSize').value) || 48;
+        const opacity = parseFloat(document.getElementById('opacity').value);
+        const rotation = parseInt(document.getElementById('rotation').value);
+        const position = document.getElementById('position').value;
+        const margin = parseInt(document.getElementById('margin').value) || 40;
+        const tileMode = document.getElementById('tileMode').value;
+        const branding = document.getElementById('branding').value;
+        const compress = document.getElementById('compress').value === 'yes';
+        const textColorHex = document.getElementById('textColor').value;
+        const underline = document.getElementById('underline').checked;
+        const strikethrough = document.getElementById('strikethrough').checked;
+        const overline = document.getElementById('overline').checked;
+        const font = await pdfDoc.embedFont(PDFLib.StandardFonts[fontName]);
+
+        // Image handling
+        let imageObj = null, imgWidth = 100, imgHeight = 100;
+        const imageInput = document.getElementById('watermarkImage');
+        if ((type==='image'||type==='both') && imageInput.files[0]) {
+            const imgFile = imageInput.files[0];
+            const imgBuf = await imgFile.arrayBuffer();
+            const shape = document.getElementById('imageShape').value;
+            // Mask image to shape via canvas
+            const maskedDataUrl = await maskImage(imgBuf, imgFile.type, shape, 300);
+            const maskedBytes = await fetch(maskedDataUrl).then(r=>r.arrayBuffer());
+            if (imgFile.type==='image/png') imageObj = await pdfDoc.embedPng(maskedBytes);
+            else imageObj = await pdfDoc.embedJpg(maskedBytes);
+            const dims = imageObj.scale(0.5);
+            imgWidth = dims.width; imgHeight = dims.height;
+        }
+
+        // Color parsing for text
+        const r = parseInt(textColorHex.slice(1,3),16)/255;
+        const g = parseInt(textColorHex.slice(3,5),16)/255;
+        const b = parseInt(textColorHex.slice(5,7),16)/255;
+        const textColor = PDFLib.rgb(r,g,b);
+
+        for (let i=0; i<pages.length; i++) {
+            const page = pages[i];
+            const {width: pw, height: ph} = page.getSize();
+            const getPos = (w, h, pos) => {
+                let x, y;
+                switch(pos) {
+                    case 'top-left': x = margin; y = ph - margin - h; break;
+                    case 'top-center': x = (pw - w)/2; y = ph - margin - h; break;
+                    case 'top-right': x = pw - w - margin; y = ph - margin - h; break;
+                    case 'bottom-left': x = margin; y = margin; break;
+                    case 'bottom-center': x = (pw - w)/2; y = margin; break;
+                    case 'bottom-right': x = pw - w - margin; y = margin; break;
+                    default: x = (pw - w)/2; y = (ph - h)/2;
+                }
+                return {x, y};
+            };
+
+            const drawWatermark = (x, y, w, h) => {
+                if (type==='text'||type==='both') {
+                    page.drawText(text, {x, y, size: fontSize, font, color: textColor, opacity, rotate: rotation});
+                    const tw = font.widthOfTextAtSize(text, fontSize);
+                    const th = font.heightAtSize(fontSize);
+                    if (underline) page.drawLine({start: {x, y: y-2}, end: {x: x+tw, y: y-2}, color: textColor, opacity});
+                    if (strikethrough) page.drawLine({start: {x, y: y+th/3}, end: {x: x+tw, y: y+th/3}, color: textColor, opacity});
+                    if (overline) page.drawLine({start: {x, y: y+th+2}, end: {x: x+tw, y: y+th+2}, color: textColor, opacity});
+                }
+                if ((type==='image'||type==='both') && imageObj) {
+                    page.drawImage(imageObj, {x, y, width: w, height: h, opacity, rotate: rotation});
+                }
+            };
+
+            if (tileMode === 'single') {
+                const w = (type==='image'||type==='both') ? imgWidth : font.widthOfTextAtSize(text, fontSize);
+                const h = (type==='image'||type==='both') ? imgHeight : font.heightAtSize(fontSize);
+                const {x, y} = getPos(w, h, position);
+                drawWatermark(x, y, w, h);
+            } else {
+                // Tile: repeat across page with spacing
+                const tileW = Math.max((type==='image'||type==='both') ? imgWidth : font.widthOfTextAtSize(text, fontSize), 100);
+                const tileH = Math.max((type==='image'||type==='both') ? imgHeight : font.heightAtSize(fontSize), 40);
+                const spacingX = tileW * 1.5, spacingY = tileH * 2;
+                for (let tx = -tileW; tx < pw + tileW; tx += spacingX) {
+                    for (let ty = -tileH; ty < ph + tileH; ty += spacingY) {
+                        drawWatermark(tx, ty, tileW, tileH);
+                    }
+                }
+            }
+
+            // Branding
+            if (branding === 'on') {
+                const bText = '📄 PDFBoon';
+                const bSize = 10;
+                const bFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                const bw = bFont.widthOfTextAtSize(bText, bSize);
+                page.drawText(bText, {x: pw - bw - 15, y: 15, size: bSize, font: bFont, color: PDFLib.rgb(0.4,0.4,0.4), opacity: 0.6});
+            }
+
+            progressBar.style.width = ((i+1)/pages.length * 90) + '%';
+        }
+
+        const pdfBytes = await pdfDoc.save({ useObjectStreams: compress });
+        const blob = new Blob([pdfBytes], {type:'application/pdf'});
+        const url = URL.createObjectURL(blob);
+        downloadBtn.href = url; downloadBtn.download = file.name.replace('.pdf','_watermarked.pdf');
+        downloadBtn.style.display = 'inline-flex';
+        status.innerHTML = 'Watermarked: ' + formatSize(blob.size);
+        progressBar.style.width = '100%';
+    } catch(e) { status.textContent = 'Error: '+e.message; console.error(e); }
+    finally { loader.style.display='none'; btn.style.display='inline-flex'; }
+}
+
+async function maskImage(imgBuffer, mime, shape, size) {
+    const img = new Image();
+    const url = URL.createObjectURL(new Blob([imgBuffer], {type: mime}));
+    img.src = url;
+    await new Promise(r => img.onload = r);
+    const canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,size,size);
+    // Draw shape mask
+    ctx.beginPath();
+    if (shape === 'circle') {
+        ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
+    } else if (shape === 'rounded') {
+        const r = size * 0.2;
+        ctx.roundRect(0,0,size,size,r);
+    } else {
+        ctx.rect(0,0,size,size);
+    }
+    ctx.clip();
+    ctx.drawImage(img, 0, 0, size, size);
+    URL.revokeObjectURL(url);
+    return canvas.toDataURL('image/png');
+}
+</script>
+</body>
+</html>
