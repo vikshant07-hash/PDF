@@ -117,7 +117,7 @@ const settingsPanel = document.getElementById('settingsPanel');
 const fileCardContainer = document.getElementById('fileCardContainer');
 let selectedFile = null;
 
-// Font list (14 standard fonts)
+// Font list
 const fontList = [
     'TimesRoman','TimesBold','TimesItalic','TimesBoldItalic',
     'Helvetica','HelveticaBold','HelveticaOblique','HelveticaBoldOblique',
@@ -162,6 +162,48 @@ async function showFileCard() {
     document.getElementById('applyBtn').addEventListener('click', applyWatermark);
 }
 
+// Helper: safe roundRect polyfill
+function drawRoundRect(ctx, x, y, w, h, r) {
+    if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(x, y, w, h, r);
+    } else {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+}
+
+async function maskImage(imgBuffer, mime, shape, size) {
+    const img = new Image();
+    const url = URL.createObjectURL(new Blob([imgBuffer], {type: mime}));
+    img.src = url;
+    await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; });
+    const canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,size,size);
+    ctx.beginPath();
+    if (shape === 'circle') {
+        ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
+    } else if (shape === 'rounded') {
+        drawRoundRect(ctx, 0, 0, size, size, size * 0.2);
+    } else {
+        ctx.rect(0, 0, size, size);
+    }
+    ctx.clip();
+    ctx.drawImage(img, 0, 0, size, size);
+    URL.revokeObjectURL(url);
+    return canvas.toDataURL('image/png');
+}
+
 async function applyWatermark() {
     const file = selectedFile; if(!file) return;
     const progressBar = document.getElementById('progressBar'), loader = document.getElementById('loader'),
@@ -178,7 +220,7 @@ async function applyWatermark() {
         const fontSize = parseInt(document.getElementById('fontSize').value) || 48;
         const opacity = parseFloat(document.getElementById('opacity').value);
         const rotationDeg = parseInt(document.getElementById('rotation').value);
-        const rotation = PDFLib.degrees(rotationDeg);  // FIXED: use Rotation object
+        const rotation = PDFLib.degrees(rotationDeg);
         const position = document.getElementById('position').value;
         const margin = parseInt(document.getElementById('margin').value) || 40;
         const tileMode = document.getElementById('tileMode').value;
@@ -275,32 +317,13 @@ async function applyWatermark() {
         downloadBtn.style.display = 'inline-flex';
         status.innerHTML = 'Watermarked: ' + formatSize(blob.size);
         progressBar.style.width = '100%';
-    } catch(e) { status.textContent = 'Error: '+e.message; console.error(e); }
-    finally { loader.style.display='none'; btn.style.display='inline-flex'; }
-}
-
-async function maskImage(imgBuffer, mime, shape, size) {
-    const img = new Image();
-    const url = URL.createObjectURL(new Blob([imgBuffer], {type: mime}));
-    img.src = url;
-    await new Promise(r => img.onload = r);
-    const canvas = document.createElement('canvas');
-    canvas.width = size; canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,size,size);
-    ctx.beginPath();
-    if (shape === 'circle') {
-        ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
-    } else if (shape === 'rounded') {
-        const r = size * 0.2;
-        ctx.roundRect(0,0,size,size,r);
-    } else {
-        ctx.rect(0,0,size,size);
+    } catch(e) {
+        status.textContent = 'Error: ' + e.message;
+        console.error(e);
+    } finally {
+        loader.style.display='none';
+        btn.style.display='inline-flex';
     }
-    ctx.clip();
-    ctx.drawImage(img, 0, 0, size, size);
-    URL.revokeObjectURL(url);
-    return canvas.toDataURL('image/png');
 }
 </script>
 </body>
