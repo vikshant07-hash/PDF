@@ -52,7 +52,7 @@
     </style>
 </head>
 <body>
-<nav class="navbar"><div class="nav-container"><div class="logo-wrapper"><div class="logo-box">📄</div><div><h2 class="logo-title">PDFBoon</h2><p class="logo-subtitle">Fast PDF Toolkit</p></div></div>
+<nav class="navbar"><div class="nav-container"><div class="logo-wrapper"><div class="logo-box" href=images/logo.png></div><div><h2 class="logo-title">PDFBoon</h2><p class="logo-subtitle">Fast PDF Toolkit</p></div></div>
 <div class="nav-links" id="navLinks"><a href="index.html" class="nav-link">Home</a><div class="current-tool-pill"><i class="fa-solid fa-droplet"></i> Watermark PDF</div>
 <div class="nav-item" id="toolsDropdown"><button class="nav-tools-btn"><i class="fa-solid fa-grip"></i> Tools</button>
 <div class="dropdown-menu"><div class="dropdown-category">Organize</div><a href="merge.html" class="dropdown-link">Merge PDF</a><a href="split.html" class="dropdown-link">Split PDF</a>
@@ -102,7 +102,7 @@
 
     <div class="files" id="fileCardContainer"></div>
 </div>
-<footer class="footer">© 2026 PDFBoon · Vikshant Kralta</footer>
+<footer class="footer">© July, 2026 PDFBoon · Vikshant Kralta</footer>
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -353,7 +353,7 @@ async function applyWatermark() {
                     if (logoResponse.ok) {
                         const logoBytes = await logoResponse.arrayBuffer();
                         const logoImage = await pdfDoc.embedPng(logoBytes);
-                        const logoDims = logoImage.scale(0.08); // small size
+                        const logoDims = logoImage.scale(0.04); // small size
                         const logoW = logoDims.width;
                         const logoH = logoDims.height;
 
@@ -365,10 +365,10 @@ async function applyWatermark() {
                         const brandTextHeight = brandFont.heightAtSize(brandSize);
 
                         // Total width of brand block
-                        const gap = 4;
+                        const gap = 2;
                         const totalBrandW = logoW + gap + brandTextWidth;
                         // Align bottom-right with margin=15
-                        const brandMargin = 15;
+                        const brandMargin = 8;
                         const brandX = pw - totalBrandW - brandMargin;
                         const brandY = brandMargin + Math.max(logoH, brandTextHeight);
 
