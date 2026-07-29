@@ -63,7 +63,7 @@
 <a href="about.html" class="nav-link">About</a></div><button class="mobile-menu" id="mobileMenuBtn">☰</button></div></nav>
 
 <div class="container">
-    <h1 class="title">Watermark PDF Pro</h1>
+    <h1 class="title">Watermark PDF Pro 2.0</h1>
     <p class="subtitle">Live preview · all 14 fonts · text & image watermarks · grid tiling · branding</p>
 
     <label class="upload-box" id="uploadBox" for="pdfInput">
@@ -247,7 +247,15 @@ async function showFileCard() {
     document.getElementById('applyBtn').addEventListener('click', applyWatermark);
 }
 
-// ---------- LIVE PREVIEW ENGINE ----------
+// ---------- LIVE PREVIEW ENGINE (now matches final output exactly) ----------
+function computeBottomLeftForCenter(cx, cy, w, h, angleRad) {
+    const cos = Math.cos(angleRad);
+    const sin = Math.sin(angleRad);
+    const bx = cx - (w/2)*cos + (h/2)*sin;
+    const by = cy - (w/2)*sin - (h/2)*cos;
+    return { x: bx, y: by };
+}
+
 async function renderPreview() {
     if (!cachedPage || !cachedViewport) return;
     const canvas = document.getElementById('previewCanvas');
@@ -262,6 +270,7 @@ async function renderPreview() {
     const fontSize = parseInt(document.getElementById('fontSize').value) || 48;
     const opacity = parseFloat(document.getElementById('opacity').value);
     const rotationDeg = parseInt(document.getElementById('rotation').value);
+    const angleRad = rotationDeg * Math.PI / 180;
     const position = document.getElementById('position').value;
     const margin = parseInt(document.getElementById('margin').value) || 40;
     const tileMode = document.getElementById('tileMode').value;
@@ -296,7 +305,8 @@ async function renderPreview() {
         ctx.font = `${fontSize}px ${mapFontToCanvas(fontName)}`;
         const metrics = ctx.measureText(text);
         textWidth = metrics.width;
-        textHeight = fontSize;
+        // Use a more accurate text height: font size * 1.2 (typical ratio)
+        textHeight = fontSize * 1.2;
     }
 
     let imgWidth = 0, imgHeight = 0;
@@ -323,33 +333,39 @@ async function renderPreview() {
         return {cx, cy};
     };
 
-    const drawWatermark = (cx, cy) => {
+    const drawWatermarkAt = (cx, cy) => {
+        const w = (type==='image'||type==='both') ? imgWidth : textWidth;
+        const h = (type==='image'||type==='both') ? imgHeight : textHeight;
+        // Compute bottom‑left position so that after rotation the center matches (cx, cy)
+        const { x: bx, y: by } = computeBottomLeftForCenter(cx, cy, w, h, angleRad);
+
         ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate(rotationDeg * Math.PI / 180);
+        ctx.translate(bx, by);
+        ctx.rotate(angleRad);
         ctx.globalAlpha = opacity;
 
         if (type==='text'||type==='both') {
             ctx.font = `${fontSize}px ${mapFontToCanvas(fontName)}`;
             ctx.fillStyle = fillColor;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
             ctx.fillText(text, 0, 0);
 
             if (underline || strikethrough || overline) {
                 const tw = textWidth;
+                const th = textHeight;
                 ctx.strokeStyle = fillColor;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                if (underline) { ctx.moveTo(-tw/2, 2); ctx.lineTo(tw/2, 2); }
-                if (strikethrough) { ctx.moveTo(-tw/2, -fontSize*0.1); ctx.lineTo(tw/2, -fontSize*0.1); }
-                if (overline) { ctx.moveTo(-tw/2, -fontSize/2-2); ctx.lineTo(tw/2, -fontSize/2-2); }
+                if (underline) { ctx.moveTo(0, -2); ctx.lineTo(tw, -2); }
+                if (strikethrough) { ctx.moveTo(0, th*0.3); ctx.lineTo(tw, th*0.3); }
+                if (overline) { ctx.moveTo(0, th+2); ctx.lineTo(tw, th+2); }
                 ctx.stroke();
             }
         }
 
         if ((type==='image'||type==='both') && imageObj) {
-            ctx.drawImage(imageObj, -imgWidth/2, -imgHeight/2, imgWidth, imgHeight);
+            ctx.drawImage(imageObj, 0, 0, w, h);
         }
 
         ctx.restore();
@@ -357,7 +373,7 @@ async function renderPreview() {
 
     if (tileMode === 'single') {
         const {cx, cy} = getCenter();
-        drawWatermark(cx, cy);
+        drawWatermarkAt(cx, cy);
     } else {
         const w = (type==='image'||type==='both') ? imgWidth : textWidth;
         const h = (type==='image'||type==='both') ? imgHeight : textHeight;
@@ -367,7 +383,7 @@ async function renderPreview() {
             for (let col = 0; col < gridCols; col++) {
                 const cx = margin + cellW * (col + 0.5);
                 const cy = margin + cellH * (row + 0.5);
-                drawWatermark(cx, cy);
+                drawWatermarkAt(cx, cy);
             }
         }
     }
@@ -420,15 +436,7 @@ function mapFontToCanvas(fontName) {
     return map[fontName] || 'Arial, sans-serif';
 }
 
-// ---------- CORRECTED WATERMARK APPLICATION ----------
-function getRotatedBottomLeft(cx, cy, w, h, angleRad) {
-    const cos = Math.cos(angleRad);
-    const sin = Math.sin(angleRad);
-    const bx = cx - (w/2)*cos + (h/2)*sin;
-    const by = cy - (w/2)*sin - (h/2)*cos;
-    return { x: bx, y: by };
-}
-
+// ---------- CORRECTED WATERMARK APPLICATION (identical positioning) ----------
 async function applyWatermark() {
     const file = selectedFile; if(!file) return;
     const progressBar = document.getElementById('progressBar'), loader = document.getElementById('loader'),
@@ -446,6 +454,7 @@ async function applyWatermark() {
         const opacity = parseFloat(document.getElementById('opacity').value);
         const rotationDeg = parseInt(document.getElementById('rotation').value);
         const rotation = PDFLib.degrees(rotationDeg);
+        const angleRad = rotationDeg * Math.PI / 180;
         const position = document.getElementById('position').value;
         const margin = parseInt(document.getElementById('margin').value) || 40;
         const tileMode = document.getElementById('tileMode').value;
@@ -498,13 +507,11 @@ async function applyWatermark() {
         for (let i=0; i<pages.length; i++) {
             const page = pages[i];
             const {width: pw, height: ph} = page.getSize();
-            const angleRad = rotationDeg * Math.PI / 180;
 
             const drawWatermarkAt = (cx, cy) => {
                 const w = (type==='image'||type==='both') ? imgWidth : textWidth;
                 const h = (type==='image'||type==='both') ? imgHeight : textHeight;
-                // Compute correct bottom‑left position so that rotation around bottom‑left results in center at (cx, cy)
-                const { x: bx, y: by } = getRotatedBottomLeft(cx, cy, w, h, angleRad);
+                const { x: bx, y: by } = computeBottomLeftForCenter(cx, cy, w, h, angleRad);
 
                 if (type==='text'||type==='both') {
                     page.drawText(text, {
@@ -518,8 +525,10 @@ async function applyWatermark() {
                     });
 
                     if (underline || strikethrough || overline) {
-                        const tw = textWidth, th = textHeight;
-                        const cos = Math.cos(angleRad), sin = Math.sin(angleRad);
+                        const tw = textWidth;
+                        const th = textHeight;
+                        const cos = Math.cos(angleRad);
+                        const sin = Math.sin(angleRad);
                         const rotatePoint = (px, py) => ({
                             x: cx + (px - cx)*cos - (py - cy)*sin,
                             y: cy + (px - cx)*sin + (py - cy)*cos
