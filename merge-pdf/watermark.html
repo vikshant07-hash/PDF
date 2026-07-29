@@ -300,7 +300,7 @@ async function applyWatermark() {
             }
 
             if (branding === 'on') {
-                const bText = '📄 PDFBoon';
+                const bText = 'PDFBoon';
                 const bSize = 10;
                 const bFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
                 const bw = bFont.widthOfTextAtSize(bText, bSize);
