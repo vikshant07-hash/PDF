@@ -96,7 +96,7 @@
         <div class="card"><label><i class="fa-solid fa-arrows-up-down-left-right"></i> Position</label><select id="position"><option value="center">Center</option><option value="top-left">Top Left</option><option value="top-center">Top Center</option><option value="top-right">Top Right</option><option value="bottom-left">Bottom Left</option><option value="bottom-center">Bottom Center</option><option value="bottom-right">Bottom Right</option></select></div>
         <div class="card"><label><i class="fa-solid fa-margin"></i> Margin (pt)</label><input type="number" id="margin" value="40" min="0"></div>
         <div class="card"><label><i class="fa-solid fa-repeat"></i> Tile Watermark</label><select id="tileMode"><option value="single">Single</option><option value="tile">Repeat across page</option></select></div>
-        <div class="card"><label><i class="fa-solid fa-shield-halved"></i> PDFBoon Branding</label><select id="branding"><option value="on">Add "PDFBoon" bottom‑right</option><option value="off">No branding</option></select></div>
+        <div class="card"><label><i class="fa-solid fa-shield-halved"></i> PDFBoon Branding</label><select id="branding"><option value="on">Add "PDFBoon" + Logo bottom‑right</option><option value="off">No branding</option></select></div>
         <div class="card"><label><i class="fa-solid fa-file-zipper"></i> Compress Output</label><select id="compress"><option value="yes">Reduce file size</option><option value="no">Keep original size</option></select></div>
     </div>
 
@@ -117,7 +117,7 @@ const settingsPanel = document.getElementById('settingsPanel');
 const fileCardContainer = document.getElementById('fileCardContainer');
 let selectedFile = null;
 
-// Font list
+// Font list (14 standard fonts)
 const fontList = [
     'TimesRoman','TimesBold','TimesItalic','TimesBoldItalic',
     'Helvetica','HelveticaBold','HelveticaOblique','HelveticaBoldOblique',
@@ -252,31 +252,76 @@ async function applyWatermark() {
         const b = parseInt(textColorHex.slice(5,7),16)/255;
         const textColor = PDFLib.rgb(r,g,b);
 
+        // Precompute text dimensions
+        let textWidth = 0, textHeight = 0;
+        if (type==='text'||type==='both') {
+            textWidth = font.widthOfTextAtSize(text, fontSize);
+            textHeight = font.heightAtSize(fontSize);
+        }
+
         for (let i=0; i<pages.length; i++) {
             const page = pages[i];
             const {width: pw, height: ph} = page.getSize();
-            const getPos = (w, h, pos) => {
-                let x, y;
-                switch(pos) {
-                    case 'top-left': x = margin; y = ph - margin - h; break;
-                    case 'top-center': x = (pw - w)/2; y = ph - margin - h; break;
-                    case 'top-right': x = pw - w - margin; y = ph - margin - h; break;
-                    case 'bottom-left': x = margin; y = margin; break;
-                    case 'bottom-center': x = (pw - w)/2; y = margin; break;
-                    case 'bottom-right': x = pw - w - margin; y = margin; break;
-                    default: x = (pw - w)/2; y = (ph - h)/2;
+
+            // Calculate anchor point for single watermark
+            const getAnchor = () => {
+                const w = (type==='image'||type==='both') ? imgWidth : textWidth;
+                const h = (type==='image'||type==='both') ? imgHeight : textHeight;
+                let ax, ay;
+                switch(position) {
+                    case 'top-left': ax = margin; ay = ph - margin; break;
+                    case 'top-center': ax = (pw - w)/2; ay = ph - margin; break;
+                    case 'top-right': ax = pw - w - margin; ay = ph - margin; break;
+                    case 'bottom-left': ax = margin; ay = margin + h; break;
+                    case 'bottom-center': ax = (pw - w)/2; ay = margin + h; break;
+                    case 'bottom-right': ax = pw - w - margin; ay = margin + h; break;
+                    default: /* center */ ax = (pw - w)/2; ay = (ph - h)/2;
                 }
-                return {x, y};
+                return {ax, ay};
             };
 
-            const drawWatermark = (x, y, w, h) => {
+            const drawWatermarkAt = (x, y, w, h) => {
                 if (type==='text'||type==='both') {
+                    // Draw text with rotation around the (x,y) point (bottom-left of text when angle=0)
                     page.drawText(text, {x, y, size: fontSize, font, color: textColor, opacity, rotate: rotation});
-                    const tw = font.widthOfTextAtSize(text, fontSize);
-                    const th = font.heightAtSize(fontSize);
-                    if (underline) page.drawLine({start: {x, y: y-2}, end: {x: x+tw, y: y-2}, color: textColor, opacity});
-                    if (strikethrough) page.drawLine({start: {x, y: y+th/3}, end: {x: x+tw, y: y+th/3}, color: textColor, opacity});
-                    if (overline) page.drawLine({start: {x, y: y+th+2}, end: {x: x+tw, y: y+th+2}, color: textColor, opacity});
+
+                    // Draw decorations (rotate coordinates if needed)
+                    if (underline || strikethrough || overline) {
+                        const th = font.heightAtSize(fontSize);
+                        const tw = font.widthOfTextAtSize(text, fontSize);
+                        // Decorations are drawn relative to the text origin (x,y) without rotation
+                        // We'll apply rotation to the line endpoints
+                        const rad = rotationDeg * Math.PI / 180;
+                        const cos = Math.cos(rad), sin = Math.sin(rad);
+                        const rotatePoint = (px, py) => ({
+                            x: x + (px - x) * cos - (py - y) * sin,
+                            y: y + (px - x) * sin + (py - y) * cos
+                        });
+
+                        if (underline) {
+                            const start = {x, y: y - 2};
+                            const end = {x: x + tw, y: y - 2};
+                            const rStart = rotatePoint(start.x, start.y);
+                            const rEnd = rotatePoint(end.x, end.y);
+                            page.drawLine({start: rStart, end: rEnd, color: textColor, opacity});
+                        }
+                        if (strikethrough) {
+                            const lineY = y + th * 0.3;
+                            const start = {x, y: lineY};
+                            const end = {x: x + tw, y: lineY};
+                            const rStart = rotatePoint(start.x, start.y);
+                            const rEnd = rotatePoint(end.x, end.y);
+                            page.drawLine({start: rStart, end: rEnd, color: textColor, opacity});
+                        }
+                        if (overline) {
+                            const lineY = y + th + 2;
+                            const start = {x, y: lineY};
+                            const end = {x: x + tw, y: lineY};
+                            const rStart = rotatePoint(start.x, start.y);
+                            const rEnd = rotatePoint(end.x, end.y);
+                            page.drawLine({start: rStart, end: rEnd, color: textColor, opacity});
+                        }
+                    }
                 }
                 if ((type==='image'||type==='both') && imageObj) {
                     page.drawImage(imageObj, {x, y, width: w, height: h, opacity, rotate: rotation});
@@ -284,27 +329,99 @@ async function applyWatermark() {
             };
 
             if (tileMode === 'single') {
-                const w = (type==='image'||type==='both') ? imgWidth : font.widthOfTextAtSize(text, fontSize);
-                const h = (type==='image'||type==='both') ? imgHeight : font.heightAtSize(fontSize);
-                const {x, y} = getPos(w, h, position);
-                drawWatermark(x, y, w, h);
+                const w = (type==='image'||type==='both') ? imgWidth : textWidth;
+                const h = (type==='image'||type==='both') ? imgHeight : textHeight;
+                const {ax, ay} = getAnchor();
+                drawWatermarkAt(ax, ay, w, h);
             } else {
-                const tileW = Math.max((type==='image'||type==='both') ? imgWidth : font.widthOfTextAtSize(text, fontSize), 100);
-                const tileH = Math.max((type==='image'||type==='both') ? imgHeight : font.heightAtSize(fontSize), 40);
+                const tileW = Math.max((type==='image'||type==='both') ? imgWidth : textWidth, 100);
+                const tileH = Math.max((type==='image'||type==='both') ? imgHeight : textHeight, 40);
                 const spacingX = tileW * 1.5, spacingY = tileH * 2;
                 for (let tx = -tileW; tx < pw + tileW; tx += spacingX) {
                     for (let ty = -tileH; ty < ph + tileH; ty += spacingY) {
-                        drawWatermark(tx, ty, tileW, tileH);
+                        drawWatermarkAt(tx, ty, tileW, tileH);
                     }
                 }
             }
 
+            // PDFBoon branding: logo + text bottom-right
             if (branding === 'on') {
-                const bText = 'PDFBoon';
-                const bSize = 10;
-                const bFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-                const bw = bFont.widthOfTextAtSize(bText, bSize);
-                page.drawText(bText, {x: pw - bw - 15, y: 15, size: bSize, font: bFont, color: PDFLib.rgb(0.4,0.4,0.4), opacity: 0.6});
+                try {
+                    // Load logo
+                    const logoUrl = 'images/logo.png';
+                    const logoResponse = await fetch(logoUrl);
+                    if (logoResponse.ok) {
+                        const logoBytes = await logoResponse.arrayBuffer();
+                        const logoImage = await pdfDoc.embedPng(logoBytes);
+                        const logoDims = logoImage.scale(0.08); // small size
+                        const logoW = logoDims.width;
+                        const logoH = logoDims.height;
+
+                        // Text next to logo
+                        const brandText = 'PDFBoon';
+                        const brandFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                        const brandSize = 10;
+                        const brandTextWidth = brandFont.widthOfTextAtSize(brandText, brandSize);
+                        const brandTextHeight = brandFont.heightAtSize(brandSize);
+
+                        // Total width of brand block
+                        const gap = 4;
+                        const totalBrandW = logoW + gap + brandTextWidth;
+                        // Align bottom-right with margin=15
+                        const brandMargin = 15;
+                        const brandX = pw - totalBrandW - brandMargin;
+                        const brandY = brandMargin + Math.max(logoH, brandTextHeight);
+
+                        // Draw logo
+                        page.drawImage(logoImage, {
+                            x: brandX,
+                            y: brandY - logoH,
+                            width: logoW,
+                            height: logoH,
+                            opacity: 0.8
+                        });
+
+                        // Draw text
+                        page.drawText(brandText, {
+                            x: brandX + logoW + gap,
+                            y: brandY - brandTextHeight + (brandTextHeight - brandSize) / 2, // align vertically with logo
+                            size: brandSize,
+                            font: brandFont,
+                            color: PDFLib.rgb(0.4, 0.4, 0.4),
+                            opacity: 0.8
+                        });
+                    } else {
+                        // Fallback: only text
+                        const brandText = 'PDFBoon';
+                        const brandFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                        const brandSize = 10;
+                        const brandTextWidth = brandFont.widthOfTextAtSize(brandText, brandSize);
+                        const brandMargin = 15;
+                        page.drawText(brandText, {
+                            x: pw - brandTextWidth - brandMargin,
+                            y: brandMargin + brandSize,
+                            size: brandSize,
+                            font: brandFont,
+                            color: PDFLib.rgb(0.4, 0.4, 0.4),
+                            opacity: 0.6
+                        });
+                    }
+                } catch (e) {
+                    // Fallback if fetch fails
+                    const brandText = 'PDFBoon';
+                    const brandFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                    const brandSize = 10;
+                    const brandTextWidth = brandFont.widthOfTextAtSize(brandText, brandSize);
+                    const brandMargin = 15;
+                    page.drawText(brandText, {
+                        x: pw - brandTextWidth - brandMargin,
+                        y: brandMargin + brandSize,
+                        size: brandSize,
+                        font: brandFont,
+                        color: PDFLib.rgb(0.4, 0.4, 0.4),
+                        opacity: 0.6
+                    });
+                }
             }
 
             progressBar.style.width = ((i+1)/pages.length * 90) + '%';
