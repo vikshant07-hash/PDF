@@ -960,6 +960,9 @@ gap:10px;
   .footer-bottom{flex-direction:column; text-align:center; justify-content:center;}
 }
 
+  .instructions{
+    color:red;
+  }
 </style>
 </head>
 <body>
@@ -982,7 +985,7 @@ gap:10px;
         <div class="nav-links" id="navLinks">
             <a href="index.html" class="nav-link">Home</a>
 
-            <div class="current-tool-pill"><i class="fa-solid fa-scissors"></i> Split PDF</div>
+            <div class="current-tool-pill">🟢<i class="fa-solid fa-scissors"></i> Split PDF</div>
 
             <div class="nav-item" id="toolsDropdown">
                 <button class="nav-tools-btn" id="toolsToggle" type="button">
@@ -990,19 +993,13 @@ gap:10px;
                 </button>
                 <div class="dropdown-menu">
 
-                    <div class="dropdown-category">Organize PDF</div>
+                    <div class="dropdown-category">Other frequently used</div>
+                  <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+                  
                     <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
-                    <a href="split.html" class="dropdown-link active"><i class="fa-solid fa-scissors"></i> Split PDF</a>
-
-                    <div class="dropdown-category">Optimize PDF</div>
-                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
-
-                    <div class="dropdown-category">Convert PDF</div>
-                    <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
-
-                    <div class="dropdown-category">Security</div>
-                    <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
-
+                  <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
+                    
+                    
                     <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
                 </div>
             </div>
@@ -1082,8 +1079,9 @@ accept="application/pdf">
 </div>
 <button class="remove-file" id="removeFile">Remove</button>
 </div>
-
+  <div class="instructions"> Please select appropriate mode</div>
 <div class="mode-tabs" id="modeTabs">
+
 
 <div class="mode-tab active" data-mode="range">Split by Range</div>
 <div class="mode-tab" data-mode="every">Fixed Interval</div>
@@ -1201,7 +1199,7 @@ Download All as ZIP
 
     <div class="footer-bottom">
         <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
-        <p class="copyright">Designed &amp; Developed by Vikshant Kralta</p>
+        
     </div>
 
 </footer>
