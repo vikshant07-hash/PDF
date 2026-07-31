@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy - PDFBoon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #edf2f9;
+            color: #0d2545;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        :root {
+            --ink: #0d2545;
+            --ink-soft: #3d5578;
+            --paper: #edf2f9;
+            --paper-raised: #f8fafc;
+            --stamp: #2563eb;
+            --stamp-dark: #1d4ed8;
+            --line: #d6e0ee;
+            --shadow: 0 10px 30px rgba(13, 37, 69, 0.10);
+            --serif: 'Fraunces', serif;
+            --sans: 'Inter', sans-serif;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(237, 242, 249, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--line);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .logo-title {
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+        .logo-subtitle {
+            font-size: 0.7rem;
+            color: var(--ink-soft);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+        .nav-link {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            padding: 4px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: var(--stamp);
+            transition: width .25s;
+        }
+        .nav-link:hover::after,
+        .nav-link.active-link::after {
+            width: 100%;
+        }
+        .nav-link.active-link {
+            color: var(--ink);
+        }
+        .nav-link:hover {
+            color: var(--ink);
+        }
+        .mobile-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--ink);
+        }
+        @media (max-width: 920px) {
+            .nav-links {
+                position: fixed;
+                inset: 68px 0 auto 0;
+                flex-direction: column;
+                align-items: stretch;
+                background: var(--paper-raised);
+                padding: 20px;
+                gap: 12px;
+                border-bottom: 1px solid var(--line);
+                box-shadow: var(--shadow);
+                transform: translateY(-140%);
+                opacity: 0;
+                transition: transform .3s, opacity .3s;
+            }
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            .mobile-menu {
+                display: flex;
+            }
+            .logo-subtitle {
+                display: none;
+            }
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            max-width: 1280px;
+            margin: 30px auto 20px;
+            padding: 0 24px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-family: var(--serif);
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .page-header p {
+            color: var(--ink-soft);
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+
+        /* ===== PRIVACY CONTENT ===== */
+        .privacy-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+            flex: 1;
+            width: 100%;
+        }
+        .privacy-card {
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+        .privacy-card h2 {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+        .privacy-card h2:first-of-type {
+            margin-top: 0;
+        }
+        .privacy-card p {
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+        .privacy-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 18px 0;
+        }
+        .privacy-card ul li {
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            line-height: 1.8;
+            padding: 6px 0 6px 28px;
+            position: relative;
+        }
+        .privacy-card ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 4px;
+            color: var(--stamp);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .privacy-card .highlight-box {
+            background: rgba(37, 99, 235, 0.06);
+            border-left: 4px solid var(--stamp);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0 20px 0;
+        }
+        .privacy-card .highlight-box p {
+            margin-bottom: 0;
+            font-weight: 500;
+            color: var(--ink);
+        }
+        .privacy-card .highlight-box-success {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0 20px 0;
+        }
+        .privacy-card .highlight-box-success p {
+            margin-bottom: 0;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #0d2545;
+            color: #dfe6f2;
+            padding: 20px 20px;
+            border-top: 3px solid var(--stamp);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2563eb, #7c3aed, #0891b2, #2563eb);
+            background-size: 300% 100%;
+            animation: footerGradientMove 6s ease-in-out infinite;
+        }
+        @keyframes footerGradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .footer-text {
+            font-size: 0.8rem;
+            color: #9fb0cc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-text i {
+            color: #60a5fa;
+        }
+        .footer-text span {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .privacy-card {
+                padding: 24px 18px;
+            }
+            .privacy-card h2 {
+                font-size: 1.2rem;
+            }
+            .privacy-card p,
+            .privacy-card ul li {
+                font-size: 0.88rem;
+            }
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-wrapper">
+                <div class="logo-box">
+                    <img src="images/logo.png" alt="PDFBoon Logo" />
+                </div>
+                <div>
+                    <h2 class="logo-title">PDFBoon</h2>
+                    <p class="logo-subtitle">Fast PDF Toolkit</p>
+                </div>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link active-link"><i class="fa-solid fa-house"></i> Home</a>
+            </div>
+            <button class="mobile-menu" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="page-header">
+        <h1>🔒 Privacy Policy</h1>
+        <p>Last updated: <span id="headerDate">July 31, 2026</span></p>
+    </div>
+
+    <!-- ===== PRIVACY CONTENT ===== -->
+    <section class="privacy-section">
+        <div class="privacy-card">
+
+            <h2>1. Introduction</h2>
+            <p>At PDFBoon ("we", "us", "our"), we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services. Please read this policy carefully. If you do not agree with the terms of this privacy policy, please do not use our services.</p>
+            <p>PDFBoon is committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. We believe in transparency and want you to understand exactly what happens to your data when you use our tools.</p>
+
+            <div class="highlight-box">
+                <p><i class="fa-solid fa-shield-halved" style="color:var(--stamp); margin-right:8px;"></i> <strong>Zero-Knowledge Architecture:</strong> Your files never leave your device. All processing is done locally in your browser.</p>
+            </div>
+
+            <h2>2. Information We Collect</h2>
+            <p>We collect minimal information to provide and improve our services. The types of information we may collect include:</p>
+            <ul>
+                <li><strong>No Personal Information:</strong> We do not collect, store, or process any personal information such as your name, email address, phone number, or physical address.</li>
+                <li><strong>No Account Information:</strong> PDFBoon does not require you to create an account or provide any login credentials to use our tools.</li>
+                <li><strong>No File Content:</strong> Your uploaded files and documents are processed entirely within your browser and are never transmitted to our servers.</li>
+                <li><strong>Anonymous Usage Data:</strong> We may collect basic, anonymous usage data such as the number of visits, pages viewed, and tool usage patterns. This data is non-identifiable and is used solely to improve our services.</li>
+            </ul>
+
+            <h2>3. How We Use Your Information</h2>
+            <p>Since we do not collect personal information, there is minimal use of your data. However, if we collect anonymous usage data, it may be used for:</p>
+            <ul>
+                <li>Analyzing and improving the functionality and performance of our tools</li>
+                <li>Understanding which tools are most popular to enhance user experience</li>
+                <li>Detecting and preventing technical issues and errors</li>
+                <li>Monitoring the overall health and security of our website</li>
+            </ul>
+
+            <h2>4. Cookies and Tracking Technologies</h2>
+            <p>PDFBoon uses minimal cookies and tracking technologies. We do not use:</p>
+            <ul>
+                <li>Third-party tracking cookies for advertising purposes</li>
+                <li>Analytics cookies that track your browsing behavior across different websites</li>
+                <li>Persistent cookies that store personal information</li>
+            </ul>
+            <p>We may use essential cookies that are necessary for the basic functioning of our website, such as maintaining your session preferences. These cookies do not collect any personal information and are automatically deleted when you close your browser.</p>
+
+            <h2>5. File Processing and Data Security</h2>
+            <p>Your files and documents are processed locally on your device using JavaScript. This means:</p>
+            <ul>
+                <li>No files are ever uploaded to our servers or cloud infrastructure</li>
+                <li>All processing happens entirely within your browser's memory</li>
+                <li>Files are automatically cleared from memory once processing is complete</li>
+                <li>No copies of your files are stored on our systems</li>
+                <li>We have no access to your uploaded files at any time</li>
+            </ul>
+            <p>This approach ensures that your sensitive documents remain completely private and secure. We do not have the ability to view, access, or share your documents with anyone.</p>
+
+            <div class="highlight-box-success">
+                <p><i class="fa-solid fa-circle-check" style="color:#10b981; margin-right:8px;"></i> <strong>Your Privacy, Our Priority:</strong> We designed PDFBoon with a privacy-first approach to ensure your documents stay confidential.</p>
+            </div>
+
+            <h2>6. Third-Party Services</h2>
+            <p>PDFBoon does not integrate with or share your data with any third-party services. We do not use:</p>
+            <ul>
+                <li>Third-party file storage services</li>
+                <li>External analytics platforms that track user behavior</li>
+                <li>Advertising networks or ad-serving platforms</li>
+                <li>Social media tracking pixels or scripts</li>
+            </ul>
+            <p>We believe in providing a clean, private, and distraction-free experience without external data sharing.</p>
+
+            <h2>7. Data Retention</h2>
+            <p>Since we do not collect or store any personal information or files, there is no data to retain. Your files are processed in real-time and are immediately discarded from memory after the operation is complete.</p>
+            <ul>
+                <li>No backups or copies of your files are created</li>
+                <li>No logs containing your file content are maintained</li>
+                <li>No data is stored for future processing or analysis</li>
+            </ul>
+
+            <h2>8. Your Rights and Choices</h2>
+            <p>You have complete control over your data and privacy when using PDFBoon:</p>
+            <ul>
+                <li><strong>Right to Privacy:</strong> Your files are processed locally and never leave your device</li>
+                <li><strong>Right to Deletion:</strong> Simply close your browser tab or clear your browser cache to remove any temporary data</li>
+                <li><strong>Right to Opt-Out:</strong> You can choose not to use our services at any time</li>
+                <li><strong>Right to Information:</strong> You can contact us with any privacy-related questions or concerns</li>
+            </ul>
+
+            <h2>9. Children's Privacy</h2>
+            <p>PDFBoon is not directed toward children under the age of 13. We do not knowingly collect any personal information from children. If you are a parent or guardian and believe that your child has provided us with personal information, please contact us. We will take steps to remove such information from our systems.</p>
+            <p>Our services are intended for general audiences and do not contain content that is inappropriate for children. However, parental supervision is always recommended for children using online services.</p>
+
+            <h2>10. Changes to This Privacy Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top. You are advised to review this Privacy Policy periodically for any changes.</p>
+            <p>Changes to this Privacy Policy are effective when they are posted on this page. Your continued use of PDFBoon after any modifications indicates your acceptance of the updated policy.</p>
+
+            <h2>11. Security Measures</h2>
+            <p>We take the security of our platform seriously. Although we do not store your files, we implement various security measures to protect our website and infrastructure:</p>
+            <ul>
+                <li>HTTPS encryption for all communications between your browser and our website</li>
+                <li>Regular security audits and vulnerability assessments</li>
+                <li>Secure coding practices to prevent common web vulnerabilities</li>
+                <li>Regular software updates and security patches</li>
+            </ul>
+
+            <h2>12. Contact Us</h2>
+            <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please feel free to contact us:</p>
+            <ul>
+                <li><i class="fa-solid fa-envelope" style="color:var(--stamp); width:20px;"></i> Email: supportpdfboon@gmail.com</li>
+                <li><i class="fa-solid fa-globe" style="color:var(--stamp); width:20px;"></i> Website: www.pdfboon.com</li>
+            </ul>
+            <p>We respond to all privacy-related inquiries within 48 hours and are committed to addressing your concerns promptly and transparently.</p>
+
+            <div class="highlight-box-success" style="margin-top: 24px;">
+                <p><i class="fa-solid fa-shield-halved" style="color:#10b981; margin-right:8px;"></i> <strong>Your trust matters to us.</strong> We are committed to protecting your privacy and ensuring that your experience with PDFBoon is secure and confidential.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="footer-text">
+                <i class="fa-solid fa-calendar-check"></i>
+                Last Updated: <span id="footerDate">July 31, 2026</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // ===== AUTO-UPDATE DATE =====
+        (function() {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('en-US', options);
+
+            // Update header date
+            const headerDate = document.getElementById('headerDate');
+            if (headerDate) {
+                headerDate.textContent = formattedDate;
+            }
+
+            // Update footer date
+            const footerDate = document.getElementById('footerDate');
+            if (footerDate) {
+                footerDate.textContent = formattedDate;
+            }
+        })();
+    </script>
+
+</body>
+</html>
