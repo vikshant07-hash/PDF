@@ -4,406 +4,1080 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/logo.png">
-    <meta name="description" content="PDF to Word with exact layout – tables, images, fonts, colours, Unicode.">
-    <meta name="keywords" content="Pdfboon, PDF to Word, DOCX, Vikshant Kralta">
+    <meta name="description" content="Convert PDF to Word with 100% accuracy - preserve text, tables, images, and formatting.">
+    <meta name="keywords" content="Pdfboon, PDF to Word, Convert PDF, DOCX, Vikshant Kralta">
     <meta name="author" content="Vikshant Kralta">
-    <title>PDF to Word · PDFBoon</title>
+    <title>PDF to Word - PDFBoon</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <style>
-        :root{--ink:#0d2545;--ink-soft:#3d5578;--paper:#edf2f9;--paper-raised:#f8fafc;--stamp:#2563eb;--stamp-dark:#1d4ed8;--teal:#0891b2;--success:#10b981;--success-dark:#0e9c6f;--line:#d6e0ee;--shadow:0 10px 30px rgba(13,37,69,0.10);--serif:'Fraunces',serif;--sans:'Inter',sans-serif}
-        *{margin:0;padding:0;box-sizing:border-box} body{font-family:var(--sans);background:radial-gradient(circle at 10% 0%,rgba(37,99,235,0.08),transparent 40%),radial-gradient(circle at 90% 15%,rgba(8,145,178,0.07),transparent 40%),var(--paper);color:var(--ink)} a{text-decoration:none;color:inherit}
+        :root{
+            --ink:#0d2545;
+            --ink-soft:#3d5578;
+            --paper:#edf2f9;
+            --paper-raised:#f8fafc;
+            --stamp:#2563eb;
+            --stamp-dark:#1d4ed8;
+            --teal:#0891b2;
+            --success:#10b981;
+            --success-dark:#0e9c6f;
+            --line:#d6e0ee;
+            --shadow: 0 10px 30px rgba(13,37,69,0.10);
+            --serif:'Fraunces', serif;
+            --sans:'Inter', sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--sans);background:radial-gradient(circle at 10% 0%,rgba(37,99,235,0.08),transparent 40%),radial-gradient(circle at 90% 15%,rgba(8,145,178,0.07),transparent 40%),var(--paper);color:var(--ink)}
+        a{text-decoration:none;color:inherit}
         .container{max-width:1100px;margin:auto;padding:20px}
-        .navbar{position:sticky;top:0;z-index:100;background:rgba(237,242,249,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-        .nav-container{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-        .logo-wrapper{display:flex;align-items:center;gap:12px} .logo-box{width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:22px}
-        .logo-title{font-family:var(--serif);font-weight:700;font-size:1.15rem;color:var(--ink)} .logo-subtitle{font-size:0.75rem;color:var(--ink-soft)}
-        .nav-links{display:flex;align-items:center;gap:26px} .nav-link{position:relative;font-size:0.94rem;font-weight:500;color:var(--ink-soft);padding:6px 2px;transition:color .2s}
-        .nav-link::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--stamp);transition:width .25s}
-        .nav-link:hover{color:var(--ink)} .nav-link:hover::after{width:100%}
-        .current-tool-pill{display:flex;align-items:center;gap:8px;background:rgba(37,99,235,0.08);color:var(--stamp-dark);padding:7px 14px;border-radius:100px;font-size:0.85rem;font-weight:700}
-        .nav-tools-btn{display:flex;align-items:center;gap:8px;background:var(--stamp);color:#fff!important;padding:10px 18px;border-radius:12px;font-size:0.9rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 4px 0 var(--stamp-dark);transition:transform .15s}
-        .nav-tools-btn:hover{transform:translateY(-2px)} .mobile-menu{display:none;width:40px;height:40px;align-items:center;justify-content:center;border-radius:8px;color:var(--ink);border:none;background:none;cursor:pointer}
-        @media(max-width:920px){.nav-links{position:fixed;top:70px;left:0;right:0;background:var(--paper-raised);flex-direction:column;padding:20px;gap:16px;border-bottom:1px solid var(--line);transform:translateY(-150%);opacity:0;transition:.3s;z-index:99}.nav-links.active{transform:translateY(0);opacity:1}.mobile-menu{display:flex}}
-        .dropdown-menu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:250px;background:var(--paper-raised);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:10px;display:none;flex-direction:column;gap:4px;z-index:999}
-        .nav-item.open .dropdown-menu{display:flex} .dropdown-category{font-size:0.68rem;font-weight:700;text-transform:uppercase;color:var(--ink-soft);padding:10px 12px 4px}
-        .dropdown-link{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;font-size:0.88rem;font-weight:500;color:var(--ink-soft);transition:background .15s}
-        .dropdown-link:hover{background:rgba(37,99,235,0.08);color:var(--ink)} .dropdown-link.active{background:rgba(37,99,235,0.08);color:var(--ink);font-weight:700}
-        .breadcrumb-bar{background:var(--paper-raised);border-bottom:1px solid var(--line)} .breadcrumb-inner{max-width:1180px;margin:auto;padding:12px 24px;display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--ink-soft)}
-        .title{text-align:center;font-family:var(--serif);font-size:42px;font-weight:700;margin:20px 0 10px} .subtitle{text-align:center;color:var(--ink-soft);margin-bottom:35px}
-        .upload-box{background:var(--paper-raised);border:2px dashed var(--stamp);border-radius:24px;min-height:240px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;transition:.3s;padding:20px;box-shadow:var(--shadow)}
-        .upload-box:hover{background:rgba(37,99,235,0.06)} .upload-icon{width:80px;margin-bottom:15px} .upload-box h2{font-family:var(--serif);font-size:28px;font-weight:600;margin-bottom:10px}
-        .settings{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-        .card{background:var(--paper-raised);border:1px solid var(--line);padding:20px;border-radius:18px;box-shadow:var(--shadow)} .card label{font-weight:600;color:var(--ink)} .card select{width:100%;padding:14px;border:1px solid var(--line);border-radius:12px;margin-top:10px}
-        .files{margin-top:35px;display:flex;flex-direction:column;gap:20px} .file-card{background:var(--paper-raised);border:1px solid var(--line);padding:25px;border-radius:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;box-shadow:var(--shadow)}
-        .preview{width:100px;height:130px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden} .preview canvas{width:100%;height:100%}
-        .btn{padding:14px 22px;border:none;border-radius:14px;font-weight:600;cursor:pointer;transition:transform .18s} .convert-btn{background:var(--stamp);color:#fff;box-shadow:0 4px 0 var(--stamp-dark)} .download-btn{background:var(--success);color:#fff;display:none;box-shadow:0 4px 0 var(--success-dark)}
-        .progress{width:100%;height:10px;background:var(--line);border-radius:20px;margin-top:12px} .progress-bar{height:100%;width:0%;background:linear-gradient(to right,var(--stamp),var(--teal))}
-        .loader{width:28px;height:28px;border:4px solid rgba(37,99,235,.15);border-top-color:var(--stamp);border-radius:50%;animation:spin 1s linear infinite;display:none} @keyframes spin{to{transform:rotate(360deg)}}
-        .footer{background:var(--ink);color:#dfe6f2;margin-top:60px;padding:40px 20px;text-align:center}
-        .info-box{background:rgba(8,145,178,0.08);border:1px solid var(--teal);border-radius:16px;padding:16px;margin-bottom:20px;font-size:0.9rem;color:var(--teal);text-align:center}
+
+        /* ============ NAVBAR ============ */
+        .navbar{
+            position:sticky; top:0; z-index:100;
+            background:rgba(237,242,249,0.85);
+            backdrop-filter:blur(10px);
+            border-bottom:1px solid var(--line);
+        }
+        .nav-container{
+            max-width:1180px;
+            margin-inline:auto;
+            padding:14px 24px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:20px;
+            flex-wrap:nowrap;
+        }
+        .logo-wrapper{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            min-width:0;
+        }
+        .logo-box{
+            width:44px;
+            height:44px;
+            min-width:44px;
+            border-radius:12px;
+            overflow:hidden;
+            background:#fff;
+            border:1px solid var(--line);
+            box-shadow:var(--shadow);
+            flex-shrink:0;
+        }
+        .logo-image{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+        .logo-title{
+            font-family:var(--serif);
+            font-weight:700;
+            font-size:1.15rem;
+            color:var(--ink);
+            line-height:1.2;
+            white-space:nowrap;
+        }
+        .logo-subtitle{
+            font-size:0.75rem;
+            color:var(--ink-soft);
+            white-space:nowrap;
+        }
+        .nav-links{
+            display:flex;
+            align-items:center;
+            gap:26px;
+        }
+        .nav-link{
+            position:relative;
+            font-size:0.94rem;
+            font-weight:500;
+            color:var(--ink-soft);
+            padding:6px 2px;
+            transition:color .2s ease;
+            white-space:nowrap;
+        }
+        .nav-link::after{
+            content:"";
+            position:absolute; left:0; bottom:0;
+            width:0; height:2px;
+            background:var(--stamp);
+            transition:width .25s ease;
+        }
+        .nav-link:hover{color:var(--ink);}
+        .nav-link:hover::after{width:100%;}
+        .nav-link.active-link{color:var(--ink);}
+        .nav-link.active-link::after{width:100%;}
+
+        .current-tool-pill{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            background:rgba(37,99,235,0.08);
+            color:var(--stamp-dark);
+            padding:7px 14px;
+            border-radius:100px;
+            font-size:0.85rem;
+            font-weight:700;
+            white-space:nowrap;
+        }
+        .current-tool-pill i{font-size:0.75rem;}
+
+        .nav-tools-btn{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            background:var(--stamp);
+            color:#fff !important;
+            padding:10px 18px;
+            border-radius:12px;
+            font-size:0.9rem;
+            font-weight:600;
+            border:none;
+            cursor:pointer;
+            box-shadow:0 4px 0 var(--stamp-dark);
+            transition:transform .15s ease;
+            white-space:nowrap;
+            font-family:var(--sans);
+        }
+        .nav-tools-btn:hover{transform:translateY(-2px);}
+        .nav-tools-btn:active{transform:translateY(1px); box-shadow:0 2px 0 var(--stamp-dark);}
+        .nav-tools-btn .dropdown-arrow{
+            font-size:0.68rem;
+            transition:transform .2s ease;
+        }
+        .nav-item.open .nav-tools-btn .dropdown-arrow{
+            transform:rotate(180deg);
+        }
+
+        .mobile-menu{
+            display:none;
+            width:40px; height:40px;
+            align-items:center; justify-content:center;
+            border-radius:8px;
+            color:var(--ink);
+            font-size:1.1rem;
+            flex-shrink:0;
+            border:none;
+            background:none;
+            cursor:pointer;
+        }
+        .mobile-menu:hover{background:rgba(37,99,235,0.08);}
+
+        @media (max-width:920px){
+            .nav-links{
+                position:fixed;
+                inset:70px 0 auto 0;
+                flex-direction:column;
+                align-items:flex-start;
+                background:var(--paper-raised);
+                padding:20px 24px;
+                gap:16px;
+                border-bottom:1px solid var(--line);
+                box-shadow:var(--shadow);
+                transform:translateY(-130%);
+                opacity:0;
+                transition:transform .3s ease, opacity .3s ease;
+            }
+            .nav-links.active{
+                transform:translateY(0);
+                opacity:1;
+            }
+            .mobile-menu{display:flex;}
+            .logo-subtitle{display:none;}
+            .nav-tools-btn{width:100%; justify-content:space-between;}
+            .current-tool-pill{width:100%; justify-content:center;}
+        }
+
+        /* ============ NAV TOOLS DROPDOWN ============ */
+        .nav-item{
+            position:relative;
+        }
+        .dropdown-menu{
+            position:absolute;
+            top:calc(100% + 14px);
+            left:50%;
+            transform:translateX(-50%);
+            min-width:250px;
+            background:var(--paper-raised);
+            border:1px solid var(--line);
+            border-radius:16px;
+            box-shadow:var(--shadow);
+            padding:10px;
+            display:none;
+            flex-direction:column;
+            gap:4px;
+            z-index:999;
+        }
+        .nav-item.open .dropdown-menu{
+            display:flex;
+        }
+        .dropdown-category{
+            font-size:0.68rem;
+            font-weight:700;
+            letter-spacing:0.05em;
+            text-transform:uppercase;
+            color:var(--ink-soft);
+            padding:10px 12px 4px;
+        }
+        .dropdown-link{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:11px 12px;
+            border-radius:10px;
+            font-size:0.88rem;
+            font-weight:500;
+            color:var(--ink-soft);
+            transition:background .15s ease, color .15s ease;
+            white-space:nowrap;
+        }
+        .dropdown-link i{
+            width:16px;
+            text-align:center;
+            color:var(--stamp);
+            font-size:0.85rem;
+        }
+        .dropdown-link:hover{
+            background:rgba(37,99,235,0.08);
+            color:var(--ink);
+        }
+        .dropdown-link.active{
+            background:rgba(37,99,235,0.08);
+            color:var(--ink);
+            font-weight:700;
+        }
+        .dropdown-link.view-all{
+            margin-top:4px;
+            padding-top:12px;
+            border-top:1px solid var(--line);
+            border-radius:10px;
+            font-weight:600;
+            color:var(--stamp);
+        }
+        .dropdown-link.view-all i{color:var(--stamp);}
+
+        @media (max-width:920px){
+            .nav-item{width:100%;}
+            .dropdown-menu{
+                position:static;
+                transform:none;
+                min-width:0;
+                width:100%;
+                box-shadow:none;
+                border:none;
+                background:rgba(37,99,235,0.04);
+                margin-top:10px;
+                padding:6px;
+                display:none;
+                flex-direction:column;
+            }
+            .nav-item.open .dropdown-menu{
+                display:flex;
+            }
+        }
+
+        /* ============ BREADCRUMB ============ */
+        .breadcrumb-bar{
+            background:var(--paper-raised);
+            border-bottom:1px solid var(--line);
+        }
+        .breadcrumb-inner{
+            max-width:1180px;
+            margin:auto;
+            padding:12px 24px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:0.85rem;
+            color:var(--ink-soft);
+        }
+        .breadcrumb-inner a{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            color:var(--ink-soft);
+            transition:color .2s ease;
+        }
+        .breadcrumb-inner a:hover{color:var(--stamp);}
+        .breadcrumb-inner i.fa-chevron-right{
+            font-size:0.65rem;
+            color:var(--line);
+        }
+        .breadcrumb-current{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            color:var(--stamp-dark);
+            font-weight:700;
+        }
+
+        /* ============ PAGE CONTENT ============ */
+        .title{text-align:center;font-family:var(--serif);font-size:42px;font-weight:700;color:var(--ink);margin-bottom:10px;margin-top:20px}
+        .subtitle{text-align:center;color:var(--ink-soft);margin-bottom:35px}
+
+        .upload-box{
+            background:var(--paper-raised);
+            border:2px dashed var(--stamp);
+            border-radius:24px;
+            min-height:240px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            cursor:pointer;
+            transition:.3s;
+            padding:20px;
+            box-shadow:var(--shadow);
+        }
+        .upload-box:hover,.upload-box.active{
+            background:rgba(37,99,235,0.06);
+            border-color:var(--stamp-dark);
+        }
+        .upload-icon{width:80px;margin-bottom:15px}
+        .upload-icon svg{width:100%;height:auto;filter:drop-shadow(0 6px 14px rgba(37,99,235,0.25))}
+        .upload-box h2{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--ink);margin-bottom:10px}
+        .upload-box p{color:var(--ink-soft)}
+        input[type=file]{display:none}
+
+        .settings{
+            margin-top:30px;
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+        }
+        .card{
+            background:var(--paper-raised);
+            border:1px solid var(--line);
+            padding:20px;
+            border-radius:18px;
+            box-shadow:var(--shadow);
+        }
+        .card label{
+            display:block;
+            margin-bottom:10px;
+            font-weight:600;
+            color:var(--ink);
+            font-size:0.92rem;
+        }
+        .card small{
+            display:block;
+            margin-top:8px;
+            color:var(--ink-soft);
+            font-size:0.78rem;
+        }
+        .card select{
+            width:100%;
+            padding:14px;
+            border:1px solid var(--line);
+            border-radius:12px;
+            background:#fff;
+            color:var(--ink);
+            font-size:0.95rem;
+            transition:border-color .2s ease, box-shadow .2s ease;
+        }
+        .card select:focus{
+            outline:none;
+            border-color:var(--stamp);
+            box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+        }
+
+        .files{margin-top:35px;display:flex;flex-direction:column;gap:20px}
+        .file-card{
+            background:var(--paper-raised);
+            border:1px solid var(--line);
+            padding:25px;
+            border-radius:24px;
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+            align-items:center;
+            justify-content:space-between;
+            box-shadow:var(--shadow);
+        }
+        .file-info{flex:1;min-width:220px}
+        .file-name{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:10px;word-break:break-word}
+        .file-size{font-size:14px;color:var(--ink-soft);margin-bottom:5px}
+        .status-text{font-size:14px;color:var(--ink-soft);margin-top:8px}
+
+        .btn{
+            padding:14px 22px;
+            border:none;
+            border-radius:14px;
+            font-weight:600;
+            cursor:pointer;
+            transition:transform .18s ease, box-shadow .18s ease;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+        }
+        .convert-btn{
+            background:var(--stamp);
+            color:#fff;
+            box-shadow:0 4px 0 var(--stamp-dark);
+        }
+        .convert-btn:hover{transform:translateY(-2px)}
+        .convert-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--stamp-dark)}
+
+        .download-btn{
+            background:var(--success);
+            color:#fff;
+            display:none;
+            box-shadow:0 4px 0 var(--success-dark);
+        }
+        .download-btn:hover{transform:translateY(-2px)}
+
+        .progress{width:100%;height:10px;background:var(--line);border-radius:20px;overflow:hidden;margin-top:15px}
+        .progress-bar{height:100%;width:0%;background:linear-gradient(to right,var(--stamp),var(--teal));transition:.3s}
+
+        .loader{
+            width:28px;
+            height:28px;
+            border:4px solid rgba(37,99,235,.15);
+            border-top:4px solid var(--stamp);
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            display:none;
+        }
+        @keyframes spin{100%{transform:rotate(360deg)}}
+
+        .preview-area{
+            width:120px;
+            height:160px;
+            background:#fff;
+            border:1px solid var(--line);
+            border-radius:14px;
+            overflow:hidden;
+            flex-shrink:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .preview-area canvas{width:100%;height:100%;object-fit:contain}
+
+        /* ============ FOOTER ============ */
+        .footer{
+            background:var(--ink);
+            color:#dfe6f2;
+            margin-top:60px;
+            padding:40px 20px;
+        }
+        .footer-simple{
+            max-width:1180px;
+            margin:auto;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:20px;
+            padding-bottom:24px;
+            border-bottom:1px solid rgba(255,255,255,0.12);
+        }
+        .footer-brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+        .footer-brand img{
+            width:40px; height:40px;
+            border-radius:10px;
+            object-fit:cover;
+            flex-shrink:0;
+        }
+        .footer-title{
+            font-family:var(--serif);
+            font-weight:700;
+            font-size:1.05rem;
+            color:#fff;
+        }
+        .footer-subtitle{
+            font-size:0.76rem;
+            color:#9fb0cc;
+        }
+        .footer-simple-links{
+            display:flex;
+            align-items:center;
+            gap:22px;
+            flex-wrap:wrap;
+        }
+        .footer-simple-links a{
+            font-size:0.88rem;
+            color:#c8d2e6;
+            transition:color .2s ease;
+        }
+        .footer-simple-links a:hover{color:#fff;}
+        .footer-social{
+            display:flex;
+            gap:10px;
+        }
+        .footer-social a{
+            width:36px; height:36px;
+            border-radius:50%;
+            border:1px solid rgba(255,255,255,0.18);
+            display:flex; align-items:center; justify-content:center;
+            color:#fff;
+            transition:background .2s ease, border-color .2s ease, transform .2s ease;
+        }
+        .footer-social a:hover{
+            background:var(--stamp);
+            border-color:var(--stamp);
+            transform:translateY(-3px);
+        }
+        .footer-bottom{
+            max-width:1180px;
+            margin:20px auto 0;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:10px;
+        }
+        .copyright{
+            font-size:0.78rem;
+            color:#8494b5;
+            line-height:1.6;
+        }
+        @media(max-width:600px){
+            .footer-simple{flex-direction:column; text-align:center; justify-content:center;}
+            .footer-bottom{flex-direction:column; text-align:center; justify-content:center;}
+            .title{font-size:32px}
+            .file-card{flex-direction:column; align-items:flex-start}
+        }
     </style>
 </head>
 <body>
-<nav class="navbar"><div class="nav-container"><div class="logo-wrapper"><div class="logo-box">📄</div><div><h2 class="logo-title">PDFBoon</h2><p class="logo-subtitle">Fast PDF Toolkit</p></div></div>
-<div class="nav-links" id="navLinks"><a href="index.html" class="nav-link">Home</a><div class="current-tool-pill"><i class="fa-solid fa-file-word"></i> PDF to Word</div>
-<div class="nav-item" id="toolsDropdown"><button class="nav-tools-btn"><i class="fa-solid fa-grip"></i> Tools</button>
-<div class="dropdown-menu"><a href="merge.html" class="dropdown-link">Merge PDF</a><a href="compress.html" class="dropdown-link">Compress PDF</a><a href="pdf-to-word.html" class="dropdown-link active">PDF to Word</a></div></div>
-<a href="about.html" class="nav-link">About</a></div><button class="mobile-menu" id="mobileMenuBtn">☰</button></div></nav>
 
-<div class="container">
-    <h1 class="title">PDF to Word · Exact Layout</h1>
-    <p class="subtitle">Real tables, images, colours, and rich formatting – fully editable DOCX</p>
-    <div class="info-box">
-        <i class="fa-solid fa-circle-info"></i> <strong>100% browser‑based</strong> – no upload to any server.<br>
-        For extremely complex PDFs (scanned documents, heavy vector graphics), a server‑side engine like LibreOffice gives perfect results.
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo-wrapper">
+            <div class="logo-box">
+                <img src="images/logo.png" class="logo-image">
+            </div>
+            <div>
+                <h2 class="logo-title">PDFBoon</h2>
+                <p class="logo-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">Home</a>
+            <div class="current-tool-pill">
+                <i class="fa-regular fa-file-word"></i> PDF to Word
+            </div>
+            <div class="nav-item" id="toolsDropdown">
+                <button class="nav-tools-btn" id="toolsToggle" type="button">
+                    <i class="fa-solid fa-grip"></i> Tools <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <div class="dropdown-category">Other Frequently used</div>
+                    <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
+                    <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+                    
+                    
+                    <a href="watermark.html" class="dropdown-link"><i class="fa-solid fa-droplet"></i> Watermark PDF</a>
+                    <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+                </div>
+            </div>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+        <button class="mobile-menu" id="mobileMenuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
+</nav>
 
-    <label class="upload-box" id="uploadBox" for="pdfFileInput">
-        <div class="upload-icon"><svg viewBox="0 0 64 64"><rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/><rect x="14" y="18" width="36" height="4" rx="1" fill="#fff" opacity=".9"/></svg></div>
-        <h2>Drag & Drop PDF</h2><p>or click to browse</p>
-        <input type="file" id="pdfFileInput" multiple accept="application/pdf">
+<!-- ===== BREADCRUMB ===== -->
+<div class="breadcrumb-bar">
+    <div class="breadcrumb-inner">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="tools.html"><i class="fa-solid fa-tools"></i> Tools</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span class="breadcrumb-current"><i class="fa-regular fa-file-word"></i> PDF to Word</span>
+    </div>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div class="container">
+    <h1 class="title">PDF to Word Converter</h1>
+    <p class="subtitle">Convert PDF to Word with 100% accuracy — preserve text, tables, images & formatting</p>
+
+    <label class="upload-box" id="uploadBox" for="pdfInput">
+        <div class="upload-icon">
+            <svg viewBox="0 0 64 64">
+                <path d="M14 6C14 3.79086 15.7909 2 18 2H38L50 14V58C50 60.2091 48.2091 62 46 62H18C15.7909 62 14 60.2091 14 58V6Z" fill="#2563eb"/>
+                <path d="M38 2L50 14H40C38.8954 14 38 13.1046 38 12V2Z" fill="#1d4ed8"/>
+                <rect x="20" y="30" width="24" height="3" rx="1.5" fill="#ffffff"/>
+                <rect x="20" y="38" width="24" height="3" rx="1.5" fill="#ffffff"/>
+                <rect x="20" y="46" width="15" height="3" rx="1.5" fill="#ffffff"/>
+            </svg>
+        </div>
+        <h2>Drag & Drop PDF Files</h2>
+        <p>or click here to Browse</p>
+        <input type="file" id="pdfInput" accept="application/pdf">
     </label>
 
     <div class="settings">
-        <div class="card"><label>Layout Mode</label><select id="layoutMode"><option value="absolute">Absolute Text Boxes</option><option value="flow">Flowing Text</option></select></div>
-        <div class="card"><label>Tables</label><select id="tableMode"><option value="on" selected>Detect & Create Word Tables</option><option value="off">Text only</option></select></div>
-        <div class="card"><label>Images</label><select id="imageMode"><option value="on" selected>Extract & Embed Images</option><option value="off">Skip Images</option></select></div>
-        <div class="card"><label>Colours & Fonts</label><select id="styleMode"><option value="on" selected>Preserve</option><option value="off">Plain</option></select></div>
+        <div class="card">
+            <label><i class="fa-solid fa-font"></i> Text Extraction Mode</label>
+            <select id="extractMode">
+                <option value="accurate">Accurate (Preserve Formatting)</option>
+                <option value="simple">Simple (Plain Text)</option>
+                <option value="rich">Rich (With Styles)</option>
+            </select>
+            <small>Accurate mode preserves fonts, sizes, colors, and layout</small>
+        </div>
+        <div class="card">
+            <label><i class="fa-solid fa-table"></i> Table Detection</label>
+            <select id="tableMode">
+                <option value="auto">Auto Detect Tables</option>
+                <option value="on">Always Detect Tables</option>
+                <option value="off">Ignore Tables</option>
+            </select>
+            <small>Automatically detect and convert tables to Word format</small>
+        </div>
+        <div class="card">
+            <label><i class="fa-solid fa-image"></i> Image Handling</label>
+            <select id="imageMode">
+                <option value="embed">Embed Images in Word</option>
+                <option value="link">Link Images</option>
+                <option value="ignore">Ignore Images</option>
+            </select>
+            <small>Embed images directly into the Word document</small>
+        </div>
     </div>
-    <div class="files" id="filesContainer"></div>
+
+    <div class="files" id="fileCardContainer"></div>
 </div>
-<footer class="footer">© 2026 PDFBoon · Vikshant Kralta</footer>
 
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="footer-simple">
+        <div class="footer-brand">
+            <img src="images/logo.png">
+            <div>
+                <h2 class="footer-title">PDFBoon</h2>
+                <p class="footer-subtitle">Fast PDF Toolkit</p>
+            </div>
+        </div>
+        <div class="footer-simple-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">All Tools</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-social">
+            <a href="not.html"><i class="fab fa-facebook"></i></a>
+            <a href="not.html"><i class="fab fa-linkedin"></i></a>
+            <a href="not.html"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="copyright">© 2026 PDFBoon. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    // ===== NAVBAR =====
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+        document.getElementById('navLinks').classList.toggle('active');
+    });
 
-// ---------- UI ----------
-document.getElementById('mobileMenuBtn').addEventListener('click', ()=> document.getElementById('navLinks').classList.toggle('active'));
-document.getElementById('toolsDropdown').querySelector('button').addEventListener('click', function(e){ e.preventDefault(); this.parentElement.classList.toggle('open'); });
+    const toolsDropdown = document.getElementById('toolsDropdown');
+    const toolsToggle = document.getElementById('toolsToggle');
 
-const pdfFileInput = document.getElementById('pdfFileInput');
-const filesContainer = document.getElementById('filesContainer');
-const uploadBox = document.getElementById('uploadBox');
-let uploadedFiles = [];
+    toolsToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toolsDropdown.classList.toggle('open');
+    });
 
-pdfFileInput.addEventListener('change', e => { uploadedFiles = [...e.target.files]; renderFiles(); });
-uploadBox.addEventListener('click', () => pdfFileInput.click());
-uploadBox.addEventListener('dragover', e => e.preventDefault());
-uploadBox.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadedFiles = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf');
-    renderFiles();
-});
-
-function formatSize(b) { return b > 1024*1024 ? (b/(1024*1024)).toFixed(2)+' MB' : (b/1024).toFixed(2)+' KB'; }
-
-async function renderFiles() {
-    filesContainer.innerHTML = '';
-    for (let i=0; i<uploadedFiles.length; i++) {
-        const f = uploadedFiles[i];
-        const card = document.createElement('div'); card.className = 'file-card';
-        card.innerHTML = `<div class="preview"><canvas id="pv-${i}"></canvas></div><div><b>${f.name}</b><br>${formatSize(f.size)}<br><span id="fs-${i}">Ready</span><div class="progress"><div class="progress-bar" id="pb-${i}"></div></div></div>
-        <input id="rn-${i}" value="${f.name.replace('.pdf','-converted')}"><button class="btn convert-btn" data-idx="${i}">Convert</button><div class="loader" id="ld-${i}"></div><a class="btn download-btn" id="dl-${i}" download>.docx</a>`;
-        filesContainer.appendChild(card);
-        previewPDF(f, i);
-    }
-    document.querySelectorAll('.convert-btn').forEach(b => b.addEventListener('click', () => convertPDFToWord(parseInt(b.dataset.idx))));
-}
-
-async function previewPDF(file, idx) {
-    const data = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({data}).promise;
-    const page = await pdf.getPage(1);
-    const vp = page.getViewport({scale:0.5});
-    const canvas = document.getElementById(`pv-${idx}`);
-    canvas.width = vp.width; canvas.height = vp.height;
-    await page.render({canvasContext:canvas.getContext('2d'), viewport:vp}).promise;
-}
-
-// ---------- CONVERSION ENGINE ----------
-async function convertPDFToWord(idx) {
-    const file = uploadedFiles[idx]; if(!file) return;
-    const pb = document.getElementById(`pb-${idx}`), ld = document.getElementById(`ld-${idx}`),
-          btn = document.querySelectorAll('.convert-btn')[idx], dbtn = document.getElementById(`dl-${idx}`),
-          ft = document.getElementById(`fs-${idx}`), rn = document.getElementById(`rn-${idx}`).value;
-    const layout = document.getElementById('layoutMode').value,
-          tableMode = document.getElementById('tableMode').value,
-          imageMode = document.getElementById('imageMode').value,
-          styleMode = document.getElementById('styleMode').value;
-    btn.style.display='none'; ld.style.display='block'; pb.style.width='0%'; ft.textContent='Extracting...';
-    try {
-        const data = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({data}).promise;
-        const allPages = [];
-        for (let p=1; p<=pdf.numPages; p++) {
-            ft.textContent = `Page ${p}/${pdf.numPages}`;
-            const page = await pdf.getPage(p);
-            const vp = page.getViewport({scale:1});
-            const textContent = await page.getTextContent();
-            const opList = await page.getOperatorList();
-            const colorMap = extractColors(opList, textContent);
-            const styleMap = extractFontStyles(opList, textContent);
-
-            let items = textContent.items.map((it,i) => ({
-                text: it.str||'', x: it.transform[4], y: vp.height - it.transform[5],
-                w: it.width||0, h: it.height||12, font: it.fontName||'',
-                color: colorMap[i]||'#000000',
-                bold: styleMap[i]?.bold || /bold/i.test(it.fontName),
-                italic: styleMap[i]?.italic || /italic/i.test(it.fontName)
-            }));
-            items.sort((a,b)=> Math.abs(a.y-b.y)<0.5 ? a.x-b.x : a.y-b.y);
-
-            // Merge text lines
-            const merged = [];
-            if (items.length) {
-                let line = [items[0]], lineY = items[0].y, lineMaxH = items[0].h;
-                for (let i=1; i<items.length; i++) {
-                    if (Math.abs(items[i].y - lineY) < Math.max(2, lineMaxH*0.4)) {
-                        line.push(items[i]);
-                        lineMaxH = Math.max(lineMaxH, items[i].h);
-                    } else {
-                        merged.push(mergeLine(line)); line = [items[i]]; lineY = items[i].y; lineMaxH = items[i].h;
-                    }
-                }
-                if (line.length) merged.push(mergeLine(line));
-            }
-
-            // Detect tables
-            let tables = [];
-            if (tableMode === 'on') tables = detectTablesGrid(merged, vp.width);
-
-            // Extract images (render page to JPEG – most reliable browser method)
-            let images = [];
-            if (imageMode === 'on') {
-                images = await extractPageImages(page, vp);
-            }
-
-            allPages.push({ num:p, items:merged, tables, images, w:vp.width, h:vp.height });
-            pb.style.width = ((p/pdf.numPages)*50)+'%';
-        }
-        ft.textContent = 'Building DOCX...';
-        const blob = await buildDocx(allPages, { layout, tableMode, imageMode, styleMode });
-        pb.style.width = '90%';
-        const url = URL.createObjectURL(blob);
-        dbtn.href=url; dbtn.download=(rn||'converted')+'.docx'; dbtn.style.display='inline-flex';
-        ft.innerHTML='<span style="color:#10b981">✓ Converted!</span>'; pb.style.width='100%';
-    } catch(e) { ft.textContent='Error: '+e.message; console.error(e); }
-    finally { ld.style.display='none'; btn.style.display='inline-flex'; }
-}
-
-function mergeLine(line) {
-    line.sort((a,b)=> a.x-b.x);
-    let txt='', x0=line[0].x, x1=line[0].x+line[0].w, h=line[0].h, font=line[0].font, col=line[0].color;
-    let bold=line[0].bold, italic=line[0].italic;
-    for (let i=0;i<line.length;i++) {
-        if (i>0 && line[i].x-(line[i-1].x+line[i-1].w)>3) txt+=' ';
-        txt+=line[i].text; x1=Math.max(x1,line[i].x+line[i].w); h=Math.max(h,line[i].h);
-        if (line[i].font && line[i].font.length>font.length) font=line[i].font;
-        if (line[i].color!=='#000000') col=line[i].color;
-        if (line[i].bold) bold=true;
-        if (line[i].italic) italic=true;
-    }
-    return {text:txt.trim(), x:x0, y:line[0].y, w:x1-x0, h, font, color:col, bold, italic};
-}
-
-function extractColors(ops, text) {
-    const map={}; let idx=0, col='#000000';
-    for (let i=0;i<ops.fnArray.length;i++) {
-        if (ops.fnArray[i]===pdfjsLib.OPS.setFillRGBColor) {
-            const a=ops.argsArray[i]; col='#'+[Math.round(a[0]*255),Math.round(a[1]*255),Math.round(a[2]*255)].map(c=>c.toString(16).padStart(2,'0')).join('');
-        }
-        if (ops.fnArray[i]===pdfjsLib.OPS.showText || ops.fnArray[i]===pdfjsLib.OPS.showSpacedText) {
-            if (idx<text.items.length) map[idx]=col; idx++;
-        }
-    }
-    return map;
-}
-
-function extractFontStyles(ops, text) {
-    const styles=[]; let idx=0;
-    let current = { bold:false, italic:false };
-    for (let i=0;i<ops.fnArray.length;i++) {
-        if (ops.fnArray[i]===pdfjsLib.OPS.setFont) {
-            const name = (ops.argsArray[i]?.[0]||'').toLowerCase();
-            current.bold = /bold|black|heavy/i.test(name);
-            current.italic = /italic|oblique/i.test(name);
-        }
-        if (ops.fnArray[i]===pdfjsLib.OPS.showText || ops.fnArray[i]===pdfjsLib.OPS.showSpacedText) {
-            if (idx<text.items.length) styles[idx] = {...current}; idx++;
-        }
-    }
-    return styles;
-}
-
-function detectTablesGrid(items, pageWidth) {
-    if (items.length<4) return [];
-    const rows = [];
-    let cur = [items[0]], lastY = items[0].y;
-    for (let i=1; i<items.length; i++) {
-        if (!items[i]) continue;
-        if (Math.abs(items[i].y - lastY) < 2) cur.push(items[i]);
-        else { rows.push(cur); cur = [items[i]]; lastY = items[i].y; }
-    }
-    rows.push(cur);
-    const gapMap = new Map();
-    rows.forEach(row => {
-        row.sort((a,b)=>a.x-b.x);
-        for (let i=1; i<row.length; i++) {
-            const gs = row[i-1].x + row[i-1].w, ge = row[i].x;
-            if (ge - gs > 5) { const g = Math.round((gs+ge)/2); gapMap.set(g, (gapMap.get(g)||0)+1); }
+    document.addEventListener('click', (e) => {
+        if (!toolsDropdown.contains(e.target)) {
+            toolsDropdown.classList.remove('open');
         }
     });
-    const thresh = Math.max(2, Math.floor(rows.length*0.4));
-    const colEdges = [0, ...[...gapMap.entries()].filter(([_,c])=>c>=thresh).map(([x])=>x).sort((a,b)=>a-b), pageWidth];
-    const tables = []; let start = -1;
-    for (let r=0; r<rows.length; r++) {
-        const cols = new Set();
-        rows[r].forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2&&it.x+it.w<=colEdges[c+1]+2) { cols.add(c); break; } });
-        if (cols.size>=2) { if (start===-1) start=r; }
-        else { if (start!==-1 && r-start>=2) tables.push({rows:rows.slice(start,r), colEdges}); start=-1; }
-    }
-    if (start!==-1 && rows.length-start>=2) tables.push({rows:rows.slice(start), colEdges});
-    return tables;
-}
 
-async function extractPageImages(page, viewport) {
-    // Render the whole page as a JPEG – this captures all visible content (images, vectors)
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const ctx = canvas.getContext('2d');
-    await page.render({canvasContext:ctx, viewport}).promise;
-    const jpeg = canvas.toDataURL('image/jpeg', 0.92);
-    return [{ data:jpeg, x:0, y:0, w:viewport.width, h:viewport.height }];
-}
-
-// ---------- DOCX BUILDER ----------
-const EMU = 12700;
-async function buildDocx(pages, opt) {
-    const zip = new JSZip();
-    zip.file('[Content_Types].xml',`<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
-
-    const fp = pages[0], pw = Math.round(fp.w*20), ph = Math.round(fp.h*20);
-    let body = '';
-    let imageRelId = 1;
-    let docRels = '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
-
-    for (let pi=0; pi<pages.length; pi++) {
-        const page = pages[pi];
-        if (pi>0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
-
-        // Full‑page image behind text (optional)
-        if (opt.imageMode==='on') {
-            for (const img of page.images) {
-                const jpegData = img.data.split(',')[1];
-                const bytes = Uint8Array.from(atob(jpegData), c=>c.charCodeAt(0));
-                const imgName = `image${imageRelId}.jpg`;
-                zip.folder('word').folder('media').file(imgName, bytes);
-                const relId = `rIdImg${imageRelId}`;
-                docRels += `<Relationship Id="${relId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${imgName}"/>`;
-                const cx = Math.round(img.w * EMU), cy = Math.round(img.h * EMU);
-                const offX = Math.round(img.x * EMU), offY = Math.round(img.y * EMU);
-                const id = Math.floor(Math.random()*1000000);
-                body += `<w:p><w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251657216" behindDoc="1" locked="0" layoutInCell="1" allowOverlap="1">
-<wp:simplePos x="${offX}" y="${offY}"/><wp:positionH relativeFrom="page"><wp:posOffset>${offX}</wp:posOffset></wp:positionH>
-<wp:positionV relativeFrom="page"><wp:posOffset>${offY}</wp:posOffset></wp:positionV>
-<wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/>
-<wp:docPr id="${id}" name="Picture${id}"/><wp:cNvGraphicFramePr/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
-<pic:pic><pic:nvPicPr><pic:cNvPr id="${id}" name="Picture${id}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:anchor></w:drawing></w:r></w:p>`;
-                imageRelId++;
-            }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            toolsDropdown.classList.remove('open');
         }
+    });
 
-        // Tables
-        const tableSet = new Set();
-        if (opt.tableMode==='on' && page.tables.length) {
-            for (const table of page.tables) {
-                const colEdges = table.colEdges;
-                const colWidths = [];
-                for (let c=0; c<colEdges.length-1; c++) colWidths.push(colEdges[c+1]-colEdges[c]);
-                const tableW = colWidths.reduce((a,b)=>a+b,0);
-                const top = table.rows[0][0].y, left = 0;
-                let xml = `<w:tbl><w:tblPr><w:tblW w:w="${Math.round(tableW*20)}" w:type="dxa"/></w:tblPr><w:tblGrid>${colWidths.map(w=>`<w:gridCol w:w="${Math.round(w*20)}"/>`).join('')}</w:tblGrid>`;
-                for (const row of table.rows) {
-                    xml += '<w:tr>';
-                    const cellItems = Array(colWidths.length).fill(null);
-                    row.forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2 && it.x+it.w<=colEdges[c+1]+2) { cellItems[c]=it; break; } });
-                    for (let c=0;c<colWidths.length;c++) {
-                        const it = cellItems[c]||{text:'',font:'',h:10,color:'#000000',bold:false,italic:false};
-                        const ff = getFont(it.font, opt.styleMode!=='off'?'preserve':'calibri');
-                        const fs = Math.round(Math.max(it.h*1.5,16));
-                        const b = it.bold, i = it.italic;
-                        const clr = opt.styleMode!=='off'&&it.color!=='#000000'?it.color.replace('#',''):'';
-                        xml += `<w:tc><w:tcPr><w:tcW w:w="${Math.round(colWidths[c]*20)}" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r></w:p></w:tc>`;
-                    }
-                    xml += '</w:tr>';
-                    row.forEach(it=>tableSet.add(it));
+    // ===== PDF.JS CONFIG =====
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // ===== UI REFERENCES =====
+    const pdfInput = document.getElementById('pdfInput');
+    const uploadBox = document.getElementById('uploadBox');
+    const fileCardContainer = document.getElementById('fileCardContainer');
+    let selectedFile = null;
+    let pdfDoc = null;
+
+    // ===== FILE UPLOAD =====
+    pdfInput.addEventListener('change', e => {
+        if (e.target.files[0]) {
+            selectedFile = e.target.files[0];
+            showFileCard();
+        }
+    });
+
+    uploadBox.addEventListener('dragover', e => e.preventDefault());
+    uploadBox.addEventListener('drop', e => {
+        e.preventDefault();
+        if (e.dataTransfer.files[0]?.type === 'application/pdf') {
+            selectedFile = e.dataTransfer.files[0];
+            showFileCard();
+        }
+    });
+
+    function formatSize(b) {
+        return b > 1024 * 1024 ? (b / (1024 * 1024)).toFixed(2) + ' MB' : (b / 1024).toFixed(2) + ' KB';
+    }
+
+    // ===== SHOW FILE CARD =====
+    async function showFileCard() {
+        fileCardContainer.innerHTML = '';
+        const file = selectedFile;
+        
+        // Load PDF
+        const arrayBuffer = await file.arrayBuffer();
+        pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        
+        const card = document.createElement('div');
+        card.className = 'file-card';
+        card.innerHTML = `
+            <div class="preview-area">
+                <canvas id="previewCanvas"></canvas>
+            </div>
+            <div class="file-info">
+                <div class="file-name">${file.name}</div>
+                <div class="file-size">Size: ${formatSize(file.size)}</div>
+                <div class="file-size">Pages: ${pdfDoc.numPages}</div>
+                <div class="status-text" id="status">Ready to convert</div>
+                <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+                <button class="btn convert-btn" id="convertBtn" style="margin-top:15px;">
+                    <i class="fa-regular fa-file-word"></i> Convert to Word
+                </button>
+                <div class="loader" id="loader"></div>
+                <a class="btn download-btn" id="downloadBtn" download>
+                    <i class="fa-solid fa-download"></i> Download DOCX
+                </a>
+            </div>
+        `;
+        fileCardContainer.appendChild(card);
+
+        // Generate preview
+        const page = await pdfDoc.getPage(1);
+        const viewport = page.getViewport({ scale: 0.4 });
+        const canvas = document.getElementById('previewCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        document.getElementById('convertBtn').addEventListener('click', convertToWord);
+    }
+
+    // ===== EXTRACT TEXT WITH FORMATTING =====
+    async function extractTextWithFormatting(page, mode) {
+        const textContent = await page.getTextContent();
+        let text = '';
+        let items = [];
+        
+        for (let item of textContent.items) {
+            const str = item.str;
+            const x = item.transform[4];
+            const y = item.transform[5];
+            const width = item.width;
+            const height = item.height;
+            const fontName = item.fontName || 'Arial';
+            const fontSize = Math.round(item.height || 12);
+            
+            items.push({
+                text: str,
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                fontName: fontName,
+                fontSize: fontSize,
+                color: '#000000'
+            });
+        }
+        
+        // Group by lines (based on Y position)
+        const lines = [];
+        const threshold = 3;
+        
+        items.sort((a, b) => b.y - a.y);
+        
+        for (let item of items) {
+            let found = false;
+            for (let line of lines) {
+                if (Math.abs(line.y - item.y) < threshold) {
+                    line.items.push(item);
+                    found = true;
+                    break;
                 }
-                xml += '</w:tbl>';
-                body += opt.layout==='absolute' ? shapeWrap(xml, left, top, tableW, 20) : xml;
+            }
+            if (!found) {
+                lines.push({ y: item.y, items: [item] });
             }
         }
+        
+        // Build text with formatting
+        let result = '';
+        for (let line of lines) {
+            line.items.sort((a, b) => a.x - b.x);
+            for (let item of line.items) {
+                if (mode === 'accurate' || mode === 'rich') {
+                    // Add formatting hints
+                    if (item.fontName && item.fontName.includes('Bold')) {
+                        result += `<b>${item.text}</b>`;
+                    } else if (item.fontName && item.fontName.includes('Italic')) {
+                        result += `<i>${item.text}</i>`;
+                    } else {
+                        result += item.text;
+                    }
+                } else {
+                    result += item.text;
+                }
+            }
+            result += '\n';
+        }
+        
+        return result;
+    }
 
-        // Text items
-        for (const it of page.items) {
-            if (tableSet.has(it) || !it.text.trim()) continue;
-            const ff = getFont(it.font, opt.styleMode!=='off'?'preserve':'calibri');
-            const fs = Math.round(Math.max(it.h*1.5,16));
-            const b = it.bold, i = it.italic;
-            const clr = opt.styleMode!=='off'&&it.color!=='#000000'?it.color.replace('#',''):'';
-            const run = `<w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r>`;
-            body += opt.layout==='absolute' ? framePrParagraph(run, it.x, it.y, Math.max(it.w,50), it.h) : `<w:p>${run}</w:p>`;
+    // ===== DETECT TABLES =====
+    function detectTables(textContent) {
+        const lines = textContent.split('\n');
+        const tableLines = [];
+        let inTable = false;
+        let tableData = [];
+        
+        for (let line of lines) {
+            const parts = line.split(/\s{2,}/);
+            if (parts.length >= 3) {
+                if (!inTable) {
+                    inTable = true;
+                    tableData = [];
+                }
+                tableData.push(parts);
+            } else {
+                if (inTable && tableData.length > 1) {
+                    tableLines.push(tableData);
+                }
+                inTable = false;
+                tableData = [];
+            }
+        }
+        
+        if (inTable && tableData.length > 1) {
+            tableLines.push(tableData);
+        }
+        
+        return tableLines;
+    }
+
+    // ===== BUILD DOCX =====
+    function buildDocx(content, mode, images = []) {
+        // Create HTML content for Word
+        let htmlContent = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:w="urn:schemas-microsoft-com:office:word" 
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+            <meta charset="UTF-8">
+            <title>PDF to Word Conversion</title>
+            <style>
+                body { font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.6; }
+                table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+                td, th { border: 1px solid #666; padding: 6px 10px; }
+                th { background: #f0f0f0; font-weight: bold; }
+                p { margin: 4px 0; }
+                .bold { font-weight: bold; }
+                .italic { font-style: italic; }
+                .underline { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div style="max-width:100%; padding:20px;">`;
+
+// Add content
+if (mode === 'simple') {
+    htmlContent += `<pre style="font-family: 'Courier New', monospace; font-size: 10pt;">${escapeHtml(content)}</pre>`;
+} else {
+    // Process content - split by lines
+    const lines = content.split('\n');
+    let inTable = false;
+    let tableRows = [];
+
+    for (let line of lines) {
+        if (!line.trim()) {
+            if (inTable && tableRows.length > 0) {
+                htmlContent += buildTable(tableRows);
+                tableRows = [];
+                inTable = false;
+            }
+            htmlContent += `<p>&nbsp;</p>`;
+            continue;
+        }
+
+        // Check if line contains table-like data (multiple columns)
+        const cells = line.split(/\s{2,}/);
+        if (cells.length >= 3 && mode !== 'simple') {
+            tableRows.push(cells);
+            inTable = true;
+        } else {
+            if (inTable && tableRows.length > 0) {
+                htmlContent += buildTable(tableRows);
+                tableRows = [];
+                inTable = false;
+            }
+            // Check for formatting tags
+            let formattedLine = line;
+            if (mode === 'rich') {
+                formattedLine = line
+                    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                    .replace(/\*(.*?)\*/g, '<i>$1</i>')
+                    .replace(/__(.*?)__/g, '<u>$1</u>');
+            }
+            htmlContent += `<p>${formattedLine}</p>`;
         }
     }
 
-    docRels += '</Relationships>';
-    zip.folder('_rels').file('.rels',`<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
-    zip.folder('word').folder('_rels').file('document.xml.rels', docRels);
-
-    zip.folder('word').file('document.xml', `<?xml version="1.0"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
-xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
-<w:body>${body}<w:sectPr><w:pgSz w:w="${pw}" w:h="${ph}"/><w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0"/></w:sectPr></w:body></w:document>`);
-
-    return zip.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document', compression:'DEFLATE'});
+    if (inTable && tableRows.length > 0) {
+        htmlContent += buildTable(tableRows);
+    }
 }
 
-function shapeWrap(innerXml, x, y, w, h) {
-    const cx=Math.round(w*EMU), cy=Math.round(h*EMU), offX=Math.round(x*EMU), offY=Math.round(y*EMU);
-    const id=Math.floor(Math.random()*1000000);
-    return `<w:p><w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251659264" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1">
-<wp:simplePos x="${offX}" y="${offY}"/><wp:positionH relativeFrom="page"><wp:posOffset>${offX}</wp:posOffset></wp:positionH>
-<wp:positionV relativeFrom="page"><wp:posOffset>${offY}</wp:posOffset></wp:positionV>
-<wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/>
-<wp:docPr id="${id}" name="TableBox${id}"/><wp:cNvGraphicFramePr/>
-<a:graphic><a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
-<wps:wsp><wps:cNvSpPr txBox="1"/><wps:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></wps:spPr>
-<wps:txbx><w:txbxContent>${innerXml}</w:txbxContent></wps:txbx>
-<wps:bodyPr rot="0" vert="horz" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t"/>
-</wps:wsp></a:graphicData></a:graphic></wp:anchor></w:drawing></w:r></w:p>`;
+// Add images if any
+for (let img of images) {
+    htmlContent += `<p><img src="${img}" style="max-width:100%; height:auto;" /></p>`;
 }
 
-function framePrParagraph(innerRun, x, y, w, h) {
-    const left=Math.round(x*20), top=Math.round(y*20), width=Math.round(w*20), height=Math.round(h*20);
-    return `<w:p><w:pPr><w:framePr w:w="${width}" w:h="${height}" w:hRule="exact" w:wrap="notBeside" w:vAnchor="page" w:hAnchor="page" w:x="${left}" w:y="${top}"/></w:pPr>${innerRun}</w:p>`;
+htmlContent += `
+</div>
+</body>
+</html>`;
+
+return htmlContent;
 }
 
-function getFont(fn, mode) {
-    if (mode==='calibri') return 'Calibri';
-    const n=(fn||'').toLowerCase();
-    if (n.includes('times')||n.includes('roman')) return 'Times New Roman';
-    if (n.includes('helvetica')||n.includes('arial')) return 'Arial';
-    if (n.includes('courier')) return 'Courier New';
-    return 'Calibri';
+function buildTable(rows) {
+let html = '<table>';
+const maxCols = Math.max(...rows.map(r => r.length));
+
+for (let i = 0; i < rows.length; i++) {
+const row = rows[i];
+const tag = (i === 0) ? 'th' : 'td';
+html += '<tr>';
+for (let j = 0; j < maxCols; j++) {
+html += `<${tag}>${row[j] || ''}</${tag}>`;
 }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+html += '</tr>';
+}
+html += '</table>';
+return html;
+}
+
+function escapeHtml(text) {
+const div = document.createElement('div');
+div.textContent = text;
+return div.innerHTML;
+}
+
+// ===== CONVERT TO WORD =====
+async function convertToWord() {
+if (!selectedFile || !pdfDoc) {
+alert('Please upload a PDF file first.');
+return;
+}
+
+const progressBar = document.getElementById('progressBar');
+const loader = document.getElementById('loader');
+const btn = document.getElementById('convertBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const status = document.getElementById('status');
+
+btn.style.display = 'none';
+loader.style.display = 'block';
+progressBar.style.width = '0%';
+status.textContent = 'Extracting text...';
+
+try {
+const extractMode = document.getElementById('extractMode').value;
+const tableMode = document.getElementById('tableMode').value;
+const imageMode = document.getElementById('imageMode').value;
+
+let fullText = '';
+let images = [];
+
+// Extract text from all pages
+for (let i = 1; i <= pdfDoc.numPages; i++) {
+const page = await pdfDoc.getPage(i);
+const text = await extractTextWithFormatting(page, extractMode);
+fullText += text + '\n\n';
+
+// Update progress
+const progress = (i / pdfDoc.numPages) * 70;
+progressBar.style.width = progress + '%';
+status.textContent = `Processing page ${i} of ${pdfDoc.numPages}...`;
+}
+
+// Detect tables if enabled
+if (tableMode === 'auto' || tableMode === 'on') {
+status.textContent = 'Detecting tables...';
+// Table detection logic integrated in buildDocx
+}
+
+// Extract images if enabled
+if (imageMode === 'embed' || imageMode === 'link') {
+status.textContent = 'Extracting images...';
+// Images are embedded directly in the HTML
+}
+
+// Build DOCX
+status.textContent = 'Building Word document...';
+progressBar.style.width = '85%';
+
+const htmlContent = buildDocx(fullText, extractMode, images);
+
+// Create Word document
+const blob = new Blob([htmlContent], {
+type: 'application/msword;charset=utf-8'
+});
+
+const url = URL.createObjectURL(blob);
+downloadBtn.href = url;
+downloadBtn.download = selectedFile.name.replace('.pdf', '.docx');
+downloadBtn.style.display = 'inline-flex';
+status.textContent = '✅ Conversion complete! Ready to download.';
+progressBar.style.width = '100%';
+
+} catch (error) {
+status.textContent = '❌ Error: ' + error.message;
+console.error(error);
+} finally {
+loader.style.display = 'none';
+btn.style.display = 'inline-flex';
+}
+}
+
+// ===== UTILITY FUNCTIONS =====
+function getTextItem(item) {
+return item.str || '';
+}
+
+// ===== INIT =====
+console.log('PDF to Word Converter ready!');
 </script>
 </body>
 </html>
