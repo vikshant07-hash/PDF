@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms & Conditions - PDFBoon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #edf2f9;
+            color: #0d2545;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        :root {
+            --ink: #0d2545;
+            --ink-soft: #3d5578;
+            --paper: #edf2f9;
+            --paper-raised: #f8fafc;
+            --stamp: #2563eb;
+            --stamp-dark: #1d4ed8;
+            --line: #d6e0ee;
+            --shadow: 0 10px 30px rgba(13, 37, 69, 0.10);
+            --serif: 'Fraunces', serif;
+            --sans: 'Inter', sans-serif;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(237, 242, 249, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--line);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .logo-title {
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+        .logo-subtitle {
+            font-size: 0.7rem;
+            color: var(--ink-soft);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+        .nav-link {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            padding: 4px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: var(--stamp);
+            transition: width .25s;
+        }
+        .nav-link:hover::after,
+        .nav-link.active-link::after {
+            width: 100%;
+        }
+        .nav-link.active-link {
+            color: var(--ink);
+        }
+        .nav-link:hover {
+            color: var(--ink);
+        }
+        .mobile-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--ink);
+        }
+        @media (max-width: 920px) {
+            .nav-links {
+                position: fixed;
+                inset: 68px 0 auto 0;
+                flex-direction: column;
+                align-items: stretch;
+                background: var(--paper-raised);
+                padding: 20px;
+                gap: 12px;
+                border-bottom: 1px solid var(--line);
+                box-shadow: var(--shadow);
+                transform: translateY(-140%);
+                opacity: 0;
+                transition: transform .3s, opacity .3s;
+            }
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            .mobile-menu {
+                display: flex;
+            }
+            .logo-subtitle {
+                display: none;
+            }
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            max-width: 1280px;
+            margin: 30px auto 20px;
+            padding: 0 24px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-family: var(--serif);
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .page-header p {
+            color: var(--ink-soft);
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+
+        /* ===== TERMS CONTENT ===== */
+        .terms-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+            flex: 1;
+            width: 100%;
+        }
+        .terms-card {
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+        .terms-card h2 {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+        .terms-card h2:first-of-type {
+            margin-top: 0;
+        }
+        .terms-card p {
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+        .terms-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 18px 0;
+        }
+        .terms-card ul li {
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            line-height: 1.8;
+            padding: 6px 0 6px 28px;
+            position: relative;
+        }
+        .terms-card ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 4px;
+            color: var(--stamp);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .terms-card .highlight-box {
+            background: rgba(37, 99, 235, 0.06);
+            border-left: 4px solid var(--stamp);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0 20px 0;
+        }
+        .terms-card .highlight-box p {
+            margin-bottom: 0;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #0d2545;
+            color: #dfe6f2;
+            padding: 20px 20px;
+            border-top: 3px solid var(--stamp);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2563eb, #7c3aed, #0891b2, #2563eb);
+            background-size: 300% 100%;
+            animation: footerGradientMove 6s ease-in-out infinite;
+        }
+        @keyframes footerGradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .footer-text {
+            font-size: 0.8rem;
+            color: #9fb0cc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-text i {
+            color: #60a5fa;
+        }
+        .footer-text span {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .terms-card {
+                padding: 24px 18px;
+            }
+            .terms-card h2 {
+                font-size: 1.2rem;
+            }
+            .terms-card p,
+            .terms-card ul li {
+                font-size: 0.88rem;
+            }
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-wrapper">
+                <div class="logo-box">
+                    <img src="images/logo.png" alt="PDFBoon Logo" />
+                </div>
+                <div>
+                    <h2 class="logo-title">PDFBoon</h2>
+                    <p class="logo-subtitle">Fast PDF Toolkit</p>
+                </div>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link active-link"><i class="fa-solid fa-house"></i> Home</a>
+            </div>
+            <button class="mobile-menu" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="page-header">
+        <h1>📋 Terms & Conditions</h1>
+        <p>Last updated: <span id="headerDate">July 31, 2026</span></p>
+    </div>
+
+    <!-- ===== TERMS CONTENT ===== -->
+    <section class="terms-section">
+        <div class="terms-card">
+
+            <h2>1. Acceptance of Terms</h2>
+            <p>By using PDFBoon ("we", "us", "our"), you agree to comply with and be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our services. These terms apply to all visitors, users, and others who access or use our website.</p>
+
+            <h2>2. Use of Services</h2>
+            <p>PDFBoon provides free online PDF tools including compression, merging, splitting, editing, locking, unlocking, scanning, conversion, and watermarking. By using our services, you agree that:</p>
+            <ul>
+                <li>You will use our tools only for lawful purposes</li>
+                <li>You will not upload, process, or share any illegal, harmful, or malicious content</li>
+                <li>You are responsible for the content you upload and process through our tools</li>
+                <li>You will not attempt to reverse engineer, hack, or disrupt our services</li>
+                <li>You will not use our services to infringe upon the intellectual property rights of others</li>
+            </ul>
+
+            <div class="highlight-box">
+                <p><i class="fa-solid fa-shield-halved" style="color:var(--stamp); margin-right:8px;"></i> All processing is done locally in your browser. Your files never leave your device.</p>
+            </div>
+
+            <h2>3. Intellectual Property</h2>
+            <p>All content, features, and functionality on PDFBoon, including but not limited to text, graphics, logos, icons, and software, are the exclusive property of PDFBoon and are protected by copyright and intellectual property laws. You may not reproduce, distribute, modify, or create derivative works without our explicit written consent.</p>
+            <p>The PDFBoon name, logo, and all related trademarks are our registered trademarks. Unauthorized use of these marks is strictly prohibited.</p>
+
+            <h2>4. User Content</h2>
+            <p>When you use our tools to upload, process, or create content, you retain all rights to your content. We do not claim ownership of any files you upload or process through our services.</p>
+            <ul>
+                <li>We do not store, share, or transmit your files to any third party</li>
+                <li>All processing happens entirely within your browser</li>
+                <li>Your files are automatically deleted from memory after processing is complete</li>
+                <li>We do not have access to your uploaded files at any time</li>
+            </ul>
+
+            <h2>5. Privacy & Data Security</h2>
+            <p>Your privacy is of utmost importance to us. PDFBoon is designed with a "zero-knowledge" architecture, meaning:</p>
+            <ul>
+                <li>No files are uploaded to our servers — all processing is done client-side</li>
+                <li>We do not collect, store, or share your personal information</li>
+                <li>We do not use cookies or tracking scripts for analytics</li>
+                <li>Your data never leaves your browser or device</li>
+            </ul>
+            <p>For more details, please refer to our Privacy Policy.</p>
+
+            <h2>6. Disclaimer of Warranties</h2>
+            <p>PDFBoon provides its services "as is" and "as available" without any warranties of any kind, either express or implied. We do not warrant that:</p>
+            <ul>
+                <li>The services will meet your specific requirements</li>
+                <li>The services will be uninterrupted, timely, secure, or error-free</li>
+                <li>The results obtained from using the services will be accurate or reliable</li>
+                <li>Any errors in the software will be corrected</li>
+            </ul>
+            <p>We do not guarantee that the output of our tools will be compatible with all software or devices. Use of our services is at your own risk.</p>
+
+            <h2>7. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, PDFBoon shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
+            <ul>
+                <li>Your use or inability to use our services</li>
+                <li>Any unauthorized access to or use of our servers and/or any personal information stored therein</li>
+                <li>Any interruption or cessation of transmission to or from our services</li>
+                <li>Any bugs, viruses, trojan horses, or the like which may be transmitted to or through our services</li>
+                <li>Any errors or omissions in any content or for any loss or damage incurred as a result of the use of any content posted, emailed, transmitted, or otherwise made available through our services</li>
+            </ul>
+
+            <h2>8. Indemnification</h2>
+            <p>You agree to defend, indemnify, and hold harmless PDFBoon and its affiliates, employees, agents, and partners from and against any claims, liabilities, damages, losses, and expenses, including reasonable attorney fees, arising out of or in any way connected with:</p>
+            <ul>
+                <li>Your access to or use of our services</li>
+                <li>Your violation of these Terms and Conditions</li>
+                <li>Your violation of any third-party right, including without limitation any copyright, property, or privacy right</li>
+                <li>Any claim that your uploaded content caused damage to a third party</li>
+            </ul>
+
+            <h2>9. Modifications to Terms</h2>
+            <p>We reserve the right to update or modify these Terms and Conditions at any time without prior notice. Your continued use of PDFBoon after any changes constitutes your acceptance of the new terms. We recommend checking this page periodically for updates.</p>
+
+            <h2>10. Governing Law</h2>
+            <p>These Terms and Conditions shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions. Any legal suit, action, or proceeding arising out of or related to these terms shall be instituted exclusively in the courts of India.</p>
+
+            <h2>11. Contact Us</h2>
+            <p>If you have any questions about these Terms and Conditions, please contact us:</p>
+            <ul>
+                <li><i class="fa-solid fa-envelope" style="color:var(--stamp); width:20px;"></i> Email: supportpdfboon@gmail.com</li>
+                <li><i class="fa-solid fa-globe" style="color:var(--stamp); width:20px;"></i> Website: www.pdfboon.com</li>
+            </ul>
+
+            <div class="highlight-box" style="margin-top: 24px; background:rgba(16,185,129,0.08); border-left-color:var(--success);">
+                <p><i class="fa-solid fa-circle-check" style="color:var(--success); margin-right:8px;"></i> By using PDFBoon, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="footer-text">
+                <i class="fa-solid fa-calendar-check"></i>
+                Last Updated: <span id="footerDate">July 31, 2026</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // ===== AUTO-UPDATE DATE =====
+        (function() {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('en-US', options);
+
+            // Update header date
+            const headerDate = document.getElementById('headerDate');
+            if (headerDate) {
+                headerDate.textContent = formattedDate;
+            }
+
+            // Update footer date
+            const footerDate = document.getElementById('footerDate');
+            if (footerDate) {
+                footerDate.textContent = formattedDate;
+            }
+        })();
+    </script>
+
+</body>
+</html>
