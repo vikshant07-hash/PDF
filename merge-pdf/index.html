@@ -1004,6 +1004,37 @@
   }
 
 
+    /* Blue Button Styling */
+.tool-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* Icon aur text ke beech ka gap */
+  background-color: #2563eb; /* Dark Blue */
+  color: #ffffff !important; /* White Text */
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px; /* Smooth Corners */
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+/* Hover Effect (Mouse le jaane par) */
+.tool-card-link:hover {
+  background-color: #1d4ed8; /* Slightly Darker Blue */
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+  transform: translateY(-2px); /* Halka sa upar uthega */
+}
+
+/* Icon Animation on Hover */
+.tool-card-link:hover i {
+  transform: translateX(4px); /* Arrow halka sa aage badhega */
+  transition: transform 0.3s ease;
+}
+    
+
+
 
 
   </style>
@@ -1025,19 +1056,19 @@
         </button>
         <div class="dropdown-menu">
           <div class="dropdown-category">Organize PDF</div>
-          <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i> Merge PDF</a>
+          <a href="merge.html" class="dropdown-link"><i class="fa-solid fa-object-group"></i>Merge PDF</a>
           <a href="split.html" class="dropdown-link"><i class="fa-solid fa-scissors"></i> Split PDF</a>
           <div class="dropdown-category">Optimize PDF</div>
-          <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i> Compress PDF</a>
-          <a href="edit.html" class="dropdown-link"><i class="fa-solid fa-file-edit"></i> Edit PDF</a>
+          <a href="compress.html" class="dropdown-link"><i class="fa-solid fa-file-zipper"></i>Compress PDF</a>
+          <a href="edit.html" class="dropdown-link"><i class="fa-solid fa-file-edit"></i>Edit PDF</a>
           <div class="dropdown-category">Convert PDF</div>
-          <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i> Image to PDF</a>
-          <a href="word.html" class="dropdown-link"><i class="fa-solid fa-word"></i> PDF to word</a>
+          <a href="create.html" class="dropdown-link"><i class="fa-solid fa-images"></i>Image to PDF</a>
+          <a href="word.html" class="dropdown-link"><i class="fa-regular fa-file-word"></i> </i>PDF to word</a>
           <div class="dropdown-category">Security</div>
-          <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i> Lock PDF</a>
-          <a href="unlock.html" class="dropdown-link"><i class="fa-solid fa-unlock"></i> Unlock PDF</a>
-          <a href="watermark.html" class="dropdown-link"><i class="fa-solid fa-watermark"></i> Watermark PDF</a>
-          <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i> View All Tools</a>
+          <a href="lock.html" class="dropdown-link"><i class="fa-solid fa-lock"></i>Lock PDF</a>
+          <a href="unlock.html" class="dropdown-link"><i class="fa-solid fa-unlock"></i>Unlock PDF</a>
+          <a href="watermark.html" class="dropdown-link"><i class="fa-solid fa-stamp"></i>Watermark PDF</a>
+          <a href="tools.html" class="dropdown-link view-all"><i class="fa-solid fa-grip"></i>View All Tools</a>
         </div>
       </div>
       <a href="about.html" class="nav-link">About</a>
@@ -1406,7 +1437,7 @@
   .cursor-blink2 {
     display: inline-block;
     font-weight: 300;
-    color: #1a5c7a;
+    color: #5c621a;
     font-size: 2rem;
     line-height: 1;
     margin-left: 2px;
@@ -1432,7 +1463,7 @@
 <script>
   (function() {
     // ---- ONLY your paragraph text ----
-    const fullText = `Compress, merge, split, edit, unlock, scan, pdf to word, convert and lock your PDF files in seconds. Everything runs right inside your browser — fast, private, and completely free.`;
+    const fullText = `Compress, merge, split, edit, unlock, scan, pdf to word, convert,  lock your, add watermark in your PDF files in seconds. Everything runs right inside your browser — fast, private, and completely free.`;
 
     const textSpan = document.querySelector('.typewriter-text2');
     const cursor = document.querySelector('.cursor-blink2');
@@ -1577,36 +1608,7 @@
         <a href="create.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
-            <div class="tool-card">
-    <div class="tool-icon" style="background:linear-gradient(135deg,#0244e7,#0975a1);">
-        <i class="fa-solid fa-file-word"></i>
-    </div>
-    <h3>PDF to Word</h3>
-    <p>Add Text or Image watermark in your PDF document.</p>
-    
-    <div class="anim-stage">
-        <div class="anim-wrap">
-            <div class="scan-tip"></div>
-            <div class="converted-pdf-card">
-                <i class="fa-solid fa-file-word"></i>
-                <span class="pdf-badge">READY</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="status-area">
-        <span class="status-text action">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Converting...
-        </span>
-        <span class="status-text done">
-            <i class="fa-solid fa-circle-check"></i> Word file Created!
-        </span>
-    </div>
-    
-    <a href="word.html" class="tool-card-link">
-        Open Tool <i class="fa-solid fa-arrow-right"></i>
-    </a>
-</div>
+
 
 
 
@@ -1692,7 +1694,7 @@
       <div class="tool-card">
         <div class="tool-icon" style="background:linear-gradient(135deg,#4f46e5,#3730a3);"><i class="fa-solid fa-layer-group"></i></div>
         <h3>All PDF Tools</h3>
-        <p>Explore our complete suite of 20+ powerful online PDF conversion and editing tools.</p>
+        <p>Explore our complete suite of 10+ powerful online PDF conversion and editing tools.</p>
         <div class="anim-stage">
           <div class="anim-wrap">
             <div class="alltools-ring"></div>
@@ -1703,7 +1705,7 @@
             <div class="orbit-icon orbit-4"><i class="fa-solid fa-file-zipper"></i></div>
           </div>
         </div>
-        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-boxes-stacked"></i> 8+ Tools...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Full Suite!</span></div>
+        <div class="status-area"><span class="status-text action"><i class="fa-solid fa-boxes-stacked"></i> 10+ Tools...</span><span class="status-text done"><i class="fa-solid fa-circle-check"></i> Full Suite!</span></div>
         <a href="tools.html" class="tool-card-link">View All <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
@@ -1764,7 +1766,7 @@
     <div class="contact-strip">
       <div class="contact-strip-info"><h3>Have a question or found a bug?</h3><p>We'd love to hear from you — reach out anytime.</p></div>
       <div class="contact-strip-actions" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-        <div class="contact-email"><i class="fa-solid fa-envelope"></i> support@pdfboon.com</div>
+        <div class="contact-email"><i class="fa-solid fa-envelope"></i> supportpdfboon@gmail.com</div>
         <a href="contact.html" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Contact Us</a>
       </div>
     </div>
@@ -1783,8 +1785,9 @@
         <a href="index.html">Home</a><a href="tools.html">All Tools</a><a href="compress.html">Compress PDF</a>
         <a href="merge.html">Merge PDF</a><a href="split.html">Split PDF</a><a href="create.html">Image to PDF</a>
         <a href="edit.html">Edit PDF</a><a href="no.html">Scan to PDF</a><a href="lock.html">Lock PDF</a>
-        <a href="unlock.html">Unlock PDF</a><a href="about.html">About</a><a href="contact.html">Contact</a>
-        <a href="word.html">PDF to Word</a><a href="watermark.html">PDF Watermark</a>
+        <a href="unlock.html">Unlock PDF</a>
+        <a href="word.html">PDF to Word</a><a href="watermark.html">PDF Watermark</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+        
       </div>
       <div class="footer-right">
         <h3>Developer</h3>
@@ -1796,9 +1799,9 @@
       
     
       <span class="dev-name">Vikshant Kralta</span>
-      <span class="dev-emoji"></span>
+   
     </span>
-    <span class="dev-line"></span>
+    
   </p>
 </div>
 
@@ -2075,7 +2078,7 @@
           <a href="not.html"><i class="fab fa-linkedin"></i></a>
           <a href="not.html"><i class="fab fa-instagram"></i></a>
         </div>
-        <p class="copyright">© 2026 All Rights Reserved by PDFBoon <br> Last Updated on: July 24, 2026</p>
+        <p class="copyright">© 2026 All Rights Reserved by PDFBoon <br> Last Updated on: July 31, 2026</p>
         
       </div>
 
