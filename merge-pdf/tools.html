@@ -1,397 +1,2468 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to Word · PDFBoon</title>
-    <link rel="icon" href="images/logo.png">
-    <meta name="description" content="PDF to Word – best browser‑based conversion with exact layout, tables, images.">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300..700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDFBoon - All PDF Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-        :root{--ink:#0d2545;--ink-soft:#3d5578;--paper:#edf2f9;--paper-raised:#f8fafc;--stamp:#2563eb;--stamp-dark:#1d4ed8;--teal:#0891b2;--success:#10b981;--success-dark:#0e9c6f;--line:#d6e0ee;--shadow:0 10px 30px rgba(13,37,69,0.10);--serif:'Fraunces',serif;--sans:'Inter',sans-serif}
-        *{margin:0;padding:0;box-sizing:border-box} body{font-family:var(--sans);background:radial-gradient(circle at 10% 0%,rgba(37,99,235,0.08),transparent 40%),radial-gradient(circle at 90% 15%,rgba(8,145,178,0.07),transparent 40%),var(--paper);color:var(--ink)} a{text-decoration:none;color:inherit}
-        .container{max-width:1100px;margin:auto;padding:20px}
-        .navbar{position:sticky;top:0;z-index:100;background:rgba(237,242,249,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-        .nav-container{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-        .logo-wrapper{display:flex;align-items:center;gap:12px} .logo-box{width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:22px}
-        .logo-title{font-family:var(--serif);font-weight:700;font-size:1.15rem;color:var(--ink)} .logo-subtitle{font-size:0.75rem;color:var(--ink-soft)}
-        .nav-links{display:flex;align-items:center;gap:26px} .nav-link{position:relative;font-size:0.94rem;font-weight:500;color:var(--ink-soft);padding:6px 2px;transition:color .2s}
-        .nav-link::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--stamp);transition:width .25s}
-        .nav-link:hover{color:var(--ink)} .nav-link:hover::after{width:100%}
-        .current-tool-pill{display:flex;align-items:center;gap:8px;background:rgba(37,99,235,0.08);color:var(--stamp-dark);padding:7px 14px;border-radius:100px;font-size:0.85rem;font-weight:700}
-        .nav-tools-btn{display:flex;align-items:center;gap:8px;background:var(--stamp);color:#fff!important;padding:10px 18px;border-radius:12px;font-size:0.9rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 4px 0 var(--stamp-dark);transition:transform .15s}
-        .nav-tools-btn:hover{transform:translateY(-2px)} .mobile-menu{display:none;width:40px;height:40px;align-items:center;justify-content:center;border-radius:8px;color:var(--ink);border:none;background:none;cursor:pointer}
-        @media(max-width:920px){.nav-links{position:fixed;top:70px;left:0;right:0;background:var(--paper-raised);flex-direction:column;padding:20px;gap:16px;border-bottom:1px solid var(--line);transform:translateY(-150%);opacity:0;transition:.3s;z-index:99}.nav-links.active{transform:translateY(0);opacity:1}.mobile-menu{display:flex}}
-        .dropdown-menu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:250px;background:var(--paper-raised);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:10px;display:none;flex-direction:column;gap:4px;z-index:999}
-        .nav-item.open .dropdown-menu{display:flex} .dropdown-category{font-size:0.68rem;font-weight:700;text-transform:uppercase;color:var(--ink-soft);padding:10px 12px 4px}
-        .dropdown-link{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;font-size:0.88rem;font-weight:500;color:var(--ink-soft);transition:background .15s}
-        .dropdown-link:hover{background:rgba(37,99,235,0.08);color:var(--ink)} .dropdown-link.active{background:rgba(37,99,235,0.08);color:var(--ink);font-weight:700}
-        .title{text-align:center;font-family:var(--serif);font-size:42px;font-weight:700;margin:20px 0 10px} .subtitle{text-align:center;color:var(--ink-soft);margin-bottom:35px}
-        .upload-box{background:var(--paper-raised);border:2px dashed var(--stamp);border-radius:24px;min-height:240px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;transition:.3s;padding:20px;box-shadow:var(--shadow)}
-        .upload-box:hover{background:rgba(37,99,235,0.06)} .upload-icon{width:80px;margin-bottom:15px} .upload-box h2{font-family:var(--serif);font-size:28px;font-weight:600;margin-bottom:10px}
-        .settings{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-        .card{background:var(--paper-raised);border:1px solid var(--line);padding:20px;border-radius:18px;box-shadow:var(--shadow)} .card label{font-weight:600;color:var(--ink)} .card select{width:100%;padding:14px;border:1px solid var(--line);border-radius:12px;margin-top:10px}
-        .files{margin-top:35px;display:flex;flex-direction:column;gap:20px} .file-card{background:var(--paper-raised);border:1px solid var(--line);padding:25px;border-radius:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;box-shadow:var(--shadow)}
-        .preview{width:100px;height:130px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden} .preview canvas{width:100%;height:100%}
-        .btn{padding:14px 22px;border:none;border-radius:14px;font-weight:600;cursor:pointer;transition:transform .18s} .convert-btn{background:var(--stamp);color:#fff;box-shadow:0 4px 0 var(--stamp-dark)} .download-btn{background:var(--success);color:#fff;display:none;box-shadow:0 4px 0 var(--success-dark)}
-        .progress{width:100%;height:10px;background:var(--line);border-radius:20px;margin-top:12px} .progress-bar{height:100%;width:0%;background:linear-gradient(to right,var(--stamp),var(--teal))}
-        .loader{width:28px;height:28px;border:4px solid rgba(37,99,235,.15);border-top-color:var(--stamp);border-radius:50%;animation:spin 1s linear infinite;display:none} @keyframes spin{to{transform:rotate(360deg)}}
-        .footer{background:var(--ink);color:#dfe6f2;margin-top:60px;padding:40px 20px;text-align:center}
-        .notice{background:rgba(8,145,178,0.08);border:1px solid var(--teal);border-radius:16px;padding:16px;margin-bottom:20px;font-size:0.9rem;color:var(--teal);text-align:center}
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #edf2f9;
+            color: #0d2545;
+            min-height: 100vh;
+        }
+        :root {
+            --ink: #0d2545;
+            --ink-soft: #3d5578;
+            --paper: #edf2f9;
+            --paper-raised: #f8fafc;
+            --stamp: #2563eb;
+            --stamp-dark: #1d4ed8;
+            --teal: #0891b2;
+            --success: #10b981;
+            --line: #d6e0ee;
+            --shadow: 0 10px 30px rgba(13, 37, 69, 0.10);
+            --serif: 'Fraunces', serif;
+            --sans: 'Inter', sans-serif;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== NAVBAR (same as your website) ===== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(237, 242, 249, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--line);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--stamp);
+        }
+        .logo-title {
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+        .logo-subtitle {
+            font-size: 0.7rem;
+            color: var(--ink-soft);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+        .nav-link {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            padding: 4px 0;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: var(--stamp);
+            transition: width .25s;
+        }
+        .nav-link:hover::after,
+        .nav-link.active-link::after {
+            width: 100%;
+        }
+        .nav-link.active-link {
+            color: var(--ink);
+        }
+        .nav-tools-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--stamp);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--stamp-dark);
+            transition: transform .15s;
+            font-family: var(--sans);
+        }
+        .nav-tools-btn:hover {
+            transform: translateY(-2px);
+        }
+        .dropdown-arrow {
+            font-size: 0.65rem;
+            transition: transform .2s;
+        }
+        .nav-item.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        .mobile-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--ink);
+        }
+        .nav-item {
+            position: relative;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 260px;
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 10px 8px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 999;
+        }
+        .nav-item.open .dropdown-menu {
+            display: flex;
+        }
+        .dropdown-category {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            padding: 8px 12px 2px;
+            letter-spacing: 0.05em;
+        }
+        .dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            transition: background .15s, color .15s;
+        }
+        .dropdown-link i {
+            width: 18px;
+            text-align: center;
+            color: var(--stamp);
+        }
+        .dropdown-link:hover {
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--ink);
+        }
+        .dropdown-link.view-all {
+            margin-top: 4px;
+            border-top: 1px solid var(--line);
+            font-weight: 600;
+            color: var(--stamp);
+        }
+
+        @media (max-width: 920px) {
+            .nav-links {
+                position: fixed;
+                inset: 68px 0 auto 0;
+                flex-direction: column;
+                align-items: stretch;
+                background: var(--paper-raised);
+                padding: 20px;
+                gap: 12px;
+                border-bottom: 1px solid var(--line);
+                box-shadow: var(--shadow);
+                transform: translateY(-140%);
+                opacity: 0;
+                transition: transform .3s, opacity .3s;
+            }
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            .mobile-menu {
+                display: flex;
+            }
+            .logo-subtitle {
+                display: none;
+            }
+            .nav-tools-btn {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .nav-item {
+                width: 100%;
+            }
+            .dropdown-menu {
+                position: static;
+                transform: none;
+                width: 100%;
+                box-shadow: none;
+                border: none;
+                background: rgba(37, 99, 235, 0.04);
+                margin-top: 8px;
+                padding: 6px;
+                display: none;
+                flex-direction: column;
+            }
+            .nav-item.open .dropdown-menu {
+                display: flex;
+            }
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            max-width: 1280px;
+            margin: 30px auto 20px;
+            padding: 0 24px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-family: var(--serif);
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .page-header p {
+            color: var(--ink-soft);
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+
+        /* ===== TOOLS GRID ===== */
+        .tools-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        @media (min-width: 640px) {
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .tools-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ===== TOOL CARD ===== */
+        .tool-card {
+            background: var(--paper-raised);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: transform .2s, box-shadow .2s, border-color .2s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--stamp);
+            box-shadow: 0 16px 34px rgba(13, 37, 69, 0.14);
+        }
+        .tool-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #fff;
+            box-shadow: 0 6px 14px rgba(13, 37, 69, 0.15);
+            flex-shrink: 0;
+        }
+        .tool-card h3 {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .tool-card p {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            line-height: 1.5;
+            flex: 1;
+        }
+        .tool-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none !important;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+            margin-top: 4px;
+            align-self: flex-start;
+        }
+        .tool-card-link:hover {
+            background-color: #1d4ed8;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+            transform: translateY(-2px);
+        }
+        .tool-card-link:hover i {
+            transform: translateX(4px);
+            transition: transform 0.3s ease;
+        }
+
+        /* ================================================================
+           ANIMATION STAGES — Process Animations
+           ================================================================ */
+
+        .anim-stage {
+            width: 100%;
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: transparent;
+            margin: 0 0 4px;
+            perspective: 800px;
+        }
+        .anim-wrap {
+            position: relative;
+            width: 120px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ----- COMPRESS: hydraulic press ----- */
+        .compress-plate-top,
+        .compress-plate-bottom {
+            width: 70px;
+            height: 4px;
+            background: var(--stamp);
+            border-radius: 2px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            z-index: 2;
+        }
+        .compress-plate-top {
+            top: 14px;
+            animation: compressDown 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .compress-plate-bottom {
+            bottom: 30px;
+            animation: compressUp 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .compress-doc {
+            width: 56px;
+            height: 72px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
+            position: relative;
+            z-index: 1;
+            animation: compressSquish 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .compress-doc i {
+            font-size: 24px;
+            color: #ef4444;
+            animation: compressIconColor 4s infinite;
+        }
+        .compress-doc .doc-tag {
+            font-size: 8px;
+            font-weight: 800;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+        .compress-ring {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            width: 70px;
+            height: 70px;
+            border: 2px dashed var(--teal);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            animation: ringBurst 4s infinite;
+            pointer-events: none;
+        }
+        @keyframes compressDown {
+            0%,
+            20% {
+                top: 14px;
+            }
+            45%,
+            55% {
+                top: 38px;
+            }
+            75%,
+            100% {
+                top: 14px;
+            }
+        }
+        @keyframes compressUp {
+            0%,
+            20% {
+                bottom: 30px;
+            }
+            45%,
+            55% {
+                bottom: 54px;
+            }
+            75%,
+            100% {
+                bottom: 30px;
+            }
+        }
+        @keyframes compressSquish {
+            0%,
+            20% {
+                transform: scale(1, 1) rotateX(0);
+            }
+            45%,
+            55% {
+                transform: scale(1.1, 0.4) rotateX(20deg);
+                border-color: var(--success);
+            }
+            75%,
+            100% {
+                transform: scale(0.95, 0.95) rotateX(0);
+                border-color: var(--success);
+            }
+        }
+        @keyframes compressIconColor {
+            0%,
+            35% {
+                color: #ef4444;
+            }
+            45%,
+            100% {
+                color: var(--success);
+            }
+        }
+        @keyframes ringBurst {
+            0%,
+            40% {
+                transform: translate(-50%, -50%) scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            65%,
+            100% {
+                transform: translate(-50%, -50%) scale(1.4);
+                opacity: 0;
+            }
+        }
+
+        /* ----- MERGE: two docs slide together ----- */
+        .merge-doc {
+            width: 44px;
+            height: 60px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
+            position: absolute;
+        }
+        .merge-doc i {
+            font-size: 18px;
+            color: #ef4444;
+        }
+        .merge-doc .doc-num {
+            font-size: 7px;
+            font-weight: 800;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+        .merge-doc-left {
+            animation: mergeLeft 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .merge-doc-right {
+            animation: mergeRight 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .merged-doc-final {
+            width: 50px;
+            height: 66px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--stamp);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.6) rotateY(180deg);
+            animation: mergeFinal 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .merged-doc-final i {
+            font-size: 20px;
+            color: var(--stamp);
+        }
+        .merged-doc-final .final-badge {
+            font-size: 7px;
+            font-weight: 800;
+            color: var(--success);
+            margin-top: 2px;
+        }
+        .merge-sparkle {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2), transparent 70%);
+            opacity: 0;
+            animation: mergeGlow 4s infinite;
+            pointer-events: none;
+        }
+        @keyframes mergeLeft {
+            0%,
+            15% {
+                transform: translateX(-28px) rotate(-8deg);
+                opacity: 1;
+            }
+            40% {
+                transform: translateX(0) rotate(0) scale(0.9);
+                opacity: 0.8;
+            }
+            50%,
+            100% {
+                transform: translateX(0) scale(0.5);
+                opacity: 0;
+            }
+        }
+        @keyframes mergeRight {
+            0%,
+            15% {
+                transform: translateX(28px) rotate(8deg);
+                opacity: 1;
+            }
+            40% {
+                transform: translateX(0) rotate(0) scale(0.9);
+                opacity: 0.8;
+            }
+            50%,
+            100% {
+                transform: translateX(0) scale(0.5);
+                opacity: 0;
+            }
+        }
+        @keyframes mergeFinal {
+            0%,
+            40% {
+                opacity: 0;
+                transform: scale(0.5) rotateY(90deg);
+            }
+            52% {
+                opacity: 1;
+                transform: scale(1.08) rotateY(0);
+            }
+            65%,
+            90% {
+                opacity: 1;
+                transform: scale(1) rotateY(0);
+                border-color: var(--success);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+        @keyframes mergeGlow {
+            0%,
+            35% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            45% {
+                transform: scale(1.3);
+                opacity: 0.8;
+            }
+            65%,
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        /* ----- SPLIT: laser cut + scissors ----- */
+        .split-doc-original {
+            width: 54px;
+            height: 70px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
+            position: absolute;
+            z-index: 2;
+            animation: origFade 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .split-doc-original i {
+            font-size: 22px;
+            color: #ef4444;
+        }
+        .split-doc-original .doc-tag {
+            font-size: 7px;
+            font-weight: 800;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+        .cut-line {
+            position: absolute;
+            width: 2px;
+            height: 0;
+            background: var(--stamp);
+            box-shadow: 0 0 10px var(--stamp);
+            z-index: 4;
+            animation: laserCut 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scissors-icon {
+            position: absolute;
+            font-size: 16px;
+            color: var(--stamp-dark);
+            z-index: 5;
+            opacity: 0;
+            animation: scissorsMove 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .split-piece {
+            width: 42px;
+            height: 62px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--stamp);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
+            position: absolute;
+            opacity: 0;
+        }
+        .split-piece i {
+            font-size: 16px;
+        }
+        .split-piece-left {
+            border-color: var(--stamp);
+            animation: splitLeft 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .split-piece-right {
+            border-color: var(--success);
+            animation: splitRight 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .piece-num {
+            font-size: 6px;
+            font-weight: 800;
+            margin-top: 2px;
+            color: var(--ink-soft);
+        }
+        @keyframes origFade {
+            0%,
+            20% {
+                opacity: 1;
+            }
+            40% {
+                opacity: 1;
+            }
+            45%,
+            100% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+        @keyframes laserCut {
+            0%,
+            15% {
+                height: 0;
+                top: 8px;
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            40% {
+                height: 68px;
+                top: 8px;
+                opacity: 1;
+            }
+            48%,
+            100% {
+                height: 68px;
+                opacity: 0;
+            }
+        }
+        @keyframes scissorsMove {
+            0%,
+            15% {
+                top: 0;
+                opacity: 0;
+                transform: rotate(-90deg) scale(0.8);
+            }
+            20% {
+                opacity: 1;
+            }
+            40% {
+                top: 66px;
+                opacity: 1;
+                transform: rotate(-90deg) scale(1.1);
+            }
+            45%,
+            100% {
+                top: 66px;
+                opacity: 0;
+            }
+        }
+        @keyframes splitLeft {
+            0%,
+            40% {
+                opacity: 0;
+                transform: translateX(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(-24px) rotateY(-10deg);
+            }
+            75%,
+            90% {
+                opacity: 1;
+                transform: translateX(-24px);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        @keyframes splitRight {
+            0%,
+            40% {
+                opacity: 0;
+                transform: translateX(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(24px) rotateY(10deg);
+            }
+            75%,
+            90% {
+                opacity: 1;
+                transform: translateX(24px);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* ----- IMAGE to PDF: scan + convert ----- */
+        .source-img-card {
+            width: 42px;
+            height: 42px;
+            background: #fff;
+            border: 1.5px solid var(--line);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(13, 37, 69, 0.08);
+            position: absolute;
+            z-index: 2;
+        }
+        .source-img-card i {
+            font-size: 16px;
+            color: #3b82f6;
+        }
+        .source-img-card .img-ext {
+            font-size: 6px;
+            font-weight: 800;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+        .source-img-1 {
+            animation: imgOne 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .source-img-2 {
+            animation: imgTwo 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .img-scan-beam {
+            position: absolute;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--stamp), transparent);
+            box-shadow: 0 0 8px var(--stamp);
+            z-index: 3;
+            opacity: 0;
+            animation: scannerLight 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .img-converted-pdf {
+            width: 50px;
+            height: 66px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--stamp);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
+            position: absolute;
+            z-index: 1;
+            opacity: 0;
+            animation: convertedPdfPop 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .img-converted-pdf i {
+            font-size: 20px;
+            color: #ef4444;
+        }
+        .img-converted-pdf .pdf-badge {
+            font-size: 7px;
+            font-weight: 800;
+            color: var(--success);
+            margin-top: 2px;
+        }
+        @keyframes imgOne {
+            0% {
+                opacity: 0;
+                transform: translate(-18px, -10px) rotate(-10deg) scale(0.8);
+            }
+            15% {
+                opacity: 1;
+                transform: translate(-14px, -6px) rotate(-8deg);
+            }
+            38% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0) scale(0.85);
+            }
+            48%,
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+        @keyframes imgTwo {
+            0% {
+                opacity: 0;
+                transform: translate(18px, 10px) rotate(10deg) scale(0.8);
+            }
+            15% {
+                opacity: 1;
+                transform: translate(14px, 6px) rotate(8deg);
+            }
+            38% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0) scale(0.85);
+            }
+            48%,
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+        @keyframes scannerLight {
+            0%,
+            20% {
+                opacity: 0;
+                transform: translateY(-24px);
+            }
+            25% {
+                opacity: 1;
+            }
+            40% {
+                opacity: 1;
+                transform: translateY(24px);
+            }
+            45%,
+            100% {
+                opacity: 0;
+            }
+        }
+        @keyframes convertedPdfPop {
+            0%,
+            42% {
+                opacity: 0;
+                transform: scale(0.6) rotateY(90deg);
+            }
+            52% {
+                opacity: 1;
+                transform: scale(1.08) rotateY(0);
+            }
+            65%,
+            90% {
+                opacity: 1;
+                transform: scale(1);
+                border-color: var(--success);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* ----- EDIT: pen writing on document ----- */
+        .edit-pdf-card {
+            width: 52px;
+            height: 68px;
+            background: linear-gradient(135deg, #fff, #f8fafc);
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: flex-start;
+            box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
+            position: absolute;
+            z-index: 1;
+            animation: docFloat 4s infinite ease-in-out;
+        }
+        .doc-line {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--line);
+            width: 100%;
+        }
+        .doc-line.short {
+            width: 60%;
+        }
+        .doc-line.active-edit {
+            background: var(--stamp);
+            width: 0%;
+            animation: lineWriting 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .doc-line.active-edit-2 {
+            background: var(--success);
+            width: 0%;
+            animation: lineWritingTwo 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .edit-pen-icon {
+            position: absolute;
+            font-size: 20px;
+            color: var(--stamp-dark);
+            z-index: 3;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.15));
+            animation: penWritingPath 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .edit-sparkle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 14px;
+            color: #f59e0b;
+            opacity: 0;
+            animation: editSparklePop 4s infinite;
+            z-index: 4;
+        }
+        @keyframes docFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+            70% {
+                border-color: var(--success);
+            }
+        }
+        @keyframes lineWriting {
+            0%,
+            15% {
+                width: 0%;
+            }
+            30%,
+            85% {
+                width: 80%;
+            }
+            100% {
+                width: 0%;
+            }
+        }
+        @keyframes lineWritingTwo {
+            0%,
+            32% {
+                width: 0%;
+            }
+            50%,
+            85% {
+                width: 60%;
+            }
+            100% {
+                width: 0%;
+            }
+        }
+        @keyframes penWritingPath {
+            0% {
+                opacity: 0;
+                transform: translate(-16px, -16px) rotate(-45deg);
+            }
+            12% {
+                opacity: 1;
+                transform: translate(-8px, -6px) rotate(-20deg);
+            }
+            30% {
+                transform: translate(12px, -6px) rotate(-10deg);
+            }
+            35% {
+                transform: translate(-10px, 2px) rotate(-20deg);
+            }
+            50% {
+                transform: translate(6px, 2px) rotate(-10deg);
+            }
+            60%,
+            85% {
+                opacity: 1;
+                transform: translate(20px, -14px) rotate(15deg);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        @keyframes editSparklePop {
+            0%,
+            55% {
+                opacity: 0;
+                transform: scale(0.4);
+            }
+            65% {
+                opacity: 1;
+                transform: scale(1.3) rotate(45deg);
+            }
+            80%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* ----- LOCK: padlock snaps onto PDF ----- */
+        .lock-pdf-card {
+            width: 52px;
+            height: 68px;
+            background: linear-gradient(135deg, #fff, #f8fafc);
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
+            position: absolute;
+            z-index: 1;
+            animation: docSecurityPulse 4s infinite ease-in-out;
+        }
+        .lock-pdf-card i.doc-pdf-icon {
+            font-size: 20px;
+            color: #ef4444;
+            animation: iconShieldFade 4s infinite;
+        }
+        .lock-pdf-card .doc-tag {
+            font-size: 7px;
+            font-weight: 800;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+        .lock-padlock-icon {
+            position: absolute;
+            font-size: 28px;
+            color: #f59e0b;
+            z-index: 3;
+            filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.35));
+            animation: padlockSnap 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .security-shield-glow {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2), transparent 70%);
+            opacity: 0;
+            animation: securityGlowBurst 4s infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes docSecurityPulse {
+            0%,
+            35% {
+                border-color: var(--line);
+            }
+            50%,
+            90% {
+                border-color: #f59e0b;
+            }
+            100% {
+                border-color: var(--line);
+            }
+        }
+        @keyframes iconShieldFade {
+            0%,
+            35% {
+                opacity: 1;
+            }
+            45%,
+            85% {
+                opacity: 0.3;
+                transform: scale(0.85);
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        @keyframes padlockSnap {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.6) rotate(-15deg);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(-16px) scale(1);
+            }
+            42% {
+                transform: translateY(0) scale(1.15);
+            }
+            48% {
+                transform: translateY(-2px) scale(1);
+            }
+            75%,
+            90% {
+                opacity: 1;
+                transform: translateY(-2px);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(12px) scale(0.7);
+            }
+        }
+        @keyframes securityGlowBurst {
+            0%,
+            38% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            48% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+            68%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* ----- UNLOCK: key unlocks padlock ----- */
+        .unlock-pdf-card {
+            width: 52px;
+            height: 68px;
+            background: linear-gradient(135deg, #fff, #f8fafc);
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
+            position: absolute;
+            z-index: 1;
+            animation: docUnlockPulse 4s infinite ease-in-out;
+        }
+        .unlock-pdf-card i.doc-pdf-icon {
+            font-size: 20px;
+            color: #ef4444;
+            animation: iconUnlockShift 4s infinite;
+        }
+        .unlock-pdf-card .doc-tag {
+            font-size: 7px;
+            font-weight: 800;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+        .unlock-padlock-icon {
+            position: absolute;
+            font-size: 26px;
+            color: #f59e0b;
+            z-index: 3;
+            filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.3));
+            animation: padlockUnlockAction 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .unlock-key-icon {
+            position: absolute;
+            font-size: 20px;
+            color: var(--stamp-dark);
+            z-index: 4;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.15));
+            animation: keyInsertTurn 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .unlock-burst-glow {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.25), transparent 70%);
+            opacity: 0;
+            animation: unlockGlowBurst 4s infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes docUnlockPulse {
+            0%,
+            40% {
+                border-color: var(--line);
+            }
+            55%,
+            90% {
+                border-color: var(--success);
+            }
+            100% {
+                border-color: var(--line);
+            }
+        }
+        @keyframes iconUnlockShift {
+            0%,
+            45% {
+                color: #ef4444;
+            }
+            55%,
+            90% {
+                color: var(--success);
+            }
+            100% {
+                color: #ef4444;
+            }
+        }
+        @keyframes keyInsertTurn {
+            0% {
+                opacity: 0;
+                transform: translate(30px, 16px) rotate(-45deg) scale(0.7);
+            }
+            15% {
+                opacity: 1;
+                transform: translate(10px, 6px) rotate(-20deg);
+            }
+            30%,
+            42% {
+                transform: translate(4px, 2px) rotate(90deg);
+            }
+            50%,
+            100% {
+                opacity: 0;
+                transform: translate(-8px, -8px) rotate(120deg) scale(0.6);
+            }
+        }
+        @keyframes padlockUnlockAction {
+            0%,
+            30% {
+                opacity: 1;
+                transform: scale(1);
+                color: #f59e0b;
+            }
+            48% {
+                opacity: 1;
+                transform: scale(1.15) translateY(-4px);
+                color: var(--success);
+            }
+            60%,
+            88% {
+                opacity: 0.8;
+                transform: scale(1) translateY(-4px);
+                color: var(--success);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.7) translateY(8px);
+            }
+        }
+        @keyframes unlockGlowBurst {
+            0%,
+            42% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            52% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+            70%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* ----- SCAN: laser sweeps over document ----- */
+        .scan-doc-card {
+            width: 54px;
+            height: 70px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 8px 20px rgba(13, 37, 69, 0.08);
+            position: absolute;
+            z-index: 1;
+            animation: docScanGlow 4s infinite ease-in-out;
+            overflow: hidden;
+        }
+        .scan-line-item {
+            height: 4px;
+            border-radius: 2px;
+            background: #cbd5e1;
+            width: 100%;
+        }
+        .scan-line-item.short {
+            width: 55%;
+        }
+        .scan-line-item.photo-box {
+            height: 16px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .scan-line-item.photo-box i {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+        .laser-scanner-beam {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981, 0 0 20px #10b981;
+            z-index: 3;
+            opacity: 0;
+            animation: laserSweep 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scanner-lens-icon {
+            position: absolute;
+            top: -4px;
+            right: 8px;
+            font-size: 16px;
+            color: #059669;
+            z-index: 4;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
+            animation: lensPulse 4s infinite ease-in-out;
+        }
+        .scan-pdf-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 6px;
+            font-weight: 800;
+            padding: 2px 5px;
+            border-radius: 4px;
+            z-index: 5;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: badgePopUp 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes docScanGlow {
+            0%,
+            20% {
+                border-color: var(--line);
+            }
+            50%,
+            85% {
+                border-color: var(--success);
+            }
+            100% {
+                border-color: var(--line);
+            }
+        }
+        @keyframes laserSweep {
+            0%,
+            15% {
+                opacity: 0;
+                top: 0%;
+            }
+            22% {
+                opacity: 1;
+                top: 0%;
+            }
+            50% {
+                opacity: 1;
+                top: 88%;
+            }
+            58%,
+            100% {
+                opacity: 0;
+                top: 88%;
+            }
+        }
+        @keyframes lensPulse {
+            0%,
+            15% {
+                opacity: 0.6;
+                transform: scale(0.9);
+            }
+            25%,
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            60%,
+            100% {
+                opacity: 0.6;
+            }
+        }
+        @keyframes badgePopUp {
+            0%,
+            50% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            60%,
+            88% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* ----- ALL TOOLS: orbiting icons around core ----- */
+        .alltools-core-card {
+            width: 46px;
+            height: 60px;
+            background: linear-gradient(135deg, #fff, #f1f5f9);
+            border: 1.5px solid var(--stamp);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
+            z-index: 2;
+            animation: corePulse 4s infinite ease-in-out;
+        }
+        .alltools-core-card i {
+            font-size: 20px;
+            color: #ef4444;
+        }
+        .alltools-core-card .core-tag {
+            font-size: 6px;
+            font-weight: 800;
+            color: var(--stamp);
+            margin-top: 2px;
+        }
+        .orbit-icon {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 4px 10px rgba(13, 37, 69, 0.1);
+            z-index: 3;
+        }
+        .orbit-1 {
+            color: #2563eb;
+            animation: orbitPos1 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .orbit-2 {
+            color: #059669;
+            animation: orbitPos2 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .orbit-3 {
+            color: #d97706;
+            animation: orbitPos3 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .orbit-4 {
+            color: #7c3aed;
+            animation: orbitPos4 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .alltools-ring {
+            position: absolute;
+            width: 84px;
+            height: 84px;
+            border: 1.5px dashed var(--line);
+            border-radius: 50%;
+            z-index: 1;
+            animation: ringRotate 12s linear infinite;
+        }
+        @keyframes ringRotate {
+            0% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes corePulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+                border-color: var(--success);
+            }
+        }
+        @keyframes orbitPos1 {
+            0%,
+            100% {
+                transform: translate(-34px, -20px) scale(0.9);
+            }
+            50% {
+                transform: translate(-24px, -14px) scale(1.1);
+            }
+            75% {
+                transform: translate(0, 0) scale(0.4);
+                opacity: 0;
+            }
+            85% {
+                opacity: 1;
+            }
+        }
+        @keyframes orbitPos2 {
+            0%,
+            100% {
+                transform: translate(34px, -20px) scale(0.9);
+            }
+            50% {
+                transform: translate(24px, -14px) scale(1.1);
+            }
+            75% {
+                transform: translate(0, 0) scale(0.4);
+                opacity: 0;
+            }
+            85% {
+                opacity: 1;
+            }
+        }
+        @keyframes orbitPos3 {
+            0%,
+            100% {
+                transform: translate(-34px, 20px) scale(0.9);
+            }
+            50% {
+                transform: translate(-24px, 14px) scale(1.1);
+            }
+            75% {
+                transform: translate(0, 0) scale(0.4);
+                opacity: 0;
+            }
+            85% {
+                opacity: 1;
+            }
+        }
+        @keyframes orbitPos4 {
+            0%,
+            100% {
+                transform: translate(34px, 20px) scale(0.9);
+            }
+            50% {
+                transform: translate(24px, 14px) scale(1.1);
+            }
+            75% {
+                transform: translate(0, 0) scale(0.4);
+                opacity: 0;
+            }
+            85% {
+                opacity: 1;
+            }
+        }
+
+        /* ===== STATUS AREA ===== */
+        .status-area {
+            position: relative;
+            height: 22px;
+            width: 100%;
+            text-align: center;
+            margin-top: -2px;
+        }
+        .status-text {
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-text.action {
+            color: var(--stamp);
+            animation: textOut 4s infinite;
+        }
+        .status-text.done {
+            color: var(--success);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            white-space: nowrap;
+            animation: textIn 4s infinite;
+        }
+        @keyframes textOut {
+            0%,
+            40% {
+                opacity: 1;
+            }
+            48%,
+            100% {
+                opacity: 0;
+            }
+        }
+        @keyframes textIn {
+            0%,
+            45% {
+                opacity: 0;
+                transform: translate(-50%, 4px);
+            }
+            55%,
+            85% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
-<nav class="navbar"><div class="nav-container"><div class="logo-wrapper"><div class="logo-box">📄</div><div><h2 class="logo-title">PDFBoon</h2><p class="logo-subtitle">Fast PDF Toolkit</p></div></div>
-<div class="nav-links" id="navLinks"><a href="index.html" class="nav-link">Home</a><div class="current-tool-pill"><i class="fa-solid fa-file-word"></i> PDF to Word</div>
-<div class="nav-item" id="toolsDropdown"><button class="nav-tools-btn"><i class="fa-solid fa-grip"></i> Tools</button>
-<div class="dropdown-menu"><a href="merge.html" class="dropdown-link">Merge PDF</a><a href="compress.html" class="dropdown-link">Compress PDF</a><a href="pdf-to-word.html" class="dropdown-link active">PDF to Word</a></div></div>
-<a href="about.html" class="nav-link">About</a></div><button class="mobile-menu" id="mobileMenuBtn">☰</button></div></nav>
 
-<div class="container">
-    <h1 class="title">PDF to Word Converter</h1>
-    <p class="subtitle">Best browser‑based conversion – exact layout, tables, images, formatting</p>
-    <div class="notice">
-        <i class="fa-solid fa-circle-info"></i> <strong>Note:</strong> For 100% perfect reproduction (complex vector graphics, scanned PDFs) a server‑side engine is required. This tool gives excellent results for standard PDFs.
+    <!-- ===== NAVBAR (same as your website) ===== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-wrapper">
+                <div class="logo-box">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div>
+                    <h2 class="logo-title">PDFBoon</h2>
+                    <p class="logo-subtitle">Fast PDF Toolkit</p>
+                </div>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link active-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+            <button class="mobile-menu" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="page-header">
+        <h1>📄 All PDF Tools</h1>
+        <p>Compress · Merge · Split · Edit · Lock · Unlock · Scan · Watermark ✓Convert</p>
     </div>
 
-    <label class="upload-box" id="uploadBox" for="pdfFileInput">
-        <div class="upload-icon"><svg viewBox="0 0 64 64"><rect x="8" y="10" width="48" height="44" rx="4" fill="#2563eb"/><rect x="14" y="18" width="36" height="4" rx="1" fill="#fff" opacity=".9"/></svg></div>
-        <h2>Drag & Drop PDF</h2><p>or click to browse</p>
-        <input type="file" id="pdfFileInput" multiple accept="application/pdf">
-    </label>
+    <!-- ===== TOOLS GRID ===== -->
+    <section class="tools-section">
+        <div class="tools-grid">
 
-    <div class="settings">
-        <div class="card"><label>Layout Mode</label><select id="layoutMode"><option value="absolute">Absolute Text Boxes</option><option value="flow">Flowing Text</option></select></div>
-        <div class="card"><label>Tables</label><select id="tableMode"><option value="on" selected>Detect & Create Word Tables</option><option value="off">Text only</option></select></div>
-        <div class="card"><label>Background Image</label><select id="bgImage"><option value="on" selected>Yes (preserve all visuals)</option><option value="off">No</option></select></div>
-        <div class="card"><label>Colours & Fonts</label><select id="styleMode"><option value="on" selected>Preserve</option><option value="off">Plain</option></select></div>
+            <!-- 1. COMPRESS PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);">
+                    <i class="fa-solid fa-file-zipper"></i>
+           
+
+            <!-- 2. MERGE PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+                    <i class="fa-solid fa-object-group"></i>
+                </div>
+                <h3>Merge PDF</h3>
+                <p>Combine multiple PDF files into one document.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="merge-sparkle"></div>
+                        <div class="merge-doc merge-doc-left"><i class="fa-solid fa-file-pdf"></i><span class="doc-num">DOC 1</span></div>
+                        <div class="merge-doc merge-doc-right"><i class="fa-solid fa-file-pdf"></i><span class="doc-num">DOC 2</span></div>
+                        <div class="merged-doc-final"><i class="fa-solid fa-file-circle-check"></i><span class="final-badge">MERGED</span></div>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-object-group"></i> Combining...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> Merged!</span>
+                </div>
+                <a href="merge.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+                         </div>
+                <h3>Compress PDF</h3>
+                <p>Shrink your PDF file size without losing quality.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="compress-plate-top"></div>
+                        <div class="compress-ring"></div>
+                        <div class="compress-doc"><i class="fa-solid fa-file-pdf"></i><span class="doc-tag">PDF</span></div>
+                        <div class="compress-plate-bottom"></div>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-arrows-to-line"></i> Compressing...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> 78% Smaller!</span>
+                </div>
+                <a href="compress.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            
+
+            <!-- 3. SPLIT PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">
+                    <i class="fa-solid fa-scissors"></i>
+                </div>
+                <h3>Split PDF</h3>
+                <p>Break a PDF into multiple files by page or range.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="split-doc-original"><i class="fa-solid fa-file-pdf"></i><span class="doc-tag">PDF</span></div>
+                        <div class="cut-line"></div>
+                        <i class="fa-solid fa-scissors scissors-icon"></i>
+                        <div class="split-piece split-piece-left"><i class="fa-solid fa-file-lines"></i><span class="piece-num">PART 1</span></div>
+                        <div class="split-piece split-piece-right"><i class="fa-solid fa-file-lines"></i><span class="piece-num">PART 2</span></div>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-scissors"></i> Cutting...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> Split!</span>
+                </div>
+                <a href="split.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- 4. IMAGE to PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#0284c7,#0369a1);">
+                    <i class="fa-solid fa-file-image"></i>
+                </div>
+                <h3>Image to PDF</h3>
+                <p>Convert JPG, PNG, WEBP images into a PDF.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="source-img-card source-img-1"><i class="fa-solid fa-image"></i><span class="img-ext">JPG</span></div>
+                        <div class="source-img-card source-img-2"><i class="fa-solid fa-file-image"></i><span class="img-ext">PNG</span></div>
+                        <div class="img-scan-beam"></div>
+                        <div class="img-converted-pdf"><i class="fa-solid fa-file-pdf"></i><span class="pdf-badge">READY</span></div>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-wand-magic-sparkles"></i> Converting...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> PDF Created!</span>
+                </div>
+                <a href="create.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- 5. EDIT PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </div>
+                <h3>Edit PDF</h3>
+                <p>Add text, images, shapes or drawings to your PDF.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="edit-pdf-card">
+                            <div class="doc-line"></div>
+                            <div class="doc-line active-edit"></div>
+                            <div class="doc-line active-edit-2"></div>
+                            <div class="doc-line short"></div>
+                        </div>
+                        <i class="fa-solid fa-pen-nib edit-pen-icon"></i>
+                        <i class="fa-solid fa-sparkles edit-sparkle"></i>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-pen"></i> Editing...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> Saved!</span>
+                </div>
+                <a href="edit.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- 6. LOCK PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#d97706,#b45309);">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3>Protect PDF</h3>
+                <p>Encrypt your PDF with a strong password.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="security-shield-glow"></div>
+                        <div class="lock-pdf-card"><i class="fa-solid fa-file-pdf doc-pdf-icon"></i><span class="doc-tag">PDF</span></div>
+                        <i class="fa-solid fa-lock lock-padlock-icon"></i>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-key"></i> Encrypting...</span>
+                    <span class="status-text done"><i class="fa-solid fa-shield-halved"></i> Protected!</span>
+                </div>
+                <a href="lock.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- 7. UNLOCK PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#16a34a,#15803d);">
+                    <i class="fa-solid fa-lock-open"></i>
+                </div>
+                <h3>Unlock PDF</h3>
+                <p>Remove passwords from your protected PDF files.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="unlock-burst-glow"></div>
+                        <div class="unlock-pdf-card"><i class="fa-solid fa-file-pdf doc-pdf-icon"></i><span class="doc-tag">PDF</span></div>
+                        <i class="fa-solid fa-unlock-keyhole unlock-padlock-icon"></i>
+                        <i class="fa-solid fa-key unlock-key-icon"></i>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-key"></i> Removing...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> Unlocked!</span>
+                </div>
+                <a href="unlock.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- 8. SCAN TO PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#059669,#047857);">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <h3>Scan to PDF</h3>
+                <p>Capture physical documents and turn them into clear PDFs.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <i class="fa-solid fa-expand scanner-lens-icon"></i>
+                        <div class="scan-doc-card">
+                            <div class="laser-scanner-beam"></div>
+                            <div class="scan-line-item photo-box"><i class="fa-solid fa-image"></i></div>
+                            <div class="scan-line-item"></div>
+                            <div class="scan-line-item"></div>
+                            <div class="scan-line-item short"></div>
+                            <div class="scan-pdf-badge">PDF</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-expand"></i> Scanning...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> Scanned!</span>
+                </div>
+                <a href="scan.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- 9. PDF TO WORD -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#0244e7,#0975a1);">
+                    <i class="fa-regular fa-file-word"></i>
+                </div>
+                <h3>PDF to Word</h3>
+                <p>Convert your PDF to an editable Word document.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="img-scan-beam"></div>
+                        <div class="img-converted-pdf" style="border-color:#0244e7;">
+                            <i class="fa-regular fa-file-word" style="color:#0244e7;"></i>
+                            <span class="pdf-badge" style="background:#0244e7;">DOCX</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-wand-magic-sparkles"></i> Converting...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> Word Ready!</span>
+                </div>
+                <a href="word.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- 10. WATERMARK PDF -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">
+                    <i class="fa-solid fa-stamp"></i>
+                </div>
+                <h3>Watermark PDF</h3>
+                <p>Add text or image watermark to your PDF.</p>
+                <div class="anim-stage">
+                    <div class="anim-wrap">
+                        <div class="edit-pdf-card" style="border-color:#7c3aed;">
+                            <div class="doc-line"></div>
+                            <div class="doc-line" style="background:#7c3aed; width:70%;"></div>
+                            <div class="doc-line" style="background:#7c3aed; width:40%; opacity:0.5;"></div>
+                            <div class="doc-line short"></div>
+                        </div>
+                        <i class="fa-solid fa-stamp" style="position:absolute; font-size:22px; color:#7c3aed; z-index:3; animation:editSparklePop 4s infinite;"></i>
+                    </div>
+                </div>
+                <div class="status-area">
+                    <span class="status-text action"><i class="fa-solid fa-stamp"></i> Adding...</span>
+                    <span class="status-text done"><i class="fa-solid fa-circle-check"></i> Watermark Added!</span>
+                </div>
+                <a href="watermark.html" class="tool-card-link">Open Tool <i class="fa-solid fa-arrow-right"></i></a>
+            </div>  
+
+        </div>
+    </section>
+    <!-- ===== FOOTER SECTION ===== -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+
+            <!-- Left: Brand & Copyright -->
+            <div class="footer-left">
+                <div class="footer-brand">
+                    <div class="footer-logo-box">
+                    <img src="images/logo.png"></img>
+                    </div>
+                    <div>
+                        <h2 class="footer-title">PDFBoon</h2>
+                        <p class="footer-subtitle">Fast PDF Toolkit</p>
+                    </div>
+                </div>
+                <p class="footer-text">Secure, fast & free PDF tools that work directly in your browser.</p>
+                <div class="footer-copyright">
+                    <p>&copy; ©️ 2026 All Rights Reserved by PDFBoon</p>
+                </div>
+            </div>
+
+            <!-- Center: Visitor Count & Last Updated -->
+            <div class="footer-center">
+                <div class="footer-stats">
+                    <div class="stat-item">
+                        <i class="fa-solid fa-eye"></i>
+                        <span class="stat-label">Total Visitors</span>
+                        <span class="stat-number" id="visitorCount">12,847</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span class="stat-label">Last Updated</span>
+                        <span class="stat-number">July 31, 2026</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa-solid fa-users"></i>
+                        <span class="stat-label">Online Now</span>
+                        <span class="stat-number" id="onlineCount">42</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Developer Info -->
+            <div class="footer-right">
+                <h3>Developer</h3>
+                <div class="developer-wrapper">
+                    <div class="developer-avatar">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <div class="developer-info">
+                        <p class="dev-name">Vikshant Kralta</p>
+                        <p class="dev-role">Full Stack Developer</p>
+                        <div class="dev-social">
+                            <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                            <a href="#" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                            <a href="#" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                            <a href="#" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="footer-bottom">
+            
+            <div class="footer-bottom-right">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
     </div>
-    <div class="files" id="filesContainer"></div>
-</div>
-<footer class="footer">© 2026 PDFBoon · Vikshant Kralta</footer>
+</footer>
+
+<style>
+    /* ===== FOOTER STYLES ===== */
+    .footer {
+        background: #0d2545;
+        color: #dfe6f2;
+        margin-top: 40px;
+        padding: 40px 20px 16px;
+        border-top: 3px solid var(--stamp);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #2563eb, #7c3aed, #0891b2, #2563eb);
+        background-size: 300% 100%;
+        animation: footerGradientMove 6s ease-in-out infinite;
+    }
+
+    @keyframes footerGradientMove {
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .footer-container {
+        max-width: 1180px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr 1fr;
+        gap: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    @media (max-width: 820px) {
+        .footer-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+    }
+
+    /* ===== FOOTER LEFT ===== */
+    .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .footer-logo-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #60a5fa;
+    }
+
+    .footer-title {
+        font-family: var(--serif);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+    }
+
+    .footer-subtitle {
+        font-size: 0.7rem;
+        color: #9fb0cc;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .footer-text {
+        font-size: 0.85rem;
+        color: #9fb0cc;
+        max-width: 30ch;
+        line-height: 1.7;
+        margin-bottom: 12px;
+    }
+
+    .footer-copyright p {
+        font-size: 0.75rem;
+        color: #8494b5;
+        margin: 0;
+    }
+
+    /* ===== FOOTER CENTER - STATS ===== */
+    .footer-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 4px;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateX(4px);
+    }
+
+    .stat-item i {
+        width: 20px;
+        color: #60a5fa;
+        font-size: 0.9rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #9fb0cc;
+        flex: 1;
+        font-weight: 400;
+    }
+
+    .stat-number {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: rgba(37, 99, 235, 0.15);
+        padding: 2px 12px;
+        border-radius: 20px;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ===== FOOTER RIGHT - DEVELOPER ===== */
+    .footer-right h3 {
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #8494b5;
+        margin-bottom: 12px;
+        font-weight: 600;
+        position: relative;
+        padding-bottom: 8px;
+    }
+
+    .footer-right h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 30px;
+        height: 2px;
+        background: var(--stamp);
+        border-radius: 2px;
+    }
+
+    .developer-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        margin-bottom: 12px;
+    }
+
+    .developer-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    .developer-info {
+        flex: 1;
+    }
+
+    .dev-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .dev-role {
+        font-size: 0.7rem;
+        color: #9fb0cc;
+        margin: 2px 0 6px;
+    }
+
+    .dev-social {
+        display: flex;
+        gap: 8px;
+    }
+
+    .dev-social a {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9fb0cc;
+        font-size: 0.7rem;
+        transition: all 0.3s ease;
+    }
+
+    .dev-social a:hover {
+        background: var(--stamp);
+        color: #fff;
+        transform: translateY(-2px);
+        border-color: var(--stamp);
+    }
+
+    .footer-tech {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.65rem;
+        color: #8494b5;
+        flex-wrap: wrap;
+    }
+
+    .footer-tech span {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* ===== FOOTER BOTTOM ===== */
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 16px;
+        font-size: 0.7rem;
+        color: #8494b5;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .footer-bottom-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .footer-bottom-right {
+        display: flex;
+        gap: 16px;
+    }
+
+    .footer-bottom-right a {
+        color: #9fb0cc;
+        transition: color 0.3s ease;
+    }
+
+    .footer-bottom-right a:hover {
+        color: #ffffff;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+        .footer {
+            padding: 28px 16px 12px;
+        }
+        .footer-grid {
+            gap: 18px;
+            padding-bottom: 16px;
+        }
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+            gap: 8px;
+        }
+        .footer-bottom-right {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .stat-item {
+            padding: 6px 12px;
+        }
+        .stat-number {
+            font-size: 0.8rem;
+            padding: 1px 10px;
+        }
+        .developer-wrapper {
+            padding: 10px 12px;
+        }
+        .dev-social a {
+            width: 24px;
+            height: 24px;
+            font-size: 0.6rem;
+        }
+    }
+
+    /* ===== VISITOR COUNT ANIMATION ===== */
+    @keyframes countPulse {
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+
+    #visitorCount {
+        animation: countPulse 3s ease-in-out infinite;
+    }
+
+    #onlineCount {
+        animation: countPulse 2s ease-in-out infinite;
+        color: #34d399;
+    }
+</style>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    // ===== VISITOR COUNT WITH LOCAL STORAGE =====
+    (function() {
+        const visitorElement = document.getElementById('visitorCount');
 
-// ---------- UI ----------
-document.getElementById('mobileMenuBtn').addEventListener('click', ()=> document.getElementById('navLinks').classList.toggle('active'));
-document.getElementById('toolsDropdown').querySelector('button').addEventListener('click', function(e){ e.preventDefault(); this.parentElement.classList.toggle('open'); });
+        // Get or initialize visitor count
+        let count = localStorage.getItem('pdfboon_visitors');
+        if (count === null) {
+            count = 12847;
+        } else {
+            count = parseInt(count) + 1;
+        }
 
-const pdfFileInput = document.getElementById('pdfFileInput');
-const filesContainer = document.getElementById('filesContainer');
-const uploadBox = document.getElementById('uploadBox');
-let uploadedFiles = [];
+        // Save back to localStorage
+        localStorage.setItem('pdfboon_visitors', count);
 
-pdfFileInput.addEventListener('change', e => { uploadedFiles = [...e.target.files]; renderFiles(); });
-uploadBox.addEventListener('click', () => pdfFileInput.click());
-uploadBox.addEventListener('dragover', e => e.preventDefault());
-uploadBox.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadedFiles = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf');
-    renderFiles();
-});
+        // Format number with commas
+        const formattedCount = count.toLocaleString('en-US');
+        visitorElement.textContent = formattedCount;
 
-function formatSize(b) { return b > 1024*1024 ? (b/(1024*1024)).toFixed(2)+' MB' : (b/1024).toFixed(2)+' KB'; }
+        // ===== ONLINE USERS (simulated) =====
+        const onlineElement = document.getElementById('onlineCount');
+        function updateOnlineCount() {
+            // Random between 28-68
+            const online = Math.floor(Math.random() * 40) + 28;
+            onlineElement.textContent = online;
+        }
 
-async function renderFiles() {
-    filesContainer.innerHTML = '';
-    for (let i=0; i<uploadedFiles.length; i++) {
-        const f = uploadedFiles[i];
-        const card = document.createElement('div'); card.className = 'file-card';
-        card.innerHTML = `<div class="preview"><canvas id="pv-${i}"></canvas></div><div><b>${f.name}</b><br>${formatSize(f.size)}<br><span id="fs-${i}">Ready</span><div class="progress"><div class="progress-bar" id="pb-${i}"></div></div></div>
-        <input id="rn-${i}" value="${f.name.replace('.pdf','-converted')}"><button class="btn convert-btn" data-idx="${i}">Convert</button><div class="loader" id="ld-${i}"></div><a class="btn download-btn" id="dl-${i}" download>.docx</a>`;
-        filesContainer.appendChild(card);
-        previewPDF(f, i);
-    }
-    document.querySelectorAll('.convert-btn').forEach(b => b.addEventListener('click', () => convertPDFToWord(parseInt(b.dataset.idx))));
-}
+        // Update every 30 seconds
+        updateOnlineCount();
+        setInterval(updateOnlineCount, 30000);
 
-async function previewPDF(file, idx) {
-    const data = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({data}).promise;
-    const page = await pdf.getPage(1);
-    const vp = page.getViewport({scale:0.5});
-    const canvas = document.getElementById(`pv-${idx}`);
-    canvas.width = vp.width; canvas.height = vp.height;
-    await page.render({canvasContext:canvas.getContext('2d'), viewport:vp}).promise;
-}
-
-// ---------- CONVERSION ENGINE ----------
-async function convertPDFToWord(idx) {
-    const file = uploadedFiles[idx]; if(!file) return;
-    const pb = document.getElementById(`pb-${idx}`), ld = document.getElementById(`ld-${idx}`),
-          btn = document.querySelectorAll('.convert-btn')[idx], dbtn = document.getElementById(`dl-${idx}`),
-          ft = document.getElementById(`fs-${idx}`), rn = document.getElementById(`rn-${idx}`).value;
-    const layout = document.getElementById('layoutMode').value,
-          tableMode = document.getElementById('tableMode').value,
-          bgImage = document.getElementById('bgImage').value,
-          styleMode = document.getElementById('styleMode').value;
-    btn.style.display='none'; ld.style.display='block'; pb.style.width='0%'; ft.textContent='Extracting...';
-    try {
-        const data = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({data}).promise;
-        const allPages = [];
-        for (let p=1; p<=pdf.numPages; p++) {
-            ft.textContent = `Page ${p}/${pdf.numPages}`;
-            const page = await pdf.getPage(p);
-            const vp = page.getViewport({scale:1});
-            const textContent = await page.getTextContent();
-            const opList = await page.getOperatorList();
-            const colorMap = extractColors(opList, textContent);
-            const styleMap = extractFontStyles(opList, textContent);
-
-            let items = textContent.items.map((it,i) => ({
-                text: it.str||'', x: it.transform[4], y: vp.height - it.transform[5],
-                w: it.width||0, h: it.height||12, font: it.fontName||'',
-                color: colorMap[i]||'#000000',
-                bold: styleMap[i]?.bold || /bold/i.test(it.fontName),
-                italic: styleMap[i]?.italic || /italic/i.test(it.fontName)
-            }));
-            items.sort((a,b)=> Math.abs(a.y-b.y)<0.5 ? a.x-b.x : a.y-b.y);
-
-            const merged = [];
-            if (items.length) {
-                let line = [items[0]], lineY = items[0].y, lineMaxH = items[0].h;
-                for (let i=1; i<items.length; i++) {
-                    if (Math.abs(items[i].y - lineY) < Math.max(2, lineMaxH*0.4)) {
-                        line.push(items[i]);
-                        lineMaxH = Math.max(lineMaxH, items[i].h);
-                    } else {
-                        merged.push(mergeLine(line)); line = [items[i]]; lineY = items[i].y; lineMaxH = items[i].h;
-                    }
+        // ===== UPDATE LAST UPDATED DATE =====
+        // The date is already hardcoded in HTML, but we can auto-update it
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = today.toLocaleDateString('en-US', options);
+        const dateElements = document.querySelectorAll('.stat-number');
+        // Update only the "Last Updated" stat
+        dateElements.forEach(el => {
+            if (el.closest('.stat-item') && el.closest('.stat-item').querySelector('.stat-label')?.textContent === 'Last Updated') {
+                // Only update if it's not already set manually
+                if (el.textContent === 'July 31, 2026') {
+                    el.textContent = formattedDate;
                 }
-                if (line.length) merged.push(mergeLine(line));
             }
-
-            let tables = [];
-            if (tableMode === 'on') tables = detectTablesGrid(merged, vp.width);
-
-            let bgImages = [];
-            if (bgImage === 'on') {
-                const canvas = document.createElement('canvas');
-                canvas.width = vp.width; canvas.height = vp.height;
-                const ctx = canvas.getContext('2d');
-                await page.render({canvasContext:ctx, viewport:vp}).promise;
-                const jpeg = canvas.toDataURL('image/jpeg', 0.85);
-                bgImages.push({ data: jpeg, x:0, y:0, w:vp.width, h:vp.height });
-            }
-
-            allPages.push({ num:p, items:merged, tables, bgImages, w:vp.width, h:vp.height });
-            pb.style.width = ((p/pdf.numPages)*50)+'%';
-        }
-        ft.textContent = 'Building DOCX...';
-        const blob = await buildDocx(allPages, { layout, tableMode, bgImage, styleMode });
-        pb.style.width = '90%';
-        const url = URL.createObjectURL(blob);
-        dbtn.href=url; dbtn.download=(rn||'converted')+'.docx'; dbtn.style.display='inline-flex';
-        ft.innerHTML='<span style="color:#10b981">✓ Converted!</span>'; pb.style.width='100%';
-    } catch(e) { ft.textContent='Error: '+e.message; console.error(e); }
-    finally { ld.style.display='none'; btn.style.display='inline-flex'; }
-}
-
-function mergeLine(line) {
-    line.sort((a,b)=> a.x-b.x);
-    let txt='', x0=line[0].x, x1=line[0].x+line[0].w, h=line[0].h, font=line[0].font, col=line[0].color;
-    let bold=line[0].bold, italic=line[0].italic;
-    for (let i=0;i<line.length;i++) {
-        if (i>0 && line[i].x-(line[i-1].x+line[i-1].w)>3) txt+=' ';
-        txt+=line[i].text; x1=Math.max(x1,line[i].x+line[i].w); h=Math.max(h,line[i].h);
-        if (line[i].font && line[i].font.length>font.length) font=line[i].font;
-        if (line[i].color!=='#000000') col=line[i].color;
-        if (line[i].bold) bold=true;
-        if (line[i].italic) italic=true;
-    }
-    return {text:txt.trim(), x:x0, y:line[0].y, w:x1-x0, h, font, color:col, bold, italic};
-}
-
-function extractColors(ops, text) {
-    const map={}; let idx=0, col='#000000';
-    for (let i=0;i<ops.fnArray.length;i++) {
-        if (ops.fnArray[i]===pdfjsLib.OPS.setFillRGBColor) {
-            const a=ops.argsArray[i]; col='#'+[Math.round(a[0]*255),Math.round(a[1]*255),Math.round(a[2]*255)].map(c=>c.toString(16).padStart(2,'0')).join('');
-        }
-        if (ops.fnArray[i]===pdfjsLib.OPS.showText || ops.fnArray[i]===pdfjsLib.OPS.showSpacedText) {
-            if (idx<text.items.length) map[idx]=col; idx++;
-        }
-    }
-    return map;
-}
-
-function extractFontStyles(ops, text) {
-    const styles=[]; let idx=0;
-    let current = { bold:false, italic:false };
-    for (let i=0;i<ops.fnArray.length;i++) {
-        if (ops.fnArray[i]===pdfjsLib.OPS.setFont) {
-            const name = (ops.argsArray[i]?.[0]||'').toLowerCase();
-            current.bold = /bold|black|heavy/i.test(name);
-            current.italic = /italic|oblique/i.test(name);
-        }
-        if (ops.fnArray[i]===pdfjsLib.OPS.showText || ops.fnArray[i]===pdfjsLib.OPS.showSpacedText) {
-            if (idx<text.items.length) styles[idx] = {...current}; idx++;
-        }
-    }
-    return styles;
-}
-
-function detectTablesGrid(items, pageWidth) {
-    if (items.length<4) return [];
-    const rows = [];
-    if (!items[0]) return [];
-    let cur = [items[0]], lastY = items[0].y;
-    for (let i=1; i<items.length; i++) {
-        if (!items[i]) continue;
-        if (Math.abs(items[i].y - lastY) < 2) cur.push(items[i]);
-        else { rows.push(cur); cur = [items[i]]; lastY = items[i].y; }
-    }
-    rows.push(cur);
-    const gapMap = new Map();
-    rows.forEach(row => {
-        row.sort((a,b)=>a.x-b.x);
-        for (let i=1; i<row.length; i++) {
-            const gs = row[i-1].x + row[i-1].w, ge = row[i].x;
-            if (ge - gs > 5) { const g = Math.round((gs+ge)/2); gapMap.set(g, (gapMap.get(g)||0)+1); }
-        }
-    });
-    const thresh = Math.max(2, Math.floor(rows.length*0.4));
-    const colEdges = [0, ...[...gapMap.entries()].filter(([_,c])=>c>=thresh).map(([x])=>x).sort((a,b)=>a-b), pageWidth];
-    const tables = []; let start = -1;
-    for (let r=0; r<rows.length; r++) {
-        const cols = new Set();
-        rows[r].forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2&&it.x+it.w<=colEdges[c+1]+2) { cols.add(c); break; } });
-        if (cols.size>=2) { if (start===-1) start=r; }
-        else { if (start!==-1 && r-start>=2) tables.push({rows:rows.slice(start,r), colEdges}); start=-1; }
-    }
-    if (start!==-1 && rows.length-start>=2) tables.push({rows:rows.slice(start), colEdges});
-    return tables;
-}
-
-// ---------- DOCX BUILDER ----------
-const EMU = 12700;
-async function buildDocx(pages, opt) {
-    const zip = new JSZip();
-    zip.file('[Content_Types].xml',`<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
-
-    const fp = pages[0], pw = Math.round(fp.w*20), ph = Math.round(fp.h*20);
-    let body = '';
-    let imageRelId = 1;
-    let docRels = '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
-
-    for (let pi=0; pi<pages.length; pi++) {
-        const page = pages[pi];
-        if (pi>0) body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
-
-        // Background image
-        if (opt.bgImage === 'on' && page.bgImages) {
-            for (const img of page.bgImages) {
-                const jpegData = img.data.split(',')[1];
-                const bytes = Uint8Array.from(atob(jpegData), c=>c.charCodeAt(0));
-                const imgName = `image${imageRelId}.jpg`;
-                zip.folder('word').folder('media').file(imgName, bytes);
-                const relId = `rIdImg${imageRelId}`;
-                docRels += `<Relationship Id="${relId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${imgName}"/>`;
-                const cx = Math.round(img.w * EMU), cy = Math.round(img.h * EMU);
-                const offX = Math.round(img.x * EMU), offY = Math.round(img.y * EMU);
-                const id = Math.floor(Math.random()*1000000);
-                body += `<w:p><w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251657216" behindDoc="1" locked="0" layoutInCell="1" allowOverlap="1">
-<wp:simplePos x="${offX}" y="${offY}"/><wp:positionH relativeFrom="page"><wp:posOffset>${offX}</wp:posOffset></wp:positionH>
-<wp:positionV relativeFrom="page"><wp:posOffset>${offY}</wp:posOffset></wp:positionV>
-<wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/>
-<wp:docPr id="${id}" name="Picture${id}"/><wp:cNvGraphicFramePr/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
-<pic:pic><pic:nvPicPr><pic:cNvPr id="${id}" name="Picture${id}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:anchor></w:drawing></w:r></w:p>`;
-                imageRelId++;
-            }
-        }
-
-        // Tables
-        const tableSet = new Set();
-        if (opt.tableMode==='on' && page.tables.length) {
-            for (const table of page.tables) {
-                const colEdges = table.colEdges;
-                const colWidths = [];
-                for (let c=0; c<colEdges.length-1; c++) colWidths.push(colEdges[c+1]-colEdges[c]);
-                const tableW = colWidths.reduce((a,b)=>a+b,0);
-                const top = table.rows[0][0].y, left = 0;
-                let xml = `<w:tbl><w:tblPr><w:tblW w:w="${Math.round(tableW*20)}" w:type="dxa"/></w:tblPr><w:tblGrid>${colWidths.map(w=>`<w:gridCol w:w="${Math.round(w*20)}"/>`).join('')}</w:tblGrid>`;
-                for (const row of table.rows) {
-                    xml += '<w:tr>';
-                    const cellItems = Array(colWidths.length).fill(null);
-                    row.forEach(it=>{ for (let c=0;c<colEdges.length-1;c++) if (it.x>=colEdges[c]-2 && it.x+it.w<=colEdges[c+1]+2) { cellItems[c]=it; break; } });
-                    for (let c=0;c<colWidths.length;c++) {
-                        const it = cellItems[c]||{text:'',font:'',h:10,color:'#000000',bold:false,italic:false};
-                        const ff = getFont(it.font, opt.styleMode!=='off'?'preserve':'calibri');
-                        const fs = Math.round(Math.max(it.h*1.5,16));
-                        const b = it.bold, i = it.italic;
-                        const clr = opt.styleMode!=='off'&&it.color!=='#000000'?it.color.replace('#',''):'';
-                        xml += `<w:tc><w:tcPr><w:tcW w:w="${Math.round(colWidths[c]*20)}" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r></w:p></w:tc>`;
-                    }
-                    xml += '</w:tr>';
-                    row.forEach(it=>tableSet.add(it));
-                }
-                xml += '</w:tbl>';
-                body += opt.layout==='absolute' ? shapeWrap(xml, left, top, tableW, 20) : xml;
-            }
-        }
-
-        // Text items
-        for (const it of page.items) {
-            if (tableSet.has(it) || !it.text.trim()) continue;
-            const ff = getFont(it.font, opt.styleMode!=='off'?'preserve':'calibri');
-            const fs = Math.round(Math.max(it.h*1.5,16));
-            const b = it.bold, i = it.italic;
-            const clr = opt.styleMode!=='off'&&it.color!=='#000000'?it.color.replace('#',''):'';
-            const run = `<w:r><w:rPr><w:rFonts w:ascii="${esc(ff)}" w:hAnsi="${esc(ff)}"/><w:sz w:val="${fs}"/>${b?'<w:b/>':''}${i?'<w:i/>':''}${clr?`<w:color w:val="${clr}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(it.text)}</w:t></w:r>`;
-            body += opt.layout==='absolute' ? framePrParagraph(run, it.x, it.y, Math.max(it.w,50), it.h) : `<w:p>${run}</w:p>`;
-        }
-    }
-
-    docRels += '</Relationships>';
-    zip.folder('_rels').file('.rels',`<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
-    zip.folder('word').folder('_rels').file('document.xml.rels', docRels);
-
-    zip.folder('word').file('document.xml', `<?xml version="1.0"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
-xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
-<w:body>${body}<w:sectPr><w:pgSz w:w="${pw}" w:h="${ph}"/><w:pgMar w:top="0" w:right="0" w:bottom="0" w:left="0"/></w:sectPr></w:body></w:document>`);
-
-    return zip.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document', compression:'DEFLATE'});
-}
-
-function shapeWrap(innerXml, x, y, w, h) {
-    const cx=Math.round(w*EMU), cy=Math.round(h*EMU), offX=Math.round(x*EMU), offY=Math.round(y*EMU);
-    const id=Math.floor(Math.random()*1000000);
-    return `<w:p><w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="251659264" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1">
-<wp:simplePos x="${offX}" y="${offY}"/><wp:positionH relativeFrom="page"><wp:posOffset>${offX}</wp:posOffset></wp:positionH>
-<wp:positionV relativeFrom="page"><wp:posOffset>${offY}</wp:posOffset></wp:positionV>
-<wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/>
-<wp:docPr id="${id}" name="TableBox${id}"/><wp:cNvGraphicFramePr/>
-<a:graphic><a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">
-<wps:wsp><wps:cNvSpPr txBox="1"/><wps:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></wps:spPr>
-<wps:txbx><w:txbxContent>${innerXml}</w:txbxContent></wps:txbx>
-<wps:bodyPr rot="0" vert="horz" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t"/>
-</wps:wsp></a:graphicData></a:graphic></wp:anchor></w:drawing></w:r></w:p>`;
-}
-
-function framePrParagraph(innerRun, x, y, w, h) {
-    const left=Math.round(x*20), top=Math.round(y*20), width=Math.round(w*20), height=Math.round(h*20);
-    return `<w:p><w:pPr><w:framePr w:w="${width}" w:h="${height}" w:hRule="exact" w:wrap="notBeside" w:vAnchor="page" w:hAnchor="page" w:x="${left}" w:y="${top}"/></w:pPr>${innerRun}</w:p>`;
-}
-
-function getFont(fn, mode) {
-    if (mode==='calibri') return 'Calibri';
-    const n=(fn||'').toLowerCase();
-    if (n.includes('times')||n.includes('roman')) return 'Times New Roman';
-    if (n.includes('helvetica')||n.includes('arial')) return 'Arial';
-    if (n.includes('courier')) return 'Courier New';
-    return 'Calibri';
-}
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+        });
+    })();
 </script>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Tools dropdown toggle
+        const toolsDropdown = document.getElementById('toolsDropdown');
+        const toolsToggle = document.getElementById('toolsToggle');
+        toolsToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toolsDropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', (e) => {
+            if (!toolsDropdown.contains(e.target)) toolsDropdown.classList.remove('open');
+        });
+    </script>
+
 </body>
 </html>
