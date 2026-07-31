@@ -43,7 +43,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(237, 242, 249, 0.88);
+            background: rgba(237, 242, 249, 0.95);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--line);
         }
@@ -89,6 +89,8 @@
             font-size: 0.7rem;
             color: var(--ink-soft);
         }
+
+        /* ===== NAV LINKS ===== */
         .nav-links {
             display: flex;
             align-items: center;
@@ -101,6 +103,9 @@
             padding: 4px 0;
             position: relative;
             transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .nav-link::after {
             content: '';
@@ -122,6 +127,34 @@
         .nav-link:hover {
             color: var(--ink);
         }
+
+        /* ===== HOME BUTTON STYLE ===== */
+        .nav-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--stamp);
+            color: #ffffff !important;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        .nav-home-btn:hover {
+            background: var(--stamp-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+        }
+        .nav-home-btn::after {
+            display: none;
+        }
+        .nav-home-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* ===== MOBILE MENU BUTTON ===== */
         .mobile-menu {
             display: none;
             width: 40px;
@@ -131,35 +164,68 @@
             border-radius: 8px;
             background: none;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             cursor: pointer;
             color: var(--ink);
+            transition: background 0.2s ease;
         }
-        @media (max-width: 920px) {
-            .nav-links {
-                position: fixed;
-                inset: 68px 0 auto 0;
-                flex-direction: column;
-                align-items: stretch;
-                background: var(--paper-raised);
-                padding: 20px;
-                gap: 12px;
-                border-bottom: 1px solid var(--line);
-                box-shadow: var(--shadow);
-                transform: translateY(-140%);
-                opacity: 0;
-                transition: transform .3s, opacity .3s;
-            }
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .mobile-menu:hover {
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
             .mobile-menu {
                 display: flex;
+            }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+                background: var(--paper-raised);
+                padding: 80px 28px 30px;
+                gap: 16px;
+                border-left: 1px solid var(--line);
+                box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
+                transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow-y: auto;
+                z-index: 999;
+            }
+            .nav-links.active {
+                right: 0;
+            }
+            .nav-link {
+                font-size: 1rem;
+                padding: 10px 0;
+                width: 100%;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            }
+            .nav-home-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 20px;
             }
             .logo-subtitle {
                 display: none;
             }
+        }
+
+        /* ===== OVERLAY ===== */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 998;
+            backdrop-filter: blur(4px);
+        }
+        .nav-overlay.active {
+            display: block;
         }
 
         /* ===== PAGE HEADER ===== */
@@ -321,10 +387,17 @@
             .page-header h1 {
                 font-size: 1.6rem;
             }
+            .nav-links {
+                width: 100%;
+                max-width: 320px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- ===== OVERLAY ===== -->
+    <div class="nav-overlay" id="navOverlay"></div>
 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
@@ -339,9 +412,13 @@
                 </div>
             </div>
             <div class="nav-links" id="navLinks">
-                <a href="index.html" class="nav-link active-link"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="index.html" class="nav-link nav-home-btn">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
             </div>
-            <button class="mobile-menu" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+            <button class="mobile-menu" id="mobileMenuBtn" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
     </nav>
 
@@ -475,28 +552,71 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            document.getElementById('navLinks').classList.toggle('active');
-        });
-
-        // ===== AUTO-UPDATE DATE =====
         (function() {
+            'use strict';
+
+            // ===== MOBILE MENU TOGGLE =====
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            const overlay = document.getElementById('navOverlay');
+            let isMenuOpen = false;
+
+            function toggleMenu() {
+                isMenuOpen = !isMenuOpen;
+                navLinks.classList.toggle('active', isMenuOpen);
+                overlay.classList.toggle('active', isMenuOpen);
+                menuBtn.innerHTML = isMenuOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+                document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+            }
+
+            function closeMenu() {
+                if (isMenuOpen) {
+                    isMenuOpen = false;
+                    navLinks.classList.remove('active');
+                    overlay.classList.remove('active');
+                    menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                    document.body.style.overflow = '';
+                }
+            }
+
+            // Menu button click
+            menuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            // Overlay click to close
+            overlay.addEventListener('click', closeMenu);
+
+            // Close menu on window resize to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && isMenuOpen) {
+                    closeMenu();
+                }
+            });
+
+            // Close menu on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+
+            // ===== AUTO-UPDATE DATE =====
             const today = new Date();
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = today.toLocaleDateString('en-US', options);
 
-            // Update header date
             const headerDate = document.getElementById('headerDate');
             if (headerDate) {
                 headerDate.textContent = formattedDate;
             }
 
-            // Update footer date
             const footerDate = document.getElementById('footerDate');
             if (footerDate) {
                 footerDate.textContent = formattedDate;
             }
+
         })();
     </script>
 
